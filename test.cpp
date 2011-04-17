@@ -28,3 +28,13 @@ void results()
   printf("%d/%d (%.2f%%) tests FAILED\n",
     tests-good, tests, 100.0f*(tests-good)/tests);
 }
+
+void test_streq(const std::string& code, const std::string& actual, const std::string& expected)
+{
+  test(actual == expected, (code + " == \"" + expected + "\"").c_str());
+
+  if ( actual != expected ) {
+    printf("  expected: %s\n", expected.c_str());
+    printf("  actual  : %s\n", actual.c_str());
+  }
+}

@@ -3,28 +3,7 @@
 #include <string>
 #include <map>
 #include "test.h"
-
-#define TEST_STREQ(expr, expected) { test_streq(#expr, expr, expected); }
-
-void test_streq(const std::string& code, const std::string& actual, const std::string& expected)
-{
-  test(actual == expected, (code + " == \"" + expected + "\"").c_str());
-
-  if ( actual != expected ) {
-    printf("  expected: %s\n", expected.c_str());
-    printf("  actual  : %s\n", actual.c_str());
-  }
-}
-
-std::string toupper(const char* s)
-{
-  std::string r;
-  while ( *s ) {
-    r += toupper(*s);
-    ++s;
-  }
-  return r;
-}
+#include "util.h"
 
 enum type_t {
   NIL, INTEGER, CLOSURE, PAIR, SYMBOL, STRING, U8VECTOR, CONTINUATION
@@ -130,6 +109,11 @@ std::string to_s(int n)
   return std::string(buf);
 }
 
+cons_t* car(cons_t* p)
+{
+  return ( p != NULL && p->type == PAIR ) ? p->car : NULL;
+}
+
 cons_t* cdr(cons_t* p)
 {
   return ( p != NULL && p->type == PAIR ) ? p->cdr : NULL;
@@ -138,6 +122,11 @@ cons_t* cdr(cons_t* p)
 bool symbolp(cons_t* p)
 {
   return p != NULL && p->type == SYMBOL;
+}
+
+bool atomp(cons_t* p)
+{
+  return p != NULL && (p->type == SYMBOL || p->type == INTEGER || p->type == STRING);
 }
 
 std::string sprint(cons_t* p, std::string& s)
@@ -149,7 +138,7 @@ std::string sprint(cons_t* p, std::string& s)
   case CLOSURE: return s + "<closure>";
   case PAIR:
     return s + "(" + sprint(p->car, s)
-      + (symbolp(cdr(p)) ? " . " : " ") + sprint(p->cdr, s) + ")";
+      + ((atomp(car(p)) && atomp(cdr(p))) ? " . " : " ") + sprint(p->cdr, s) + ")";
     break;
   case SYMBOL: return s + p->symbol->name;
   case STRING: return s + "\"" + p->string + "\"";
