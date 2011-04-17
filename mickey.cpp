@@ -186,8 +186,9 @@ const char* get_token()
 cons_t* append(cons_t *h, cons_t *t)
 {
   if ( h == NULL )
-    return h;
-  else if ( !pairp(h) )
+    return t;
+
+  if ( !pairp(h) )
     return NULL; // error; try running "(append 1 nil)", should throw error
   else if ( car(h) == NULL )
     h->car = t;
@@ -203,7 +204,8 @@ cons_t* parse_list(const char* s)
 {
   const char *token;
 
-  cons_t *p = cons(new cons_t());
+//  cons_t *p = list(p); //cons(p); //new cons_t());
+  cons_t *p = NULL; //new cons_t();
 
   while ( (token = get_token()) != NULL ) {
     if ( !strcmp(token, ")") )
@@ -219,7 +221,7 @@ cons_t* parse_list(const char* s)
 
 cons_t* parse(const char *s)
 {
-  return parse_list(s);
+  return cons(parse_list(s), NULL);
 }
 
 int main(int argc, char** argv)
@@ -271,6 +273,12 @@ int main(int argc, char** argv)
 
   // (append (list 1) 2)
   TEST_STREQ(sprint(cons(append(list(integer(1)), integer(2)))), "(1 . 2)");
+
+  // clisp: (cons (cons nil nil) nil), yields: ((NIL))
+  TEST_STREQ(sprint(cons(cons(cons(NULL, NULL), NULL))), "(())");
+
+  // (append nil (list 1 2))
+  TEST_STREQ(sprint(cons(append(NULL, list(integer(1), integer(2))))), "(1 2)");
 
   TEST_STREQ(sprint(parse("(cons 1 2)")), "(1 . 2)");
 
