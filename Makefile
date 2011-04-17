@@ -1,3 +1,5 @@
+CXX = llvm-g++
+CXXFLAGS = -Wall
 TARGETS = test.o mickey
 
 all: $(TARGETS)

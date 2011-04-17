@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <string>
+#include <map>
 #include "test.h"
 
 #define TEST_STREQ(expr, expected) { test_streq(#expr, expr, expected); }
@@ -32,6 +33,7 @@ enum type_t {
 typedef struct cons_t* (*lambda_t)(const struct cons_t*);
 
 struct environment_t {
+    std::map<std::string, struct symbol_t*> symbols;
 };
 
 struct continuation_t {
@@ -45,12 +47,27 @@ struct closure_t {
 struct u8vector_t {
 };
 
-struct symbol_t {
-  std::string name;
-
+class symbol_t {
   symbol_t(const char* s) : name(toupper(s))
   {
   }
+
+  symbol_t()
+  {
+  }
+
+public:
+  std::string name;
+
+  static symbol_t* create_symbol(const char* s, environment_t* env)
+  {
+    std::string S = toupper(s);
+
+    if ( env->symbols.find(S) == env->symbols.end() )
+      env->symbols[S] = new symbol_t(S.c_str());
+
+    return env->symbols[S];
+   }
 };
 
 struct cons_t {
@@ -88,11 +105,13 @@ cons_t* atom(int n)
   return p;
 }
 
-cons_t* symbol(const char* s)
+environment_t globals;
+
+cons_t* symbol(const char* s, environment_t *env = &globals)
 {
   cons_t *p = new cons_t();
   p->type = SYMBOL;
-  p->symbol = new symbol_t(s);
+  p->symbol = symbol_t::create_symbol(s, env);
   return p;
 }
 
@@ -151,8 +170,8 @@ int main(int argc, char** argv)
 {
   TEST_STREQ(sprint(cons(symbol("one"), symbol("two"))), "(ONE . TWO)");
   TEST_STREQ(sprint(cons(integer(1), integer(2))), "(1 . 2)");
-  TEST_STREQ(sprint(cons(symbol("zero"), cons(symbol("one"), symbol("two")))), "(ZERO (ONE . TWO))");
   TEST_STREQ(sprint(cons(integer(0), cons(integer(1), integer(2)))), "(0 1 . 2)");
+  TEST_STREQ(sprint(cons(symbol("zero"), cons(symbol("one"), symbol("two")))), "(ZERO (ONE . TWO))");
   results();
   return 0;
 }
