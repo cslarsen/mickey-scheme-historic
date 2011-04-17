@@ -77,6 +77,14 @@ cons_t* symbol(const char* s)
   return p;
 }
 
+cons_t* integer(int n)
+{
+  cons_t *p = new cons_t();
+  p->type = INTEGER;
+  p->integer = n;
+  return p;
+}
+
 std::string to_s(int n)
 {
   char buf[32];
@@ -124,6 +132,7 @@ int main(int argc, char** argv)
 {
   TEST_STREQ(sprint(cons(symbol("one"), symbol("two"))), "(one . two)");
   TEST_STREQ(sprint(cons(symbol("zero"), cons(symbol("one"), symbol("two")))), "(zero (one . two))");
+  TEST_STREQ(sprint(cons(integer(0), cons(integer(1), integer(2)))), "(0 1 . 2)");
   results();
   return 0;
 }
