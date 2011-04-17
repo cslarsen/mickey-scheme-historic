@@ -178,6 +178,9 @@ int main(int argc, char** argv)
   // (cons 1 (cons 2 (cons 3 nil)))
   TEST_STREQ(sprint(cons(cons(integer(1), cons(integer(2), cons(integer(3), NULL))))), "(1 2 3)");
 
+  // (cons (cons 0 (cons 1 nil)) nil)
+  TEST_STREQ(sprint(cons(cons(cons(integer(0), cons(integer(1), NULL)), NULL))), "((0 1))");
+
   results();
   return 0;
 }
