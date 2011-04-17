@@ -199,17 +199,19 @@ cons_t* append(cons_t *h, cons_t *t)
   return h;
 }
 
-cons_t* parse_list(const char* s, cons_t *p)
+cons_t* parse_list(const char* s)
 {
   const char *token;
+
+  cons_t *p = cons(new cons_t());
 
   while ( (token = get_token()) != NULL ) {
     if ( !strcmp(token, ")") )
       break;
     else if ( !strcmp(token, "(") )
-      p = list(p, parse_list(s, new cons_t()));
+      p = append(p, list(parse_list(s)));
     else
-      p = list(p, symbol(token, &globals));
+      p = append(p, list(symbol(token, &globals)));
   }
 
   return p;
@@ -217,7 +219,7 @@ cons_t* parse_list(const char* s, cons_t *p)
 
 cons_t* parse(const char *s)
 {
-  return cons(parse_list(s, new cons_t()), NULL);
+  return parse_list(s);
 }
 
 int main(int argc, char** argv)
@@ -270,7 +272,7 @@ int main(int argc, char** argv)
   // (append (list 1) 2)
   TEST_STREQ(sprint(cons(append(list(integer(1)), integer(2)))), "(1 . 2)");
 
-//  TEST_STREQ(sprint(parse("(cons 1 2)")), "(1 . 2)");
+  TEST_STREQ(sprint(parse("(cons 1 2)")), "(1 . 2)");
 
   results();
   return 0;
