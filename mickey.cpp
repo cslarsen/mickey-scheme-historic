@@ -62,7 +62,7 @@ struct cons_t {
   };
 };
 
-cons_t* cons(cons_t* head, cons_t* tail)
+cons_t* cons(cons_t* head, cons_t* tail = NULL)
 {
   cons_t *p = new cons_t();
   p->type = PAIR;
@@ -129,6 +129,11 @@ bool atomp(cons_t* p)
   return p != NULL && (p->type == SYMBOL || p->type == INTEGER || p->type == STRING);
 }
 
+bool pairp(cons_t* p)
+{
+  return p != NULL && p->type == PAIR;
+}
+
 std::string sprint(cons_t* p, std::string& s)
 {
   if ( p != NULL )
@@ -136,10 +141,12 @@ std::string sprint(cons_t* p, std::string& s)
   default: case NIL: return "";
   case INTEGER: return s + to_s(p->integer);
   case CLOSURE: return s + "<closure>";
-  case PAIR:
-    return s + "(" + sprint(p->car, s)
-      + ((atomp(car(p)) && atomp(cdr(p))) ? " . " : " ") + sprint(p->cdr, s) + ")";
-    break;
+  case PAIR: {
+    bool parens = pairp(car(p));
+    return s + (parens? "(" : "") + sprint(p->car, s)
+      + ((atomp(car(p)) && atomp(cdr(p))) ? " . " : (cdr(p) != NULL ? " " : ""))
+      + sprint(p->cdr, s) + (parens? ")" : "");
+    } break;
   case SYMBOL: return s + p->symbol->name;
   case STRING: return s + "\"" + p->string + "\"";
   case U8VECTOR: return s + "<u8vector>";
@@ -157,10 +164,10 @@ std::string sprint(cons_t* p)
 
 int main(int argc, char** argv)
 {
-  TEST_STREQ(sprint(cons(symbol("one"), symbol("two"))), "(ONE . TWO)");
-  TEST_STREQ(sprint(cons(integer(1), integer(2))), "(1 . 2)");
-  TEST_STREQ(sprint(cons(integer(0), cons(integer(1), integer(2)))), "(0 1 . 2)");
-  TEST_STREQ(sprint(cons(symbol("zero"), cons(symbol("one"), symbol("two")))), "(ZERO (ONE . TWO))");
+  TEST_STREQ(sprint(cons(cons(symbol("one"), symbol("two")))), "(ONE . TWO)");
+  TEST_STREQ(sprint(cons(cons(integer(1), integer(2)))), "(1 . 2)");
+  TEST_STREQ(sprint(cons(cons(integer(0), cons(integer(1), integer(2))))), "(0 1 . 2)");
+  TEST_STREQ(sprint(cons(cons(symbol("zero"), cons(symbol("one"), symbol("two"))))), "(ZERO ONE . TWO)");
   results();
   return 0;
 }
