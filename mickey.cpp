@@ -2,6 +2,18 @@
 #include <string>
 #include "test.h"
 
+#define TEST_STREQ(expr, expected) { test_streq(#expr, expr, expected); }
+
+void test_streq(const std::string& code, const std::string& actual, const std::string& expected)
+{
+  test(actual == expected, code.c_str());
+
+  if ( actual != expected ) {
+    printf("  expected: %s\n", expected.c_str());
+    printf("  actual  : %s\n", actual.c_str());
+  }
+}
+
 enum type_t {
   NIL, INTEGER, CLOSURE, PAIR, SYMBOL, STRING, U8VECTOR, CONTINUATION
 };
@@ -79,7 +91,7 @@ std::string sprint(cons_t* p, std::string& s)
   default: case NIL: return "";
   case INTEGER: return s + to_s(p->integer);
   case CLOSURE: return s + "<closure>";
-  case PAIR: return s + "(" + sprint(p->car, s) + " " + sprint(p->cdr, s) + ")";
+  case PAIR: return s + "(" + sprint(p->car, s) + " . " + sprint(p->cdr, s) + ")";
   case SYMBOL: return s + p->symbol;
   case STRING: return s + "\"" + p->string + "\"";
   case U8VECTOR: return s + "<u8vector>";
@@ -97,8 +109,8 @@ std::string sprint(cons_t* p)
 
 int main(int argc, char** argv)
 {
-  TEST_TRUE(sprint(cons(symbol("one"), symbol("two"))) == "(one two)");
-  TEST_TRUE(sprint(cons(symbol("zero"), cons(symbol("one"), symbol("two")))) == "(zero (one two))");
+  TEST_STREQ(sprint(cons(symbol("one"), symbol("two"))), "(one . two)");
+  TEST_STREQ(sprint(cons(symbol("zero"), cons(symbol("one"), symbol("two")))), "(zero (one . two))");
   results();
   return 0;
 }
