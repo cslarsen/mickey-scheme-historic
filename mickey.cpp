@@ -6,7 +6,7 @@
 
 void test_streq(const std::string& code, const std::string& actual, const std::string& expected)
 {
-  test(actual == expected, code.c_str());
+  test(actual == expected, (code + " == \"" + expected + "\"").c_str());
 
   if ( actual != expected ) {
     printf("  expected: %s\n", expected.c_str());
@@ -84,6 +84,16 @@ std::string to_s(int n)
   return std::string(buf);
 }
 
+cons_t* cdr(cons_t* p)
+{
+  return ( p != NULL && p->type == PAIR ) ? p->cdr : NULL;
+}
+
+bool symbolp(cons_t* p)
+{
+  return p != NULL && p->type == SYMBOL;
+}
+
 std::string sprint(cons_t* p, std::string& s)
 {
   if ( p != NULL )
@@ -91,7 +101,10 @@ std::string sprint(cons_t* p, std::string& s)
   default: case NIL: return "";
   case INTEGER: return s + to_s(p->integer);
   case CLOSURE: return s + "<closure>";
-  case PAIR: return s + "(" + sprint(p->car, s) + " . " + sprint(p->cdr, s) + ")";
+  case PAIR:
+    return s + "(" + sprint(p->car, s)
+      + (symbolp(cdr(p)) ? " . " : " ") + sprint(p->cdr, s) + ")";
+    break;
   case SYMBOL: return s + p->symbol;
   case STRING: return s + "\"" + p->string + "\"";
   case U8VECTOR: return s + "<u8vector>";
