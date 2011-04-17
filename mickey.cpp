@@ -138,7 +138,8 @@ std::string sprint(cons_t* p, std::string& s)
   case CLOSURE: return s + "<closure>";
   case PAIR: {
     bool parens = pairp(car(p));
-    return s + (parens? "(" : "") + sprint(p->car, s)
+    return s
+      + (parens? "(" : "") + sprint(p->car, s)
       + ((atomp(car(p)) && atomp(cdr(p))) ? " ." : "")
       + (parens? ")" : "")
       + (cdr(p) != NULL ? " " : "")
@@ -237,8 +238,7 @@ int main(int argc, char** argv)
   TEST_STREQ(sprint(cons(list(integer(1), list(integer(2), list(integer(3), integer(4)))))), "(1 (2 (3 4)))");
   TEST_STREQ(sprint(cons(list(list(integer(1), integer(2)), integer(3)))), "((1 2) 3)");
 
-//  TEST_STREQ(sprint(cons(list(integer(0), list(integer(1), integer(2))))), "123");
- // TEST_STREQ(sprint(parse("(cons 1 2)")), "(1 . 2)");
+  //TEST_STREQ(sprint(parse("(cons 1 2)")), "(1 . 2)");
 
   results();
   return 0;
