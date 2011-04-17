@@ -168,6 +168,16 @@ int main(int argc, char** argv)
   TEST_STREQ(sprint(cons(cons(integer(1), integer(2)))), "(1 . 2)");
   TEST_STREQ(sprint(cons(cons(integer(0), cons(integer(1), integer(2))))), "(0 1 . 2)");
   TEST_STREQ(sprint(cons(cons(symbol("zero"), cons(symbol("one"), symbol("two"))))), "(ZERO ONE . TWO)");
+
+  /*
+   * Common Lisp: (cons 1 (cons 2 nil))
+   * Scheme:      (cons 1 (cons 2 '()))
+   */
+  TEST_STREQ(sprint(cons(cons(integer(1), cons(integer(2), NULL)))), "(1 2)");
+
+  // (cons 1 (cons 2 (cons 3 nil)))
+  TEST_STREQ(sprint(cons(cons(integer(1), cons(integer(2), cons(integer(3), NULL))))), "(1 2 3)");
+
   results();
   return 0;
 }
