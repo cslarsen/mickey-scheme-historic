@@ -202,18 +202,16 @@ cons_t* append(cons_t *h, cons_t *t)
 
 cons_t* parse_list(const char* s)
 {
+  cons_t *p = NULL;
   const char *token;
 
-//  cons_t *p = list(p); //cons(p); //new cons_t());
-  cons_t *p = NULL; //new cons_t();
-
   while ( (token = get_token()) != NULL ) {
-    if ( !strcmp(token, ")") )
-      break;
-    else if ( !strcmp(token, "(") )
+    if ( !strcmp(token, "(") )
       p = append(p, list(parse_list(s)));
-    else
+    else if ( strcmp(token, ")") != 0 )
       p = append(p, list(symbol(token, &globals)));
+    else
+      break;
   }
 
   return p;
