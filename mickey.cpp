@@ -164,6 +164,10 @@ std::string sprint(cons_t* p)
 
 int main(int argc, char** argv)
 {
+  TEST_STREQ(sprint(cons(integer(1), NULL)), "1");
+  TEST_STREQ(sprint(cons(cons(integer(1)), NULL)), "(1)");
+  TEST_STREQ(sprint(cons(cons(integer(1), integer(1)), NULL)), "(1 . 1)");
+
   TEST_STREQ(sprint(cons(cons(symbol("one"), symbol("two")))), "(ONE . TWO)");
   TEST_STREQ(sprint(cons(cons(integer(1), integer(2)))), "(1 . 2)");
   TEST_STREQ(sprint(cons(cons(integer(0), cons(integer(1), integer(2))))), "(0 1 . 2)");
