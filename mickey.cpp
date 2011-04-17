@@ -73,8 +73,10 @@ cons_t* cons(cons_t* head, cons_t* tail = NULL)
 
 cons_t* list(cons_t* head, cons_t* tail = NULL)
 {
-  //return cons(head, (tail != NULL ? cons(tail, NULL) : NULL));
-  return cons(head, (tail == NULL ? NULL : cons(tail, NULL)));
+  if ( tail == NULL )
+    return cons(head, tail);
+  else
+    return cons(head, cons(tail, NULL));
 }
 
 environment_t globals; 
@@ -137,8 +139,10 @@ std::string sprint(cons_t* p, std::string& s)
   case PAIR: {
     bool parens = pairp(car(p));
     return s + (parens? "(" : "") + sprint(p->car, s)
-      + ((atomp(car(p)) && atomp(cdr(p))) ? " . " : (cdr(p) != NULL ? " " : ""))
-      + sprint(p->cdr, s) + (parens? ")" : "");
+      + ((atomp(car(p)) && atomp(cdr(p))) ? " ." : "")
+      + (parens? ")" : "")
+      + (cdr(p) != NULL ? " " : "")
+      + sprint(p->cdr, s) ;
     } break;
   case SYMBOL: return s + p->symbol->name;
   case STRING: return s + "\"" + p->string + "\"";
@@ -189,7 +193,6 @@ cons_t* parse_list(const char* s, cons_t *p)
 {
   const char *token;
 
-  cons_t *r = p;
   while ( (token = get_token()) != NULL && *token != ')' ) {
     if ( !strcmp(token, "(") )
       p = cons(p, parse_list(s, new cons_t()));
