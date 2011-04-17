@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <ctype.h>
 #include <string>
 #include "test.h"
 
@@ -12,6 +13,16 @@ void test_streq(const std::string& code, const std::string& actual, const std::s
     printf("  expected: %s\n", expected.c_str());
     printf("  actual  : %s\n", actual.c_str());
   }
+}
+
+std::string toupper(const char* s)
+{
+  std::string r;
+  while ( *s ) {
+    r += toupper(*s);
+    ++s;
+  }
+  return r;
 }
 
 enum type_t {
@@ -34,13 +45,21 @@ struct closure_t {
 struct u8vector_t {
 };
 
+struct symbol_t {
+  std::string name;
+
+  symbol_t(const char* s) : name(toupper(s))
+  {
+  }
+};
+
 struct cons_t {
   type_t type;
   union {
     int integer;
     struct { cons_t *car, *cdr; };
     closure_t* closure;
-    const char* symbol;
+    symbol_t* symbol;
     const char* string;
     u8vector_t* u8vector;
     continuation_t* continuation;
@@ -73,7 +92,7 @@ cons_t* symbol(const char* s)
 {
   cons_t *p = new cons_t();
   p->type = SYMBOL;
-  p->symbol = s;
+  p->symbol = new symbol_t(s);
   return p;
 }
 
@@ -113,7 +132,7 @@ std::string sprint(cons_t* p, std::string& s)
     return s + "(" + sprint(p->car, s)
       + (symbolp(cdr(p)) ? " . " : " ") + sprint(p->cdr, s) + ")";
     break;
-  case SYMBOL: return s + p->symbol;
+  case SYMBOL: return s + p->symbol->name;
   case STRING: return s + "\"" + p->string + "\"";
   case U8VECTOR: return s + "<u8vector>";
   case CONTINUATION: return s + "<continuation>";
@@ -130,8 +149,9 @@ std::string sprint(cons_t* p)
 
 int main(int argc, char** argv)
 {
-  TEST_STREQ(sprint(cons(symbol("one"), symbol("two"))), "(one . two)");
-  TEST_STREQ(sprint(cons(symbol("zero"), cons(symbol("one"), symbol("two")))), "(zero (one . two))");
+  TEST_STREQ(sprint(cons(symbol("one"), symbol("two"))), "(ONE . TWO)");
+  TEST_STREQ(sprint(cons(integer(1), integer(2))), "(1 . 2)");
+  TEST_STREQ(sprint(cons(symbol("zero"), cons(symbol("one"), symbol("two")))), "(ZERO (ONE . TWO))");
   TEST_STREQ(sprint(cons(integer(0), cons(integer(1), integer(2)))), "(0 1 . 2)");
   results();
   return 0;
