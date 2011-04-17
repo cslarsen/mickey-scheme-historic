@@ -12,7 +12,12 @@ enum type_t {
 typedef struct cons_t* (*lambda_t)(const struct cons_t*);
 
 struct environment_t {
+    struct environment_t *outer;
     std::map<std::string, struct symbol_t*> symbols;
+
+    environment_t() : outer(NULL)
+    {
+    }
 };
 
 struct continuation_t {
@@ -178,16 +183,20 @@ const char* get_token()
   }
 }
 
-void append(cons_t *h, cons_t *t)
+cons_t* append(cons_t *h, cons_t *t)
 {
   if ( h == NULL )
-    return;
+    return h;
+  else if ( !pairp(h) )
+    return NULL; // error; try running "(append 1 nil)", should throw error
   else if ( car(h) == NULL )
     h->car = t;
   else if ( cdr(h) == NULL )
     h->cdr = t;
   else
     append(cdr(h), t);
+
+  return h;
 }
 
 cons_t* parse_list(const char* s, cons_t *p)
@@ -251,6 +260,15 @@ int main(int argc, char** argv)
 
   // (cons (list 1 2) 3)
   TEST_STREQ(sprint(cons(cons(list(integer(1), integer(2)), integer(3)))), "((1 2) . 3)");
+
+  // (append (list 1 2) (list (list 4 5)))
+  TEST_STREQ(sprint(cons(append(list(integer(1), integer(2)), list(list(integer(4), integer(5)))))), "(1 2 (4 5))");
+
+  // (append (list 1 2) (list 3 4))
+  TEST_STREQ(sprint(cons(append(list(integer(1), integer(2)), list(integer(3), integer(4))))), "(1 2 3 4)");
+
+  // (append (list 1) 2)
+  TEST_STREQ(sprint(cons(append(list(integer(1)), integer(2)))), "(1 . 2)");
 
 //  TEST_STREQ(sprint(parse("(cons 1 2)")), "(1 . 2)");
 
