@@ -140,8 +140,8 @@ std::string sprint(cons_t* p, std::string& s)
     bool parens = pairp(car(p));
     return s
       + (parens? "(" : "") + sprint(p->car, s)
-      + ((atomp(car(p)) && atomp(cdr(p))) ? " ." : "")
       + (parens? ")" : "")
+      + (atomp(cdr(p)) ? " ." : "")
       + (cdr(p) != NULL ? " " : "")
       + sprint(p->cdr, s) ;
     } break;
@@ -194,11 +194,13 @@ cons_t* parse_list(const char* s, cons_t *p)
 {
   const char *token;
 
-  while ( (token = get_token()) != NULL && *token != ')' ) {
-    if ( !strcmp(token, "(") )
-      p = cons(p, parse_list(s, new cons_t()));
+  while ( (token = get_token()) != NULL ) {
+    if ( !strcmp(token, ")") )
+      break;
+    else if ( !strcmp(token, "(") )
+      p = list(p, parse_list(s, new cons_t()));
     else
-      p = cons(p, symbol(token, &globals));
+      p = list(p, symbol(token, &globals));
   }
 
   return p;
@@ -238,7 +240,19 @@ int main(int argc, char** argv)
   TEST_STREQ(sprint(cons(list(integer(1), list(integer(2), list(integer(3), integer(4)))))), "(1 (2 (3 4)))");
   TEST_STREQ(sprint(cons(list(list(integer(1), integer(2)), integer(3)))), "((1 2) 3)");
 
-  //TEST_STREQ(sprint(parse("(cons 1 2)")), "(1 . 2)");
+  // (cons 1 (cons 2 (list 3 4)))
+  TEST_STREQ(sprint(cons(cons(integer(1), cons(integer(2), list(integer(3), integer(4)))))), "(1 2 3 4)");
+
+  // (cons (list 1 2) (list 3 4))
+  TEST_STREQ(sprint(cons(cons(list(integer(1), integer(2)), list(integer(3), integer(4))))), "((1 2) 3 4)");
+
+  // (cons (cons 1 (cons 2 nil)) 3)
+  TEST_STREQ(sprint(cons(cons(cons(integer(1), cons(integer(2))), integer(3)))), "((1 2) . 3)");
+
+  // (cons (list 1 2) 3)
+  TEST_STREQ(sprint(cons(cons(list(integer(1), integer(2)), integer(3)))), "((1 2) . 3)");
+
+//  TEST_STREQ(sprint(parse("(cons 1 2)")), "(1 . 2)");
 
   results();
   return 0;
