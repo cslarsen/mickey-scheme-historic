@@ -71,20 +71,13 @@ cons_t* cons(cons_t* head, cons_t* tail = NULL)
   return p;
 }
 
-cons_t* list(cons_t* head, cons_t* tail)
+cons_t* list(cons_t* head, cons_t* tail = NULL)
 {
-  return cons(head, cons(tail, NULL));
+  //return cons(head, (tail != NULL ? cons(tail, NULL) : NULL));
+  return cons(head, (tail == NULL ? NULL : cons(tail, NULL)));
 }
 
-cons_t* atom(int n)
-{
-  cons_t *p = new cons_t();
-  p->type = INTEGER;
-  p->integer = n;
-  return p;
-}
-
-environment_t globals;
+environment_t globals; 
 
 cons_t* symbol(const char* s, environment_t *env = &globals)
 {
@@ -162,6 +155,56 @@ std::string sprint(cons_t* p)
   return sprint(p, s);
 }
 
+const char* get_token()
+{
+  static int n=0;
+  switch ( n++ ) {
+  default: return NULL;
+  case 0: return "(";
+  case 1: return "print";
+  case 2: return "(";
+  case 3: return "string-append";
+  case 4: return "'hello'";
+  case 5: return "'world'";
+  case 6: return "'!'";
+  case 7: return ")";
+  case 8: return "'-'";
+  case 9: return ")";
+  }
+}
+
+void append(cons_t *h, cons_t *t)
+{
+  if ( h == NULL )
+    return;
+  else if ( car(h) == NULL )
+    h->car = t;
+  else if ( cdr(h) == NULL )
+    h->cdr = t;
+  else
+    append(cdr(h), t);
+}
+
+cons_t* parse_list(const char* s, cons_t *p)
+{
+  const char *token;
+
+  cons_t *r = p;
+  while ( (token = get_token()) != NULL && *token != ')' ) {
+    if ( !strcmp(token, "(") )
+      p = cons(p, parse_list(s, new cons_t()));
+    else
+      p = cons(p, symbol(token, &globals));
+  }
+
+  return p;
+}
+
+cons_t* parse(const char *s)
+{
+  return cons(parse_list(s, new cons_t()), NULL);
+}
+
 int main(int argc, char** argv)
 {
   TEST_STREQ(sprint(cons(integer(1), NULL)), "1");
@@ -182,8 +225,17 @@ int main(int argc, char** argv)
   // (cons 1 (cons 2 (cons 3 nil)))
   TEST_STREQ(sprint(cons(cons(integer(1), cons(integer(2), cons(integer(3), NULL))))), "(1 2 3)");
 
-  // (cons (cons 0 (cons 1 nil)) nil)
-  TEST_STREQ(sprint(cons(cons(cons(integer(0), cons(integer(1), NULL)), NULL))), "((0 1))");
+  // (cons 0 (cons (cons 1 (cons 2 nil)) nil))
+  TEST_STREQ(sprint(cons(cons(integer(0), cons(cons(integer(1), cons(integer(2), NULL)), NULL)), NULL)), "(0 (1 2))");
+
+  TEST_STREQ(sprint(cons(list(integer(1)))), "(1)");
+  TEST_STREQ(sprint(cons(list(integer(1), integer(2)))), "(1 2)");
+  TEST_STREQ(sprint(cons(list(integer(1), list(integer(2), integer(3))))), "(1 (2 3))");
+  TEST_STREQ(sprint(cons(list(integer(1), list(integer(2), list(integer(3), integer(4)))))), "(1 (2 (3 4)))");
+  TEST_STREQ(sprint(cons(list(list(integer(1), integer(2)), integer(3)))), "((1 2) 3)");
+
+//  TEST_STREQ(sprint(cons(list(integer(0), list(integer(1), integer(2))))), "123");
+ // TEST_STREQ(sprint(parse("(cons 1 2)")), "(1 . 2)");
 
   results();
   return 0;
