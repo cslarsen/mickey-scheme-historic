@@ -217,11 +217,9 @@ cons_t* parse_list()
   const char *token;
 
   while ( (token = get_token()) != NULL ) {
-  printf("token '%s'\n", token);
-    if ( *token == '(' ) {
-      p = append(p, list(symbol(token+1, &globals)));
-      p = append(p, list(parse_list()));
-    } else if ( token[strlen(token)-1] != ')' )
+    if ( *token == '(' )
+      p = append(p, list(symbol(token+1, &globals), parse_list()));
+    else if ( *token != ')' )
       p = append(p, list(symbol(token, &globals)));
     else
       break;
