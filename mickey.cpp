@@ -348,7 +348,6 @@ int main(int argc, char** argv)
   printf("Type :QUIT to quit\n");
   printf("Type :TEST to run tests\n");
 
-  cons_t *p = NULL;
   int no=0;
   char buf[1024];
 
@@ -358,16 +357,14 @@ int main(int argc, char** argv)
     printf("%d> ", no++);
     fflush(stdout);
 
-    if ( fgets(buf, sizeof(buf)-1, stdin) == NULL )
-      break;
-
-    trimr(buf);
-
-    if ( toupper(buf) == ":QUIT" ) {
+    if ( fgets(buf, sizeof(buf)-1, stdin) == NULL ) {
       printf("\n");
       break;
     }
 
+    trimr(buf);
+
+    if ( toupper(buf) == ":QUIT" ) break;
     if ( toupper(buf) == ":TEST" ) test();
 
     printf("%s\n", sprint(parse(buf)).c_str());
