@@ -1,5 +1,5 @@
 CXX = llvm-g++
-CXXFLAGS = -Wall
+CXXFLAGS = -Wall -Iinclude
 TARGETS = parser.o print.o primops.o tokenizer.o tests.o util.o repl.o test.o mickey
 
 all: $(TARGETS)
