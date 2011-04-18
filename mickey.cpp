@@ -119,19 +119,55 @@ cons_t* cdr(cons_t* p)
   return ( p != NULL && p->type == PAIR ) ? p->cdr : NULL;
 }
 
+cons_t* caar(cons_t* p)
+{
+  return car(car(p));
+}
+
+cons_t* cadr(cons_t* p)
+{
+  return car(cdr(p));
+}
+
+cons_t* cddr(cons_t* p)
+{
+  return cdr(cdr(p));
+}
+
+cons_t* cdar(cons_t* p)
+{
+  return cdr(car(p));
+}
+
+type_t type_of(cons_t* p)
+{
+  return p == NULL ? NIL : p->type;
+}
+
 bool symbolp(cons_t* p)
 {
-  return p != NULL && p->type == SYMBOL;
+  return type_of(p) == SYMBOL;
 }
 
 bool atomp(cons_t* p)
 {
-  return p != NULL && (p->type == SYMBOL || p->type == INTEGER || p->type == STRING);
+  type_t t = type_of(p);
+  return t==SYMBOL || t==INTEGER || t==STRING;
+}
+
+bool integerp(cons_t* p)
+{
+  return type_of(p) == INTEGER;
+}
+
+bool nullp(cons_t* p)
+{
+  return type_of(p) == NIL;
 }
 
 bool pairp(cons_t* p)
 {
-  return p != NULL && p->type == PAIR;
+  return type_of(p) == PAIR;
 }
 
 std::string sprint(cons_t* p, std::string& s)
@@ -144,11 +180,16 @@ std::string sprint(cons_t* p, std::string& s)
   case PAIR: {
     bool parens = pairp(car(p));
     return s
-      + (parens? "(" : "") + sprint(p->car, s)
+      + (parens? "(" : "")
+      + sprint(p->car, s)
       + (parens? ")" : "")
       + (atomp(cdr(p)) ? " ." : "")
-      + (cdr(p) != NULL ? " " : "")
-      + sprint(p->cdr, s) ;
+      + ( (atomp(car(p)) && !nullp(cdr(p)) && !pairp(cdr(p))) || // <= THIS
+          (!nullp(cdr(p)) && !pairp(cadr(p))) ||                 // <=  IS
+          (atomp(p) && pairp(cdr(p))) ||                         // <= VERY
+          (integerp(car(p)) && pairp(cdr(p)))                    // <= MESSY! (and wrong)
+            ? " " : "")
+      + sprint(p->cdr, s);
     } break;
   case SYMBOL: return s + p->symbol->name;
   case STRING: return s + "\"" + p->string + "\"";
@@ -198,8 +239,7 @@ cons_t* append(cons_t *h, cons_t *t)
 {
   if ( h == NULL )
     return t;
-
-  if ( !pairp(h) )
+  else if ( !pairp(h) )
     return NULL; // error; try running "(append 1 nil)", should throw error
   else if ( car(h) == NULL )
     h->car = t;
@@ -291,6 +331,14 @@ int main(int argc, char** argv)
   TEST_STREQ(sprint(cons(append(NULL, list(integer(1), integer(2))))), "(1 2)");
 
   TEST_STREQ(sprint(parse("(cons 1 2)")), "(CONS 1 2)");
+  TEST_STREQ(sprint(parse("(+ (* 1 2) 3)")), "(+ (* 1 2) 3)");
+  TEST_STREQ(sprint(parse("(1)")), "(1)");
+  TEST_STREQ(sprint(parse("((1))")), "((1))");
+  TEST_STREQ(sprint(parse("((1 2))")), "((1 2))");
+  TEST_STREQ(sprint(parse("((1 2) 3)")), "((1 2) 3)");
+  TEST_STREQ(sprint(parse("((a b) c)")), "((A B) C)");
+  TEST_STREQ(sprint(parse("(a (b c) d)")), "(A (B C) D)");
+  TEST_STREQ(sprint(parse("a")), "");
 
   results();
   return 0;
