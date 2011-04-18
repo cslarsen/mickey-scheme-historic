@@ -165,22 +165,33 @@ std::string sprint(cons_t* p)
   return sprint(p, s);
 }
 
+const char* source = NULL;
 const char* get_token()
 {
-  static int n=0;
-  switch ( n++ ) {
-  default: return NULL;
-  case 0: return "(";
-  case 1: return "print";
-  case 2: return "(";
-  case 3: return "string-append";
-  case 4: return "'hello'";
-  case 5: return "'world'";
-  case 6: return "'!'";
-  case 7: return ")";
-  case 8: return "'-'";
-  case 9: return ")";
+  static char token[256];
+  token[0] = '\0';
+
+  // skip whitespace
+  while ( isspace(*source) )
+    ++source;
+
+  // emit tokens "(" or ")"
+  if ( *source == '(' || *source == ')' ) {
+    token[0] = *source++;
+    token[1] = '\0';
+    return token;
   }
+
+  // emit other token
+  for ( char *t = token;
+        *source && *source != ')' && !isspace(*source);
+        *t = '\0' )
+  {
+    *t++ = *source++;
+  }
+
+  // emit NULL when finished
+  return *token != '\0' ? token : NULL;
 }
 
 cons_t* append(cons_t *h, cons_t *t)
@@ -200,15 +211,17 @@ cons_t* append(cons_t *h, cons_t *t)
   return h;
 }
 
-cons_t* parse_list(const char* s)
+cons_t* parse_list()
 {
   cons_t *p = NULL;
   const char *token;
 
   while ( (token = get_token()) != NULL ) {
-    if ( !strcmp(token, "(") )
-      p = append(p, list(parse_list(s)));
-    else if ( strcmp(token, ")") != 0 )
+  printf("token '%s'\n", token);
+    if ( *token == '(' ) {
+      p = append(p, list(symbol(token+1, &globals)));
+      p = append(p, list(parse_list()));
+    } else if ( token[strlen(token)-1] != ')' )
       p = append(p, list(symbol(token, &globals)));
     else
       break;
@@ -219,7 +232,8 @@ cons_t* parse_list(const char* s)
 
 cons_t* parse(const char *s)
 {
-  return cons(parse_list(s), NULL);
+  source = s;
+  return parse_list();
 }
 
 int main(int argc, char** argv)
@@ -278,7 +292,7 @@ int main(int argc, char** argv)
   // (append nil (list 1 2))
   TEST_STREQ(sprint(cons(append(NULL, list(integer(1), integer(2))))), "(1 2)");
 
-  TEST_STREQ(sprint(parse("(cons 1 2)")), "(1 . 2)");
+  TEST_STREQ(sprint(parse("(cons 1 2)")), "(CONS 1 2)");
 
   results();
   return 0;
