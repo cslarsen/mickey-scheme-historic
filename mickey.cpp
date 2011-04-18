@@ -362,7 +362,12 @@ int main(int argc, char** argv)
       break;
 
     trimr(buf);
-    if ( toupper(buf) == ":QUIT" ) break;
+
+    if ( toupper(buf) == ":QUIT" ) {
+      printf("\n");
+      break;
+    }
+
     if ( toupper(buf) == ":TEST" ) test();
 
     printf("%s\n", sprint(parse(buf)).c_str());
