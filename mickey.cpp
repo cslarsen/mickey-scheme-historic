@@ -274,7 +274,7 @@ cons_t* parse(const char *program)
   return cdr(parse_list());
 }
 
-int main(int argc, char** argv)
+void test()
 {
   TEST_STREQ(sprint(cons(integer(1), NULL)), "1");
   TEST_STREQ(sprint(cons(cons(integer(1)), NULL)), "(1)");
@@ -341,5 +341,32 @@ int main(int argc, char** argv)
   TEST_STREQ(sprint(parse("a")), "");
 
   results();
+}
+
+int main(int argc, char** argv)
+{
+  printf("Type :QUIT to quit\n");
+  printf("Type :TEST to run tests\n");
+
+  cons_t *p = NULL;
+  int no=0;
+  char buf[1024];
+
+  for(;;) {
+    buf[0] = '\0';
+
+    printf("%d> ", no++);
+    fflush(stdout);
+
+    if ( fgets(buf, sizeof(buf)-1, stdin) == NULL )
+      break;
+
+    trimr(buf);
+    if ( toupper(buf) == ":QUIT" ) break;
+    if ( toupper(buf) == ":TEST" ) test();
+
+    printf("%s\n", sprint(parse(buf)).c_str());
+  }
+
   return 0;
 }
