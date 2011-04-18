@@ -1,18 +1,10 @@
+#ifndef INC_MICKEY_UTIL_H
+#define INC_MICKEY_UTIL_H
+
 #include <string>
-#include <ctype.h> // toupper(char)
 
-std::string toupper(const char* s)
-{
-  std::string r;
-  while ( *s ) r += toupper(*s++);
-  return r;
-}
+std::string toupper(const char* s);
+char* trimr(char* s);
+std::string to_s(int n);
 
-char* trimr(char* s)
-{
-  size_t l = strlen(s);
-  while ( l!=0 && (s[l-1]=='\n' || s[l-1]=='\r' || s[l-1]==' ' || s[l-1] == '\t' ) ) {
-    s[--l] = '\0';
-  }
-  return s;
-}
+#endif

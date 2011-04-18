@@ -1,10 +1,10 @@
 CXX = llvm-g++
 CXXFLAGS = -Wall
-TARGETS = test.o mickey
+TARGETS = parser.o print.o primops.o tokenizer.o tests.o util.o repl.o test.o mickey
 
 all: $(TARGETS)
 
-mickey: test.o
+mickey: parser.o print.o primops.o tokenizer.o tests.o util.o repl.o test.o
 
 check: all
 	./mickey test.scm
