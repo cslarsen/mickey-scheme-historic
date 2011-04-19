@@ -9,7 +9,7 @@ enum type_t {
   NIL, INTEGER, CLOSURE, PAIR, SYMBOL, STRING, U8VECTOR, CONTINUATION
 };
 
-typedef struct cons_t* (*lambda_t)(const struct cons_t*);
+typedef struct cons_t* (*lambda_t)(struct cons_t*);
 
 struct environment_t {
     struct environment_t *outer;
