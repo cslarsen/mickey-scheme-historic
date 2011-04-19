@@ -33,10 +33,15 @@ int repl(cons_t* (*eval)(cons_t* p))
     if ( toupper(buf) == ":QUIT" ) break;
     if ( toupper(buf) == ":TEST" ) run_tests();
 
-    if ( eval == NULL )
-      printf("%s\n", sprint(parse(buf)).c_str());
-    else
-      printf("%s\n", sprint(eval(parse(buf)->root)).c_str());
+    try {
+      if ( eval == NULL )
+        printf("%s\n", sprint(parse(buf)).c_str());
+      else
+        printf("%s\n", sprint(eval(parse(buf)->root)).c_str());
+    }
+    catch(const std::exception& e) {
+      fprintf(stderr, "%s\n", e.what());
+    }
   }
 
   return 0;

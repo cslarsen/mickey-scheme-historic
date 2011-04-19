@@ -2,6 +2,7 @@
 #include "tests.h"
 #include "print.h"
 #include "parser.h"
+#include "types.h"
 
 environment_t globals;
 
@@ -12,6 +13,20 @@ cons_t* symbol(const char* s)
 
 void run_tests()
 {
+  TEST_STREQ(format("a%sc%dd", "bb", 5), "abbc5d");
+
+  TEST_TRUE(isatom("a"));
+  TEST_TRUE(isatom("ab"));
+  TEST_TRUE(isatom("ab12"));
+  TEST_TRUE(isatom("a1"));
+  TEST_FALSE(isatom("1"));
+  TEST_FALSE(isatom("1a"));
+  TEST_FALSE(isatom("12b"));
+  TEST_FALSE(isatom("-"));
+  TEST_FALSE(isatom("a-"));
+  TEST_FALSE(isatom("a1-c"));
+  TEST_FALSE(isatom("a1c-"));
+
   TEST_STREQ(sprint(cons(integer(1), NULL)), "1");
   TEST_STREQ(sprint(cons(cons(integer(1)), NULL)), "(1)");
   TEST_STREQ(sprint(cons(cons(integer(1), integer(1)), NULL)), "(1 . 1)");
@@ -74,6 +89,7 @@ void run_tests()
   TEST_STREQ(sprint(parse("((1 2) 3)")), "((1 2) 3)");
   TEST_STREQ(sprint(parse("((a b) c)")), "((A B) C)");
   TEST_STREQ(sprint(parse("(a (b c) d)")), "(A (B C) D)");
+  TEST_STREQ(sprint(parse("(display (string-append \"Hello\" \", \" \"world!\"))")), "(DISPLAY (STRING-APPEND \"Hello\" \", \" \"world!\"))");
   TEST_STREQ(sprint(parse("a")), "");
 
   results();

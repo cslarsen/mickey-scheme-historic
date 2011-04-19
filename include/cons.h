@@ -32,7 +32,7 @@ struct u8vector_t {
 };
 
 class symbol_t {
-  symbol_t(const char* s) : name(toupper(s))
+  symbol_t(const char* s) : name(s)
   {
   }
 

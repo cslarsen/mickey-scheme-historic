@@ -1,4 +1,5 @@
 #include "primops.h"
+#include "util.h"
 
 cons_t* cons(cons_t* head, cons_t* tail)
 {
@@ -30,6 +31,14 @@ cons_t* integer(int n)
   cons_t *p = new cons_t();
   p->type = INTEGER;
   p->integer = n;
+  return p;
+}
+
+cons_t* string(const char* s)
+{
+  cons_t *p = new cons_t();
+  p->type = STRING;
+  p->string = copy_str(s);
   return p;
 }
 

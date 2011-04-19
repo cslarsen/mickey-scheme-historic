@@ -1,1 +1,3 @@
-(print (string-append "hello " ("world") "lala") "!")
+(display (string-append "Hello"
+                        ", "
+                        "world!\n"))

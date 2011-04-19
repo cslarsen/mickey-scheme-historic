@@ -8,4 +8,5 @@ tests.o
 tokenizer.o
 util.o
 test.o
+types.o
 mickey

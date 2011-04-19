@@ -3,8 +3,15 @@
 
 #include <string>
 
-std::string toupper(const char* s);
-char* trimr(char* s);
 std::string to_s(int n);
+std::string format(const char *fmt, ...);
+std::string toupper(const char* s);
+
+char* copy_str(const char* s);
+char* trimr(char* s);
+const char* skip_space(const char* s);
+
+bool empty(const char*);
+bool char_in(char ch, const char* s);
 
 #endif

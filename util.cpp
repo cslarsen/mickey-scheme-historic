@@ -1,4 +1,5 @@
 #include <ctype.h> // toupper
+#include <stdarg.h>
 #include "util.h"
 
 std::string toupper(const char* s)
@@ -11,9 +12,10 @@ std::string toupper(const char* s)
 char* trimr(char* s)
 {
   size_t l = strlen(s);
-  while ( l!=0 && (s[l-1]=='\n' || s[l-1]=='\r' || s[l-1]==' ' || s[l-1] == '\t' ) ) {
+
+  while ( l!=0 && isspace(s[l-1]) )
     s[--l] = '\0';
-  }
+
   return s;
 }
 
@@ -22,4 +24,39 @@ std::string to_s(int n)
   char buf[32];
   sprintf(buf, "%d", n);
   return std::string(buf);
+}
+
+std::string format(const char* fmt, ...)
+{
+  char buf[1024] = {'\0'};
+  va_list list;
+  va_start(list, fmt);
+  vsprintf(buf, fmt, list);
+  va_end(list);
+  return std::string(buf);
+}
+
+bool empty(const char* s)
+{
+  return (s==NULL ? true : (*s=='\0' ? true : false));
+}
+
+const char* skip_space(const char* s)
+{
+  while ( isspace(*s) ) ++s;
+  return s;
+}
+
+bool char_in(char ch, const char* s)
+{
+  while ( *s )
+    if ( ch == *s++ )
+      return true;
+
+  return false;
+}
+
+char* copy_str(const char* s)
+{
+  return strcpy((char*)malloc(strlen(s)+1), s);
 }
