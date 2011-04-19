@@ -8,3 +8,4 @@ Distributed under the modified BSD license.
 TO BUILD
 
   Run `make -j check` to perform a simple check, then `./mickey` to play with a REPL.
+
