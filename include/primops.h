@@ -9,7 +9,7 @@ type_t type_of(cons_t* p);
 cons_t* cons(cons_t* head, cons_t* tail = NULL);
 cons_t* list(cons_t* head, cons_t* tail = NULL);
 cons_t* append(cons_t *h, cons_t *t);
-cons_t* symbol(const char* s, environment_t *env = NULL);
+cons_t* symbol(const char* s, environment_t *env);
 cons_t* integer(int n);
 
 cons_t* car(cons_t* p);

@@ -36,3 +36,7 @@ std::string sprint(cons_t* p)
   return sprint(p, s);
 }
 
+std::string sprint(program_t* p)
+{
+  return sprint(p->root);
+}

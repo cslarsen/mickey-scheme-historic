@@ -1,7 +1,5 @@
 #include "primops.h"
 
-extern environment_t globals;
-
 cons_t* cons(cons_t* head, cons_t* tail)
 {
   cons_t *p = new cons_t();
@@ -21,9 +19,6 @@ cons_t* list(cons_t* head, cons_t* tail)
 
 cons_t* symbol(const char* s, environment_t *env)
 {
-  if ( env == NULL )
-    env = &globals;
-
   cons_t *p = new cons_t();
   p->type = SYMBOL;
   p->symbol = symbol_t::create_symbol(s, env);

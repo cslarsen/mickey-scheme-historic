@@ -3,6 +3,13 @@
 #include "print.h"
 #include "parser.h"
 
+environment_t globals;
+
+cons_t* symbol(const char* s)
+{
+  return symbol(s, &globals);
+}
+
 void run_tests()
 {
   TEST_STREQ(sprint(cons(integer(1), NULL)), "1");

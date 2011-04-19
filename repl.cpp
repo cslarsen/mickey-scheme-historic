@@ -36,7 +36,7 @@ int repl(cons_t* (*eval)(cons_t* p))
     if ( eval == NULL )
       printf("%s\n", sprint(parse(buf)).c_str());
     else
-      printf("%s\n", sprint(eval(parse(buf))).c_str());
+      printf("%s\n", sprint(eval(parse(buf)->root)).c_str());
   }
 
   return 0;
