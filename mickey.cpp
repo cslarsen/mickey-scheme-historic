@@ -19,7 +19,7 @@ void print_program(FILE *f)
 int main(int argc, char** argv)
 {
   if ( argc == 1 )
-    return repl();
+    return repl(eval);
 
   for ( int n=1; n<argc; ++n ) {
     if ( argv[n][0] != '-' )
