@@ -1,2 +1,11 @@
+eval.o
+file_io.o
+parser.o
+primops.o
+print.o
+repl.o
+tests.o
+tokenizer.o
+util.o
 test.o
 mickey
