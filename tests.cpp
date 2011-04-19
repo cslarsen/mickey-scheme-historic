@@ -94,8 +94,8 @@ void run_tests()
   TEST_STREQ(sprint(parse("(display \"Hello\\nworld!\")))")), "(DISPLAY \"Hello\\nworld!\")");
   TEST_STREQ(sprint(parse("a")), "");
 
-  TEST_STREQ(print(eval(parse("(display 123)"))), "123");
-  TEST_STREQ(print(eval(parse("(display \"hello\")"))), "hello");
+  TEST_STREQ(print(eval(parse("(display 123)"))), ""); // prints to console
+  TEST_STREQ(print(eval(parse("(display \"hello\")"))), ""); // prints to console
   TEST_STREQ(print(eval(parse("(+ 0)"))), "0");
   TEST_STREQ(print(eval(parse("(+ 1)"))), "1");
   TEST_STREQ(print(eval(parse("(+ 0 1)"))), "1");

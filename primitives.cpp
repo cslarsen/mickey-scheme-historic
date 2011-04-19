@@ -20,20 +20,37 @@ std::string to_s(enum type_t type)
   }
 }
 
-cons_t* defun_print(cons_t *arg)
+std::string to_s(cons_t *p)
 {
-  for ( cons_t *p = cdr(arg); p != NULL; p = cdr(p) ) {
+  switch ( type_of(p) ) {
+  default: return "<?>";
+  case NIL: return "<nil>";
+  case INTEGER: return to_s(p->integer);
+  case CLOSURE: return format("<closure %p>", p->closure);
+  case PAIR: return to_s(car(p)) + " . " + to_s(cdr(p));
+  case SYMBOL: return p->symbol->name;
+  case STRING: return p->string;
+  case U8VECTOR: return format("<u8vector %p>", p->u8vector);
+  case CONTINUATION: return format("<continuation %p>", p->continuation);
+  }
+}
+
+cons_t* defun_print(cons_t *p)
+{
+  for ( ; p != NULL; p = cdr(p) ) {
     if ( stringp(p) )
       printf("%s", p->string);
     else if ( integerp(p) )
       printf("%d", p->integer);
     else if ( pairp(p) ) {
-      defun_print(car(p));
-      defun_print(cdr(p));
-    }
+      cons_t *res = eval(car(p));
+      if ( stringp(res) )
+        printf("%s", res->string);
+    } else 
+        printf("%s", to_s(p).c_str());
   }
 
-  return arg;
+  return string("");
 }
 
 cons_t* defun_strcat(cons_t *arg)
@@ -48,8 +65,7 @@ cons_t* defun_strcat(cons_t *arg)
       s += format("%d", arg->integer);
 
     if ( pairp(arg) ) {
-      cons_t *res = defun_print(eval(car(arg)));
-
+      cons_t *res = eval(car(arg));
       if ( stringp(res) )
         s += res->string; // else, throw (TODO)
     }
@@ -98,8 +114,8 @@ cons_t* defun_mul(cons_t *arg)
       product *= arg->integer;
 
     if ( arg->type == PAIR ) {
-      cons_t *res = defun_print(eval(car(arg)));
-      if ( res->type == INTEGER )
+      cons_t *res = eval(car(arg));
+      if ( integerp(res) )
         product *= res->integer; // else, throw (TODO)
     }
     
