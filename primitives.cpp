@@ -24,15 +24,16 @@ cons_t* defun_strcat(cons_t *arg)
   std::string s;
 
   while ( arg != NULL ) {
-    if ( arg->type == STRING )
+    if ( stringp(arg) )
       s += format("%s", arg->string);
 
-    if ( arg->type == INTEGER )
+    if ( integerp(arg) )
       s += format("%d", arg->integer);
 
-    if ( arg->type == PAIR ) {
+    if ( pairp(arg) ) {
       cons_t *res = defun_print(eval(car(arg)));
-      if ( res->type == STRING )
+
+      if ( stringp(res) )
         s += res->string; // else, throw (TODO)
     }
     
@@ -42,24 +43,28 @@ cons_t* defun_strcat(cons_t *arg)
   return string(s.c_str());
 }
 
-cons_t* defun_add(cons_t *arg)
+cons_t* defun_add(cons_t *p)
 {
+  /*
+   * Integers have an IDENTITY, so we can do this,
+   * but a more correct approach would be to take
+   * the value of the FIRST number we find and
+   * return that.
+   */
   int sum = 0;
 
-  while ( arg != NULL ) {
-     if ( arg->type == STRING )
+  for ( ; p != NULL; p = cdr(p) ) {
+     if ( stringp(p) )
       continue; // TODO: throw error, or something
 
-    if ( arg->type == INTEGER )
-      sum += arg->integer;
+    if ( integerp(p) )
+      sum += p->integer;
 
-    if ( arg->type == PAIR ) {
-      cons_t *res = defun_print(eval(car(arg)));
-      if ( res->type == INTEGER )
+    if ( pairp(p) ) {
+      cons_t *res = eval(car(p));
+      if ( integerp(res) )
         sum += res->integer; // or else, thow (TOWO)
     }
-    
-    arg = cdr(arg);
   }
 
   return integer(sum);
