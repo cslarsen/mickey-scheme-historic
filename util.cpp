@@ -36,9 +36,9 @@ std::string format(const char* fmt, ...)
   return std::string(buf);
 }
 
-bool empty(const char* s)
+int empty(const char* s)
 {
-  return (s==NULL ? true : (*s=='\0' ? true : false));
+  return s==NULL || *s=='\0';
 }
 
 const char* skip_space(const char* s)

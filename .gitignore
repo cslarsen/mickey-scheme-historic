@@ -12,3 +12,4 @@ types.o
 mickey
 mickey.dSYM
 primitives.o
+apply.o

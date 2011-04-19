@@ -3,6 +3,7 @@
 #include "print.h"
 #include "parser.h"
 #include "types.h"
+#include "eval.h"
 
 environment_t globals;
 
@@ -92,6 +93,20 @@ void run_tests()
   TEST_STREQ(sprint(parse("(display (string-append \"Hello\" \", \" \"world!\"))")), "(DISPLAY (STRING-APPEND \"Hello\" \", \" \"world!\"))");
   TEST_STREQ(sprint(parse("(display \"Hello\\nworld!\")))")), "(DISPLAY \"Hello\\nworld!\")");
   TEST_STREQ(sprint(parse("a")), "");
+
+  TEST_STREQ(print(eval(parse("(display 123)"))), "123");
+  TEST_STREQ(print(eval(parse("(display \"hello\")"))), "hello");
+  TEST_STREQ(print(eval(parse("(+ 0)"))), "0");
+  TEST_STREQ(print(eval(parse("(+ 1)"))), "1");
+  TEST_STREQ(print(eval(parse("(+ 0 1)"))), "1");
+  TEST_STREQ(print(eval(parse("(+ 1 2)"))), "3");
+  TEST_STREQ(print(eval(parse("(+ 1 2 3)"))), "6");
+  TEST_STREQ(print(eval(parse("(+ -1)"))), "-1"); 
+  TEST_STREQ(print(eval(parse("(+ 5 -2 3)"))), "6"); 
+  TEST_STREQ(print(eval(parse("(+ -1 -3 -7)"))), "-11"); 
+  TEST_STREQ(print(eval(parse("(+ (* 5 5) 4)"))), "29"); 
+  TEST_STREQ(print(eval(parse("(+ (* 5 5) 4 12)"))), "41"); 
+  TEST_STREQ(print(eval(parse("(string-append \"one\" \"two\" \"three\")"))), "onetwothree");
 
   results();
 }

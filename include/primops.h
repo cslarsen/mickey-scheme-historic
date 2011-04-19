@@ -26,5 +26,6 @@ bool atomp(cons_t*);
 bool integerp(cons_t*);
 bool nullp(cons_t*);
 bool pairp(cons_t*);
+bool stringp(cons_t*);
 
 #endif

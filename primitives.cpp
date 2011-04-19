@@ -1,29 +1,22 @@
 #include "eval.h"
 #include "primops.h"
 #include "primitives.h"
+#include "print.h"
 
 cons_t* defun_print(cons_t *arg)
 {
-  std::string s;
-
-  while ( arg != NULL ) {
-    if ( arg->type == STRING ) {
-      s += arg->string;
-      printf("%s", arg->string);
+  for ( cons_t *p = cdr(arg); p != NULL; p = cdr(p) ) {
+    if ( stringp(p) )
+      printf("%s", p->string);
+    else if ( integerp(p) )
+      printf("%d", p->integer);
+    else if ( pairp(p) ) {
+      defun_print(car(p));
+      defun_print(cdr(p));
     }
-
-    if ( arg->type == INTEGER ) {
-      s += format("%d", arg->integer);
-      printf("%d", arg->integer);
-    }
-
-    if ( arg->type == PAIR )
-      s += defun_print(eval(cdr(arg)))->string;
-
-    arg = cdr(arg);
   }
 
-  return string(s.c_str());
+  return arg;
 }
 
 cons_t* defun_strcat(cons_t *arg)

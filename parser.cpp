@@ -32,7 +32,7 @@ char* decode_literal_string(const char* s)
 cons_t* type_convert(const char* token, environment_t* env)
 {
   if ( isinteger(token) )
-    return integer(atoi(token));
+    return integer(to_i(token));
 
   if ( isstring(token) )
     return string(decode_literal_string(token));

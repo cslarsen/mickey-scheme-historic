@@ -11,7 +11,7 @@ char* copy_str(const char* s);
 char* trimr(char* s);
 const char* skip_space(const char* s);
 
-bool empty(const char*);
+int empty(const char*);
 bool char_in(char ch, const char* s);
 
 #endif

@@ -3,6 +3,7 @@
 #include "util.h"
 #include "primops.h"
 #include "primitives.h"
+#include "apply.h"
 
 cons_t* eval_print(cons_t* p, int indent)
 {
@@ -59,26 +60,25 @@ lambda_t lookup_lambda(symbol_t *s)
 
 cons_t* eval(cons_t* p)
 {
-  if ( p == NULL )
-    return p;
+  if ( pairp(p) ) {
+    /*
+     * TODO: Could I do `apply(fun, eval(cdar(p)))` below
+     *       instead of calling eval() inside apply?
+     */
+    if ( symbolp(car(p)) )
+      return apply(lookup_lambda(car(p)->symbol), cdr(p)); // apply calls eval()
 
-  if ( p->type == PAIR ) {
-    eval(car(p));
-    eval(cdr(p));
-  }
-
-  if ( p->type == SYMBOL ) {
-    // if we just came from a pair, this SYMBOL is a function,
-    // otherwise it's a lambda/function, so exec (TODO)
-    lambda_t f = lookup_lambda(p->symbol); // TODO: use environment
-
-// TODO: Throw
-//    if ( f == NULL )
-//     throw std::runtime_error(format("Unknown definition '%s'", p->symbol->name.c_str()));
-
-    if ( f != NULL )
-      return f(cdr(p));
+    cons_t *r = new cons_t();
+    r->type = PAIR;
+    r->car = eval(car(p));
+    r->cdr = eval(cdr(p));
+    return r;
   }
 
   return p;
+}
+
+cons_t* eval(program_t *p)
+{
+  return p? eval(p->root) : NULL;
 }

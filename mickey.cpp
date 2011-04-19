@@ -8,7 +8,7 @@ void print_program(FILE *f)
 {
   try {
     program_t *p = parse(slurp(f).c_str());
-    printf("%s\n", sprint(eval(p->root)).c_str());
+    printf("%s\n", print(eval(p->root)).c_str());
   }
   catch ( const std::exception& e ) {
     fprintf(stderr, "%s\n", e.what());

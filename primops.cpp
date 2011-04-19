@@ -93,6 +93,11 @@ bool integerp(cons_t* p)
   return type_of(p) == INTEGER;
 }
 
+bool stringp(cons_t* p)
+{
+  return type_of(p) == STRING;
+}
+
 bool nullp(cons_t* p)
 {
   return type_of(p) == NIL;

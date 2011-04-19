@@ -1,12 +1,9 @@
+#include <stdexcept>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
 #include "types.h"
-
-inline static int empty(const char* s)
-{
-  return s==NULL || *s=='\0';
-}
+#include "util.h"
 
 static int count(const char *s, int (*check)(int))
 {
@@ -35,8 +32,8 @@ static int isquote(int s)
 
 bool isinteger(const char* s)
 {
-  // TODO: Correct code, should be in form "[+-]?[0-9]+"
-  return !empty(s) && all(s, isdigit);
+  int sign = (s[0]=='-' || s[0]=='+');
+  return !empty(s) && all(s+sign, isdigit);
 }
 
 bool isstring(const char* s)
@@ -50,4 +47,15 @@ bool isstring(const char* s)
 bool isatom(const char* s)
 {
   return isalpha(s[0]) && (empty(s+1) ? true : all(s+1, isalnum));
+}
+
+int to_i(const char* s)
+{
+  if ( s == NULL )
+    throw std::runtime_error("Cannot convert NULL to INTEGER");
+
+  int has_sign = (char_in(*s, "+-"));
+  int sign = (s[0]=='-'? -1 : 1);
+
+  return sign * atoi(has_sign + s);
 }
