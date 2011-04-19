@@ -11,3 +11,4 @@ test.o
 types.o
 mickey
 mickey.dSYM
+primitives.o
