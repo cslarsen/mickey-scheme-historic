@@ -90,6 +90,7 @@ void run_tests()
   TEST_STREQ(sprint(parse("((a b) c)")), "((A B) C)");
   TEST_STREQ(sprint(parse("(a (b c) d)")), "(A (B C) D)");
   TEST_STREQ(sprint(parse("(display (string-append \"Hello\" \", \" \"world!\"))")), "(DISPLAY (STRING-APPEND \"Hello\" \", \" \"world!\"))");
+  TEST_STREQ(sprint(parse("(display \"Hello\\nworld!\")))")), "(DISPLAY \"Hello\\nworld!\")");
   TEST_STREQ(sprint(parse("a")), "");
 
   results();
