@@ -6,7 +6,7 @@
 
 int main(int argc, char** argv)
 {
-  if ( argc == 0 )
+  if ( argc == 1 )
     return repl();
 
   for ( int n=1; n<argc; ++n ) {
