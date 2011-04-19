@@ -52,7 +52,14 @@ cons_t* parse_list(environment_t *env)
   while ( (token = get_token()) != NULL ) {
     if ( *token == ')' )
       break;
-    else if ( *token == '(' ) {
+
+    if ( *token == ';' ) {
+      // comment; scan to end of line
+      while ( *token != '\n' ) ++token;
+      continue;
+    }
+
+    if ( *token == '(' ) {
       cons_t *obj = type_convert(token+1, env);
       p = append(p, list(obj, parse_list(env)));
     } else {
