@@ -10,3 +10,4 @@ util.o
 test.o
 types.o
 mickey
+mickey.dSYM
