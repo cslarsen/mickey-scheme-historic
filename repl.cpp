@@ -27,6 +27,9 @@ int repl(cons_t* (*eval)(cons_t* p))
 
     trimr(buf);
 
+    if ( buf[0] == '\0' )
+      continue;
+
     if ( toupper(buf) == ":QUIT" ) break;
     if ( toupper(buf) == ":TEST" ) run_tests();
 
