@@ -36,8 +36,11 @@ int repl(cons_t* (*eval)(cons_t* p))
     try {
       if ( eval == NULL )
         printf("%s\n", sprint(parse(buf)).c_str());
-      else
-        printf("%s\n", print(eval(parse(buf)->root)).c_str());
+      else {
+        std::string s = print(eval(parse(buf)->root));
+        if ( !s.empty() )
+          printf("%s\n", s.c_str());
+      }
     }
     catch(const std::exception& e) {
       fprintf(stderr, "%s\n", e.what());
