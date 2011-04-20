@@ -79,6 +79,7 @@ char* decode_literal_string(const char* s)
     case 'n': *t = '\n'; break;
     case 'r': *t = '\r'; break;
     case 't': *t = '\t'; break;
+    case '"': *t = '\"'; break;
     }
 
     strcpy(t+1, t+2); // shift left

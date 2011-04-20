@@ -38,11 +38,12 @@ void load_default_defs(environment_t *e)
 
 cons_t* defun_print(cons_t *p)
 {
-  for ( ; !nullp(p); p = cdr(p) )
+  for ( ; !nullp(p); p = cdr(p) ) {
     if ( !pairp(p) )
       printf("%s", to_s(p).c_str());
     else
       defun_print(eval(car(p)));
+  }
 
   return nil();
 }

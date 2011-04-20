@@ -2,8 +2,3 @@
 0> (display "error )
 "ERROR 1> 
 2> 
-
--- String parsing buggy, try quoted strings:
-  repl> (display "hey \"ha\" ho")
-but from a file does not work too well
-

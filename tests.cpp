@@ -23,6 +23,7 @@ void run_tests()
   load_default_defs(&globals);
 
   TEST_STREQ(format("a%sc%dd", "bb", 5), "abbc5d");
+  TEST_STREQ(decode_literal_string("1 \\\"quo\\\" 2"), "1 \"quo\" 2");
 
   TEST_TRUE(isatom("a"));
   TEST_TRUE(isatom("ab"));
