@@ -1,3 +1,5 @@
-(display (string-append "Hello" ", "
+; Hello world
+(display (string-append "Hello" ", " ; comment at end of line
                         "world!\n"
-                        "\nFrom Mickey non-scheme!\n"))
+  ; will not be printed "<secret>"
+                        "\nFrom Mickey; Non-scheme language!\n\n"))
