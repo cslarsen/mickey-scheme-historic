@@ -64,12 +64,15 @@ cons_t* parse_list(environment_t *env)
   return p;
 }
 
-program_t* parse(const char *program)
+program_t* parse(const char *program, environment_t *env)
 {
   set_source(program);
 
+  if ( env == NULL )
+    env = new environment_t();
+
   program_t *p = new program_t();
-  p->globals = new environment_t();
+  p->globals = env;
   p->root = parse_list(p->globals);
   return p;
 }

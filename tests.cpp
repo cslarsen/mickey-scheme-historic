@@ -4,6 +4,7 @@
 #include "parser.h"
 #include "types.h"
 #include "eval.h"
+#include "primitives.h"
 
 static environment_t globals;
 
@@ -12,8 +13,15 @@ cons_t* symbol(const char* s)
   return symbol(s, &globals);
 }
 
+program_t* parse(const char *program)
+{
+  return parse(program, &globals);
+}
+
 void run_tests()
 {
+  load_default_defs(&globals);
+
   TEST_STREQ(format("a%sc%dd", "bb", 5), "abbc5d");
 
   TEST_TRUE(isatom("a"));

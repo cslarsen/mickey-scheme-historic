@@ -6,19 +6,19 @@
 #include "parser.h"
 #include "print.h"
 #include "eval.h"
+#include "primitives.h"
 
 int repl()
 {
   printf("Type :QUIT to quit\n");
   printf("Type :TEST to run tests\n");
 
-  int no=0;
   char buf[1024];
 
   for(;;) {
     buf[0] = '\0';
 
-    printf("%d> ", no++);
+    printf("repl> ");
     fflush(stdout);
 
     if ( fgets(buf, sizeof(buf)-1, stdin) == NULL ) {
@@ -35,7 +35,10 @@ int repl()
     if ( toupper(buf) == ":TEST" ) run_tests();
 
     try {
-      std::string s = print(eval(parse(buf)));
+      program_t *p = parse(buf);
+      load_default_defs(p->globals);
+
+      std::string s = sprint(eval(p));
 
       if ( !s.empty() )
         printf("%s\n", s.c_str());

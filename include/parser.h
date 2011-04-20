@@ -9,6 +9,6 @@ struct program_t {
   cons_t *root;
 };
 
-program_t* parse(const char *program);
+program_t* parse(const char *program, environment_t *env);
 
 #endif

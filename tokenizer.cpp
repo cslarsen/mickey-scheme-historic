@@ -19,8 +19,9 @@ static bool string_or_non_delimiter(char ch)
   if ( ch == '\"' )
     inside_string = !inside_string;
 
-  return ch!='\0' && ch!='(' && ch!=')'
-    && (!inside_string? !isspace(ch) : true);
+  return ch!='\0'
+    && (inside_string? true :
+          ch!='(' && ch!=')' && !isspace(ch));
 }
 
 static const char* copy_while(char *dest, const char* src, bool (*while_expr)(char))

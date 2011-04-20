@@ -7,11 +7,3 @@
   repl> (display "hey \"ha\" ho")
 but from a file does not work too well
 
---- Error in parsing chained commands
-0> (display "one\n") (display "two\n")
-one
-1>
-
--- String with ( and ) does not work
-2> (display "a (b) c\n")
-"A C\N"3> 

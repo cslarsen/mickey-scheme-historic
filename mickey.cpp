@@ -14,16 +14,18 @@
 #include "eval.h"
 #include "print.h"
 #include "file_io.h"
+#include "primitives.h"
 
 static bool verbose = false;
 
 void print_program(FILE *f)
 {
   try {
-    program_t *p = parse(slurp(f).c_str());
+    program_t *p = parse(slurp(f).c_str(), NULL);
+    load_default_defs(p->globals);
 
     // When reading from disk, we implicitly wrap it all in (begin ...)
-    p->root = cons(cons(symbol("display", p->globals), p->root), NULL);
+    p->root = cons(cons(symbol("begin", p->globals), p->root), NULL);
 
     cons_t *r = eval(p);
 

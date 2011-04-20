@@ -36,12 +36,17 @@ bool isinteger(const char* s)
   return !empty(s) && all(s+sign, isdigit);
 }
 
+bool isodd(int n)
+{
+  return n & 1;
+}
+
 bool isstring(const char* s)
 {
   // TODO: Correct code to allow for escaping quotes, etc
   return !empty(s) && !empty(s+1) // at least `""`
     && s[0]=='"' && s[strlen(s)-1]=='"'
-    && count(s+1, isquote)==1;
+    && isodd(count(s+1, isquote));
 }
 
 bool isatom(const char* s)

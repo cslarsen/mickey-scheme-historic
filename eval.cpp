@@ -5,20 +5,6 @@
 #include "primitives.h"
 #include "apply.h"
 
-lambda_t lookup_lambda(symbol_t *s)
-{
-  // TODO: Put into table
-  std::string n = !s? "" : toupper(s->name.c_str());
-
-  if ( n == "BEGIN" ) return defun_begin;
-  if ( n == "DISPLAY" ) return defun_print;
-  if ( n == "STRING-APPEND" ) return defun_strcat;
-  if ( n == "+" ) return defun_add;
-  if ( n == "*" ) return defun_mul;
-
-  return NULL;
-}
-
 cons_t* eval(cons_t* p)
 {
   if ( pairp(p) ) {
@@ -27,7 +13,7 @@ cons_t* eval(cons_t* p)
      *       instead of calling eval() inside apply?
      */
     if ( symbolp(car(p)) )
-      return apply(lookup_lambda(car(p)->symbol), cdr(p)); // apply calls eval()A
+      return apply(lookup_lambda(car(p)->symbol), cdr(p)); // apply calls eval()
     else
       return cons(eval(car(p)), eval(cdr(p)));
   }

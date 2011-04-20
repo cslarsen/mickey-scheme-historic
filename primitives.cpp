@@ -1,8 +1,35 @@
 #include <stdexcept>
+#include <vector>
 #include "eval.h"
 #include "primops.h"
 #include "primitives.h"
 #include "print.h"
+
+// TODO: Put into environment, in fact, share this struct with symbol
+static std::map<symbol_t*, lambda_t> functions;
+
+lambda_t lookup_lambda(symbol_t *s)
+{
+  if ( functions.find(s) != functions.end() )
+    return functions[s];
+
+  return NULL;
+}
+
+void defun(symbol_t *s, lambda_t f)
+{
+  functions[s] = f;
+}
+
+void load_default_defs(environment_t *e)
+{
+  defun(symbol_t::create_symbol("begin", e), defun_begin);
+  defun(symbol_t::create_symbol("display", e), defun_print);
+  defun(symbol_t::create_symbol("string-append", e), defun_strcat);
+  defun(symbol_t::create_symbol("+", e), defun_add);
+  defun(symbol_t::create_symbol("*", e), defun_mul);
+  defun(symbol_t::create_symbol("->string", e), defun_to_string);
+}
 
 // TODO: Move to another place
 std::string to_s(enum type_t type)
@@ -115,4 +142,9 @@ cons_t* defun_begin(cons_t* p)
       r = append(r, eval(car(p)));
 
   return r;
+}
+
+cons_t* defun_to_string(cons_t* p)
+{
+  return string(sprint(p).c_str());
 }
