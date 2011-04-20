@@ -60,3 +60,29 @@ char* copy_str(const char* s)
 {
   return strcpy((char*)malloc((s? strlen(s) : 0 ) + 1), s? s : "");
 }
+
+char* decode_literal_string(const char* s)
+{
+  char *p = copy_str(s+1); // chop /^"/
+  p[strlen(p)-1] = '\0'; // chop /"$/
+  
+  // translate "\n" and such
+  for ( char *t = p; *t; ++t ) {
+    if ( t[0]!='\\' )
+      continue;
+
+    // TODO: do this in a cleaner, nicer way (use tables)
+    switch ( t[1] ) {
+    default: continue;
+    case '\0': return p; break;
+    case '\\': *t = '\\'; break;
+    case 'n': *t = '\n'; break;
+    case 'r': *t = '\r'; break;
+    case 't': *t = '\t'; break;
+    }
+
+    strcpy(t+1, t+2); // shift left
+  }
+
+  return p;
+}

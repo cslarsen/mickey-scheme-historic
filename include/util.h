@@ -14,4 +14,6 @@ const char* skip_space(const char* s);
 int empty(const char*);
 bool char_in(char ch, const char* s);
 
+char* decode_literal_string(const char* s);
+
 #endif
