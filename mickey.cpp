@@ -23,8 +23,10 @@ void print_program(FILE *f)
     program_t *p = parse(slurp(f).c_str());
     cons_t *r = eval(p->root);
 
-    if ( verbose )
-      printf("eval returned %s\n", sprint(r).c_str());
+    if ( verbose ) {
+      std::string s = sprint(r);
+      printf("eval returned %s\n", s.empty() ? "<nothing>" : s.c_str());
+    }
   }
   catch ( const std::exception& e ) {
     fprintf(stderr, "%s\n", e.what());
