@@ -1,7 +1,8 @@
 #ifndef INC_MICKEY_UTIL_H
 #define INC_MICKEY_UTIL_H
-
 #include <string>
+#include "cons.h"
+#endif
 
 std::string to_s(int n);
 std::string format(const char *fmt, ...);
@@ -16,5 +17,3 @@ bool char_in(char ch, const char* s);
 
 char* decode_literal_string(const char* s);
 std::string encode_str(const char* s);
-
-#endif

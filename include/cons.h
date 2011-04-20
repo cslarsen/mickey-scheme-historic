@@ -5,33 +5,47 @@
 #include <map>
 #include "util.h"
 
+// types taken from the PICOBIT scheme paper
+
 enum type_t {
-  NIL, INTEGER, CLOSURE, PAIR, SYMBOL, STRING, U8VECTOR, CONTINUATION
+  NIL,
+  INTEGER,
+  CLOSURE,
+  PAIR,
+  SYMBOL,
+  STRING,
+  U8VECTOR,
+  CONTINUATION
 };
 
 typedef struct cons_t* (*lambda_t)(struct cons_t*);
 
-struct environment_t {
-    struct environment_t *outer;
-    std::map<std::string, struct symbol_t*> symbols;
+struct environment_t
+{
+  struct environment_t *outer;
+  std::map<std::string, struct symbol_t*> symbols;
 
-    environment_t() : outer(NULL)
-    {
-    }
+  environment_t() : outer(NULL)
+  {
+  }
 };
 
-struct continuation_t {
+struct continuation_t
+{
 };
 
-struct closure_t {
+struct closure_t
+{
   lambda_t function;
   environment_t* environment;
 };
 
-struct u8vector_t {
+struct u8vector_t
+{
 };
 
-class symbol_t {
+class symbol_t
+{
   symbol_t(const char* s) : name(s)
   {
   }
@@ -66,5 +80,10 @@ struct cons_t {
     continuation_t* continuation;
   };
 };
+
+// Should be in util, but cannot due to circular
+// dependencies between cons.h and util.h (TODO: Fix that)
+std::string encode_str(const char*);
+std::string to_s(enum type_t);
 
 #endif

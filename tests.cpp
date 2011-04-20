@@ -103,6 +103,8 @@ void run_tests()
   TEST_STREQ(sprint(parse("a")), "A");
   TEST_STREQ(sprint(parse("(1 2 3) (4 5 6)")), "(1 2 3) (4 5 6)");
   TEST_STREQ(sprint(parse("(1 2 3)\r\n(4 5 6)")), "(1 2 3) (4 5 6)");
+  TEST_STREQ(print(eval(parse("(->string 123)"))), "123");
+  TEST_STREQ(print(eval(parse("(->string (list 1 2 (list 3 4)))"))), "(1 2 (3 4))");
 
   TEST_STREQ(print(eval(parse("(display 123)"))), ""); // prints to console
   TEST_STREQ(print(eval(parse("(display (+ 3 3 5))"))), ""); // prints to console

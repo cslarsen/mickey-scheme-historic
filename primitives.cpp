@@ -1,9 +1,14 @@
 #include <stdexcept>
 #include <vector>
+#include "cons.h"
 #include "eval.h"
 #include "primops.h"
 #include "primitives.h"
 #include "print.h"
+#include "util.h"
+
+// TODO: Fix this, had to do it because of circular cons/util deps
+extern std::string to_s(cons_t*);
 
 // TODO: Put into environment, in fact, share this struct with symbol
 static std::map<symbol_t*, lambda_t> functions;
@@ -29,38 +34,6 @@ void load_default_defs(environment_t *e)
   defun(symbol_t::create_symbol("+", e), defun_add);
   defun(symbol_t::create_symbol("*", e), defun_mul);
   defun(symbol_t::create_symbol("->string", e), defun_to_string);
-}
-
-// TODO: Move to another place
-std::string to_s(enum type_t type)
-{
-  switch ( type ) {
-  default:       return "<?>";      break;
-  case NIL:      return "nil";      break;
-  case INTEGER:  return "integer";  break;
-  case CLOSURE:  return "cloure";   break;
-  case PAIR:     return "pair";     break;
-  case SYMBOL:   return "symbol";   break;
-  case STRING:   return "string";   break;
-  case U8VECTOR: return "U8VECTOR"; break;
-  case CONTINUATION: return "continuation"; break;
-  }
-}
-
-// TODO: Move to another place
-std::string to_s(cons_t *p)
-{
-  switch ( type_of(p) ) {
-  default:       return "<?>";
-  case NIL:      return "<nil>";
-  case INTEGER:  return to_s(p->integer);
-  case CLOSURE:  return format("<closure %p>", p->closure);
-  case PAIR:     return to_s(car(p)) + " . " + to_s(cdr(p));
-  case SYMBOL:   return p->symbol->name;
-  case STRING:   return p->string;
-  case U8VECTOR: return format("<u8vector %p>", p->u8vector);
-  case CONTINUATION: return format("<continuation %p>", p->continuation);
-  }
 }
 
 cons_t* defun_print(cons_t *p)
@@ -146,5 +119,17 @@ cons_t* defun_begin(cons_t* p)
 
 cons_t* defun_to_string(cons_t* p)
 {
-  return string(sprint(p).c_str());
+  // TODO: Technically, 
+  std::string s;
+
+  for ( ; !nullp(p); p = cdr(p)) {
+    if ( integerp(p) )
+      s += format("%d", p->integer);
+    else if ( stringp(p) )
+      s += p->string;
+    else if ( pairp(p) )
+      s += sprint(eval(car(p)));
+  }
+
+  return string(s.c_str());
 }

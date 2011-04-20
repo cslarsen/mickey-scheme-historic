@@ -1,9 +1,9 @@
-TARGETS = apply.o primitives.o types.o eval.o file_io.o parser.o print.o primops.o tokenizer.o tests.o util.o repl.o test.o mickey
+TARGETS = cons.o apply.o primitives.o types.o eval.o file_io.o parser.o print.o primops.o tokenizer.o tests.o util.o repl.o test.o mickey
 CXX = llvm-g++
 CXXFLAGS = -g -Wall -Iinclude # -Weffc++
 all: $(TARGETS)
 
-mickey: apply.o primitives.o types.o eval.o file_io.o parser.o print.o primops.o tokenizer.o tests.o util.o repl.o test.o
+mickey: cons.o apply.o primitives.o types.o eval.o file_io.o parser.o print.o primops.o tokenizer.o tests.o util.o repl.o test.o
 
 check: all
 	echo ":TEST" | ./mickey
