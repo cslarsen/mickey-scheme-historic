@@ -1,0 +1,26 @@
+NEXT STEPS
+- Add support for (define), simple variable placeholder
+- Add support for environment / lexical closure, use with (define) above
+- Add support for (lambda), use with closure and define above
+  => now we're a *real* Lisp!
+- Add (import) for reading other files
+- Make all llvm primitives callable by interpreter
+  => implement functions as llvm primitives, e.g.:
+
+    (define display
+      (lambda (p)
+        (while (not (null? p))
+          (begin
+            (if (not (pair? p))
+              (ffi:printf "%s" (->c_string p))
+              (display (eval (car p))))
+            (set! p (cdr p))))))
+
+  Some functions must be built-in, I guess, like "no", "null?", "->c_string" and so on.
+  But perhaps later on, these can as well become something that can be implemented (?).
+  (At least many of them).
+
+DOWN THE LINE
+- Tail-call optimization
+- call/cc
+- delay/force
