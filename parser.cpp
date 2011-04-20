@@ -23,7 +23,6 @@ char* decode_literal_string(const char* s)
     }
 
     strcpy(t+1, t+2); // shift left
-    ++t;
   }
 
   return p;
