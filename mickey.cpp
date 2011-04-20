@@ -21,6 +21,10 @@ void print_program(FILE *f)
 {
   try {
     program_t *p = parse(slurp(f).c_str());
+
+    // When reading from disk, we implicitly wrap it all in (begin ...)
+    p->root = cons(cons(symbol("display", p->globals), p->root), NULL);
+
     cons_t *r = eval(p);
 
     if ( verbose ) {

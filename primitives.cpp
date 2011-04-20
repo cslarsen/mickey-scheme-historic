@@ -86,7 +86,7 @@ cons_t* defun_add(cons_t *p)
 
 cons_t* defun_mul(cons_t *p)
 {
-  // Identidy; see defun_add
+  // Identity; see defun_add
   int product = 1;
 
   for ( ; !nullp(p); p = cdr(p)) {
@@ -101,4 +101,18 @@ cons_t* defun_mul(cons_t *p)
   }
 
   return integer(product);
+}
+
+cons_t* defun_begin(cons_t* p)
+{
+  // execute in order of appearance
+  cons_t *r = NULL;
+
+  for ( ; !nullp(p); p = cdr(p) )
+    if ( !pairp(p) )
+      r = append(r, eval(p));
+    else
+      r = append(r, eval(car(p)));
+
+  return r;
 }

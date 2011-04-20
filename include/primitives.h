@@ -8,7 +8,8 @@
  *       the ones below by calling foreign C functions.
  */
 
-cons_t* defun_print(cons_t *args);
-cons_t* defun_strcat(cons_t *args);
-cons_t* defun_add(cons_t *args);
-cons_t* defun_mul(cons_t *args);
+cons_t* defun_print(cons_t*);
+cons_t* defun_strcat(cons_t*);
+cons_t* defun_add(cons_t*);
+cons_t* defun_mul(cons_t*);
+cons_t* defun_begin(cons_t*);

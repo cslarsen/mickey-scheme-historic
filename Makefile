@@ -7,7 +7,9 @@ mickey: apply.o primitives.o types.o eval.o file_io.o parser.o print.o primops.o
 
 check: all
 	echo ":TEST" | ./mickey
-	./mickey tests/hello.scm tests/math.scm
+	./mickey tests/hello.scm \
+	         tests/math.scm \
+	         tests/begin.scm
 
 clean:
 	rm -f $(TARGETS)

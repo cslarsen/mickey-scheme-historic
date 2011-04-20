@@ -10,6 +10,7 @@ lambda_t lookup_lambda(symbol_t *s)
   // TODO: Put into table
   std::string n = !s? "" : toupper(s->name.c_str());
 
+  if ( n == "BEGIN" ) return defun_begin;
   if ( n == "DISPLAY" ) return defun_print;
   if ( n == "STRING-APPEND" ) return defun_strcat;
   if ( n == "+" ) return defun_add;
