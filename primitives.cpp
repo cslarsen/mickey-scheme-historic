@@ -37,40 +37,24 @@ std::string to_s(cons_t *p)
 
 cons_t* defun_print(cons_t *p)
 {
-  for ( ; p != NULL; p = cdr(p) ) {
-    if ( stringp(p) )
-      printf("%s", p->string);
-    else if ( integerp(p) )
-      printf("%d", p->integer);
-    else if ( pairp(p) ) {
-      cons_t *res = eval(car(p));
-      if ( stringp(res) )
-        printf("%s", res->string);
-    } else 
-        printf("%s", to_s(p).c_str());
-  }
+  for ( ; !nullp(p); p = cdr(p) )
+    if ( !pairp(p) )
+      printf("%s", to_s(p).c_str());
+    else
+      defun_print(eval(car(p)));
 
   return string("");
 }
 
-cons_t* defun_strcat(cons_t *arg)
+cons_t* defun_strcat(cons_t *p)
 {
   std::string s;
 
-  while ( arg != NULL ) {
-    if ( stringp(arg) )
-      s += format("%s", arg->string);
-
-    if ( integerp(arg) )
-      s += format("%d", arg->integer);
-
-    if ( pairp(arg) ) {
-      cons_t *res = eval(car(arg));
-      if ( stringp(res) )
-        s += res->string; // else, throw (TODO)
-    }
-    
-    arg = cdr(arg);
+  for ( ; !nullp(p); p = cdr(p) ) {
+    if ( !pairp(p) )
+      s += to_s(p);
+    else
+      s += defun_strcat(eval(car(p)))->string;
   }
 
   return string(s.c_str());

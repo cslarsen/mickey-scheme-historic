@@ -35,23 +35,26 @@ static const char* copy_while(char *dest, const char* src, bool (*while_expr)(ch
 const char* get_token()
 {
   static char token[256];
-  token[0] = token[1] = '\0';
 
-  source = skip_space(source);
-
-  // comment? skip to end of line
-  if ( *source == ';' )
-    while ( *source != '\n' ) ++source;
-
-  source = skip_space(source);
-
-  if ( char_in(*source, "()") )
-    // tokens ( and )
-    token[0] = *source++;
-  else
-    // other tokens
-    source = copy_while(token, source, string_or_non_delimiter);
-
-  // emit NULL when finished
-  return !empty(token) ? token : NULL;
+  for ( ;; ) {
+    token[0] = token[1] = '\0';
+  
+    source = skip_space(source);
+  
+    // comment? skip to end of line
+    if ( *source == ';' ) {
+      while ( *source != '\n' ) ++source;
+      continue;
+    }
+  
+    if ( char_in(*source, "()") )
+      // tokens ( and )
+      token[0] = *source++;
+    else
+      // other tokens
+      source = copy_while(token, source, string_or_non_delimiter);
+  
+    // emit NULL when finished
+    return !empty(token) ? token : NULL;
+  }
 }
