@@ -34,6 +34,7 @@ void load_default_defs(environment_t *e)
   defun(symbol_t::create_symbol("+", e), defun_add);
   defun(symbol_t::create_symbol("*", e), defun_mul);
   defun(symbol_t::create_symbol("->string", e), defun_to_string);
+  defun(symbol_t::create_symbol("list", e), defun_list);
 }
 
 cons_t* defun_print(cons_t *p)
@@ -120,7 +121,6 @@ cons_t* defun_begin(cons_t* p)
 
 cons_t* defun_to_string(cons_t* p)
 {
-  // TODO: Technically, 
   std::string s;
 
   for ( ; !nullp(p); p = cdr(p)) {
@@ -133,4 +133,17 @@ cons_t* defun_to_string(cons_t* p)
   }
 
   return string(s.c_str());
+}
+
+cons_t* defun_list(cons_t* p)
+{
+  cons_t *l = NULL;
+
+  for ( ; !nullp(p); p = cdr(p))
+    if ( !pairp(p) )
+      l = append(l, p);
+    else
+      l = append(l, list(eval(car(p))));
+
+  return cons(l);
 }

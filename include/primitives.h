@@ -18,3 +18,4 @@ cons_t* defun_add(cons_t*);
 cons_t* defun_mul(cons_t*);
 cons_t* defun_begin(cons_t*);
 cons_t* defun_to_string(cons_t*);
+cons_t* defun_list(cons_t*);
