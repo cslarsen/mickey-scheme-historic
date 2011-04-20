@@ -13,6 +13,7 @@ cons_t* symbol(const char*, environment_t*);
 cons_t* integer(int);
 cons_t* decimal(float);
 cons_t* string(const char*);
+cons_t* nil();
 
 cons_t* car(cons_t*);
 cons_t* cdr(cons_t*);

@@ -71,7 +71,7 @@ cons_t* defun_print(cons_t *p)
     else
       defun_print(eval(car(p)));
 
-  return string("");
+  return nil();
 }
 
 cons_t* defun_strcat(cons_t *p)

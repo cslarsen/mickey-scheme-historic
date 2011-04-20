@@ -58,5 +58,5 @@ bool char_in(char ch, const char* s)
 
 char* copy_str(const char* s)
 {
-  return strcpy((char*)malloc(strlen(s)+1), s);
+  return strcpy((char*)malloc((s? strlen(s) : 0 ) + 1), s? s : "");
 }

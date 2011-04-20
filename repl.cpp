@@ -10,6 +10,10 @@
 
 int repl()
 {
+  environment_t globals;
+  load_default_defs(&globals);
+  printf("Loaded %ld definitions\n", globals.symbols.size());
+
   printf("Type :QUIT to quit\n");
   printf("Type :TEST to run tests\n");
 
@@ -35,7 +39,7 @@ int repl()
     if ( toupper(buf) == ":TEST" ) run_tests();
 
     try {
-      program_t *p = parse(buf);
+      program_t *p = parse(buf, &globals);
       load_default_defs(p->globals);
 
       std::string s = sprint(eval(p));

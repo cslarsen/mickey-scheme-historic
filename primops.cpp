@@ -26,6 +26,13 @@ cons_t* symbol(const char* s, environment_t *env)
   return p;
 }
 
+cons_t* nil()
+{
+  cons_t *p = new cons_t();
+  p->type = NIL;
+  return p;
+}
+
 cons_t* integer(int n)
 {
   cons_t *p = new cons_t();
