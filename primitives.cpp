@@ -143,7 +143,7 @@ cons_t* defun_list(cons_t* p)
     if ( !pairp(p) )
       l = append(l, p);
     else
-      l = append(l, list(eval(car(p))));
+      l = append(l, cons(eval(car(p))));
 
-  return cons(l);
+  return l;
 }
