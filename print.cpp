@@ -1,22 +1,5 @@
 #include "print.h"
-
-std::string encode_str(const char* s)
-{
-  // TODO: Make this table-based or something
-  std::string r;
-
-  for ( ; *s; ++s ) {
-    switch ( *s ) {
-    default:   r += *s; break;
-    case '\n': r += "\\n"; break;
-    case '\r': r += "\\r"; break;
-    case '\t': r += "\\t"; break;
-    case '\\': r += "\\"; break;
-    }
-  }
-
-  return r;
-}
+#include "util.h"
 
 std::string sprint(cons_t* p, std::string& s, bool escape)
 {

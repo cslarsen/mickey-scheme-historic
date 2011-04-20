@@ -86,3 +86,21 @@ char* decode_literal_string(const char* s)
 
   return p;
 }
+
+std::string encode_str(const char* s)
+{
+  // TODO: Make this table-based or something
+  std::string r;
+
+  for ( ; *s; ++s ) {
+    switch ( *s ) {
+    default:   r += *s; break;
+    case '\n': r += "\\n"; break;
+    case '\r': r += "\\r"; break;
+    case '\t': r += "\\t"; break;
+    case '\\': r += "\\"; break;
+    }
+  }
+
+  return r;
+}

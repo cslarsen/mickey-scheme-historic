@@ -15,5 +15,6 @@ int empty(const char*);
 bool char_in(char ch, const char* s);
 
 char* decode_literal_string(const char* s);
+std::string encode_str(const char* s);
 
 #endif
