@@ -1,4 +1,3 @@
-2> (display "\n\n")
-
-\n
----
+0> (display "error )
+"ERROR 1> 
+2> 
