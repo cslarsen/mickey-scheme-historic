@@ -3,6 +3,10 @@
 "ERROR 1> 
 2> 
 
+-- String parsing buggy, try quoted strings:
+  repl> (display "hey \"ha\" ho")
+but from a file does not work too well
+
 --- Error in parsing chained commands
 0> (display "one\n") (display "two\n")
 one
