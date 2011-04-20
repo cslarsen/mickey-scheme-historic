@@ -26,19 +26,18 @@ cons_t* eval(cons_t* p)
      *       instead of calling eval() inside apply?
      */
     if ( symbolp(car(p)) )
-      return apply(lookup_lambda(car(p)->symbol), cdr(p)); // apply calls eval()
-
-    cons_t *r = new cons_t();
-    r->type = PAIR;
-    r->car = eval(car(p));
-    r->cdr = eval(cdr(p));
-    return r;
+      return apply(lookup_lambda(car(p)->symbol), cdr(p)); // apply calls eval()A
+    else
+      return cons(eval(car(p)), eval(cdr(p)));
   }
+
+  // other data types simply evaluate to themselves
+  // TODO: look up variable values here
 
   return p;
 }
 
 cons_t* eval(program_t *p)
 {
-  return p? eval(p->root) : NULL;
+  return cons(eval(car(p->root)), eval(cdr(p->root)));
 }

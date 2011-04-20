@@ -5,7 +5,7 @@
 #include "types.h"
 #include "eval.h"
 
-environment_t globals;
+static environment_t globals;
 
 cons_t* symbol(const char* s)
 {
@@ -92,11 +92,12 @@ void run_tests()
   TEST_STREQ(sprint(parse("(a (b c) d)")), "(A (B C) D)");
   TEST_STREQ(sprint(parse("(display (string-append \"Hello\" \", \" \"world!\"))")), "(DISPLAY (STRING-APPEND \"Hello\" \", \" \"world!\"))");
   TEST_STREQ(sprint(parse("(display \"Hello\\nworld!\")))")), "(DISPLAY \"Hello\\nworld!\")");
-  TEST_STREQ(sprint(parse("a")), "");
+  TEST_STREQ(sprint(parse("a")), "A");
   TEST_STREQ(sprint(parse("(1 2 3) (4 5 6)")), "(1 2 3) (4 5 6)");
   TEST_STREQ(sprint(parse("(1 2 3)\r\n(4 5 6)")), "(1 2 3) (4 5 6)");
 
   TEST_STREQ(print(eval(parse("(display 123)"))), ""); // prints to console
+  TEST_STREQ(print(eval(parse("(display (+ 3 3 5))"))), ""); // prints to console
   TEST_STREQ(print(eval(parse("(display \"hello\")"))), ""); // prints to console
   TEST_STREQ(print(eval(parse("(+ 0)"))), "0");
   TEST_STREQ(print(eval(parse("(+ 1)"))), "1");

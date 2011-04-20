@@ -5,8 +5,9 @@
 #include "tests.h"
 #include "parser.h"
 #include "print.h"
+#include "eval.h"
 
-int repl(cons_t* (*eval)(cons_t* p))
+int repl()
 {
   printf("Type :QUIT to quit\n");
   printf("Type :TEST to run tests\n");
@@ -34,13 +35,10 @@ int repl(cons_t* (*eval)(cons_t* p))
     if ( toupper(buf) == ":TEST" ) run_tests();
 
     try {
-      if ( eval == NULL )
-        printf("%s\n", sprint(parse(buf)).c_str());
-      else {
-        std::string s = print(eval(parse(buf)->root));
-        if ( !s.empty() )
-          printf("%s\n", s.c_str());
-      }
+      std::string s = print(eval(parse(buf)));
+
+      if ( !s.empty() )
+        printf("%s\n", s.c_str());
     }
     catch(const std::exception& e) {
       fprintf(stderr, "%s\n", e.what());

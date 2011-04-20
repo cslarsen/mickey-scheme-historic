@@ -8,28 +8,29 @@
 std::string to_s(enum type_t type)
 {
   switch ( type ) {
-  default:           return "?unknown"; break;
-  case NIL:          return "nil";      break;
-  case INTEGER:      return "integer";  break;
-  case CLOSURE:      return "cloure";   break;
-  case PAIR:         return "pair";     break;
-  case SYMBOL:       return "symbol";   break;
-  case STRING:       return "string";   break;
-  case U8VECTOR:     return "U8VECTOR"; break;
+  default:       return "<?>";      break;
+  case NIL:      return "nil";      break;
+  case INTEGER:  return "integer";  break;
+  case CLOSURE:  return "cloure";   break;
+  case PAIR:     return "pair";     break;
+  case SYMBOL:   return "symbol";   break;
+  case STRING:   return "string";   break;
+  case U8VECTOR: return "U8VECTOR"; break;
   case CONTINUATION: return "continuation"; break;
   }
 }
 
+// TODO: Move to another place
 std::string to_s(cons_t *p)
 {
   switch ( type_of(p) ) {
-  default: return "<?>";
-  case NIL: return "<nil>";
-  case INTEGER: return to_s(p->integer);
-  case CLOSURE: return format("<closure %p>", p->closure);
-  case PAIR: return to_s(car(p)) + " . " + to_s(cdr(p));
-  case SYMBOL: return p->symbol->name;
-  case STRING: return p->string;
+  default:       return "<?>";
+  case NIL:      return "<nil>";
+  case INTEGER:  return to_s(p->integer);
+  case CLOSURE:  return format("<closure %p>", p->closure);
+  case PAIR:     return to_s(car(p)) + " . " + to_s(cdr(p));
+  case SYMBOL:   return p->symbol->name;
+  case STRING:   return p->string;
   case U8VECTOR: return format("<u8vector %p>", p->u8vector);
   case CONTINUATION: return format("<continuation %p>", p->continuation);
   }
@@ -50,12 +51,11 @@ cons_t* defun_strcat(cons_t *p)
 {
   std::string s;
 
-  for ( ; !nullp(p); p = cdr(p) ) {
+  for ( ; !nullp(p); p = cdr(p) )
     if ( !pairp(p) )
       s += to_s(p);
     else
       s += defun_strcat(eval(car(p)))->string;
-  }
 
   return string(s.c_str());
 }
@@ -70,10 +70,8 @@ cons_t* defun_add(cons_t *p)
    */
   int sum = 0;
 
-  for ( ; p != NULL; p = cdr(p) ) {
-     if ( stringp(p) )
-      throw std::runtime_error("Cannot add INTEGER and STRING");
-    else if ( integerp(p) )
+  for ( ; !nullp(p); p = cdr(p) ) {
+    if ( integerp(p) )
       sum += p->integer;
     else if ( pairp(p) ) {
       cons_t *res = eval(car(p));
@@ -86,24 +84,20 @@ cons_t* defun_add(cons_t *p)
   return integer(sum);
 }
 
-cons_t* defun_mul(cons_t *arg)
+cons_t* defun_mul(cons_t *p)
 {
+  // Identidy; see defun_add
   int product = 1;
 
-  while ( arg != NULL ) {
-     if ( arg->type == STRING )
-      continue; // TODO: throw error, or something
-
-    if ( arg->type == INTEGER )
-      product *= arg->integer;
-
-    if ( arg->type == PAIR ) {
-      cons_t *res = eval(car(arg));
+  for ( ; !nullp(p); p = cdr(p)) {
+    if ( integerp(p) )
+      product *= p->integer;
+    else if ( pairp(p) ) {
+      cons_t *res = eval(car(p));
       if ( integerp(res) )
         product *= res->integer; // else, throw (TODO)
     }
-    
-    arg = cdr(arg);
+    // incompatible types; throw error or something
   }
 
   return integer(product);

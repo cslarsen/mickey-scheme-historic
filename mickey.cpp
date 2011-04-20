@@ -21,7 +21,7 @@ void print_program(FILE *f)
 {
   try {
     program_t *p = parse(slurp(f).c_str());
-    cons_t *r = eval(p->root);
+    cons_t *r = eval(p);
 
     if ( verbose ) {
       std::string s = sprint(r);
@@ -37,7 +37,7 @@ void print_program(FILE *f)
 int main(int argc, char** argv)
 {
   if ( argc == 1 )
-    return repl(eval);
+    return repl();
 
   for ( int n=1; n<argc; ++n ) {
     if ( argv[n][0] != '-' )

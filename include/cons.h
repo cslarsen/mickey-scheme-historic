@@ -58,7 +58,7 @@ struct cons_t {
   type_t type;
   union {
     int integer;
-    struct { cons_t *car, *cdr; };
+    struct { cons_t *car, *cdr; }; // pair
     closure_t* closure;
     symbol_t* symbol;
     const char* string;

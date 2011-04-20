@@ -36,7 +36,7 @@ std::string sprint(cons_t* p, std::string& s, bool escape)
           (!nullp(cdr(p)) && !pairp(cadr(p))) ||                 // <=  IS
           (atomp(p) && pairp(cdr(p))) ||                         // <= VERY
           (integerp(car(p)) && pairp(cdr(p)))                    // <= MESSY! (and wrong)
-            ? " " : "")
+            ? (escape? " " : "") : "")
       + sprint(p->cdr, s, escape);
     } break;
   case SYMBOL: return s + p->symbol->name;
@@ -62,7 +62,7 @@ std::string sprint(program_t* p)
 std::string print(cons_t* p)
 {
   std::string s;
-  return sprint(nullp(cdr(p)) ? car(p) : p, s, false);
+  return sprint(p, s, false);
 }
 
 std::string print(program_t* p)
