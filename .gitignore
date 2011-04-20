@@ -13,3 +13,4 @@ mickey
 mickey.dSYM
 primitives.o
 apply.o
+cons.o

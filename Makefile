@@ -12,5 +12,9 @@ check: all
 	 tests/begin.scm \
 	 tests/strings.scm
 
+diff:
+	# mickey and chicken should have same output
+	csi -bq tests/*; echo "========="; ./mickey tests/*
+
 clean:
 	rm -f $(TARGETS)
