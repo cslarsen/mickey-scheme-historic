@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <readline/readline.h>
+#include <readline/history.h>
 #include "cons.h"
 #include "util.h"
 #include "repl.h"
@@ -8,38 +10,53 @@
 #include "eval.h"
 #include "primitives.h"
 
+cons_t* defun_quit(cons_t* p)
+{
+  if ( integerp(car(p)) )
+    exit(car(p)->integer);
+  else
+    exit(0);
+  return nil();
+}
+
+cons_t* defun_run_tests(cons_t*)
+{
+  run_tests();
+  return nil();
+}
+
 int repl()
 {
+  char* input, prompt[1000];
+
   environment_t globals;
   load_default_defs(&globals);
+
+  defun(symbol_t::create_symbol("exit", &globals), defun_quit);
+  defun(symbol_t::create_symbol("run-tests", &globals), defun_run_tests);
+
   printf("Loaded %ld definitions\n", globals.symbols.size());
-
-  printf("Type :QUIT to quit\n");
-  printf("Type :TEST to run tests\n");
-
-  char buf[1024];
+  printf("Execute (exit [ code ]) to quit\n");
+  printf("Execute (run-tests) to run tests\n");
 
   for(;;) {
-    buf[0] = '\0';
+    sprintf(prompt,"mickey> ");
+    input=readline(prompt);
 
-    printf("repl> ");
-    fflush(stdout);
-
-    if ( fgets(buf, sizeof(buf)-1, stdin) == NULL ) {
-      printf("\n");
+    if ( input == NULL )
       break;
-    }
 
-    trimr(buf);
+// TODO: Add auto-completer, based on symbol table in globals
+//    rl_bind_key('\t',rl_complete);
+    add_history(input);
 
-    if ( buf[0] == '\0' )
+    trimr(input);
+
+    if ( input[0] == '\0' )
       continue;
 
-    if ( toupper(buf) == ":QUIT" ) break;
-    if ( toupper(buf) == ":TEST" ) run_tests();
-
     try {
-      program_t *p = parse(buf, &globals);
+      program_t *p = parse(input, &globals);
       load_default_defs(p->globals);
 
       std::string s = sprint(eval(p));
