@@ -10,6 +10,22 @@
 #include "eval.h"
 #include "primitives.h"
 
+static environment_t globals;
+
+cons_t* defun_list_globals(cons_t* p)
+{
+  cons_t *r = NULL;
+
+  for ( std::map<std::string, struct symbol_t*>::iterator i =
+    globals.symbols.begin(); i != globals.symbols.end(); ++i )
+  {
+    cons_t *s = list(symbol((*i).first.c_str(), &globals));
+    r = append(s, r);
+  }
+
+  return r;
+}
+
 cons_t* defun_quit(cons_t* p)
 {
   if ( integerp(car(p)) )
@@ -29,15 +45,16 @@ int repl()
 {
   char* input, prompt[1000];
 
-  environment_t globals;
   load_default_defs(&globals);
 
   defun(symbol_t::create_symbol("exit", &globals), defun_quit);
   defun(symbol_t::create_symbol("run-tests", &globals), defun_run_tests);
+  defun(symbol_t::create_symbol("list-globals", &globals), defun_list_globals);
 
   printf("Loaded %ld definitions\n", globals.symbols.size());
   printf("Execute (exit [ code ]) to quit\n");
   printf("Execute (run-tests) to run tests\n");
+  printf("Execute (list-globals) to list known definitions\n");
 
   for(;;) {
     sprintf(prompt,"mickey> ");
