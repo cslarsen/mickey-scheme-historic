@@ -23,7 +23,7 @@ void run_tests()
   load_default_defs(&globals);
 
   TEST_STREQ(format("a%sc%dd", "bb", 5), "abbc5d");
-  TEST_STREQ(decode_literal_string("1 \\\"quo\\\" 2"), "1 \"quo\" 2");
+  TEST_STREQ(decode_literal_string("\"1 \\\"quo\\\" 2\""), "1 \"quo\" 2");
 
   TEST_TRUE(isatom("a"));
   TEST_TRUE(isatom("ab"));
@@ -81,6 +81,9 @@ void run_tests()
 
   // (append (list 1 2) (list 3 4))
   TEST_STREQ(sprint(cons(append(list(integer(1), integer(2)), list(integer(3), integer(4))))), "(1 2 3 4)");
+
+  // (cons 3 (cons 4 5)) 
+  TEST_STREQ(sprint(cons(cons(integer(3), cons(integer(4), integer(5))))), "(3 4 . 5)");
 
   // (append (list 1) 2)
   TEST_STREQ(sprint(cons(append(list(integer(1)), integer(2)))), "(1 . 2)");
