@@ -13,7 +13,7 @@ check: all
 	 tests/begin.scm \
 	 tests/strings.scm
 
-diff:
+diff: all
 	# mickey and chicken should have same output
 	csi -bq tests/*; echo "========="; ./mickey tests/*
 

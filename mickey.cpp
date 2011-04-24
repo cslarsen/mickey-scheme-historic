@@ -18,15 +18,16 @@
 
 static bool verbose = false;
 
-void print_program(FILE *f)
+void run_program(FILE *f)
 {
   try {
-    program_t *p = parse(slurp(f).c_str(), NULL);
-    load_default_defs(p->globals);
+    environment_t env;
+    load_default_defs(&env);
+
+    program_t *p = parse(slurp(f).c_str(), &env);
 
     // When reading from disk, we implicitly wrap it all in (begin ...)
-    cons_t *begin = p->globals->lookup("begin");
-    p->root = list(begin, p->root);
+    p->root = cons(cons(env.lookup("begin"), p->root));
 
     cons_t *r = eval(p);
 
@@ -48,7 +49,7 @@ int main(int argc, char** argv)
 
   for ( int n=1; n<argc; ++n ) {
     if ( argv[n][0] != '-' )
-      print_program(open_file(argv[n]));
+      run_program(open_file(argv[n]));
   }
 
   return 0;
