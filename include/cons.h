@@ -18,16 +18,21 @@ enum type_t {
   CONTINUATION
 };
 
-typedef struct cons_t* (*lambda_t)(struct cons_t*);
+typedef struct cons_t* (*lambda_t)(struct cons_t*, struct environment_t*);
+typedef std::map<std::string, struct cons_t*> dict_t; // TODO: Use hash_map
 
 struct environment_t
 {
   struct environment_t *outer;
-  std::map<std::string, struct symbol_t*> symbols;
+  dict_t symbols;
 
   environment_t() : outer(NULL)
   {
   }
+
+  struct cons_t* lookup(const char* name) const;
+  struct symbol_t* create_symbol(const char* s);
+  void defun(const char* name, lambda_t func);
 };
 
 struct continuation_t
@@ -54,18 +59,10 @@ class symbol_t
   {
   }
 
+  friend struct environment_t;
+
 public:
   std::string name;
-
-  static symbol_t* create_symbol(const char* s, environment_t* env)
-  {
-    std::string S = toupper(s);
-
-    if ( env->symbols.find(S) == env->symbols.end() )
-      env->symbols[S] = new symbol_t(S.c_str());
-
-    return env->symbols[S];
-   }
 };
 
 struct cons_t {

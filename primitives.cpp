@@ -10,46 +10,36 @@
 // TODO: Fix this, had to do it because of circular cons/util deps
 extern std::string to_s(cons_t*);
 
-// TODO: Put into environment, in fact, share this struct with symbol
-static std::map<symbol_t*, lambda_t> functions;
-
-lambda_t lookup_lambda(symbol_t *s)
+closure_t* lookup_closure(symbol_t *s, environment_t *env)
 {
-  if ( functions.find(s) != functions.end() )
-    return functions[s];
-
-  return NULL;
-}
-
-void defun(symbol_t *s, lambda_t f)
-{
-  functions[s] = f;
+  cons_t *p = env->lookup(s->name.c_str());
+  return closurep(p)? p->closure : NULL;
 }
 
 void load_default_defs(environment_t *e)
 {
-  defun(symbol_t::create_symbol("begin", e), defun_begin);
-  defun(symbol_t::create_symbol("display", e), defun_print);
-  defun(symbol_t::create_symbol("string-append", e), defun_strcat);
-  defun(symbol_t::create_symbol("+", e), defun_add);
-  defun(symbol_t::create_symbol("*", e), defun_mul);
-  defun(symbol_t::create_symbol("->string", e), defun_to_string);
-  defun(symbol_t::create_symbol("list", e), defun_list);
+  e->defun("begin", defun_begin);
+  e->defun("display", defun_print);
+  e->defun("string-append", defun_strcat);
+  e->defun("+", defun_add);
+  e->defun("*", defun_mul);
+  e->defun("->string", defun_to_string);
+  e->defun("list", defun_list);
 }
 
-cons_t* defun_print(cons_t *p)
+cons_t* defun_print(cons_t *p, environment_t* env)
 {
   for ( ; !nullp(p); p = cdr(p) ) {
     if ( !pairp(p) )
       printf("%s", to_s(p).c_str());
     else
-      defun_print(eval(car(p)));
+      defun_print(eval(car(p), env), env);
   }
 
   return nil();
 }
 
-cons_t* defun_strcat(cons_t *p)
+cons_t* defun_strcat(cons_t *p, environment_t* env)
 {
   std::string s;
 
@@ -57,12 +47,12 @@ cons_t* defun_strcat(cons_t *p)
     if ( !pairp(p) )
       s += to_s(p);
     else
-      s += defun_strcat(eval(car(p)))->string;
+      s += defun_strcat(eval(car(p), env), env)->string;
 
   return string(s.c_str());
 }
 
-cons_t* defun_add(cons_t *p)
+cons_t* defun_add(cons_t *p, environment_t* env)
 {
   /*
    * Integers have an IDENTITY, so we can do this,
@@ -76,7 +66,7 @@ cons_t* defun_add(cons_t *p)
     if ( integerp(p) )
       sum += p->integer;
     else if ( pairp(p) ) {
-      cons_t *res = eval(car(p));
+      cons_t *res = eval(car(p), env);
       if ( integerp(res) )
         sum += res->integer; // or else, thow (TOWO)
     } else
@@ -86,7 +76,7 @@ cons_t* defun_add(cons_t *p)
   return integer(sum);
 }
 
-cons_t* defun_mul(cons_t *p)
+cons_t* defun_mul(cons_t *p, environment_t *env)
 {
   // Identity; see defun_add
   int product = 1;
@@ -95,7 +85,7 @@ cons_t* defun_mul(cons_t *p)
     if ( integerp(p) )
       product *= p->integer;
     else if ( pairp(p) ) {
-      cons_t *res = eval(car(p));
+      cons_t *res = eval(car(p), env);
       if ( integerp(res) )
         product *= res->integer; // else, throw (TODO)
     }
@@ -105,21 +95,21 @@ cons_t* defun_mul(cons_t *p)
   return integer(product);
 }
 
-cons_t* defun_begin(cons_t* p)
+cons_t* defun_begin(cons_t* p, environment_t *env)
 {
   // execute in order of appearance
   cons_t *r = NULL;
 
   for ( ; !nullp(p); p = cdr(p) )
     if ( !pairp(p) )
-      r = append(r, eval(p));
+      r = append(r, eval(p, env));
     else
-      r = append(r, eval(car(p)));
+      r = append(r, eval(car(p), env));
 
   return r;
 }
 
-cons_t* defun_to_string(cons_t* p)
+cons_t* defun_to_string(cons_t* p, environment_t *env)
 {
   std::string s;
 
@@ -129,13 +119,13 @@ cons_t* defun_to_string(cons_t* p)
     else if ( stringp(p) )
       s += p->string;
     else if ( pairp(p) )
-      s += sprint(eval(car(p)));
+      s += sprint(eval(car(p), env));
   }
 
   return string(s.c_str());
 }
 
-cons_t* defun_list(cons_t* p)
+cons_t* defun_list(cons_t* p, environment_t *env)
 {
   cons_t *l = NULL;
 
@@ -143,7 +133,7 @@ cons_t* defun_list(cons_t* p)
     if ( !pairp(p) )
       l = append(l, p);
     else
-      l = append(l, cons(eval(car(p))));
+      l = append(l, cons(eval(car(p), env)));
 
   return l;
 }

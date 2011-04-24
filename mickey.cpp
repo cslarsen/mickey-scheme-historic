@@ -25,7 +25,8 @@ void print_program(FILE *f)
     load_default_defs(p->globals);
 
     // When reading from disk, we implicitly wrap it all in (begin ...)
-    p->root = cons(cons(symbol("begin", p->globals), p->root), NULL);
+    cons_t *begin = p->globals->lookup("begin");
+    p->root = list(begin, p->root);
 
     cons_t *r = eval(p);
 

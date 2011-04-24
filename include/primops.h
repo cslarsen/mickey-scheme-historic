@@ -13,6 +13,7 @@ cons_t* symbol(const char*, environment_t*);
 cons_t* integer(int);
 cons_t* decimal(float);
 cons_t* string(const char*);
+cons_t* closure(lambda_t, environment_t*);
 cons_t* nil();
 
 cons_t* car(cons_t*);
@@ -28,5 +29,6 @@ bool integerp(cons_t*);
 bool nullp(cons_t*);
 bool pairp(cons_t*);
 bool stringp(cons_t*);
+bool closurep(cons_t*);
 
 #endif

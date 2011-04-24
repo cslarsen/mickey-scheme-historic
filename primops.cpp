@@ -22,7 +22,7 @@ cons_t* symbol(const char* s, environment_t *env)
 {
   cons_t *p = new cons_t();
   p->type = SYMBOL;
-  p->symbol = symbol_t::create_symbol(s, env);
+  p->symbol = env->create_symbol(s);
   return p;
 }
 
@@ -115,6 +115,11 @@ bool pairp(cons_t* p)
   return type_of(p) == PAIR;
 }
 
+bool closurep(cons_t* p)
+{
+  return type_of(p) == CLOSURE;
+}
+
 cons_t* append(cons_t *h, cons_t *t)
 {
   if ( h == NULL )
@@ -129,4 +134,14 @@ cons_t* append(cons_t *h, cons_t *t)
     append(cdr(h), t);
 
   return h;
+}
+
+cons_t* closure(lambda_t f, environment_t* e)
+{
+  cons_t *p = new cons_t();
+  p->type = CLOSURE;
+  p->closure = new closure_t();
+  p->closure->function = f;
+  p->closure->environment = e;
+  return p;
 }

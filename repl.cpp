@@ -10,23 +10,23 @@
 #include "eval.h"
 #include "primitives.h"
 
-static environment_t globals;
-
-cons_t* defun_list_globals(cons_t* p)
+cons_t* defun_list_globals(cons_t* p, environment_t *env)
 {
   cons_t *r = NULL;
 
-  for ( std::map<std::string, struct symbol_t*>::iterator i =
-    globals.symbols.begin(); i != globals.symbols.end(); ++i )
-  {
-    cons_t *s = list(symbol((*i).first.c_str(), &globals));
-    r = append(s, r);
-  }
+  do {
+    for ( dict_t::const_iterator i =
+      env->symbols.begin(); i != env->symbols.end(); ++i )
+    {
+      cons_t *s = list(symbol((*i).first.c_str(), env));
+      r = append(s, r);
+    }
+  } while ( (env = env->outer) != NULL );
 
   return r;
 }
 
-cons_t* defun_quit(cons_t* p)
+cons_t* defun_quit(cons_t* p, environment_t*)
 {
   if ( integerp(car(p)) )
     exit(car(p)->integer);
@@ -35,7 +35,7 @@ cons_t* defun_quit(cons_t* p)
   return nil();
 }
 
-cons_t* defun_run_tests(cons_t*)
+cons_t* defun_run_tests(cons_t*, environment_t*)
 {
   run_tests();
   return nil();
@@ -45,13 +45,16 @@ int repl()
 {
   char* input, prompt[1000];
 
-  load_default_defs(&globals);
+  environment_t *env = new environment_t();
+  load_default_defs(env);
+  printf("Loaded %ld definitions\n", env->symbols.size());
 
-  defun(symbol_t::create_symbol("exit", &globals), defun_quit);
-  defun(symbol_t::create_symbol("run-tests", &globals), defun_run_tests);
-  defun(symbol_t::create_symbol("list-globals", &globals), defun_list_globals);
+  // add some more definitions
+  env->defun("exit", defun_quit);
+  env->defun("run-tests", defun_run_tests);
+  env->defun("list-globals", defun_list_globals);
 
-  printf("Loaded %ld definitions\n", globals.symbols.size());
+  printf("Added defs, loaded %ld definitions\n", env->symbols.size());
   printf("Execute (exit [ code ]) to quit\n");
   printf("Execute (run-tests) to run tests\n");
   printf("Execute (list-globals) to list known definitions\n");
@@ -73,8 +76,8 @@ int repl()
       continue;
 
     try {
-      program_t *p = parse(input, &globals);
-      load_default_defs(p->globals);
+      program_t *p = parse(input, env);
+      load_default_defs(env);
 
       std::string s = sprint(eval(p));
 

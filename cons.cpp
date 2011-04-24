@@ -32,3 +32,40 @@ std::string to_s(cons_t *p)
   }
 }
 
+cons_t* environment_t::lookup(const char* name) const
+{
+  std::string n = toupper(name);
+  const environment_t *e = this;
+  dict_t::const_iterator i;
+
+  do {
+    if ( (i = e->symbols.find(n)) != e->symbols.end() )
+      return (*i).second;
+  } while ( (e = e->outer) != NULL);
+
+  return NULL;
+}
+
+symbol_t* environment_t::create_symbol(const char* s)
+{
+  cons_t *p = lookup(s);
+
+  if ( !(!nullp(p) && symbolp(p)) ) {
+    std::string name = toupper(s);
+
+    p = new cons_t();
+    p->type = SYMBOL;
+    p->symbol = new symbol_t(name.c_str());
+
+    // overwrite any existing definition
+    symbols[name] = p;
+  }
+
+  return p->symbol;
+}
+
+void environment_t::defun(const char* name, lambda_t f)
+{
+  std::string n = toupper(name);
+  symbols[n] = closure(f, this);
+}

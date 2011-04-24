@@ -7,8 +7,8 @@
  *        - apply gobbles expr + environment, returns environment
  *        - eval gobbles up this new environment, etc
  */
-cons_t* apply(lambda_t f, cons_t *args)
+cons_t* apply(lambda_t f, cons_t *args, environment_t *env)
 {
   // TODO: Add environment argument
-  return f? f(args) : NULL;
+  return f? f(args, env) : NULL;
 }
