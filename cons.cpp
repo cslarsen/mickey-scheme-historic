@@ -1,6 +1,8 @@
+#include <stdexcept>
 #include "cons.h"
 #include "util.h"
 #include "primops.h"
+#include "print.h"
 
 std::string to_s(enum type_t type)
 {
@@ -8,7 +10,7 @@ std::string to_s(enum type_t type)
   default:       return "<?>";      break;
   case NIL:      return "nil";      break;
   case INTEGER:  return "integer";  break;
-  case CLOSURE:  return "cloure";   break;
+  case CLOSURE:  return "closure";   break;
   case PAIR:     return "pair";     break;
   case SYMBOL:   return "symbol";   break;
   case STRING:   return "string";   break;
@@ -32,40 +34,39 @@ std::string to_s(cons_t *p)
   }
 }
 
-cons_t* environment_t::lookup(const char* name) const
+cons_t* environment_t::lookup(const std::string& s) const
 {
-  std::string n = toupper(name);
+  std::string name = toupper(s);
   const environment_t *e = this;
-  dict_t::const_iterator i;
 
   do {
-    if ( (i = e->symbols.find(n)) != e->symbols.end() )
+    dict_t::const_iterator i;
+    if ( (i = e->symbols.find(name)) != e->symbols.end() )
       return (*i).second;
   } while ( (e = e->outer) != NULL);
 
   return NULL;
 }
 
-symbol_t* environment_t::create_symbol(const char* s)
+symbol_t* environment_t::create_symbol(const std::string& s)
 {
-  cons_t *p = lookup(s);
+  std::string name = toupper(s);
+  cons_t *p = lookup(name);
 
-  if ( !(!nullp(p) && symbolp(p)) ) {
-    std::string name = toupper(s);
-
+  if ( nullp(p) ) {
     p = new cons_t();
     p->type = SYMBOL;
     p->symbol = new symbol_t(name.c_str());
-
-    // overwrite any existing definition
     symbols[name] = p;
   }
 
-  return p->symbol;
+  if ( !symbolp(p) )
+    throw std::runtime_error("create_symbol: already exists and is not symbol, but " + sprint(p));
+
+  return symbolp(p) ? p->symbol : NULL;
 }
 
-void environment_t::defun(const char* name, lambda_t f)
+void environment_t::defun(const std::string& s, lambda_t f)
 {
-  std::string n = toupper(name);
-  symbols[n] = closure(f, this);
+  symbols[toupper(s)] = closure(f, this);
 }

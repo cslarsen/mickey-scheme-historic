@@ -30,9 +30,9 @@ struct environment_t
   {
   }
 
-  struct cons_t* lookup(const char* name) const;
-  struct symbol_t* create_symbol(const char* s);
-  void defun(const char* name, lambda_t func);
+  struct cons_t* lookup(const std::string& name) const;
+  struct symbol_t* create_symbol(const std::string& name);
+  void defun(const std::string& name, lambda_t func);
 };
 
 struct continuation_t

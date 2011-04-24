@@ -15,12 +15,14 @@ cons_t* defun_list_globals(cons_t* p, environment_t *env)
   cons_t *r = NULL;
 
   do {
-    for ( dict_t::const_iterator i =
-      env->symbols.begin(); i != env->symbols.end(); ++i )
-    {
-      cons_t *s = list(symbol((*i).first.c_str(), env));
-      r = append(s, r);
+    dict_t::const_iterator i = env->symbols.begin();
+
+    while ( i != env->symbols.end() ) {
+      std::string n = (*i).first;
+      r = append(cons(string(n.c_str())), r);
+      ++i;
     }
+
   } while ( (env = env->outer) != NULL );
 
   return r;
@@ -47,17 +49,18 @@ int repl()
 
   environment_t *env = new environment_t();
   load_default_defs(env);
-  printf("Loaded %ld definitions\n", env->symbols.size());
 
   // add some more definitions
   env->defun("exit", defun_quit);
   env->defun("run-tests", defun_run_tests);
   env->defun("list-globals", defun_list_globals);
 
-  printf("Added defs, loaded %ld definitions\n", env->symbols.size());
+  printf("Loaded %ld definitions\n", env->symbols.size());
   printf("Execute (exit [ code ]) to quit\n");
   printf("Execute (run-tests) to run tests\n");
   printf("Execute (list-globals) to list known definitions\n");
+
+  printf("Definitions: %s\n", sprint(defun_list_globals(nil(), env)).c_str());
 
   for(;;) {
     sprintf(prompt,"mickey> ");
@@ -77,8 +80,6 @@ int repl()
 
     try {
       program_t *p = parse(input, env);
-      load_default_defs(env);
-
       std::string s = sprint(eval(p));
 
       if ( !s.empty() )

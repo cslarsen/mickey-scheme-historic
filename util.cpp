@@ -2,8 +2,9 @@
 #include <stdarg.h>
 #include "util.h"
 
-std::string toupper(const char* s)
+std::string toupper(const std::string& str)
 {
+  const char* s = str.c_str();
   std::string r;
   while ( *s ) r += toupper(*s++);
   return r;

@@ -20,9 +20,14 @@ cons_t* list(cons_t* head, cons_t* tail)
 
 cons_t* symbol(const char* s, environment_t *env)
 {
-  cons_t *p = new cons_t();
-  p->type = SYMBOL;
-  p->symbol = env->create_symbol(s);
+  cons_t *p = env->lookup(s);
+
+  if ( nullp(p) ) {
+    p = new cons_t();
+    p->type = SYMBOL;
+    p->symbol = env->create_symbol(s);
+  }
+
   return p;
 }
 
@@ -138,10 +143,13 @@ cons_t* append(cons_t *h, cons_t *t)
 
 cons_t* closure(lambda_t f, environment_t* e)
 {
+  closure_t *c = new closure_t();
+  c->function = f;
+  c->environment = e;
+
   cons_t *p = new cons_t();
   p->type = CLOSURE;
-  p->closure = new closure_t();
-  p->closure->function = f;
-  p->closure->environment = e;
+  p->closure = c;
+
   return p;
 }

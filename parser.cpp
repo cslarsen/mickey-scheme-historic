@@ -44,10 +44,10 @@ program_t* parse(const char *program, environment_t *env)
   set_source(program);
 
   if ( env == NULL )
-    env = new environment_t();
+    throw std::runtime_error("parse: null environment");
 
   program_t *p = new program_t();
   p->globals = env;
-  p->root = parse_list(p->globals);
+  p->root = parse_list(env);
   return p;
 }

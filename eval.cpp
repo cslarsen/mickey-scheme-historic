@@ -19,20 +19,9 @@ cons_t* eval(cons_t* p, environment_t* env)
      * TODO: Could I do `apply(fun, eval(cdar(p)))` below
      *       instead of calling eval() inside apply?
      */
-    if ( symbolp(car(p)) ) {
-      std::string name = car(p)->symbol->name;
-      cons_t *cl = env->lookup(name.c_str());
-
-      if ( nullp(cl) )
-        throw std::runtime_error(format("Unknown definition '%s'", name.c_str()));
-
-      if ( !closurep(cl) )
-        throw std::runtime_error(format("Not a closure, '%s', but type *%s*: ",
-          name.c_str(),
-          to_s(type_of(cl)).c_str(),
-          sprint(cl).c_str()));
-
-      return apply(cl->closure->function, cdr(p), cl->closure->environment); // apply calls eval()
+    if ( closurep(car(p)) ) {
+      closure_t *c = car(p)->closure;
+      return apply(c->function, cdr(p), c->environment); // apply calls eval()
     } else
       return cons(eval(car(p), env), eval(cdr(p), env));
   }
@@ -47,11 +36,13 @@ cons_t* eval(cons_t* p, environment_t* env)
     return value;
   }
 
-  // of type integer, string, etc
+  // Value-types (integers, strings, etc) evaluate to themselves
   return p;
 }
 
 cons_t* eval(program_t *p)
 {
-  return cons(eval(car(p->root), p->globals), eval(cdr(p->root), p->globals));
+  return cons(
+    eval(car(p->root), p->globals),
+    eval(cdr(p->root), p->globals));
 }
