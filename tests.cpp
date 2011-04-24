@@ -95,15 +95,17 @@ void run_tests()
   TEST_STREQ(sprint(cons(append(NULL, list(integer(1), integer(2))))), "(1 2)");
 
   TEST_STREQ(sprint(parse("(cons 1 2)")), "(CONS 1 2)");
-  TEST_STREQ(sprint(parse("(+ (* 1 2) 3)")), "(+ (* 1 2) 3)");
+  TEST_STREQ(sprint(parse("(+ (* 1 2) 3)")), "(<closure> (<closure> 1 2) 3)");
+  TEST_STREQ(sprint(parse("(fx-+ (fx-* 1 2) 3)")), "(FX-+ (FX-* 1 2) 3)");
   TEST_STREQ(sprint(parse("(1)")), "(1)");
   TEST_STREQ(sprint(parse("((1))")), "((1))");
   TEST_STREQ(sprint(parse("((1 2))")), "((1 2))");
   TEST_STREQ(sprint(parse("((1 2) 3)")), "((1 2) 3)");
   TEST_STREQ(sprint(parse("((a b) c)")), "((A B) C)");
   TEST_STREQ(sprint(parse("(a (b c) d)")), "(A (B C) D)");
-  TEST_STREQ(sprint(parse("(display (string-append \"Hello\" \", \" \"world!\"))")), "(DISPLAY (STRING-APPEND \"Hello\" \", \" \"world!\"))");
-  TEST_STREQ(sprint(parse("(display \"Hello\\nworld!\")))")), "(DISPLAY \"Hello\\nworld!\")");
+  TEST_STREQ(sprint(parse("(display (string-append \"Hello\" \", \" \"world!\"))")),
+    "(<closure> (<closure> \"Hello\" \", \" \"world!\"))");
+  TEST_STREQ(sprint(parse("(display \"Hello\\nworld!\")))")), "(<closure> \"Hello\\nworld!\")");
   TEST_STREQ(sprint(parse("a")), "A");
   TEST_STREQ(sprint(parse("(1 2 3) (4 5 6)")), "(1 2 3) (4 5 6)");
   TEST_STREQ(sprint(parse("(1 2 3)\r\n(4 5 6)")), "(1 2 3) (4 5 6)");
