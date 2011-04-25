@@ -1,3 +1,4 @@
+#include <stdexcept>
 #include "primops.h"
 #include "util.h"
 
