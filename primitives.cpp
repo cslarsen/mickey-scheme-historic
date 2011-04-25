@@ -25,6 +25,7 @@ void load_default_defs(environment_t *e)
   e->defun("*", defun_mul);
   e->defun("->string", defun_to_string);
   e->defun("list", defun_list);
+  e->defun("define", defun_define);
 }
 
 cons_t* defun_print(cons_t *p, environment_t* env)
@@ -136,4 +137,33 @@ cons_t* defun_list(cons_t* p, environment_t *env)
       l = append(l, cons(eval(car(p), env)));
 
   return l;
+}
+
+cons_t* defun_define(cons_t *p, environment_t *env)
+{
+  /*
+   * Format: (define <name> <body>)
+   */
+
+  cons_t *name = car(p);
+  cons_t *body = eval(cdr(p), env);
+
+  if ( !symbolp(name) )
+    throw std::runtime_error("First argument to (define) must be a symbol");
+
+  /*
+   * Ugly hack:  If we do (define a 123) we get car(body)=123 and cdr(body)=nil,
+   *             but if we do (define a (list 1 2 3)) we get car(body)=nil and cdr(body)=list(1 2 3)
+   *
+   *             This is probably due to bugs in the parser, so fixing that is a big TODO.
+   */
+  if ( nullp(car(body)) && !nullp(cdr(body)) )        //
+    body = cdr(body);                                 // <= THIS IS UGLY
+  else if ( !nullp(car(body)) && nullp(cdr(body)) )   // <= AND WRONG
+    body = car(body);                                 // <= AND MUST BEGONE!
+  else if ( !nullp(car(body)) && !nullp(cdr(body)) )  //
+    body = cadr(body);
+
+  env->define(name->symbol->name, body);
+  return nil();
 }

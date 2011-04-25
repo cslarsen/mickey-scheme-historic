@@ -19,3 +19,4 @@ cons_t* defun_mul(cons_t*, environment_t*);
 cons_t* defun_begin(cons_t*, environment_t*);
 cons_t* defun_to_string(cons_t*, environment_t*);
 cons_t* defun_list(cons_t*, environment_t*);
+cons_t* defun_define(cons_t*, environment_t*);

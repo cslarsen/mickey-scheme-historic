@@ -70,3 +70,10 @@ void environment_t::defun(const std::string& s, lambda_t f)
 {
   symbols[toupper(s)] = closure(f, this);
 }
+
+struct cons_t* environment_t::define(const std::string& name, cons_t* body)
+{
+  // TODO: Perform deep copy?  Extend environment?
+  symbols[toupper(name)] = body;
+  return body;
+}

@@ -33,6 +33,7 @@ struct environment_t
   struct cons_t* lookup(const std::string& name) const;
   struct symbol_t* create_symbol(const std::string& name);
   void defun(const std::string& name, lambda_t func);
+  struct cons_t* define(const std::string& name, cons_t* body);
 };
 
 struct continuation_t
