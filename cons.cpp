@@ -48,7 +48,7 @@ cons_t* environment_t::lookup(const std::string& s) const
   return NULL;
 }
 
-symbol_t* environment_t::create_symbol(const std::string& s)
+cons_t* environment_t::create_symbol(const std::string& s)
 {
   std::string name = toupper(s);
   cons_t *p = lookup(name);
@@ -60,10 +60,7 @@ symbol_t* environment_t::create_symbol(const std::string& s)
     symbols[name] = p;
   }
 
-  if ( !symbolp(p) )
-    throw std::runtime_error("create_symbol: already exists and is not symbol, but " + sprint(p));
-
-  return symbolp(p) ? p->symbol : NULL;
+  return p;
 }
 
 void environment_t::defun(const std::string& s, lambda_t f)

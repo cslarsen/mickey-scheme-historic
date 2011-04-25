@@ -55,6 +55,8 @@ int repl()
   env->defun("run-tests", defun_run_tests);
   env->defun("list-globals", defun_list_globals);
 
+  printf("Mickey Scheme (C) 2011 Christian Stigen Larsen\n");
+  printf("\n");
   printf("Loaded %ld definitions\n", env->symbols.size());
   printf("Execute (exit [ code ]) to quit\n");
   printf("Execute (run-tests) to run tests\n");

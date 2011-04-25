@@ -20,15 +20,10 @@ cons_t* list(cons_t* head, cons_t* tail)
 
 cons_t* symbol(const char* s, environment_t *env)
 {
-  cons_t *p = env->lookup(s);
-
-  if ( nullp(p) ) {
-    p = new cons_t();
-    p->type = SYMBOL;
-    p->symbol = env->create_symbol(s);
-  }
-
-  return p;
+  // NOTE: A variable->value lookup is performed here
+  // This is probably not the correct place to do this!
+  // 
+  return env->create_symbol(s);
 }
 
 cons_t* nil()
@@ -130,7 +125,7 @@ cons_t* append(cons_t *h, cons_t *t)
   if ( h == NULL )
     return t;
   else if ( !pairp(h) )
-    return NULL; // error; try running "(append 1 nil)", should throw error
+    throw std::runtime_error("First argument to (append) must be a list");
   else if ( car(h) == NULL )
     h->car = t;
   else if ( cdr(h) == NULL )

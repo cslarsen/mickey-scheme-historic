@@ -26,6 +26,7 @@ void load_default_defs(environment_t *e)
   e->defun("->string", defun_to_string);
   e->defun("list", defun_list);
   e->defun("define", defun_define);
+  e->defun("quote", defun_quote);
 }
 
 cons_t* defun_print(cons_t *p, environment_t* env)
@@ -89,8 +90,8 @@ cons_t* defun_mul(cons_t *p, environment_t *env)
       cons_t *res = eval(car(p), env);
       if ( integerp(res) )
         product *= res->integer; // else, throw (TODO)
-    }
-    // incompatible types; throw error or something
+    } else
+      throw std::runtime_error("Cannot multiply with type " + to_s(type_of(p)));
   }
 
   return integer(product);
@@ -166,4 +167,10 @@ cons_t* defun_define(cons_t *p, environment_t *env)
 
   env->define(name->symbol->name, body);
   return nil();
+}
+
+cons_t* defun_quote(cons_t *p, environment_t *env)
+{
+  // just pass along data without performing eval()
+  return nullp(cdr(p)) ? car(p) : cadr(p);
 }
