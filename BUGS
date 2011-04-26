@@ -2,3 +2,19 @@
 0> (display "error )
 "ERROR 1> 
 2> 
+
+--- Cannot redefine statements,
+after we do
+
+> (define a 123)
+
+then the next time we perform
+
+> (define a 100)
+
+then `a' is expanded to `123' by the parser, so the evaluator will se
+
+> (define 123 100)
+
+which is non-sensical.  Fix is to not let the _parser_ to the variable
+lookups.
