@@ -21,3 +21,4 @@ cons_t* defun_to_string(cons_t*, environment_t*);
 cons_t* defun_list(cons_t*, environment_t*);
 cons_t* defun_define(cons_t*, environment_t*);
 cons_t* defun_quote(cons_t*, environment_t*);
+cons_t* defun_load(cons_t*, environment_t*);

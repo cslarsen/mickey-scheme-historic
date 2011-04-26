@@ -6,6 +6,7 @@
 #include "primitives.h"
 #include "print.h"
 #include "util.h"
+#include "file_io.h"
 
 // TODO: Fix this, had to do it because of circular cons/util deps
 extern std::string to_s(cons_t*);
@@ -27,6 +28,7 @@ void load_default_defs(environment_t *e)
   e->defun("list", defun_list);
   e->defun("define", defun_define);
   e->defun("quote", defun_quote);
+  e->defun("load", defun_load);
 }
 
 cons_t* defun_print(cons_t *p, environment_t* env)
@@ -173,4 +175,18 @@ cons_t* defun_quote(cons_t *p, environment_t *env)
 {
   // just pass along data without performing eval()
   return nullp(cdr(p)) ? car(p) : cadr(p);
+}
+
+cons_t* defun_load(cons_t *filename, environment_t *env)
+{
+  if ( !stringp(car(filename)) )
+    throw std::runtime_error("First argument to (load) must be a file name");
+
+  program_t *p = parse(slurp(open_file(car(filename)->string)).c_str(), env);
+
+  // When reading from disk, we implicitly wrap it all in (begin ...)
+  p->root = cons(cons(env->lookup("begin"), p->root));
+
+  eval(p);
+  return nil();
 }

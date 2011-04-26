@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdexcept>
+#include "util.h"
 
 class open_file {
   FILE *f;
@@ -10,7 +11,7 @@ public:
   open_file(const char* name, const char* access = "rt") : f(fopen(name, access))
   {
     if ( f == NULL )
-      throw std::runtime_error(name);
+      throw std::runtime_error(format("Could not open file: %s",  name));
   }
 
   ~open_file()

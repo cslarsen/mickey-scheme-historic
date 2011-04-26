@@ -59,10 +59,7 @@ int repl()
   printf("\n");
   printf("Loaded %ld definitions\n", env->symbols.size());
   printf("Execute (exit [ code ]) to quit\n");
-  printf("Execute (run-tests) to run tests\n");
-  printf("Execute (list-globals) to list known definitions\n");
-
-  printf("Definitions: %s\n", sprint(defun_list_globals(nil(), env)).c_str());
+  printf("You can also (run-tests) and (list-globals)\n");
 
   for(;;) {
     sprintf(prompt,"mickey> ");
