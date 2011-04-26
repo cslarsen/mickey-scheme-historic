@@ -41,10 +41,10 @@ void run_tests()
   TEST_STREQ(sprint(cons(cons(integer(1)), NULL)), "(1)");
   TEST_STREQ(sprint(cons(cons(integer(1), integer(1)), NULL)), "(1 . 1)");
 
-  TEST_STREQ(sprint(cons(cons(symbol("one"), symbol("two")))), "(ONE . TWO)");
+  TEST_STREQ(sprint(cons(cons(symbol("one"), symbol("two")))), "(one . two)");
   TEST_STREQ(sprint(cons(cons(integer(1), integer(2)))), "(1 . 2)");
   TEST_STREQ(sprint(cons(cons(integer(0), cons(integer(1), integer(2))))), "(0 1 . 2)");
-  TEST_STREQ(sprint(cons(cons(symbol("zero"), cons(symbol("one"), symbol("two"))))), "(ZERO ONE . TWO)");
+  TEST_STREQ(sprint(cons(cons(symbol("zero"), cons(symbol("one"), symbol("two"))))), "(zero one . two)");
 
   /*
    * Common Lisp: (cons 1 (cons 2 nil))
@@ -94,19 +94,23 @@ void run_tests()
   // (append nil (list 1 2))
   TEST_STREQ(sprint(cons(append(NULL, list(integer(1), integer(2))))), "(1 2)");
 
-  TEST_STREQ(sprint(parse("(cons 1 2)")), "(CONS 1 2)");
+  TEST_STREQ(sprint(parse("(cons 1 2)")), "(cons 1 2)");
+  TEST_STREQ(sprint(parse("(cOns 1 2)")), "(cOns 1 2)");
+  TEST_STREQ(sprint(parse("(CONS 1 2)")), "(CONS 1 2)");
   TEST_STREQ(sprint(parse("(+ (* 1 2) 3)")), "(<closure> (<closure> 1 2) 3)");
-  TEST_STREQ(sprint(parse("(fx-+ (fx-* 1 2) 3)")), "(FX-+ (FX-* 1 2) 3)");
+  TEST_STREQ(sprint(parse("(fx-+ (fx-* 1 2) 3)")), "(fx-+ (fx-* 1 2) 3)");
   TEST_STREQ(sprint(parse("(1)")), "(1)");
   TEST_STREQ(sprint(parse("((1))")), "((1))");
   TEST_STREQ(sprint(parse("((1 2))")), "((1 2))");
   TEST_STREQ(sprint(parse("((1 2) 3)")), "((1 2) 3)");
-  TEST_STREQ(sprint(parse("((a b) c)")), "((A B) C)");
-  TEST_STREQ(sprint(parse("(a (b c) d)")), "(A (B C) D)");
+  TEST_STREQ(sprint(parse("((a b) c)")), "((a b) c)");
+  TEST_STREQ(sprint(parse("(a (b c) d)")), "(a (b c) d)");
+  TEST_STREQ(sprint(parse("(a (B c) D)")), "(a (B c) D)");
   TEST_STREQ(sprint(parse("(display (string-append \"Hello\" \", \" \"world!\"))")),
     "(<closure> (<closure> \"Hello\" \", \" \"world!\"))");
   TEST_STREQ(sprint(parse("(display \"Hello\\nworld!\")))")), "(<closure> \"Hello\\nworld!\")");
-  TEST_STREQ(sprint(parse("a")), "A");
+  TEST_STREQ(sprint(parse("a")), "a");
+  TEST_STREQ(sprint(parse("A")), "A");
   TEST_STREQ(sprint(parse("(1 2 3) (4 5 6)")), "(1 2 3) (4 5 6)");
   TEST_STREQ(sprint(parse("(1 2 3)\r\n(4 5 6)")), "(1 2 3) (4 5 6)");
   TEST_STREQ(print(eval(parse("(->string 123)"))), "123");

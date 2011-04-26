@@ -34,9 +34,8 @@ std::string to_s(cons_t *p)
   }
 }
 
-cons_t* environment_t::lookup(const std::string& s) const
+cons_t* environment_t::lookup(const std::string& name) const
 {
-  std::string name = toupper(s);
   const environment_t *e = this;
 
   do {
@@ -48,9 +47,8 @@ cons_t* environment_t::lookup(const std::string& s) const
   return NULL;
 }
 
-cons_t* environment_t::create_symbol(const std::string& s)
+cons_t* environment_t::create_symbol(const std::string& name)
 {
-  std::string name = toupper(s);
   cons_t *p = lookup(name);
 
   if ( nullp(p) ) {
@@ -63,14 +61,13 @@ cons_t* environment_t::create_symbol(const std::string& s)
   return p;
 }
 
-void environment_t::defun(const std::string& s, lambda_t f)
+void environment_t::defun(const std::string& name, lambda_t f)
 {
-  symbols[toupper(s)] = closure(f, this);
+  symbols[name] = closure(f, this);
 }
 
 struct cons_t* environment_t::define(const std::string& name, cons_t* body)
 {
   // TODO: Perform deep copy?  Extend environment?
-  symbols[toupper(name)] = body;
-  return body;
+  return symbols[name] = body;
 }
