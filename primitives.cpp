@@ -29,6 +29,7 @@ void load_default_defs(environment_t *e)
   e->defun("define", defun_define);
   e->defun("quote", defun_quote);
   e->defun("load", defun_load);
+  e->defun("debug", defun_debug);
 }
 
 cons_t* defun_print(cons_t *p, environment_t* env)
@@ -189,4 +190,45 @@ cons_t* defun_load(cons_t *filename, environment_t *env)
 
   eval(p);
   return nil();
+}
+
+cons_t* defun_debug(cons_t *p, environment_t *env)
+{
+  std::string s;
+
+  s = format("adr=%-11p type=%-7s", p, to_s(type_of(p)).c_str());
+
+  if ( !nullp(p) )
+  switch ( type_of(p) ) {
+  case NIL:
+    break;
+  case INTEGER:
+    s += format(" value=%d", p->integer);
+    break;
+  case CLOSURE:
+    s += format(" function=%p environment=%p", p->closure->function, p->closure->environment);
+    break;
+  case PAIR:
+    s += format(" car=%p cdr=%p", p->car, p->cdr);
+    break;
+  case SYMBOL:
+    s += format(" name='%s'", p->symbol->name.c_str());
+    break;
+  case STRING:
+    s += format(" value='%s'", p->string);
+    break;
+  case U8VECTOR:
+    break;
+  case CONTINUATION:
+    break;
+  }
+
+  s += "\n";
+
+  if ( type_of(p) == PAIR ) {
+    s += defun_debug(car(p), env)->string;
+    s += defun_debug(cdr(p), env)->string;
+  }
+
+  return string(s.c_str());
 }
