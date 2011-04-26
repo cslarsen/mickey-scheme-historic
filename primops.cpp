@@ -123,13 +123,11 @@ bool closurep(cons_t* p)
 
 cons_t* append(cons_t *h, cons_t *t)
 {
-  if ( h == NULL )
-    return t;
-  else if ( !pairp(h) )
-    throw std::runtime_error("First argument to (append) must be a list");
-  else if ( car(h) == NULL )
+  if ( nullp(h) || !pairp(h) )
+    return t; //throw std::runtime_error("First argument to (append) must be a list");
+  else if ( nullp(car(h)) )
     h->car = t;
-  else if ( cdr(h) == NULL )
+  else if ( nullp(cdr(h)) )
     h->cdr = t;
   else
     append(cdr(h), t);
