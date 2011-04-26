@@ -1,6 +1,6 @@
 NEXT STEPS
-- Add support for (define), simple variable placeholder
-- Add support for environment / lexical closure, use with (define) above
+- Add support to redefine, i.e. (define a 123) and then (define a 100)
+- Add support for lexical closure (extending the environment)
 - Add support for (lambda), use with closure and define above
   => now we're a *real* Lisp!
 - Add (import) for reading other files
