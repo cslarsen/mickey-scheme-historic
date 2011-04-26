@@ -30,6 +30,7 @@ void load_default_defs(environment_t *e)
   e->defun("quote", defun_quote);
   e->defun("load", defun_load);
   e->defun("debug", defun_debug);
+  e->defun("exit", defun_exit);
 }
 
 cons_t* defun_print(cons_t *p, environment_t* env)
@@ -231,4 +232,10 @@ cons_t* defun_debug(cons_t *p, environment_t *env)
   }
 
   return string(s.c_str());
+}
+
+cons_t* defun_exit(cons_t* p, environment_t*)
+{
+  exit(integerp(car(p))? car(p)->integer : 0);
+  return NULL;
 }
