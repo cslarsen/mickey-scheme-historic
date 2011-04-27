@@ -51,6 +51,7 @@ void load_default_defs(environment_t *e)
   e->defun("integer?", defun_integerp);
   e->defun("null?", defun_nullp);
   e->defun("pair?", defun_pairp);
+  e->defun("procedure?", defun_procedurep);
 }
 
 cons_t* defun_print(cons_t *p, environment_t* env)
@@ -332,4 +333,9 @@ cons_t* defun_version(cons_t*, environment_t*)
   v = append(v, cons(string(format("Using Boehm-Demers-Weiser GC %d.%d\n", GC_VERSION_MAJOR, GC_VERSION_MINOR).c_str())));
   v = append(v, cons(string(format("Compiler version: %s\n", __VERSION__).c_str())));
   return v;
+}
+
+cons_t* defun_procedurep(cons_t* p, environment_t*)
+{
+  return integer(closurep(car(p)));
 }
