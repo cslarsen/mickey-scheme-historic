@@ -12,6 +12,7 @@ closure_t* lookup_closure(symbol_t*, environment_t*);
 void defun(symbol_t*, lambda_t, environment_t*);
 void load_default_defs(environment_t*);
 
+cons_t* defun_version(cons_t*, environment_t*);
 cons_t* defun_print(cons_t*, environment_t*);
 cons_t* defun_strcat(cons_t*, environment_t*);
 cons_t* defun_add(cons_t*, environment_t*);

@@ -1,5 +1,7 @@
 #include <stdexcept>
 #include <vector>
+#include <readline/readline.h>
+#include "heap.h"
 #include "cons.h"
 #include "eval.h"
 #include "primops.h"
@@ -31,6 +33,7 @@ void load_default_defs(environment_t *e)
   e->defun("load", defun_load);
   e->defun("debug", defun_debug);
   e->defun("exit", defun_exit);
+  e->defun("version", defun_version);
 
   // cons and friends
   e->defun("cons", defun_cons);
@@ -320,4 +323,13 @@ cons_t* defun_nullp(cons_t* p, environment_t*)
 cons_t* defun_pairp(cons_t* p, environment_t*)
 {
   return integer(pairp(p));
+}
+
+cons_t* defun_version(cons_t*, environment_t*)
+{
+  cons_t *v = list(string("Mickey Scheme (C) 2011 Christian Stigen Larsen\n"));
+  v = append(v, cons(string(format("Using Readline %d.%d\n", (rl_readline_version & 0xFF00) >> 8, rl_readline_version & 0x00FF).c_str())));
+  v = append(v, cons(string(format("Using Boehm-Demers-Weiser GC %d.%d\n", GC_VERSION_MAJOR, GC_VERSION_MINOR).c_str())));
+  v = append(v, cons(string(format("Compiler version: %s\n", __VERSION__).c_str())));
+  return v;
 }
