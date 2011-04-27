@@ -9,6 +9,7 @@
 #include "print.h"
 #include "eval.h"
 #include "primitives.h"
+#include "heap.h"
 
 // make env reachable by readline commands
 static environment_t *global_env = NULL;
@@ -148,7 +149,8 @@ int repl()
 
   printf("Mickey Scheme (C) 2011 Christian Stigen Larsen\n");
   printf("\n");
-  printf("Using readline %d.%d\n", (rl_readline_version & 0xFF00) >> 8, rl_readline_version & 0x00FF);
+  printf("Using Readline %d.%d\n", (rl_readline_version & 0xFF00) >> 8, rl_readline_version & 0x00FF);
+  printf("Using Boehm-Demers-Weiser GC %d.%d\n", GC_VERSION_MAJOR, GC_VERSION_MINOR);
   printf("Compiler version: %s\n", __VERSION__);
   printf("\n");
   printf("Loaded %ld definitions\n", env->symbols.size());

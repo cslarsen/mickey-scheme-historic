@@ -14,9 +14,12 @@
 #include "eval.h"
 #include "print.h"
 #include "primitives.h"
+#include "heap.h"
 
 int main(int argc, char** argv)
 {
+  GC_INIT();
+
   if ( argc == 1 )
     return repl();
 

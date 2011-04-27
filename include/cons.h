@@ -4,6 +4,7 @@
 #include <string>
 #include <map>
 #include "util.h"
+#include "heap.h"
 
 // types taken from the PICOBIT scheme paper
 
@@ -21,7 +22,7 @@ enum type_t {
 typedef struct cons_t* (*lambda_t)(struct cons_t*, struct environment_t*);
 typedef std::map<std::string, struct cons_t*> dict_t; // TODO: Use hash_map
 
-struct environment_t
+struct environment_t : public gc
 {
   struct environment_t *outer;
   dict_t symbols;
@@ -36,21 +37,21 @@ struct environment_t
   struct cons_t* define(const std::string& name, cons_t* body);
 };
 
-struct continuation_t
+struct continuation_t : public gc
 {
 };
 
-struct closure_t
+struct closure_t : public gc
 {
   lambda_t function;
   environment_t* environment;
 };
 
-struct u8vector_t
+struct u8vector_t : public gc
 {
 };
 
-class symbol_t
+class symbol_t : public gc
 {
   symbol_t(const char* s) : name(s)
   {
@@ -66,7 +67,7 @@ public:
   std::string name;
 };
 
-struct cons_t {
+struct cons_t : public gc {
   type_t type;
   union {
     int integer;
