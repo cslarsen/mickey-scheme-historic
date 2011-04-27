@@ -52,6 +52,8 @@ void load_default_defs(environment_t *e)
   e->defun("null?", defun_nullp);
   e->defun("pair?", defun_pairp);
   e->defun("procedure?", defun_procedurep);
+
+  e->defun("length", defun_length);
 }
 
 cons_t* defun_print(cons_t *p, environment_t* env)
@@ -324,9 +326,15 @@ cons_t* defun_nullp(cons_t* p, environment_t*)
   return boolean(nullp(car(p)));
 }
 
-cons_t* defun_pairp(cons_t* p, environment_t*)
+cons_t* defun_pairp(cons_t* p, environment_t* env)
 {
-  return boolean(pairp(car(p)));
+  /*
+   * TODO: This works by BRUTE FORCE;
+   *       fix the evaluator (lookup+eval evlis there)
+   *       and fix the parser (don't cons the car before
+   *       returning)
+   */
+  return boolean(pairp(eval(cadr(p), env)));
 }
 
 cons_t* defun_procedurep(cons_t* p, environment_t*)
@@ -341,4 +349,19 @@ cons_t* defun_version(cons_t*, environment_t*)
   v = append(v, cons(string(format("Using Boehm-Demers-Weiser GC %d.%d\n", GC_VERSION_MAJOR, GC_VERSION_MINOR).c_str())));
   v = append(v, cons(string(format("Compiler version: %s\n", __VERSION__).c_str())));
   return v;
+}
+
+cons_t* defun_length(cons_t* p, environment_t* env)
+{
+  int n = 0;
+
+  // again, eval should be handled by evlis in eval()
+  p = eval(cadr(p), env);
+
+  while ( !nullp(p) ) {
+    p = cdr(p);
+    ++n;
+  } 
+
+  return integer(n);
 }

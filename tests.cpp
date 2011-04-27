@@ -172,5 +172,24 @@ void run_tests()
   TEST_EVAL("(procedure? (list 1 2))", "#f");
   TEST_EVAL("(procedure? (+ 1 2))", "#f");
 
+  TEST_EVAL("(pair? (list 1 2 3))", "#t");
+  TEST_EVAL("(pair?)", "#f");
+  TEST_EVAL("(pair? 123)", "#f");
+  TEST_EVAL("(pair? abba)", "#f");
+  TEST_EVAL("(pair? (+ 1 2))", "#f"); // cause "(+ 1 2)" evaluates to "3"
+  TEST_EVAL("(pair? (list 1 2))", "#t");
+  TEST_EVAL("(pair? (list 1))", "#t");
+  TEST_EVAL("(pair? (+))", "#f");
+  TEST_EVAL("(pair? +)", "#f");
+  TEST_EVAL("(pair? (list))", "#f");
+  TEST_EVAL("(pair? 1 2)", "#f"); // actually, should be error b/c "1 2" is not a list
+
+  TEST_EVAL("(length (list))", "0");
+  TEST_EVAL("(length (list 1))", "1");
+  TEST_EVAL("(length (list 1 2))", "2");
+  TEST_EVAL("(length (list 1 2 3))", "3");
+  TEST_EVAL("(length 0)", "0"); // actually, error
+  TEST_EVAL("(length (list 1 2 (list 3 4)))", "3");
+
   results();
 }
