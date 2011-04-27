@@ -1,5 +1,4 @@
 ASAP
-- Add boolean #f, #t
 - Test new primitives
 - Fix evaluator (define/lookup, see Quiennec)
 - Fix environment / closure
