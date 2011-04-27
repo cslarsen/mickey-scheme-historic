@@ -92,8 +92,7 @@ bool symbolp(cons_t* p)
 
 bool atomp(cons_t* p)
 {
-  type_t t = type_of(p);
-  return t==SYMBOL || t==INTEGER || t==STRING;
+  return !nullp(p) && type_of(p) != PAIR;
 }
 
 bool integerp(cons_t* p)
