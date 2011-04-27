@@ -1,3 +1,21 @@
+ASAP
+- Add boolean #f, #t
+- Test new primitives
+- Fix evaluator (define/lookup, see Quiennec)
+- Fix environment / closure
+- Fix lambda
+- We're now a proper Scheme, celebrate!
+- Add library functions
+- Add libffi support
+- Add llvm primitives in scheme
+- Craft llvm compiler (in scheme?)
+- Add (fast) vector/SSE support through #(1 2 3)
+- Add parallelization support (through some lib; see comp benchmarks game)
+- Check up Hewitt's actor model, how it was solved in scheme
+- Add support for continuation
+- Add support for first class continuations
+- Add support for delay/force
+
 NEXT STEPS
 - Add support to redefine, i.e. (define a 123) and then (define a 100)
 - Add support for lexical closure (extending the environment)
