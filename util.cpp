@@ -59,7 +59,8 @@ bool char_in(char ch, const char* s)
 
 char* copy_str(const char* s)
 {
-  return strdup(s? s : "");
+  s = s? s : "";
+  return strcpy((char*)GC_MALLOC(1 + strlen(s)), s);
 }
 
 char* decode_literal_string(const char* s)

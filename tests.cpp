@@ -94,7 +94,7 @@ void run_tests()
   // (append nil (list 1 2))
   TEST_STREQ(sprint(cons(append(NULL, list(integer(1), integer(2))))), "(1 2)");
 
-  TEST_STREQ(sprint(parse("(cons 1 2)")), "(cons 1 2)");
+  TEST_STREQ(sprint(parse("(cons 1 2)")), "(<closure> 1 2)");
   TEST_STREQ(sprint(parse("(cOns 1 2)")), "(cOns 1 2)");
   TEST_STREQ(sprint(parse("(CONS 1 2)")), "(CONS 1 2)");
   TEST_STREQ(sprint(parse("(+ (* 1 2) 3)")), "(<closure> (<closure> 1 2) 3)");

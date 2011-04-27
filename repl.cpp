@@ -50,6 +50,12 @@ bool isprefix(const char* prefix, const char* fullstr)
 
 char** auto_complete(const char *s, int start, int end)
 {
+  /*
+   * Note that readline will free up stuff for us, so we
+   * don't have to use GC_MALLOC / copy_str here, but can safely
+   * use both malloc / strdup.
+   */
+
   static size_t last_hit = 0;
 
   cons_t *all_commands = defun_list_globals(NULL, global_env);
@@ -84,6 +90,10 @@ char** auto_complete(const char *s, int start, int end)
 
 char* readline_auto_completion(const char* s, int state)
 {
+  /*
+   * Regarding GC, see comment in auto_complete()
+   */
+
   static char** commands = NULL;
   static int idx = 0;
 
