@@ -24,3 +24,20 @@ cons_t* defun_quote(cons_t*, environment_t*);
 cons_t* defun_load(cons_t*, environment_t*);
 cons_t* defun_debug(cons_t*, environment_t*);
 cons_t* defun_exit(cons_t*, environment_t*);
+
+// cons and friends
+cons_t* defun_cons(cons_t*, environment_t*);
+cons_t* defun_car(cons_t*, environment_t*);
+cons_t* defun_cdr(cons_t*, environment_t*);
+cons_t* defun_caar(cons_t*, environment_t*);
+cons_t* defun_cadr(cons_t*, environment_t*);
+cons_t* defun_cdar(cons_t*, environment_t*);
+cons_t* defun_cddr(cons_t*, environment_t*);
+cons_t* defun_append(cons_t*, environment_t*);
+
+// predicates
+cons_t* defun_atomp(cons_t*, environment_t*);
+cons_t* defun_symbolp(cons_t*, environment_t*);
+cons_t* defun_integerp(cons_t*, environment_t*);
+cons_t* defun_nullp(cons_t*, environment_t*);
+cons_t* defun_pairp(cons_t*, environment_t*);

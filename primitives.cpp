@@ -31,6 +31,23 @@ void load_default_defs(environment_t *e)
   e->defun("load", defun_load);
   e->defun("debug", defun_debug);
   e->defun("exit", defun_exit);
+
+  // cons and friends
+  e->defun("cons", defun_cons);
+  e->defun("car", defun_car);
+  e->defun("cdr", defun_cdr);
+  e->defun("caar", defun_caar);
+  e->defun("cadr", defun_cadr);
+  e->defun("cdar", defun_cdar);
+  e->defun("cddr", defun_cddr);
+  e->defun("append", defun_append);
+
+  // predicates
+  e->defun("atom?", defun_atomp);
+  e->defun("symbol?", defun_symbolp);
+  e->defun("integer?", defun_integerp);
+  e->defun("null?", defun_nullp);
+  e->defun("pair?", defun_pairp);
 }
 
 cons_t* defun_print(cons_t *p, environment_t* env)
@@ -238,4 +255,69 @@ cons_t* defun_exit(cons_t* p, environment_t*)
 {
   exit(integerp(car(p))? car(p)->integer : 0);
   return NULL;
+}
+
+cons_t* defun_cons(cons_t* p, environment_t* e)
+{
+  return cons(car(p), cadr(p));
+}
+
+cons_t* defun_car(cons_t* p, environment_t*)
+{
+  return car(p);
+}
+
+cons_t* defun_cdr(cons_t* p, environment_t*)
+{
+  return cdr(p);
+}
+
+cons_t* defun_caar(cons_t* p, environment_t*)
+{
+  return caar(p);
+}
+
+cons_t* defun_cadr(cons_t* p, environment_t*)
+{
+  return cadr(p);
+}
+
+cons_t* defun_cdar(cons_t* p, environment_t*)
+{
+  return cdar(p);
+}
+
+cons_t* defun_cddr(cons_t* p, environment_t*)
+{
+  return cddr(p);
+}
+
+cons_t* defun_append(cons_t* p, environment_t*)
+{
+  return append(car(p), cadr(p));
+}
+
+cons_t* defun_atomp(cons_t* p, environment_t*)
+{
+  return integer(atomp(p));
+}
+
+cons_t* defun_symbolp(cons_t* p, environment_t*)
+{
+  return integer(symbolp(p));
+}
+
+cons_t* defun_integerp(cons_t* p, environment_t*)
+{
+  return integer(integerp(p));
+}
+
+cons_t* defun_nullp(cons_t* p, environment_t*)
+{
+  return integer(nullp(p));
+}
+
+cons_t* defun_pairp(cons_t* p, environment_t*)
+{
+  return integer(pairp(p));
 }
