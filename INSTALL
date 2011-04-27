@@ -1,0 +1,3 @@
+To install Mickey Scheme, you need
+- readline
+- boehm-demers-weiser gc
