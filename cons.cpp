@@ -9,8 +9,9 @@ std::string to_s(enum type_t type)
   switch ( type ) {
   default:       return "<?>";      break;
   case NIL:      return "nil";      break;
+  case BOOLEAN:  return "boolean";  break;
   case INTEGER:  return "integer";  break;
-  case CLOSURE:  return "closure";   break;
+  case CLOSURE:  return "closure";  break;
   case PAIR:     return "pair";     break;
   case SYMBOL:   return "symbol";   break;
   case STRING:   return "string";   break;
@@ -24,6 +25,7 @@ std::string to_s(cons_t *p)
   switch ( type_of(p) ) {
   default:       return "<?>";
   case NIL:      return "<nil>";
+  case BOOLEAN:  return to_s(p->boolean);
   case INTEGER:  return to_s(p->integer);
   case CLOSURE:  return format("<closure %p>", p->closure);
   case PAIR:     return to_s(car(p)) + " . " + to_s(cdr(p));

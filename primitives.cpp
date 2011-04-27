@@ -224,6 +224,9 @@ cons_t* defun_debug(cons_t *p, environment_t *env)
   switch ( type_of(p) ) {
   case NIL:
     break;
+  case BOOLEAN:
+    s += format(" value=%s", p->integer? "#t" : "#f");
+    break;
   case INTEGER:
     s += format(" value=%d", p->integer);
     break;
@@ -303,27 +306,32 @@ cons_t* defun_append(cons_t* p, environment_t*)
 
 cons_t* defun_atomp(cons_t* p, environment_t*)
 {
-  return integer(atomp(p));
+  return boolean(atomp(car(p)));
 }
 
 cons_t* defun_symbolp(cons_t* p, environment_t*)
 {
-  return integer(symbolp(p));
+  return boolean(symbolp(car(p)));
 }
 
 cons_t* defun_integerp(cons_t* p, environment_t*)
 {
-  return integer(integerp(p));
+  return boolean(integerp(car(p)));
 }
 
 cons_t* defun_nullp(cons_t* p, environment_t*)
 {
-  return integer(nullp(p));
+  return boolean(nullp(car(p)));
 }
 
 cons_t* defun_pairp(cons_t* p, environment_t*)
 {
-  return integer(pairp(p));
+  return boolean(pairp(car(p)));
+}
+
+cons_t* defun_procedurep(cons_t* p, environment_t*)
+{
+  return boolean(closurep(car(p)));
 }
 
 cons_t* defun_version(cons_t*, environment_t*)
@@ -333,9 +341,4 @@ cons_t* defun_version(cons_t*, environment_t*)
   v = append(v, cons(string(format("Using Boehm-Demers-Weiser GC %d.%d\n", GC_VERSION_MAJOR, GC_VERSION_MINOR).c_str())));
   v = append(v, cons(string(format("Compiler version: %s\n", __VERSION__).c_str())));
   return v;
-}
-
-cons_t* defun_procedurep(cons_t* p, environment_t*)
-{
-  return integer(closurep(car(p)));
 }

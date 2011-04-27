@@ -27,6 +27,11 @@ std::string to_s(int n)
   return std::string(buf);
 }
 
+std::string to_s(bool f)
+{
+  return std::string(f? "#t" : "#f");
+}
+
 std::string format(const char* fmt, ...)
 {
   char buf[1024] = {'\0'};

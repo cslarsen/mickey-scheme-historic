@@ -5,7 +5,8 @@ std::string sprint(cons_t* p, std::string& s, bool escape)
 {
   if ( p != NULL )
   switch ( p->type ) {
-  default: case NIL: return "";
+  case NIL: return "";
+  case BOOLEAN: return s + to_s(p->boolean);
   case INTEGER: return s + to_s(p->integer);
   case CLOSURE: return s + (escape? "<closure>" : "");
   case PAIR: {

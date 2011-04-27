@@ -42,6 +42,14 @@ cons_t* integer(int n)
   return p;
 }
 
+cons_t* boolean(bool f)
+{
+  cons_t *p = new cons_t();
+  p->type = BOOLEAN;
+  p->boolean = f;
+  return p;
+}
+
 cons_t* string(const char* s)
 {
   cons_t *p = new cons_t();
@@ -98,6 +106,11 @@ bool atomp(cons_t* p)
 bool integerp(cons_t* p)
 {
   return type_of(p) == INTEGER;
+}
+
+bool booleanp(cons_t* p)
+{
+  return type_of(p) == BOOLEAN;
 }
 
 bool stringp(cons_t* p)

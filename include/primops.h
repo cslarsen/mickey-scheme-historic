@@ -11,6 +11,7 @@ cons_t* list(cons_t* head, cons_t* tail = NULL);
 cons_t* append(cons_t*, cons_t*);
 cons_t* symbol(const char*, environment_t*);
 cons_t* integer(int);
+cons_t* boolean(bool);
 cons_t* decimal(float);
 cons_t* string(const char*);
 cons_t* closure(lambda_t, environment_t*);
@@ -30,5 +31,6 @@ bool nullp(cons_t*);
 bool pairp(cons_t*);
 bool stringp(cons_t*);
 bool closurep(cons_t*);
+bool booleanp(cons_t*);
 
 #endif

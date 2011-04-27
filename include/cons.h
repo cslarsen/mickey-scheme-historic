@@ -10,6 +10,7 @@
 
 enum type_t {
   NIL,
+  BOOLEAN,
   INTEGER,
   CLOSURE,
   PAIR,
@@ -70,6 +71,7 @@ public:
 struct cons_t : public gc {
   type_t type;
   union {
+    bool boolean;
     int integer;
     struct { cons_t *car, *cdr; }; // pair
     closure_t* closure;
