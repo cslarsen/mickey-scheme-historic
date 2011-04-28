@@ -273,14 +273,21 @@ cons_t* defun_cons(cons_t* p, environment_t* e)
   return cons(car(p), cadr(p));
 }
 
-cons_t* defun_car(cons_t* p, environment_t*)
+cons_t* defun_car(cons_t* p, environment_t* env)
 {
-  return car(p);
+  return car(eval(car(p), env));
 }
 
-cons_t* defun_cdr(cons_t* p, environment_t*)
+cons_t* defun_cdr(cons_t* p, environment_t* env)
 {
-  return cdr(p);
+  /*
+   * NOTE:  We have a special (and potentially UGLY) case
+   *        of doing "(cdr (list 1))" which should give "()",
+   *        so we explicitly check for it here, although we
+   *        probably SHOULD NOT (TODO).
+   */
+  cons_t *r = cdr(eval(car(p), env));
+  return r? r : cons(NULL);
 }
 
 cons_t* defun_caar(cons_t* p, environment_t*)

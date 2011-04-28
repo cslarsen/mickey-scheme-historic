@@ -21,7 +21,7 @@ std::string sprint(cons_t* p, std::string& s, bool escape)
           (!nullp(cdr(p)) && !listp(cadr(p))) ||                 // <=  IS
           (atomp(p) && listp(cdr(p))) ||                         // <= VERY
           (integerp(car(p)) && listp(cdr(p)))                    // <= MESSY! (and wrong)
-            ? (escape && !sprint_car.empty()? " " : "") : "")
+            ? (!sprint_car.empty()? " " : "") : "")
       + sprint(p->cdr, s, escape);
     } break;
   case SYMBOL: return s + p->symbol->name;

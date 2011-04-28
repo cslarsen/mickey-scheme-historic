@@ -235,5 +235,19 @@ void run_tests()
   TEST_EVAL("(list? (list))", "#t");
   TEST_EVAL("(pair? (list))", "#f");
 
+  // car/cdr and friends
+  TEST_EVAL("(car (list 1 2))", "1");
+  TEST_EVAL("(car (list 1))", "1");
+  TEST_EVAL("(car (list 2))", "2");
+  TEST_EVAL("(car (list 1 2 3))", "1");
+
+  TEST_EVAL("(cdr (list 1 2))", "(2)");
+  TEST_EVAL("(cdr (list 1))", "()");
+  TEST_EVAL("(cdr (list 2))", "()");
+  TEST_EVAL("(cdr (list 1 2 3))", "(2 3)");
+  TEST_EVAL("(cdr (list 1 2 3 4))", "(2 3 4)");
+
+  TEST_EVAL("(null? (cdr (list 1)))", "#t");
+
   results();
 }
