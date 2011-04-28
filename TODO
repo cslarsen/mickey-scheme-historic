@@ -1,5 +1,4 @@
 ASAP
-- Test car/cdr + implement them correctly
 - Fix evaluator (define/lookup, see Quiennec)
 - Fix environment / closure
 - Fix lambda
