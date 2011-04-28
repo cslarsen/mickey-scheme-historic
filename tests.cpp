@@ -249,5 +249,8 @@ void run_tests()
 
   TEST_EVAL("(null? (cdr (list 1)))", "#t");
 
+  TEST_EVAL("(caar (list (list 1 2 3) 4))", "1");
+  TEST_EVAL("(caar (list (list 9 8 7) (list 1 2 3) 4))", "9");
+
   results();
 }

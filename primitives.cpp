@@ -290,9 +290,9 @@ cons_t* defun_cdr(cons_t* p, environment_t* env)
   return r? r : cons(NULL);
 }
 
-cons_t* defun_caar(cons_t* p, environment_t*)
+cons_t* defun_caar(cons_t* p, environment_t* e)
 {
-  return caar(p);
+  return car(defun_car(p, e));
 }
 
 cons_t* defun_cadr(cons_t* p, environment_t*)
