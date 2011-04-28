@@ -212,7 +212,7 @@ cons_t* defun_load(cons_t *filename, environment_t *env)
   program_t *p = parse(slurp(open_file(car(filename)->string)).c_str(), env);
 
   // When reading from disk, we implicitly wrap it all in (begin ...)
-  p->root = cons(cons(env->lookup("begin"), p->root));
+  p->root = cons(env->lookup("begin"), p->root);
 
   eval(p);
   return nil();
