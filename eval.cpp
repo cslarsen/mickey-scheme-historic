@@ -25,7 +25,5 @@ cons_t* eval(cons_t* p, environment_t* env)
 
 cons_t* eval(program_t *p)
 {
-  return cons(
-    eval(car(p->root), p->globals),
-    eval(cdr(p->root), p->globals));
+  return eval(p->root, p->globals);
 }
