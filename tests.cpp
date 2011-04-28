@@ -143,6 +143,17 @@ void run_tests()
   TEST_EVAL("(+ (* 5 5) 4 12)", "41"); 
 
   // predicates
+  TEST_EVAL("(atom? 1)", "#t");
+  TEST_EVAL("(atom? (list 1 2))", "#f");
+  TEST_EVAL("(atom? (list 1))", "#f");
+  TEST_EVAL("(atom? list)", "#t");
+  TEST_EVAL("(atom? abba)", "#t");
+  TEST_EVAL("(atom? 123)", "#t");
+  TEST_EVAL("(atom? (+ 1 2))", "#t");
+  TEST_EVAL("(atom? (list))", "#t");
+  TEST_EVAL("(atom? atom?)", "#t");
+  TEST_EVAL("(atom? (+))", "#t");
+
   TEST_EVAL("(integer?)", "#f");
   TEST_EVAL("(integer? 1)", "#t");
   TEST_EVAL("(integer? 0)", "#t");
@@ -183,6 +194,8 @@ void run_tests()
   TEST_EVAL("(pair? +)", "#f");
   TEST_EVAL("(pair? (list))", "#f");
   TEST_EVAL("(pair? 1 2)", "#f"); // actually, should be error b/c "1 2" is not a list
+
+  
 
   TEST_EVAL("(length (list))", "0");
   TEST_EVAL("(length (list 1))", "1");
