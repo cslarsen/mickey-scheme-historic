@@ -8,10 +8,7 @@ mickey: cons.o apply.o primitives.o types.o eval.o file_io.o parser.o print.o pr
 
 check: all
 	echo "(run-tests)" | ./mickey
-	./mickey tests/hello.scm \
-	 tests/math.scm \
-	 tests/begin.scm \
-	 tests/strings.scm
+	./mickey tests/*
 
 diff: all
 	# mickey and chicken should have same output
