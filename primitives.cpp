@@ -29,7 +29,6 @@ void load_default_defs(environment_t *e)
   e->defun("->string", defun_to_string);
   e->defun("list", defun_list);
   e->defun("define", defun_define);
-  e->defun("quote", defun_quote);
   e->defun("load", defun_load);
   e->defun("debug", defun_debug);
   e->defun("exit", defun_exit);
@@ -103,7 +102,7 @@ cons_t* defun_add(cons_t *p, environment_t* env)
       if ( integerp(res) )
         sum += res->integer; // or else, thow (TOWO)
     } else
-      throw std::runtime_error("Cannot add integer and " + to_s(type_of(p)));
+      throw std::runtime_error("Cannot add integer with: " + sprint(p));
   }
 
   return integer(sum);
@@ -122,7 +121,7 @@ cons_t* defun_mul(cons_t *p, environment_t *env)
       if ( integerp(res) )
         product *= res->integer; // else, throw (TODO)
     } else
-      throw std::runtime_error("Cannot multiply with type " + to_s(type_of(p)));
+      throw std::runtime_error("Cannot multiply integer with: " + sprint(p));
   }
 
   return integer(product);
@@ -201,16 +200,10 @@ cons_t* defun_define(cons_t *p, environment_t *env)
   return nil();
 }
 
-cons_t* defun_quote(cons_t *p, environment_t *env)
-{
-  // just pass along data without performing eval()
-  return nullp(cdr(p)) ? car(p) : cadr(p);
-}
-
 cons_t* defun_load(cons_t *filename, environment_t *env)
 {
   if ( !stringp(car(filename)) )
-    throw std::runtime_error("First argument to (load) must be a file name");
+    throw std::runtime_error("First argument to (load) must be a string");
 
   program_t *p = parse(slurp(open_file(car(filename)->string)).c_str(), env);
 
@@ -396,7 +389,7 @@ cons_t* defun_length(cons_t* p, environment_t* env)
   p = eval(car(p), env);
 
   if ( !listp(p) )
-    throw std::runtime_error("First argument to length must be a list");
+    throw std::runtime_error("First argument to (length) must be a list");
 
   while ( !nullp(p) ) {
     p = cdr(p);

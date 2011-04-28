@@ -157,12 +157,16 @@ int repl()
   env->defun("run-tests", defun_run_tests);
   env->defun("list-globals", defun_list_globals);
 
-  printf("%s\n", sprint(eval(parse("(display (version))", env))).c_str());
+  try {
+    printf("%s\n", sprint(eval(parse("(display (version))", env))).c_str());
+  } catch ( ... ) {
+    // just in case we're working on eval
+  }
+
   printf("Loaded %ld definitions\n", env->symbols.size());
   printf("Execute (exit [ code ]) to quit\n");
   printf("You can also (run-tests) and (list-globals)\n");
   printf("\n");
-
 
   for(;;) {
     char *input;
@@ -184,7 +188,7 @@ int repl()
         printf("%s\n", s.c_str());
     }
     catch(const std::exception& e) {
-      fprintf(stderr, "Error: %s\n", e.what());
+      fprintf(stderr, "%s\n", e.what());
     }
   }
 
