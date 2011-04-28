@@ -93,12 +93,9 @@ void run_tests()
   // (append (list 1) 2)
   TEST_STREQ(sprint(cons(append(list(integer(1)), integer(2)))), "(1 . 2)");
 
-  // TODO: Triple-check the below two cases
-  // ---
   // clisp: (cons (cons nil nil) nil), yields: ((NIL)) ??
-  TEST_STREQ(sprint(cons(cons(cons(NULL, NULL), NULL))), "()");
-  TEST_STREQ(sprint(cons(cons(cons(cons(NULL, NULL), NULL)))), "(())");
-  // ---
+  TEST_STREQ(sprint(cons(cons(cons(NULL, NULL), NULL))), "(())");
+  TEST_STREQ(sprint(cons(cons(cons(cons(NULL, NULL), NULL)))), "((()))");
 
   // (append nil (list 1 2))
   TEST_STREQ(sprint(cons(append(NULL, list(integer(1), integer(2))))), "(1 2)");
@@ -181,7 +178,7 @@ void run_tests()
   TEST_EVAL("(integer? 00)", "#t");
   TEST_EVAL("(integer? 1234)", "#t");
   TEST_EVAL("(integer? (list 1 2))", "#f");
-  TEST_EVAL("(integer? (+))", "#f");
+  TEST_EVAL("(integer? (+))", "#t");
   TEST_EVAL("(integer? +)", "#f");
   TEST_EVAL("(integer? -1)", "#t");
   TEST_EVAL("(integer? -0)", "#t"); // works with mit-scheme, chicken scheme

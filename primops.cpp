@@ -100,11 +100,7 @@ bool symbolp(cons_t* p)
 
 bool atomp(cons_t* p)
 {
-  type_t t = type_of(p);
-
-  if ( t==PAIR && nullp(car(p)) && nullp(cdr(p)) )
-    return true; // special treatment of '() ??? (TODO: check it out)
-  return t!=NIL && t!=PAIR;
+  return !pairp(p); // Queinnec, p. 4
 }
 
 bool integerp(cons_t* p)
@@ -124,13 +120,18 @@ bool stringp(cons_t* p)
 
 bool nullp(cons_t* p)
 {
-  return type_of(p) == NIL ||
-    (type_of(p)==PAIR && car(p)==NULL && cdr(p)==NULL);
+  return type_of(p) == NIL
+    || (type_of(p)==PAIR && type_of(car(p))==NIL && type_of(cdr(p))==NIL);
+//car(p)==NULL && cdr(p)==NULL);
+//    (nullp(car(p)) && nullp(cdr(p)));
 }
 
 bool pairp(cons_t* p)
 {
-  return type_of(p) == PAIR && !(nullp(car(p)) && nullp(cdr(p)));
+  // A pair is
+  return listp(p) // ... a list
+    // ... except for the empty list '()
+      && !(nullp(car(p)) && nullp(cdr(p)));
 }
 
 bool listp(cons_t* p)
@@ -145,7 +146,7 @@ bool closurep(cons_t* p)
 
 cons_t* append(cons_t *h, cons_t *t)
 {
-  if ( nullp(h) || !pairp(h) )
+  if ( nullp(h) || !listp(h) )
     return t; //throw std::runtime_error("First argument to (append) must be a list");
   else if ( nullp(car(h)) )
     h->car = t;

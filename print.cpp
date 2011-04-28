@@ -10,17 +10,17 @@ std::string sprint(cons_t* p, std::string& s, bool escape)
   case INTEGER: return s + to_s(p->integer);
   case CLOSURE: return s + (escape? "<closure>" : "");
   case PAIR: {
-    bool parens = pairp(car(p));
+    bool parens = listp(car(p));
     std::string sprint_car = sprint(p->car, s, escape);
     return s
       + (parens? "(" : "")
       + sprint_car
       + (parens? ")" : "")
-      + (atomp(cdr(p)) ? " ." : "")
-      + ( (atomp(car(p)) && !nullp(cdr(p)) && !pairp(cdr(p))) || // <= THIS
-          (!nullp(cdr(p)) && !pairp(cadr(p))) ||                 // <=  IS
-          (atomp(p) && pairp(cdr(p))) ||                         // <= VERY
-          (integerp(car(p)) && pairp(cdr(p)))                    // <= MESSY! (and wrong)
+      + (atomp(cdr(p)) && !nullp(cdr(p)) ? " ." : "")
+      + ( (atomp(car(p)) && !nullp(cdr(p)) && !listp(cdr(p))) || // <= THIS
+          (!nullp(cdr(p)) && !listp(cadr(p))) ||                 // <=  IS
+          (atomp(p) && listp(cdr(p))) ||                         // <= VERY
+          (integerp(car(p)) && listp(cdr(p)))                    // <= MESSY! (and wrong)
             ? (escape && !sprint_car.empty()? " " : "") : "")
       + sprint(p->cdr, s, escape);
     } break;

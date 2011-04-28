@@ -8,7 +8,7 @@
 
 cons_t* eval(cons_t* p, environment_t* env)
 {
-  if ( pairp(p) ) {
+  if ( listp(p) ) {
     /*
      * TODO: Could I do `apply(fun, eval(cdar(p)))` below
      *       instead of calling eval() inside apply?

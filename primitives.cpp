@@ -60,7 +60,7 @@ void load_default_defs(environment_t *e)
 cons_t* defun_print(cons_t *p, environment_t* env)
 {
   for ( ; !nullp(p); p = cdr(p) ) {
-    if ( !pairp(p) )
+    if ( !listp(p) )
       printf("%s", to_s(p).c_str());
     else
       defun_print(eval(car(p), env), env);
@@ -74,7 +74,7 @@ cons_t* defun_strcat(cons_t *p, environment_t* env)
   std::string s;
 
   for ( ; !nullp(p); p = cdr(p) )
-    if ( !pairp(p) )
+    if ( !listp(p) )
       s += to_s(p);
     else
       s += defun_strcat(eval(car(p), env), env)->string;
@@ -95,7 +95,7 @@ cons_t* defun_add(cons_t *p, environment_t* env)
   for ( ; !nullp(p); p = cdr(p) ) {
     if ( integerp(p) )
       sum += p->integer;
-    else if ( pairp(p) ) {
+    else if ( listp(p) ) {
       cons_t *res = eval(car(p), env);
       if ( integerp(res) )
         sum += res->integer; // or else, thow (TOWO)
@@ -114,7 +114,7 @@ cons_t* defun_mul(cons_t *p, environment_t *env)
   for ( ; !nullp(p); p = cdr(p)) {
     if ( integerp(p) )
       product *= p->integer;
-    else if ( pairp(p) ) {
+    else if ( listp(p) ) {
       cons_t *res = eval(car(p), env);
       if ( integerp(res) )
         product *= res->integer; // else, throw (TODO)
@@ -131,7 +131,7 @@ cons_t* defun_begin(cons_t* p, environment_t *env)
   cons_t *r = NULL;
 
   for ( ; !nullp(p); p = cdr(p) )
-    if ( !pairp(p) )
+    if ( !listp(p) )
       r = append(r, eval(p, env));
     else
       r = append(r, eval(car(p), env));
@@ -148,7 +148,7 @@ cons_t* defun_to_string(cons_t* p, environment_t *env)
       s += format("%d", p->integer);
     else if ( stringp(p) )
       s += p->string;
-    else if ( pairp(p) )
+    else if ( listp(p) )
       s += sprint(eval(car(p), env));
   }
 
@@ -160,7 +160,7 @@ cons_t* defun_list(cons_t* p, environment_t *env)
   cons_t *l = NULL;
 
   for ( ; !nullp(p); p = cdr(p))
-    if ( !pairp(p) )
+    if ( !listp(p) )
       l = append(l, p);
     else
       l = append(l, cons(eval(car(p), env)));
@@ -313,19 +313,19 @@ cons_t* defun_atomp(cons_t* p, environment_t* env)
   return boolean(atomp(eval(car(p), env)));
 }
 
-cons_t* defun_symbolp(cons_t* p, environment_t*)
+cons_t* defun_symbolp(cons_t* p, environment_t* env)
 {
-  return boolean(symbolp(car(p)));
+  return boolean(symbolp(eval(car(p), env)));
 }
 
-cons_t* defun_integerp(cons_t* p, environment_t*)
+cons_t* defun_integerp(cons_t* p, environment_t* env)
 {
-  return boolean(integerp(car(p)));
+  return boolean(integerp(eval(car(p), env)));
 }
 
-cons_t* defun_nullp(cons_t* p, environment_t*)
+cons_t* defun_nullp(cons_t* p, environment_t* env)
 {
-  return boolean(nullp(car(p)));
+  return boolean(nullp(eval(car(p), env)));
 }
 
 cons_t* defun_pairp(cons_t* p, environment_t* env)
@@ -365,10 +365,9 @@ cons_t* defun_length(cons_t* p, environment_t* env)
   // again, eval should be handled by evlis in eval()
   p = eval(car(p), env);
 
-/*
-  if ( !pairp(p) )
+  if ( !listp(p) )
     throw std::runtime_error("First argument to length must be a list");
-*/
+
   while ( !nullp(p) ) {
     p = cdr(p);
     ++n;
