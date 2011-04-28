@@ -160,6 +160,15 @@ void run_tests()
   TEST_EVAL("(atom? atom?)", "#t");
   TEST_EVAL("(atom? (+))", "#t");
 
+  TEST_EVAL("(symbol? 1)", "#f");
+  TEST_EVAL("(symbol? 10)", "#f");
+  TEST_EVAL("(symbol? 'a)", "#t");
+  TEST_EVAL("(symbol? 'abba)", "#t");
+  TEST_EVAL("(symbol? (list))", "#f");
+  TEST_EVAL("(symbol? +)", "#f");
+  TEST_EVAL("(symbol? list)", "#f");
+  TEST_EVAL("(symbol? \"hey\")", "#f");
+
   TEST_EVAL("(integer?)", "#f");
   TEST_EVAL("(integer? 1)", "#t");
   TEST_EVAL("(integer? 0)", "#t");
@@ -179,6 +188,14 @@ void run_tests()
   TEST_EVAL("(integer? -123)", "#t");
   TEST_EVAL("(integer? -123.0)", "#f");
   TEST_EVAL("(integer? ())", "#f");
+  TEST_EVAL("(integer? \"hey\")", "#f");
+
+  TEST_EVAL("(null? 0)", "#f");
+  TEST_EVAL("(null? 1)", "#f");
+  TEST_EVAL("(null? 'a)", "#f");
+  TEST_EVAL("(null? (list))", "#t");
+//  TEST_EVAL("(null? (car (list 1)))", "#f"); // -- car/cdr doesn't work yet (TODO)
+//  TEST_EVAL("(null? (cdr (list 1)))", "#t");
 
   TEST_EVAL("(procedure?)", "#f");
   TEST_EVAL("(procedure? 123)", "#f");
@@ -201,7 +218,13 @@ void run_tests()
   TEST_EVAL("(pair? (list))", "#f");
   TEST_EVAL("(pair? 1 2)", "#f"); // actually, should be error b/c "1 2" is not a list
 
-  
+  TEST_EVAL("(list? 1)", "#f");
+  TEST_EVAL("(list? (+ 1 2))", "#f");
+  TEST_EVAL("(list? (list 1 2))", "#t");
+  TEST_EVAL("(list? (list 1))", "#t");
+  TEST_EVAL("(list? (list))", "#t");
+  TEST_EVAL("(list? 'a)", "#f");
+  TEST_EVAL("(list? \"hey\")", "#f");
 
   TEST_EVAL("(length (list))", "1");
   TEST_EVAL("(length (list 1))", "1");
