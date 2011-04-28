@@ -122,8 +122,6 @@ bool nullp(cons_t* p)
 {
   return type_of(p) == NIL
     || (type_of(p)==PAIR && type_of(car(p))==NIL && type_of(cdr(p))==NIL);
-//car(p)==NULL && cdr(p)==NULL);
-//    (nullp(car(p)) && nullp(cdr(p)));
 }
 
 bool pairp(cons_t* p)

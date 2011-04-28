@@ -224,10 +224,8 @@ cons_t* defun_debug(cons_t *p, environment_t *env)
 
   s = format("adr=%-11p type=%-7s", p, to_s(type_of(p)).c_str());
 
-  if ( !nullp(p) )
   switch ( type_of(p) ) {
-  case NIL:
-    break;
+  case NIL: break;
   case BOOLEAN:
     s += format(" value=%s", p->integer? "#t" : "#f");
     break;
@@ -235,7 +233,9 @@ cons_t* defun_debug(cons_t *p, environment_t *env)
     s += format(" value=%d", p->integer);
     break;
   case CLOSURE:
-    s += format(" function=%p environment=%p", p->closure->function, p->closure->environment);
+    s += format(" function=%p environment=%p",
+           p->closure->function,
+           p->closure->environment);
     break;
   case PAIR:
     s += format(" car=%p cdr=%p", p->car, p->cdr);
@@ -246,7 +246,7 @@ cons_t* defun_debug(cons_t *p, environment_t *env)
   case STRING:
     s += format(" value='%s'", p->string);
     break;
-  case U8VECTOR:
+  case VECTOR:
     break;
   case CONTINUATION:
     break;

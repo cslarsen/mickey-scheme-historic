@@ -34,7 +34,7 @@ void test_streq(const std::string& code, const std::string& actual, const std::s
   test(actual == expected, (code + " == \"" + expected + "\"").c_str());
 
   if ( actual != expected ) {
-    printf("  expected: %s\n", expected.c_str());
-    printf("  actual  : %s\n", actual.c_str());
+    printf("  expected: `%s`\n", expected.c_str());
+    printf("  actual  : `%s`\n", actual.c_str());
   }
 }

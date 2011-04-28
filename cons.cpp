@@ -7,33 +7,50 @@
 std::string to_s(enum type_t type)
 {
   switch ( type ) {
-  default:       return "<?>";      break;
-  case NIL:      return "nil";      break;
-  case BOOLEAN:  return "boolean";  break;
-  case INTEGER:  return "integer";  break;
-  case CLOSURE:  return "closure";  break;
-  case PAIR:     return "pair";     break;
-  case SYMBOL:   return "symbol";   break;
-  case STRING:   return "string";   break;
-  case U8VECTOR: return "U8VECTOR"; break;
+  case NIL:          return "nil";      break;
+  case BOOLEAN:      return "boolean";  break;
+  case INTEGER:      return "integer";  break;
+  case CLOSURE:      return "closure";  break;
+  case PAIR:         return "pair";     break;
+  case SYMBOL:       return "symbol";   break;
+  case STRING:       return "string";   break;
+  case VECTOR:       return "vector"; break;
   case CONTINUATION: return "continuation"; break;
   }
+
+  return "#<unknown type>";
 }
 
 std::string to_s(cons_t *p)
 {
   switch ( type_of(p) ) {
-  default:       return "<?>";
-  case NIL:      return "<nil>";
+  case NIL:      return "#<nil>";
   case BOOLEAN:  return to_s(p->boolean);
   case INTEGER:  return to_s(p->integer);
-  case CLOSURE:  return format("<closure %p>", p->closure);
+  case CLOSURE:  return format("#<closure %p>", p->closure);
   case PAIR:     return to_s(car(p)) + " . " + to_s(cdr(p));
   case SYMBOL:   return p->symbol->name;
   case STRING:   return p->string;
-  case U8VECTOR: return format("<u8vector %p>", p->u8vector);
-  case CONTINUATION: return format("<continuation %p>", p->continuation);
+  case VECTOR:   return format("#<vector %p>", p->vector);
+  case CONTINUATION: return format("#<continuation %p>", p->continuation);
   }
+
+  return "#<unknown type>";
+}
+
+std::string to_s(closure_t* p)
+{
+  return format("#<closure %p>", p);
+}
+
+std::string to_s(continuation_t* p)
+{
+  return format("#<continuation %p>", p);
+}
+
+std::string to_s(vector_t* p)
+{
+  return format("#<vector %p>", p);
 }
 
 cons_t* environment_t::lookup(const std::string& name) const

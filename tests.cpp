@@ -6,6 +6,7 @@
 #include "eval.h"
 #include "primitives.h"
 
+#define TEST_REPL(expr, expect) TEST_STREQ(sprint(eval(parse(expr))), expect);
 #define TEST_EVAL(expr, expect) TEST_STREQ(print(eval(parse(expr))), expect);
 #define TEST_PARSE(expr, expect) TEST_STREQ(sprint(parse(expr)), expect);
 
@@ -101,25 +102,20 @@ void run_tests()
   TEST_STREQ(sprint(cons(append(NULL, list(integer(1), integer(2))))), "(1 2)");
 
   // parser
-  TEST_PARSE("(cons 1 2)", "(<closure> 1 2)");
   TEST_PARSE("(cOns 1 2)", "(cOns 1 2)");
   TEST_PARSE("(CONS 1 2)", "(CONS 1 2)");
-  TEST_PARSE("(+ (* 1 2) 3)", "(<closure>(<closure> 1 2) 3)");
-  TEST_PARSE("(fx-+ (fx-* 1 2) 3)", "(fx-+(fx-* 1 2) 3)");
+  TEST_PARSE("(fx-+ (fx-* 1 2) 3)", "(fx-+ (fx-* 1 2) 3)");
   TEST_PARSE("(1)", "(1)");
   TEST_PARSE("((1))", "((1))");
   TEST_PARSE("((1 2))", "((1 2))");
   TEST_PARSE("((1 2) 3)", "((1 2) 3)");
   TEST_PARSE("((a b) c)", "((a b) c)");
-  TEST_PARSE("(a (b c) d)", "(a(b c) d)");
-  TEST_PARSE("(a (B c) D)", "(a(B c) D)");
-  TEST_PARSE("(display \"Hello\\nworld!\")))", "(<closure> \"Hello\\nworld!\")");
+  TEST_PARSE("(a (b c) d)", "(a (b c) d)");
+  TEST_PARSE("(a (B c) D)", "(a (B c) D)");
   TEST_PARSE("a", "a");
   TEST_PARSE("A", "A");
-  TEST_PARSE("(1 2 3) (4 5 6)", "(1 2 3)(4 5 6)");
-  TEST_PARSE("(1 2 3)\r\n(4 5 6)", "(1 2 3)(4 5 6)");
-  TEST_PARSE("(display (string-append \"Hello\" \", \" \"world!\"))",
-    "(<closure>(<closure> \"Hello\" \", \" \"world!\"))");
+  TEST_PARSE("(1 2 3) (4 5 6)", "(1 2 3) (4 5 6)");
+  TEST_PARSE("(1 2 3)\r\n(4 5 6)", "(1 2 3) (4 5 6)");
 
   // string operations
   TEST_EVAL("(->string 123)", "123");
@@ -251,6 +247,17 @@ void run_tests()
 
   TEST_EVAL("(caar (list (list 1 2 3) 4))", "1");
   TEST_EVAL("(caar (list (list 9 8 7) (list 1 2 3) 4))", "9");
+
+  // define
+  TEST_EVAL("(define a 123)", "");
+  TEST_EVAL("a", "123");
+  TEST_EVAL("(+ 1 a)", "124");
+  TEST_EVAL("(+ a a)", "246");
+  TEST_EVAL("(define b 100)", "");
+  TEST_EVAL("(+ a b)", "223");
+  TEST_EVAL("(define hello (list html (list body (list p (list \"Hello, world!\")))))", "");
+  TEST_EVAL("hello", "(html (body (p (Hello, world!))))");
+  TEST_REPL("hello", "(html (body (p (\"Hello, world!\"))))");
 
   results();
 }

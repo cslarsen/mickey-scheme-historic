@@ -17,7 +17,7 @@ enum type_t {
   PAIR,
   SYMBOL,
   STRING,
-  U8VECTOR,
+  VECTOR,
   CONTINUATION
 };
 
@@ -49,7 +49,7 @@ struct closure_t : public gc
   environment_t* environment;
 };
 
-struct u8vector_t : public gc
+struct vector_t : public gc
 {
 };
 
@@ -78,7 +78,7 @@ struct cons_t : public gc {
     closure_t* closure;
     symbol_t* symbol;
     const char* string;
-    u8vector_t* u8vector;
+    vector_t* vector;
     continuation_t* continuation;
   };
 };
@@ -87,5 +87,8 @@ struct cons_t : public gc {
 // dependencies between cons.h and util.h (TODO: Fix that)
 std::string encode_str(const char*);
 std::string to_s(enum type_t);
+std::string to_s(closure_t*);
+std::string to_s(continuation_t*);
+std::string to_s(vector_t*);
 
 #endif
