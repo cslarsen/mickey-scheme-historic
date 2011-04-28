@@ -14,6 +14,9 @@ cons_t* type_convert(const char* token, environment_t* env)
   if ( isatom(token) )
     return symbol(token, env);
 
+  if ( !token || !*token )
+    return nil();
+
   // probably a function called "+" or something
   return symbol(token, env);
 }
@@ -29,7 +32,11 @@ cons_t* parse_list(environment_t *env)
 
     if ( *token == '(' ) {
       cons_t *obj = type_convert(token+1, env);
-      p = append(p, list(obj, parse_list(env)));
+
+      if ( !nullp(obj) ) 
+        p = append(p, list(obj, parse_list(env)));
+      else
+        p = append(p, list(parse_list(env)));
     } else {
       cons_t *obj = type_convert(token, env);
       p = append(p, list(obj));

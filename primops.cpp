@@ -101,6 +101,9 @@ bool symbolp(cons_t* p)
 bool atomp(cons_t* p)
 {
   type_t t = type_of(p);
+
+  if ( t==PAIR && nullp(car(p)) && nullp(cdr(p)) )
+    return true; // special treatment of '() ??? (TODO: check it out)
   return t!=NIL && t!=PAIR;
 }
 
@@ -125,6 +128,11 @@ bool nullp(cons_t* p)
 }
 
 bool pairp(cons_t* p)
+{
+  return type_of(p) == PAIR && !(nullp(car(p)) && nullp(cdr(p)));
+}
+
+bool listp(cons_t* p)
 {
   return type_of(p) == PAIR;
 }

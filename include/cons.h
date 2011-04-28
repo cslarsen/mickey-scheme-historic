@@ -1,6 +1,7 @@
 #ifndef INC_MICKEY_CONS_H
 #define INC_MICKEY_CONS_H
 
+#include <stdexcept>
 #include <string>
 #include <map>
 #include "util.h"
@@ -54,12 +55,12 @@ struct u8vector_t : public gc
 
 class symbol_t : public gc
 {
-  symbol_t(const char* s) : name(s)
-  {
-  }
+  symbol_t(); // require param
 
-  symbol_t()
+  symbol_t(const char* s) : name(s? s : "")
   {
+    if ( name.empty() )
+      throw std::runtime_error("symbol_t() constructed with empty name");
   }
 
   friend struct environment_t;

@@ -51,6 +51,7 @@ void load_default_defs(environment_t *e)
   e->defun("integer?", defun_integerp);
   e->defun("null?", defun_nullp);
   e->defun("pair?", defun_pairp);
+  e->defun("list?", defun_listp);
   e->defun("procedure?", defun_procedurep);
 
   e->defun("length", defun_length);
@@ -164,7 +165,8 @@ cons_t* defun_list(cons_t* p, environment_t *env)
     else
       l = append(l, cons(eval(car(p), env)));
 
-  return l;
+  // `(list)` should return `()'
+  return nullp(l) ? list(NULL) : l;
 }
 
 cons_t* defun_define(cons_t *p, environment_t *env)
@@ -306,9 +308,9 @@ cons_t* defun_append(cons_t* p, environment_t*)
   return append(car(p), cadr(p));
 }
 
-cons_t* defun_atomp(cons_t* p, environment_t*)
+cons_t* defun_atomp(cons_t* p, environment_t* env)
 {
-  return boolean(atomp(car(p)));
+  return boolean(atomp(eval(car(p), env)));
 }
 
 cons_t* defun_symbolp(cons_t* p, environment_t*)
@@ -334,7 +336,12 @@ cons_t* defun_pairp(cons_t* p, environment_t* env)
    *       and fix the parser (don't cons the car before
    *       returning)
    */
-  return boolean(pairp(eval(cadr(p), env)));
+  return boolean(pairp(eval(car(p), env)));
+}
+
+cons_t* defun_listp(cons_t* p, environment_t* env)
+{
+  return boolean(listp(eval(car(p), env)));
 }
 
 cons_t* defun_procedurep(cons_t* p, environment_t*)
@@ -356,8 +363,12 @@ cons_t* defun_length(cons_t* p, environment_t* env)
   int n = 0;
 
   // again, eval should be handled by evlis in eval()
-  p = eval(cadr(p), env);
+  p = eval(car(p), env);
 
+/*
+  if ( !pairp(p) )
+    throw std::runtime_error("First argument to length must be a list");
+*/
   while ( !nullp(p) ) {
     p = cdr(p);
     ++n;

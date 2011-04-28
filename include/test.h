@@ -1,7 +1,7 @@
 #include <stdexcept>
 #include <string>
 
-#define CATCH_ALL(expr) { try { expr; } catch (const std::exception& e) { fprintf(stderr, "  Exception: %s\n", e.what()); } }
+#define CATCH_ALL(expr) { try { expr; } catch (const std::exception& e) { printf("=> " #expr "\n"); fprintf(stderr, "   Exception: %s\n", e.what()); } }
 #define TEST_TRUE(expr) { CATCH_ALL(test(expr, #expr);) }
 #define TEST_FALSE(expr) { CATCH_ALL(test(expr == false, #expr);) }
 #define TEST_STREQ(expr, expected) { CATCH_ALL(test_streq(#expr, expr, expected);) }
