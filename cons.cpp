@@ -61,6 +61,16 @@ std::string to_s(char p)
   return format("#\%c", (p>32 || p<127)? p : '?' );
 }
 
+cons_t* environment_t::lookup_or_throw(const std::string& name) const
+{
+  cons_t *p = lookup(name);
+
+  if ( p == NULL )
+    throw std::runtime_error("Unbound variable: " + name);
+
+  return p;
+}
+
 cons_t* environment_t::lookup(const std::string& name) const
 {
   const environment_t *e = this;
@@ -76,14 +86,9 @@ cons_t* environment_t::lookup(const std::string& name) const
 
 cons_t* environment_t::create_symbol(const std::string& name)
 {
-  cons_t *p = lookup(name);
-
-  if ( nullp(p) ) {
-    p = new cons_t();
-    p->type = SYMBOL;
-    p->symbol = new symbol_t(name.c_str());
-    symbols[name] = p;
-  }
+  cons_t *p = new cons_t();
+  p->type = SYMBOL;
+  p->symbol = new symbol_t(name.c_str());
 
   return p;
 }

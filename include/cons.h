@@ -35,6 +35,7 @@ struct environment_t : public gc
   }
 
   struct cons_t* lookup(const std::string& name) const;
+  struct cons_t* lookup_or_throw(const std::string& name) const;
   struct cons_t* create_symbol(const std::string& name);
   void defun(const std::string& name, lambda_t func);
   struct cons_t* define(const std::string& name, cons_t* body);

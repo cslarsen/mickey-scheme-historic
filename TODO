@@ -1,7 +1,7 @@
 ASAP
-- Add support to redefine, i.e. (define a 123) and then (define a 100)
-- Introduce evlis, i.e. eval args in eval so we can remove tedious evals in primitives
-- Fix evaluator (define/lookup, see Quiennec)
+- *Can we remove now?*
+    - Introduce evlis, i.e. eval args in eval so we can remove tedious evals in primitives
+    - Fix evaluator (define/lookup, see Quiennec)
 - Fix environment / closure
 - Fix lambda
 - We're now a proper Scheme, celebrate!

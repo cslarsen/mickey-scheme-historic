@@ -28,7 +28,6 @@ void load_default_defs(environment_t *e)
   e->defun("*", defun_mul);
   e->defun("->string", defun_to_string);
   e->defun("list", defun_list);
-  e->defun("define", defun_define);
   e->defun("load", defun_load);
   e->defun("debug", defun_debug);
   e->defun("exit", defun_exit);

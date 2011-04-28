@@ -18,18 +18,10 @@ static bool bool_true(cons_t* p)
 
 static cons_t* evlis(cons_t* p, environment_t* e)
 {
-  cons_t *r = NULL;
-
-  while ( !nullp(p) ) {
-    if ( !listp(p) )
-      r = append(r, eval(p, e));
-    else
-      r = append(r, eval(car(p), e)); // need this?
-
-    p = cdr(p);
-  }
-
-  return r;
+  return pairp(p) ?
+    cons( eval(car(p), e),
+          evlis(cdr(p), e)) :
+    nil();
 }
 
 static cons_t* caddr(cons_t* p)
@@ -45,7 +37,7 @@ static cons_t* cadddr(cons_t* p)
 static cons_t* invoke(cons_t* fun, cons_t* args)
 {
   if ( !closurep(fun) )
-    throw std::runtime_error("Not a closure: " + sprint(fun));
+    return fun;
 
   environment_t *env = fun->closure->environment;
   lambda_t lambda    = fun->closure->function;
@@ -61,13 +53,17 @@ cons_t* eval(cons_t* p, environment_t* e)
 {
   if ( atomp(p) ) {
     if ( symbolp(p) )
-      return e->lookup(p->symbol->name);
+      return e->lookup_or_throw(p->symbol->name);
 
     if ( numberp(p) || stringp(p) || charp(p) || booleanp(p) || vectorp(p) )
       return p;
 
+    if ( closurep(p) )
+      return p;
+
     throw std::runtime_error("Cannot evaluate: " + sprint(p));
   }
+
 
   if ( symbolp(car(p)) ) {
     std::string name = car(p)->symbol->name;
@@ -82,15 +78,24 @@ cons_t* eval(cons_t* p, environment_t* e)
         return eval(cadddr(p), e);
     }
 
-    // skip `begin`-form; we've got that covered elsewhere (or?)
-    // skip `set!` for now; we can implement it in primitives.cpp
-    // skip `lambda` for now
+    /*
+     * Define requires one not to look up
+     * the variable name, so we need to take
+     * special care.
+     */
+    if ( name == "define" ) {
+      cons_t *def_name = cadr(p);
+      cons_t *def_body = cddr(p);
 
-    return invoke( eval(car(p), e),
-                   evlis(cdr(p), e));
+      return defun_define(
+              cons(def_name, def_body), e);
+    }
   }
 
-  // what now?
+  // skip `begin`-form; we've got that covered elsewhere (or?)
+  // skip `set!` for now; we can implement it in primitives.cpp
+  // skip `lambda` for now
 
-  return p;
+  return invoke(  eval(car(p), e),
+                 evlis(cdr(p), e));
 }
