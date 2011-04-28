@@ -286,7 +286,7 @@ cons_t* defun_cdr(cons_t* p, environment_t* env)
    *        so we explicitly check for it here, although we
    *        probably SHOULD NOT (TODO).
    */
-  cons_t *r = cdr(eval(car(p), env));
+  cons_t *r = cdr(car(eval(p, env)));
   return r? r : cons(NULL);
 }
 
@@ -307,7 +307,9 @@ cons_t* defun_cdar(cons_t* p, environment_t* e)
 
 cons_t* defun_cddr(cons_t* p, environment_t* e)
 {
-  return cdr(defun_cdr(p, e));
+  // see defun_cdr for UGLINESS
+  cons_t *r = cdr(defun_cdr(p, e));
+  return r? r : cons(NULL); // <= UGLY PUGLY
 }
 
 cons_t* defun_append(cons_t* p, environment_t*)

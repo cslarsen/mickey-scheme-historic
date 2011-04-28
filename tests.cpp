@@ -248,7 +248,7 @@ void run_tests()
   TEST_EVAL("(caar (list (list 9 8 7) (list 1 2 3) 4))", "9");
   TEST_EVAL("(cadr (list (list 2 3 4) (list 7 4 5)))", "(7 4 5)");
   TEST_EVAL("(cdar (list (list 2 3 4) (list 7 4 5)))", "(3 4)");
-//  TEST_REPL("(cddr (list (list 2 3 4) (list 7 4 5)))", "()"); // FIXME; should return "()"
+  TEST_REPL("(cddr (list (list 2 3 4) (list 7 4 5)))", "()");
   TEST_EVAL("(cddr (list 1 2 3 4))", "(3 4)");
   TEST_EVAL("(cdr (cddr (list 1 2 3 4)))", "(4)");
   TEST_EVAL("(car (cdr (cddr (list 1 2 3 4))))", "4");
@@ -263,7 +263,6 @@ void run_tests()
   TEST_EVAL("(define hello (list html (list body (list p (list \"Hello, world!\")))))", "");
   TEST_EVAL("hello", "(html (body (p (Hello, world!))))");
   TEST_REPL("hello", "(html (body (p (\"Hello, world!\"))))");
-
 
   results();
 }
