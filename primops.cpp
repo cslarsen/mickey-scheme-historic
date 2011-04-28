@@ -126,10 +126,9 @@ bool nullp(cons_t* p)
 
 bool pairp(cons_t* p)
 {
-  // A pair is
-  return listp(p) // ... a list
-    // ... except for the empty list '()
-      && !(nullp(car(p)) && nullp(cdr(p)));
+  // (1) A pair is a list, (2) except for the empty list '()
+  return listp(p) &&                   // (1)
+    !(nullp(car(p)) && nullp(cdr(p))); // (2)
 }
 
 bool listp(cons_t* p)
