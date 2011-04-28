@@ -156,6 +156,7 @@ void run_tests()
   TEST_EVAL("(atom? (list))", "#t");
   TEST_EVAL("(atom? atom?)", "#t");
   TEST_EVAL("(atom? (+))", "#t");
+  TEST_EVAL("(atom? +)", "#t");
 
   TEST_EVAL("(symbol? 1)", "#f");
   TEST_EVAL("(symbol? 10)", "#f");
