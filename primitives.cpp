@@ -295,19 +295,19 @@ cons_t* defun_caar(cons_t* p, environment_t* e)
   return car(defun_car(p, e));
 }
 
-cons_t* defun_cadr(cons_t* p, environment_t*)
+cons_t* defun_cadr(cons_t* p, environment_t* e)
 {
-  return cadr(p);
+  return car(defun_cdr(p, e));
 }
 
-cons_t* defun_cdar(cons_t* p, environment_t*)
+cons_t* defun_cdar(cons_t* p, environment_t* e)
 {
-  return cdar(p);
+  return cdr(defun_car(p, e));
 }
 
-cons_t* defun_cddr(cons_t* p, environment_t*)
+cons_t* defun_cddr(cons_t* p, environment_t* e)
 {
-  return cddr(p);
+  return cdr(defun_cdr(p, e));
 }
 
 cons_t* defun_append(cons_t* p, environment_t*)
