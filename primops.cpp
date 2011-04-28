@@ -124,7 +124,8 @@ bool stringp(cons_t* p)
 
 bool nullp(cons_t* p)
 {
-  return type_of(p) == NIL;
+  return type_of(p) == NIL ||
+    (type_of(p)==PAIR && car(p)==NULL && cdr(p)==NULL);
 }
 
 bool pairp(cons_t* p)

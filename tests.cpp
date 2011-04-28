@@ -226,7 +226,7 @@ void run_tests()
   TEST_EVAL("(list? 'a)", "#f");
   TEST_EVAL("(list? \"hey\")", "#f");
 
-  TEST_EVAL("(length (list))", "1");
+  TEST_EVAL("(length (list))", "0");
   TEST_EVAL("(length (list 1))", "1");
   TEST_EVAL("(length (list 1 2))", "2");
   TEST_EVAL("(length (list 1 2 3))", "3");
