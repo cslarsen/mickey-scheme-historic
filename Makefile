@@ -1,4 +1,5 @@
 TARGETS = heap.o cons.o apply.o primitives.o types.o eval.o file_io.o parser.o print.o primops.o tokenizer.o tests.o util.o repl.o test.o mickey
+PORTABLE_TESTS = tests/hello.scm tests/begin.scm tests/math.scm tests/strings.scm
 CXX = llvm-g++
 LDFLAGS = -lreadline -lgc
 CXXFLAGS = -g -Wall -Iinclude # -Weffc++
@@ -12,7 +13,11 @@ check: all
 
 diff: all
 	# mickey and chicken should have same output
-	csi -bq tests/*; echo "========="; ./mickey tests/*
+	@echo "=== Chicken Scheme ==="
+	@csi -bq $(PORTABLE_TESTS)
+	@echo ""
+	@echo "=== Mickey Scheme ==="
+	@./mickey $(PORTABLE_TESTS)
 
 tarball: clean
 	rm -rf dist/mickey4
