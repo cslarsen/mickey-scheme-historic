@@ -44,6 +44,9 @@ cons_t* defun_nullp(cons_t*, environment_t*);
 cons_t* defun_pairp(cons_t*, environment_t*);
 cons_t* defun_listp(cons_t*, environment_t*);
 cons_t* defun_procedurep(cons_t*, environment_t*);
+cons_t* defun_booleanp(cons_t*, environment_t*);
+cons_t* defun_vectorp(cons_t*, environment_t*);
+cons_t* defun_charp(cons_t*, environment_t*);
 
 cons_t* defun_length(cons_t*, environment_t*);
 

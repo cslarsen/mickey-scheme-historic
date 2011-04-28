@@ -33,5 +33,8 @@ bool listp(cons_t*);
 bool stringp(cons_t*);
 bool closurep(cons_t*);
 bool booleanp(cons_t*);
+bool vectorp(cons_t*);
+bool charp(cons_t*);
+bool numberp(cons_t*);
 
 #endif

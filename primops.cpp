@@ -108,9 +108,24 @@ bool integerp(cons_t* p)
   return type_of(p) == INTEGER;
 }
 
+bool vectorp(cons_t* p)
+{
+  return type_of(p) == VECTOR;
+}
+
+bool charp(cons_t* p)
+{
+  return type_of(p) == CHAR;
+}
+
 bool booleanp(cons_t* p)
 {
   return type_of(p) == BOOLEAN;
+}
+
+bool numberp(cons_t* p)
+{
+  return numberp(p); // or decimalp(p), etc.
 }
 
 bool stringp(cons_t* p)

@@ -53,6 +53,9 @@ void load_default_defs(environment_t *e)
   e->defun("pair?", defun_pairp);
   e->defun("list?", defun_listp);
   e->defun("procedure?", defun_procedurep);
+  e->defun("char?", defun_charp);
+  e->defun("boolean?", defun_booleanp);
+  e->defun("vector?", defun_vectorp);
 
   e->defun("length", defun_length);
 }
@@ -226,6 +229,9 @@ cons_t* defun_debug(cons_t *p, environment_t *env)
 
   switch ( type_of(p) ) {
   case NIL: break;
+  case CHAR:
+    s += format(" value=%d", p->character);
+    break;
   case BOOLEAN:
     s += format(" value=%s", p->integer? "#t" : "#f");
     break;
@@ -353,9 +359,24 @@ cons_t* defun_listp(cons_t* p, environment_t* env)
   return boolean(listp(eval(car(p), env)));
 }
 
-cons_t* defun_procedurep(cons_t* p, environment_t*)
+cons_t* defun_procedurep(cons_t* p, environment_t* e)
 {
-  return boolean(closurep(car(p)));
+  return boolean(closurep(eval(car(p), e)));
+}
+
+cons_t* defun_vectorp(cons_t* p, environment_t* e)
+{
+  return boolean(vectorp(car(eval(p, e))));
+}
+
+cons_t* defun_charp(cons_t* p, environment_t* e)
+{
+  return boolean(charp(car(eval(p, e))));
+}
+
+cons_t* defun_booleanp(cons_t* p, environment_t* e)
+{
+  return boolean(booleanp(car(eval(p, e))));
 }
 
 cons_t* defun_version(cons_t*, environment_t*)

@@ -12,6 +12,7 @@
 enum type_t {
   NIL,
   BOOLEAN,
+  CHAR,
   INTEGER,
   CLOSURE,
   PAIR,
@@ -73,6 +74,7 @@ struct cons_t : public gc {
   type_t type;
   union {
     bool boolean;
+    char character;
     int integer;
     struct { cons_t *car, *cdr; }; // pair
     closure_t* closure;
@@ -90,5 +92,6 @@ std::string to_s(enum type_t);
 std::string to_s(closure_t*);
 std::string to_s(continuation_t*);
 std::string to_s(vector_t*);
+std::string to_s(char);
 
 #endif

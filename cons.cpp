@@ -9,6 +9,7 @@ std::string to_s(enum type_t type)
   switch ( type ) {
   case NIL:          return "nil";      break;
   case BOOLEAN:      return "boolean";  break;
+  case CHAR:         return "char";     break;
   case INTEGER:      return "integer";  break;
   case CLOSURE:      return "closure";  break;
   case PAIR:         return "pair";     break;
@@ -26,6 +27,7 @@ std::string to_s(cons_t *p)
   switch ( type_of(p) ) {
   case NIL:      return "#<nil>";
   case BOOLEAN:  return to_s(p->boolean);
+  case CHAR:     return to_s(p->character);
   case INTEGER:  return to_s(p->integer);
   case CLOSURE:  return format("#<closure %p>", p->closure);
   case PAIR:     return to_s(car(p)) + " . " + to_s(cdr(p));
@@ -51,6 +53,12 @@ std::string to_s(continuation_t* p)
 std::string to_s(vector_t* p)
 {
   return format("#<vector %p>", p);
+}
+
+std::string to_s(char p)
+{
+  // TODO: Use table instead
+  return format("#\%c", (p>32 || p<127)? p : '?' );
 }
 
 cons_t* environment_t::lookup(const std::string& name) const

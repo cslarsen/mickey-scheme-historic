@@ -37,7 +37,12 @@ NEXT STEPS
   But perhaps later on, these can as well become something that can be implemented (?).
   (At least many of them).
 
+MEDIO
+- Add character parsing, #\f for instance
+- Add character table
+
 DOWN THE LINE
+- Add utf-8 support for strings, consider making it default
 - Tail-call optimization
 - call/cc
 - delay/force
