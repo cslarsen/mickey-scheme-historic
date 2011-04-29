@@ -15,14 +15,14 @@ std::string sprint(cons_t* p, std::string& s, bool escape)
   case VECTOR:       return s + (escape? to_s(p->vector) : "");
   case CONTINUATION: return s + (escape? to_s(p->continuation) : "");
   case PAIR: {
-    std::string head = (listp(car(p)) ? "(" : "")
-                     +  sprint(car(p), s, escape)
-                     + (listp(car(p)) ? ")" : "");
-
+    std::string head = sprint(car(p), s, escape);
     std::string tail = (atomp(cdr(p)) && !nullp(cdr(p)) ?
                         ". " : "") + sprint(cdr(p), s, escape);
-
-    return s + head + (!tail.empty() ? " " : "") + tail;
+    return s
+      + (listp(car(p)) ? "(" : "")
+      + head
+      + (listp(car(p)) ? ")" : "")
+      + (!tail.empty() ? " " : "") + tail;
   }}
 
   return s;
