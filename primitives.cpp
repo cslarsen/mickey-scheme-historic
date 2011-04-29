@@ -157,7 +157,7 @@ cons_t* defun_to_string(cons_t* p, environment_t *env)
 
 cons_t* defun_list(cons_t* p, environment_t *env)
 {
-  return list(p);
+  return nullp(p) ? list(NULL) : p;
 }
 
 cons_t* defun_define(cons_t *p, environment_t *env)
@@ -297,22 +297,22 @@ cons_t* defun_append(cons_t* p, environment_t*)
 
 cons_t* defun_atomp(cons_t* p, environment_t* env)
 {
-  return boolean(atomp(eval(car(p), env)));
+  return boolean(atomp(car(p)));
 }
 
 cons_t* defun_symbolp(cons_t* p, environment_t* env)
 {
-  return boolean(symbolp(eval(car(p), env)));
+  return boolean(symbolp(car(p)));
 }
 
 cons_t* defun_integerp(cons_t* p, environment_t* env)
 {
-  return boolean(integerp(eval(car(p), env)));
+  return boolean(integerp(car(p)));
 }
 
 cons_t* defun_nullp(cons_t* p, environment_t* env)
 {
-  return boolean(nullp(eval(car(p), env)));
+  return boolean(nullp(car(p)));
 }
 
 cons_t* defun_pairp(cons_t* p, environment_t* env)
@@ -323,57 +323,45 @@ cons_t* defun_pairp(cons_t* p, environment_t* env)
    *       and fix the parser (don't cons the car before
    *       returning)
    */
-  return boolean(pairp(eval(car(p), env)));
+  return boolean(pairp(car(p)));
 }
 
 cons_t* defun_listp(cons_t* p, environment_t* env)
 {
-  return boolean(listp(eval(car(p), env)));
+  return boolean(listp(car(p)));
 }
 
 cons_t* defun_procedurep(cons_t* p, environment_t* e)
 {
-  return boolean(closurep(eval(car(p), e)));
+  return boolean(closurep(car(p)));
 }
 
 cons_t* defun_vectorp(cons_t* p, environment_t* e)
 {
-  return boolean(vectorp(car(eval(p, e))));
+  return boolean(vectorp(car(p)));
 }
 
 cons_t* defun_charp(cons_t* p, environment_t* e)
 {
-  return boolean(charp(car(eval(p, e))));
+  return boolean(charp(car(p)));
 }
 
 cons_t* defun_booleanp(cons_t* p, environment_t* e)
 {
-  return boolean(booleanp(car(eval(p, e))));
+  return boolean(booleanp(car(p)));
 }
 
 cons_t* defun_version(cons_t*, environment_t*)
 {
   cons_t *v = list(string("Mickey Scheme (C) 2011 Christian Stigen Larsen\n"));
-  v = append(v, cons(string(format("Using Readline %d.%d\n", (rl_readline_version & 0xFF00) >> 8, rl_readline_version & 0x00FF).c_str())));
+  v = append(v, cons(string(format("Using Readline %d.%d\n",
+        (rl_readline_version & 0xFF00) >> 8, rl_readline_version & 0x00FF).c_str())));
   v = append(v, cons(string(format("Using Boehm-Demers-Weiser GC %d.%d\n", GC_VERSION_MAJOR, GC_VERSION_MINOR).c_str())));
   v = append(v, cons(string(format("Compiler version: %s\n", __VERSION__).c_str())));
   return v;
 }
 
-cons_t* defun_length(cons_t* p, environment_t* env)
+cons_t* defun_length(cons_t* p, environment_t*)
 {
-  int n = 0;
-
-  // again, eval should be handled by evlis in eval()
-  p = eval(car(p), env);
-
-  if ( !listp(p) )
-    throw std::runtime_error("First argument to (length) must be a list");
-
-  while ( !nullp(p) ) {
-    p = cdr(p);
-    ++n;
-  } 
-
-  return integer(n);
+  return length(p);
 }
