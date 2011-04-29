@@ -43,6 +43,25 @@ void run_tests()
   TEST_FALSE(isatom("a1-c"));
   TEST_FALSE(isatom("a1c-"));
 
+  TEST_TRUE(isfloat("123.0"));
+  TEST_FALSE(isfloat("123"));
+  TEST_TRUE(isfloat("123f"));
+  TEST_FALSE(isfloat("123ff"));
+  TEST_TRUE(isfloat("1.0"));
+  TEST_FALSE(isfloat("1.0."));
+  TEST_FALSE(isfloat("1.."));
+  TEST_FALSE(isfloat(".1.."));
+  TEST_TRUE(isfloat(".1"));
+  TEST_TRUE(isfloat(".1f"));
+  TEST_TRUE(isfloat("1f"));
+  TEST_TRUE(isfloat("0f"));
+  TEST_TRUE(isfloat("1.0f"));
+  TEST_TRUE(isfloat("+1.0f"));
+  TEST_TRUE(isfloat("-1.0f"));
+  TEST_TRUE(isfloat("-1.0"));
+  TEST_TRUE(isfloat("-10f"));
+  TEST_FALSE(isfloat("-10"));
+
   TEST_STREQ(sprint(cons(integer(1), NULL)), "1");
   TEST_STREQ(sprint(cons(cons(integer(1)), NULL)), "(1)");
   TEST_STREQ(sprint(cons(cons(integer(1), integer(1)), NULL)), "(1 . 1)");

@@ -5,6 +5,9 @@
 
 cons_t* type_convert(const char* token, environment_t* env)
 {
+  if ( isfloat(token) )
+    return decimal(to_f(token));
+
   if ( isinteger(token) )
     return integer(to_i(token));
 

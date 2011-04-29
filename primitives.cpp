@@ -48,6 +48,7 @@ void load_default_defs(environment_t *e)
   e->defun("atom?", defun_atomp);
   e->defun("symbol?", defun_symbolp);
   e->defun("integer?", defun_integerp);
+  e->defun("float?", defun_decimalp);
   e->defun("null?", defun_nullp);
   e->defun("pair?", defun_pairp);
   e->defun("list?", defun_listp);
@@ -207,6 +208,9 @@ cons_t* defun_debug(cons_t *p, environment_t *env)
   case BOOLEAN:
     s += format(" value=%s", p->integer? "#t" : "#f");
     break;
+  case DECIMAL:
+    s += format(" value=%f", p->decimal);
+    break;
   case INTEGER:
     s += format(" value=%d", p->integer);
     break;
@@ -308,6 +312,11 @@ cons_t* defun_symbolp(cons_t* p, environment_t* env)
 cons_t* defun_integerp(cons_t* p, environment_t* env)
 {
   return boolean(integerp(car(p)));
+}
+
+cons_t* defun_decimalp(cons_t* p, environment_t* env)
+{
+  return boolean(decimalp(car(p)));
 }
 
 cons_t* defun_nullp(cons_t* p, environment_t* env)

@@ -39,6 +39,7 @@ cons_t* defun_append(cons_t*, environment_t*);
 cons_t* defun_atomp(cons_t*, environment_t*);
 cons_t* defun_symbolp(cons_t*, environment_t*);
 cons_t* defun_integerp(cons_t*, environment_t*);
+cons_t* defun_decimalp(cons_t*, environment_t*);
 cons_t* defun_nullp(cons_t*, environment_t*);
 cons_t* defun_pairp(cons_t*, environment_t*);
 cons_t* defun_listp(cons_t*, environment_t*);

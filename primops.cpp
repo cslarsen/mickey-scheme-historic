@@ -42,6 +42,14 @@ cons_t* integer(int n)
   return p;
 }
 
+cons_t* decimal(float n)
+{
+  cons_t *p = new cons_t();
+  p->type = DECIMAL;
+  p->decimal = n;
+  return p;
+}
+
 cons_t* boolean(bool f)
 {
   cons_t *p = new cons_t();
@@ -106,6 +114,11 @@ bool atomp(cons_t* p)
 bool integerp(cons_t* p)
 {
   return type_of(p) == INTEGER;
+}
+
+bool decimalp(cons_t* p)
+{
+  return type_of(p) == DECIMAL;
 }
 
 bool vectorp(cons_t* p)

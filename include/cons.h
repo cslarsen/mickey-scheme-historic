@@ -14,6 +14,7 @@ enum type_t {
   BOOLEAN,
   CHAR,
   INTEGER,
+  DECIMAL,
   CLOSURE,
   PAIR,
   SYMBOL,
@@ -78,6 +79,7 @@ struct cons_t : public gc {
     bool boolean;
     char character;
     int integer;
+    float decimal;
     struct { cons_t *car, *cdr; }; // pair
     closure_t* closure;
     symbol_t* symbol;

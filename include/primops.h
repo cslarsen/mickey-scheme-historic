@@ -28,6 +28,7 @@ cons_t* cdar(cons_t*);
 bool symbolp(cons_t*);
 bool atomp(cons_t*);
 bool integerp(cons_t*);
+bool decimalp(cons_t*);
 bool nullp(cons_t*);
 bool pairp(cons_t*);
 bool listp(cons_t*);

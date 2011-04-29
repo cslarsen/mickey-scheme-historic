@@ -30,10 +30,45 @@ static int isquote(int s)
   return s == '\"';
 }
 
+static int isdot(int s)
+{
+  return s == '.';
+}
+
 bool isinteger(const char* s)
 {
   int sign = (s[0]=='-' || s[0]=='+');
   return !empty(s) && all(s+sign, isdigit);
+}
+
+bool isfloat(const char* s)
+{
+  // TODO: Make pattern complete
+  // Pattern now: [+-]?[0-9]*\.?[0-9]+f?
+  size_t dots   = count(s, isdot);
+  size_t sign   = (s[0]=='-' || s[0]=='+');
+  size_t digits = count(s, isdigit);
+  size_t last_f = (s[0]? s[strlen(s)-1] == 'f' : 0);
+
+  /*
+   * The parts of a good looking floating point
+   * number are: [+-] [0-9] [.] [0-9] [f]
+   *
+   * Now, the number of digits + MAX ONE dot
+   * + MAX ONE trailing 'f' should equal the
+   * length of the string -- for a finely formatted
+   * floating point number.
+   *
+   * I know this is a stretch, but I'm NOT going
+   * to the pain of installing a regex just to parse
+   * a frickin number :-)
+   *
+   */
+
+  if ( strlen(s+sign) == (digits + (dots==1) + last_f) )
+    return dots==1 || last_f; // or else it's an ordinary integer
+  else
+    return false;
 }
 
 bool isodd(int n)
@@ -52,6 +87,11 @@ bool isstring(const char* s)
 bool isatom(const char* s)
 {
   return isalpha(s[0]) && (empty(s+1) ? true : all(s+1, isalnum));
+}
+
+float to_f(const char* s)
+{
+  return (float) atof(s);
 }
 
 int to_i(const char* s)

@@ -5,6 +5,7 @@
 #endif
 
 std::string to_s(int n);
+std::string to_s(float n);
 std::string to_s(bool f);
 std::string format(const char *fmt, ...);
 std::string toupper(const std::string& s);

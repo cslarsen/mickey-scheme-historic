@@ -7,6 +7,7 @@ std::string sprint(cons_t* p, std::string& s, bool escape)
   case NIL:          return s;
   case BOOLEAN:      return s + to_s(p->boolean);
   case CHAR:         return s + (escape? to_s(p->character) : "" + p->character);
+  case DECIMAL:      return s + to_s(p->decimal);
   case INTEGER:      return s + to_s(p->integer);
   case CLOSURE:      return s + (escape? to_s(p->closure) : "");
   case SYMBOL:       return s + p->symbol->name;

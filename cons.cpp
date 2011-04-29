@@ -10,6 +10,7 @@ std::string to_s(enum type_t type)
   case NIL:          return "nil";      break;
   case BOOLEAN:      return "boolean";  break;
   case CHAR:         return "char";     break;
+  case DECIMAL:      return "decimal";  break;
   case INTEGER:      return "integer";  break;
   case CLOSURE:      return "closure";  break;
   case PAIR:         return "pair";     break;
@@ -28,6 +29,7 @@ std::string to_s(cons_t *p)
   case NIL:      return "#<nil>";
   case BOOLEAN:  return to_s(p->boolean);
   case CHAR:     return to_s(p->character);
+  case DECIMAL:  return to_s(p->decimal);
   case INTEGER:  return to_s(p->integer);
   case CLOSURE:  return format("#<closure %p>", p->closure);
   case PAIR:     return to_s(car(p)) + " . " + to_s(cdr(p));

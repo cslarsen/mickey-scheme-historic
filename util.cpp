@@ -27,6 +27,13 @@ std::string to_s(int n)
   return std::string(buf);
 }
 
+std::string to_s(float n)
+{
+  char buf[32];
+  sprintf(buf, "%f", n);
+  return std::string(buf);
+}
+
 std::string to_s(bool f)
 {
   return std::string(f? "#t" : "#f");

@@ -103,11 +103,12 @@ cons_t* eval(cons_t* p, environment_t* e)
     if ( symbolp(p) )
       return e->lookup_or_throw(p->symbol->name);
 
-    if ( numberp(p) || stringp(p) || charp(p) || booleanp(p) || vectorp(p) )
+    if ( numberp(p) || stringp(p) || charp(p) ||
+         booleanp(p) || vectorp(p) || decimalp(p) ||
+         closurep(p) )
+    {
       return p;
-
-    if ( closurep(p) )
-      return p;
+    }
 
     throw std::runtime_error("Cannot evaluate: " + sprint(p));
   }
