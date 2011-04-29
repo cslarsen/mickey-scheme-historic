@@ -64,7 +64,7 @@ cons_t* defun_print(cons_t *p, environment_t* env)
     if ( !listp(p) )
       printf("%s", to_s(p).c_str());
     else
-      defun_print(eval(car(p), env), env);
+      defun_print(car(p), env);
   }
 
   return nil();
@@ -78,7 +78,7 @@ cons_t* defun_strcat(cons_t *p, environment_t* env)
     if ( !listp(p) )
       s += to_s(p);
     else
-      s += defun_strcat(eval(car(p), env), env)->string;
+      s += defun_strcat(car(p), env)->string;
 
   return string(s.c_str());
 }
@@ -94,14 +94,12 @@ cons_t* defun_add(cons_t *p, environment_t* env)
   int sum = 0;
 
   for ( ; !nullp(p); p = cdr(p) ) {
-    if ( integerp(p) )
-      sum += p->integer;
-    else if ( listp(p) ) {
-      cons_t *res = eval(car(p), env);
-      if ( integerp(res) )
-        sum += res->integer; // or else, thow (TOWO)
-    } else
-      throw std::runtime_error("Cannot add integer with: " + sprint(p));
+    cons_t *i = listp(p)? car(p) : p;
+
+    if ( integerp(i) )
+      sum += i->integer;
+    else
+      throw std::runtime_error("Cannot add integer with " + to_s(type_of(i)) + ": " + sprint(i));
   }
 
   return integer(sum);
@@ -116,7 +114,7 @@ cons_t* defun_mul(cons_t *p, environment_t *env)
     if ( integerp(p) )
       product *= p->integer;
     else if ( listp(p) ) {
-      cons_t *res = eval(car(p), env);
+      cons_t *res = car(p);
       if ( integerp(res) )
         product *= res->integer; // else, throw (TODO)
     } else
@@ -133,9 +131,9 @@ cons_t* defun_begin(cons_t* p, environment_t *env)
 
   for ( ; !nullp(p); p = cdr(p) )
     if ( !listp(p) )
-      r = append(r, eval(p, env));
+      r = append(r, p);
     else
-      r = append(r, eval(car(p), env));
+      r = append(r, car(p));
 
   return r;
 }
@@ -150,7 +148,7 @@ cons_t* defun_to_string(cons_t* p, environment_t *env)
     else if ( stringp(p) )
       s += p->string;
     else if ( listp(p) )
-      s += sprint(eval(car(p), env));
+      s += sprint(car(p));
   }
 
   return string(s.c_str());
@@ -164,7 +162,7 @@ cons_t* defun_list(cons_t* p, environment_t *env)
     if ( !listp(p) )
       l = append(l, p);
     else
-      l = append(l, cons(eval(car(p), env)));
+      l = append(l, cons(car(p)));
 
   // `(list)` should return `()'
   return nullp(l) ? list(NULL) : l;
@@ -177,23 +175,13 @@ cons_t* defun_define(cons_t *p, environment_t *env)
    */
 
   cons_t *name = car(p);
-  cons_t *body = eval(cdr(p), env);
+  cons_t *body = cadr(p);
 
   if ( !symbolp(name) )
     throw std::runtime_error("First argument to (define) must be a symbol");
 
-  /*
-   * Ugly hack:  If we do (define a 123) we get car(body)=123 and cdr(body)=nil,
-   *             but if we do (define a (list 1 2 3)) we get car(body)=nil and cdr(body)=list(1 2 3)
-   *
-   *             This is probably due to bugs in the parser, so fixing that is a big TODO.
-   */
-  if ( nullp(car(body)) && !nullp(cdr(body)) )        //
-    body = cdr(body);                                 // <= THIS IS UGLY
-  else if ( !nullp(car(body)) && nullp(cdr(body)) )   // <= AND WRONG
-    body = car(body);                                 // <= AND MUST BEGONE!
-  else if ( !nullp(car(body)) && !nullp(cdr(body)) )  //
-    body = cadr(body);
+  if ( name->symbol->name.empty() )
+    throw std::runtime_error("Cannot define with empty variable name"); // TODO: Even possible?
 
   env->define(name->symbol->name, body);
   return nil();
@@ -273,7 +261,7 @@ cons_t* defun_cons(cons_t* p, environment_t* e)
 
 cons_t* defun_car(cons_t* p, environment_t* env)
 {
-  return car(eval(car(p), env));
+  return caar(p);
 }
 
 cons_t* defun_cdr(cons_t* p, environment_t* env)
@@ -284,13 +272,13 @@ cons_t* defun_cdr(cons_t* p, environment_t* env)
    *        so we explicitly check for it here, although we
    *        probably SHOULD NOT (TODO).
    */
-  cons_t *r = cdr(car(eval(p, env)));
+  cons_t *r = cdar(p);
   return r? r : cons(NULL);
 }
 
 cons_t* defun_caar(cons_t* p, environment_t* e)
 {
-  return car(defun_car(p, e));
+  return car(caar(p));
 }
 
 cons_t* defun_cadr(cons_t* p, environment_t* e)
