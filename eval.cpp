@@ -44,21 +44,10 @@ static cons_t* invoke(cons_t* fun, cons_t* args)
   return lambda(args, env);
 }
 
-static size_t length(cons_t *p)
-{
-  size_t n = 0;
-
-  while ( !nullp(p) ) {
-    ++n; p = cdr(p);
-  }
-
-  return n;
-}
-
 static cons_t* call_lambda(cons_t *p, environment_t* e)
 {
-  size_t params_reqd = length(e->symbols["args"]);
-  size_t params_recv = length(p);
+  int params_reqd = length(e->symbols["args"])->integer;
+  int params_recv = length(p)->integer;
 
   if ( params_recv < params_reqd )
     throw std::runtime_error(format("Not enough arguments to function, need %d but only got %d", params_reqd, params_recv));

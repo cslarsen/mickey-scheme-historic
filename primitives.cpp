@@ -157,16 +157,7 @@ cons_t* defun_to_string(cons_t* p, environment_t *env)
 
 cons_t* defun_list(cons_t* p, environment_t *env)
 {
-  cons_t *l = NULL;
-
-  for ( ; !nullp(p); p = cdr(p))
-    if ( !listp(p) )
-      l = append(l, p);
-    else
-      l = append(l, cons(car(p)));
-
-  // `(list)` should return `()'
-  return nullp(l) ? list(NULL) : l;
+  return list(p);
 }
 
 cons_t* defun_define(cons_t *p, environment_t *env)

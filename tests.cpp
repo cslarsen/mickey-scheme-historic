@@ -260,7 +260,7 @@ void run_tests()
   TEST_EVAL("(+ a a)", "246");
   TEST_EVAL("(define b 100)", "");
   TEST_EVAL("(+ a b)", "223");
-  TEST_EVAL("(define hello (list html (list body (list p (list \"Hello, world!\")))))", "");
+  TEST_EVAL("(define hello (quote (html (body (p (\"Hello, world!\"))))))", "");
   TEST_EVAL("hello", "(html (body (p (Hello, world!))))");
   TEST_REPL("hello", "(html (body (p (\"Hello, world!\"))))");
 

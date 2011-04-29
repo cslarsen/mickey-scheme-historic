@@ -182,3 +182,14 @@ cons_t* closure(lambda_t f, environment_t* e)
 
   return p;
 }
+
+cons_t* length(cons_t *p)
+{
+  int n = 0;
+
+  while ( !nullp(p) ) {
+    ++n; p = cdr(p);
+  }
+
+  return integer(n);
+}
