@@ -31,7 +31,7 @@ std::string sprint(cons_t* p, std::string& s, bool escape)
 std::string sprint(cons_t* p)
 {
   std::string s;
-  return sprint(p, s, true);
+  return sprint(listp(p) ? cons(p) : p, s, true);
 }
 
 std::string sprint(program_t* p)
@@ -42,7 +42,7 @@ std::string sprint(program_t* p)
 std::string print(cons_t* p)
 {
   std::string s;
-  return sprint(p, s, false);
+  return sprint(list(p) ? cons(p) : p, s, false);
 }
 
 std::string print(program_t* p)

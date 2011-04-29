@@ -372,5 +372,5 @@ cons_t* defun_version(cons_t*, environment_t*)
 
 cons_t* defun_length(cons_t* p, environment_t*)
 {
-  return length(p);
+  return integer(length(car(p)));
 }
