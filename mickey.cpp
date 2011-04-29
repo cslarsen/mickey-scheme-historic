@@ -25,9 +25,14 @@ int main(int argc, char** argv)
 
   for ( int n=1; n<argc; ++n )
     if ( argv[n][0] != '-' ) {
-      environment_t env;
-      load_default_defs(&env);
-      defun_load(cons(string(argv[n])), &env);
+      try {
+        environment_t *env = new environment_t();
+        load_default_defs(env);
+        defun_load(cons(string(argv[n])), env);
+      } catch (const std::exception& e) {
+        fprintf(stderr, "%s\n", e.what());
+        return 1;
+      }
     }
 
   return 0;

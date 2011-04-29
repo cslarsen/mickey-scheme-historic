@@ -103,3 +103,11 @@ struct cons_t* environment_t::define(const std::string& name, cons_t* body)
   // TODO: Perform deep copy?  Extend environment?
   return symbols[name] = body;
 }
+
+struct environment_t* environment_t::extend()
+{
+  environment_t *r = new environment_t();
+  r->outer = this;
+  r->symbols = symbols;
+  return r;
+}

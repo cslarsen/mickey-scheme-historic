@@ -55,6 +55,6 @@ program_t* parse(const char *program, environment_t *env)
 
   program_t *p = new program_t();
   p->globals = env;
-  p->root = parse_list(env);
+  p->root = parse_list(p->globals);
   return p;
 }

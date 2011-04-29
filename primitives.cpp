@@ -23,6 +23,7 @@ void load_default_defs(environment_t *e)
 {
   e->defun("begin", defun_begin);
   e->defun("display", defun_print);
+  e->defun("write", defun_print);
   e->defun("string-append", defun_strcat);
   e->defun("+", defun_add);
   e->defun("*", defun_mul);
