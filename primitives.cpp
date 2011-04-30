@@ -24,6 +24,7 @@ void load_default_defs(environment_t *e)
   e->defun("display", defun_print);
   e->defun("write", defun_print);
   e->defun("string-append", defun_strcat);
+  e->defun("-", defun_sub);
   e->defun("+", defun_add);
   e->defun("*", defun_mul);
   e->defun("=", defun_eqintp);
@@ -112,6 +113,24 @@ cons_t* defun_add(cons_t *p, environment_t* env)
   }
 
   return integer(sum);
+}
+
+cons_t* defun_sub(cons_t *p, environment_t* env)
+{
+  int sign = 1;
+  int diff = 0;
+
+  for ( ; !nullp(p); p = cdr(p) ) {
+    cons_t *i = listp(p)? car(p) : p;
+
+    if ( integerp(i) ) {
+      diff = diff + (sign*i->integer);
+      if ( sign ) sign = -1;
+    } else
+      throw std::runtime_error("Cannot subtract integer with " + to_s(type_of(i)) + ": " + sprint(i));
+  }
+
+  return integer(diff);
 }
 
 cons_t* defun_mul(cons_t *p, environment_t *env)

@@ -29,7 +29,8 @@
   (display 
     (string-append
       "Tests : " (->string tests) "\n"
-      "Failed: " (->string failed) "\n"))))
+      "OK    : " (->string (- tests failed)) "\n"
+      "FAIL  : " (->string failed) "\n"))))
 
 ;;
 ;; Perform actual tests

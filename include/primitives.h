@@ -16,6 +16,7 @@ cons_t* defun_version(cons_t*, environment_t*);
 cons_t* defun_print(cons_t*, environment_t*);
 cons_t* defun_strcat(cons_t*, environment_t*);
 cons_t* defun_add(cons_t*, environment_t*);
+cons_t* defun_sub(cons_t*, environment_t*);
 cons_t* defun_mul(cons_t*, environment_t*);
 cons_t* defun_to_string(cons_t*, environment_t*);
 cons_t* defun_list(cons_t*, environment_t*);
