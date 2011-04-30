@@ -2,43 +2,56 @@
 ;; Define some test functions
 ;;
 
+
 (define tests 0)
+(define test+1
+  (lambda (_foo)
+    (set! tests (+ tests 1))))
+
 (define failed 0)
+(define fail+1
+  (lambda (_foo)
+    (set! failed (+ failed 1))))
 
 (define fail (lambda (code expected)
-    (set! tests (+ 1 tests)) // should be set! to get to global definitions
-    (set! failed (+ 1 failed))
-    (display (string-append "FAILED: " (->string code) " != " (->string expected) "\n"))))
-
-(display "Creating 'success'\n")
+  (begin
+    (test+1 (quote _))
+    (fail+1 (quote _))
+    (display (string-append
+      (->string tests) " FAIL: "
+        (->string code) " != " (->string expected) "\n")))))
 
 (define success (lambda (code expected)
   (begin
-    (set! tests (+ 1 tests))
-    (display (string-append "OK: " (->string code) " == " (->string expected) "\n")))))
+    (test+1 (quote _))
+    (display (string-append
+      (->string tests) " OK: "
+        (->string code) " == " (->string expected) "\n")))))
 
-(display "Creating 'test'\n")
-
-(define test-true (lambda (code expected)
+(define test-eq (lambda (code expected)
   (begin
-    (if (not (eq? (eval code) expected))
-      (fail code expected)
-      (success code expected)))))
+    (if
+      (not (eq? (eval code) expected))
+        (fail code expected)
+        (success code expected)))))
 
-(define test-results (lambda (__dummy__)
-  (display 
-    (string-append
-      "Tests : " (->string tests) "\n"
-      "OK    : " (->string (- tests failed)) "\n"
-      "FAIL  : " (->string failed) "\n"))))
+(define results (lambda (__dummy__)
+  (begin
+    (display 
+      (string-append
+        (->string (- tests failed)) " / " (->string tests) " tests OK, "
+          (->string failed) " failed\n")))));
 
 ;;
 ;; Perform actual tests
 ;;
 
-(display "Running tests\n")
+(display "Tests\n")
+(test-eq (quote (+ 1 2 3 4)) 10)
+(test-eq (quote (* 1 2 3 4)) 24)
+(test-eq (quote (- 1 2 3 4)) -8)
 
-(test-true (quote (+ 1 2 3 4)) 10)
-(test-true (quote (* 1 2 3 4)) 24)
+(display "\nResults\n")
+(results (quote __dummy__))
 
-(test-results (quote __dummy__))
+(display "\n")

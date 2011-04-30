@@ -19,6 +19,8 @@ NORMAL
     test edge cases, look up all the subtle stuff and create tests for them,
     we will aim for complete compliance with spec...
 
+- Add let, letrec, fluid-rec etc
+
 HARDER
 - Add library functions
 - Add libffi support
@@ -53,3 +55,4 @@ DOWN THE LINE
 - Tail-call optimization
 - call/cc
 - delay/force
+- Macros
