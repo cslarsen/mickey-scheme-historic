@@ -6,6 +6,15 @@
 #include "apply.h"
 #include "print.h"
 
+/*
+ * Magic variables to hold lambda arguments
+ * and code body.  Quite the hack, and should
+ * be fixed later on.  Bad because they shouldn't
+ * shadow any other definitions with these names.
+ */
+static const char ARGS[] = "__args__";
+static const char BODY[] = "__body__";
+
 cons_t* eval(program_t *p)
 {
   return eval(p->root, p->globals);
@@ -46,7 +55,7 @@ static cons_t* invoke(cons_t* fun, cons_t* args)
 
 static cons_t* call_lambda(cons_t *p, environment_t* e)
 {
-  size_t params_reqd = length(e->symbols["args"]);
+  size_t params_reqd = length(e->symbols[ARGS]);
   size_t params_recv = length(p);
 
   if ( params_recv < params_reqd )
@@ -56,7 +65,7 @@ static cons_t* call_lambda(cons_t *p, environment_t* e)
     throw std::runtime_error(format("Function only accepts %d parameters, but got %d", params_reqd, params_recv));
 
   // set up function arguments
-  for ( cons_t *value = p, *name = e->symbols["args"];
+  for ( cons_t *value = p, *name = e->symbols[ARGS];
         !nullp(value) && !nullp(name);
         value = cdr(value),
         name = cdr(name) )
@@ -65,23 +74,20 @@ static cons_t* call_lambda(cons_t *p, environment_t* e)
       throw std::runtime_error("lambda argument not a symbol but type "
         + to_s(type_of(car(name))) + ": " + sprint(car(name)));
 
-//    printf("setting '%s' = '%s'\n", car(name)->symbol->name.c_str(), sprint(car(value)).c_str());
     e->define(car(name)->symbol->name, car(value));
   }
 
-  cons_t *body = e->symbols["body"];
-//  printf("body is '%s'\n", sprint(body).c_str());
+  cons_t *body = e->symbols[BODY];
+
   // now EXECUTE body with given definition
   return eval(body, e);
 }
 
 cons_t* make_closure(cons_t* args, cons_t* body, environment_t* e)
 {
-//  printf("make closure with args '%s'\n", sprint(args).c_str());
-//  printf("make closure with body '%s'\n", sprint(body).c_str());
-
-  e->define("args", args);
-  e->define("body", body);
+  // this is a hack -> will shadow params with these magic names
+  e->define(ARGS, args);
+  e->define(BODY, body);
 
   closure_t *c = new closure_t();
   c->function = call_lambda;
@@ -166,7 +172,7 @@ cons_t* eval(cons_t* p, environment_t* e)
       return eprogn(cdr(p), e);
 
     if ( name == "eval" )
-      return eval(cdr(cadr(p)), e);
+      return eval(evlis(cdr(p), e), e);
   }
 
   // skip `begin`-form; we've got that covered elsewhere (or?)
