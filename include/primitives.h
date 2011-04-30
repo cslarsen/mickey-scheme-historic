@@ -48,4 +48,5 @@ cons_t* defun_vectorp(cons_t*, environment_t*);
 cons_t* defun_charp(cons_t*, environment_t*);
 
 cons_t* defun_length(cons_t*, environment_t*);
-
+cons_t* defun_eqp(cons_t*, environment_t*);
+cons_t* defun_eqintp(cons_t*, environment_t*);

@@ -38,5 +38,6 @@ bool booleanp(cons_t*);
 bool vectorp(cons_t*);
 bool charp(cons_t*);
 bool numberp(cons_t*);
+bool eqp(cons_t*, cons_t*);
 
 #endif

@@ -26,6 +26,8 @@ void load_default_defs(environment_t *e)
   e->defun("string-append", defun_strcat);
   e->defun("+", defun_add);
   e->defun("*", defun_mul);
+  e->defun("=", defun_eqintp);
+  e->defun("eq?", defun_eqp);
   e->defun("->string", defun_to_string);
   e->defun("list", defun_list);
   e->defun("load", defun_load);
@@ -364,4 +366,26 @@ cons_t* defun_version(cons_t*, environment_t*)
 cons_t* defun_length(cons_t* p, environment_t*)
 {
   return integer(length(car(p)));
+}
+
+cons_t* defun_eqp(cons_t* p, environment_t*)
+{
+  if ( length(p) != 2 )
+    throw std::runtime_error("eq? requires exactly two parameters");
+
+  return boolean(eqp(car(p), cadr(p)));
+}
+
+cons_t* defun_eqintp(cons_t* p, environment_t*)
+{
+  cons_t *l = car(p), *r = cadr(p);
+
+  if ( type_of(l) != INTEGER || type_of(r) != INTEGER
+        || length(p) != 2 )
+  {
+    throw std::runtime_error(
+      "Equality operator (=) only works for exactly two integers");
+  }
+
+  return boolean(l->integer == r->integer);
 }

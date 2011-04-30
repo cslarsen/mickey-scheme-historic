@@ -169,6 +169,29 @@ bool closurep(cons_t* p)
   return type_of(p) == CLOSURE;
 }
 
+bool eqp(cons_t* l, cons_t* r)
+{
+  if ( type_of(l) != type_of(r) )
+    return false;
+
+  switch ( type_of(l) ) {
+  case NIL:     return true;
+  case BOOLEAN: return l->boolean == r->boolean;
+  case CHAR:    return l->character == r->character;
+  case INTEGER: return l->integer == r->integer;
+  case DECIMAL: return l->decimal == r->decimal;
+  case CLOSURE: return (l->closure->function == r->closure->function
+                         && l->closure->environment == r->closure->environment);
+  case PAIR:    throw std::runtime_error("eq? is not implemented for pairs yet");
+  case SYMBOL:  return l->symbol->name == r->symbol->name;
+  case STRING:  return !strcmp(l->string, r->string);
+  case VECTOR:  throw std::runtime_error("Unimplemented eq? for vector"); break;
+  case CONTINUATION: throw std::runtime_error("Unimplemented eq? for continuation"); break;
+  }
+
+  return false;
+}
+
 cons_t* append(cons_t *h, cons_t *t)
 {
   if ( nullp(h) || !listp(h) )
