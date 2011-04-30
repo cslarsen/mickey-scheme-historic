@@ -50,3 +50,9 @@ cons_t* defun_charp(cons_t*, environment_t*);
 cons_t* defun_length(cons_t*, environment_t*);
 cons_t* defun_eqp(cons_t*, environment_t*);
 cons_t* defun_eqintp(cons_t*, environment_t*);
+
+// bool ops
+cons_t* defun_not(cons_t*, environment_t*);
+cons_t* defun_and(cons_t*, environment_t*);
+cons_t* defun_or(cons_t*, environment_t*);
+cons_t* defun_xor(cons_t*, environment_t*);

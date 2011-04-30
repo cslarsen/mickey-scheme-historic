@@ -229,3 +229,26 @@ size_t length(cons_t *p)
 
   return n;
 }
+
+bool not_p(cons_t* p)
+{
+  // all other types + values are considered true in scheme
+  return booleanp(car(p)) && car(p)->boolean == false;
+}
+
+bool and_p(cons_t* p)
+{
+  // implement in terms of not_p
+  return !not_p(p) && !not_p(cdr(p));
+}
+
+bool or_p(cons_t* p)
+{
+  // implement in terms of not_p
+  return !not_p(p) || !not_p(cdr(p));
+}
+
+bool xor_p(cons_t* p)
+{
+  return !not_p(p) ^ !not_p(cdr(p));
+}

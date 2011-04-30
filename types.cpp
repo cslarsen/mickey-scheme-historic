@@ -41,6 +41,11 @@ bool isinteger(const char* s)
   return !empty(s) && all(s+sign, isdigit);
 }
 
+bool isbool(const char* s)
+{
+  return s[0]=='#' && (s[1]=='t' || s[1]=='f');
+}
+
 bool isfloat(const char* s)
 {
   // TODO: Make pattern complete
@@ -103,4 +108,9 @@ int to_i(const char* s)
   int sign = (s[0]=='-'? -1 : 1);
 
   return sign * atoi(has_sign + s);
+}
+
+bool to_b(const char* s)
+{
+  return s[1]=='t'? true : false;
 }

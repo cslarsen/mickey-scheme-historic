@@ -59,6 +59,12 @@ void load_default_defs(environment_t *e)
   e->defun("vector?", defun_vectorp);
 
   e->defun("length", defun_length);
+
+  e->defun("not", defun_not);
+  e->defun("and", defun_and);
+  e->defun("or", defun_or);
+  e->defun("xor", defun_xor);
+  
 }
 
 cons_t* defun_print(cons_t *p, environment_t* env)
@@ -388,4 +394,24 @@ cons_t* defun_eqintp(cons_t* p, environment_t*)
   }
 
   return boolean(l->integer == r->integer);
+}
+
+cons_t* defun_not(cons_t* p, environment_t*)
+{
+  return boolean(not_p(p));
+}
+
+cons_t* defun_and(cons_t* p, environment_t*)
+{
+  return boolean(and_p(p));
+}
+
+cons_t* defun_or(cons_t* p, environment_t*)
+{
+  return boolean(or_p(p));
+}
+
+cons_t* defun_xor(cons_t* p, environment_t*)
+{
+  return boolean(xor_p(p));
 }
