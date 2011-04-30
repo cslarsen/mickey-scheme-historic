@@ -1,10 +1,25 @@
-ASAP
-- *Can we remove now?*
-    - Introduce evlis, i.e. eval args in eval so we can remove tedious evals in primitives
-    - Fix evaluator (define/lookup, see Quiennec)
+EASY
+- Add character parsing, #\f for instance
+- Add character table
+
+NORMAL
 - Fix environment / closure
+  * Double-check closure / lexical scoping
+
 - Fix lambda
-- We're now a proper Scheme, celebrate!
+  * Works, but not exactly rock proof;
+    * For instance, zero parameters doesn't work
+    * Also, fix (define) short form
+
+- We're now a proper Lisp/Scheme, celebrate!
+  * OOOH, almost there!!
+
+- After we're a lisp/scheme (basic version)
+  * Make A LOT of test-functions, test everything again and again,
+    test edge cases, look up all the subtle stuff and create tests for them,
+    we will aim for complete compliance with spec...
+
+HARDER
 - Add library functions
 - Add libffi support
 - Add llvm primitives in scheme
@@ -17,10 +32,6 @@ ASAP
 - Add support for delay/force
 
 NEXT STEPS
-- Add support for lexical closure (extending the environment)
-- Add support for (lambda), use with closure and define above
-  => now we're a *real* Lisp!
-- Add (import) for reading other files
 - Make all llvm primitives callable by interpreter
   => implement functions as llvm primitives, e.g.:
 
@@ -36,10 +47,6 @@ NEXT STEPS
   Some functions must be built-in, I guess, like "no", "null?", "->c_string" and so on.
   But perhaps later on, these can as well become something that can be implemented (?).
   (At least many of them).
-
-MEDIO
-- Add character parsing, #\f for instance
-- Add character table
 
 DOWN THE LINE
 - Add utf-8 support for strings, consider making it default
