@@ -164,6 +164,9 @@ cons_t* eval(cons_t* p, environment_t* e)
 
     if ( name == "begin" )
       return eprogn(cdr(p), e);
+
+    if ( name == "eval" )
+      return eval(cdr(cadr(p)), e);
   }
 
   // skip `begin`-form; we've got that covered elsewhere (or?)
