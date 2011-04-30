@@ -162,6 +162,28 @@ cons_t* eval(cons_t* p, environment_t* e)
               cons(def_name, evlis(def_body, e)), e);
     }
 
+    if ( name == "set!" ) {
+      cons_t *def_name = cadr(p);
+      cons_t *def_body = cddr(p);
+
+      std::string name = def_name->symbol->name;
+      environment_t *i = e;
+
+      // search for definition and set if found
+      for ( ; i != NULL; i = i->outer )
+        if ( i->symbols.find(name) != i->symbols.end() ) {
+          i->symbols[name] = car(evlis(def_body, e));
+          return nil();
+        }
+
+       // only set if NOT found (what's the
+      //  difference between set! and define anyway?)
+      if ( i == NULL )
+        return defun_define(cons(def_name, evlis(def_body, e)), e);
+
+      return nil();
+    }
+
     if ( name == "lambda" ) {
       cons_t *args = cadr(p);
       cons_t *body = cddr(p);

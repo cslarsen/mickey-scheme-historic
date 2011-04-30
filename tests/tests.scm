@@ -6,16 +6,15 @@
 (define failed 0)
 
 (define fail (lambda (code expected)
-  (begin
-    (define tests (+ 1 tests)) // should be set! to get to global definitions
-    (define failed (+ 1 failed))
-    (display (string-append "FAILED: " (->string code) " != " (->string expected) "\n")))))
+    (set! tests (+ 1 tests)) // should be set! to get to global definitions
+    (set! failed (+ 1 failed))
+    (display (string-append "FAILED: " (->string code) " != " (->string expected) "\n"))))
 
 (display "Creating 'success'\n")
 
 (define success (lambda (code expected)
   (begin
-    ;(define tests (+ 1 tests))
+    (set! tests (+ 1 tests))
     (display (string-append "OK: " (->string code) " == " (->string expected) "\n")))))
 
 (display "Creating 'test'\n")
@@ -26,12 +25,11 @@
       (fail code expected)
       (success code expected)))))
 
-(define test-results (lambda ()
-  (begin
+(define test-results (lambda (__dummy__)
+  (display 
     (string-append
-      "Tests: " (->string tests) "\n"
-      "Failed: " (->string failed) "\n"
-      "Success: " (->string (- tests failed)) "\n"))))
+      "Tests : " (->string tests) "\n"
+      "Failed: " (->string failed) "\n"))))
 
 ;;
 ;; Perform actual tests
@@ -42,4 +40,4 @@
 (test-true (quote (+ 1 2 3 4)) 10)
 (test-true (quote (* 1 2 3 4)) 24)
 
-;(display (test-results 0))
+(test-results (quote __dummy__))

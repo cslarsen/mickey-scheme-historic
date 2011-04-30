@@ -79,8 +79,10 @@ cons_t* environment_t::lookup(const std::string& name) const
 
   do {
     dict_t::const_iterator i;
+
     if ( (i = e->symbols.find(name)) != e->symbols.end() )
       return (*i).second;
+
   } while ( (e = e->outer) != NULL);
 
   return NULL;
@@ -110,6 +112,5 @@ struct environment_t* environment_t::extend()
 {
   environment_t *r = new environment_t();
   r->outer = this;
-  r->symbols = symbols;
   return r;
 }
