@@ -121,20 +121,20 @@ void run_tests()
   TEST_STREQ(sprint(append(NULL, list(integer(1), integer(2)))), "(1 2)");
 
   // parser
-  TEST_PARSE("(cOns 1 2)", "(cOns 1 2)");
-  TEST_PARSE("(CONS 1 2)", "(CONS 1 2)");
-  TEST_PARSE("(fx-+ (fx-* 1 2) 3)", "(fx-+ (fx-* 1 2) 3)");
-  TEST_PARSE("(1)", "(1)");
-  TEST_PARSE("((1))", "((1))");
-  TEST_PARSE("((1 2))", "((1 2))");
-  TEST_PARSE("((1 2) 3)", "((1 2) 3)");
-  TEST_PARSE("((a b) c)", "((a b) c)");
-  TEST_PARSE("(a (b c) d)", "(a (b c) d)");
-  TEST_PARSE("(a (B c) D)", "(a (B c) D)");
-  TEST_PARSE("a", "a");
-  TEST_PARSE("A", "A");
-  TEST_PARSE("(1 2 3) (4 5 6)", "(1 2 3) (4 5 6)");
-  TEST_PARSE("(1 2 3)\r\n(4 5 6)", "(1 2 3) (4 5 6)");
+  TEST_PARSE("(cOns 1 2)", "((cOns 1 2))");
+  TEST_PARSE("(CONS 1 2)", "((CONS 1 2))");
+  TEST_PARSE("(fx-+ (fx-* 1 2) 3)", "((fx-+ (fx-* 1 2) 3))");
+  TEST_PARSE("(1)", "((1))");
+  TEST_PARSE("((1))", "(((1)))");
+  TEST_PARSE("((1 2))", "(((1 2)))");
+  TEST_PARSE("((1 2) 3)", "(((1 2) 3))");
+  TEST_PARSE("((a b) c)", "(((a b) c))");
+  TEST_PARSE("(a (b c) d)", "((a (b c) d))");
+  TEST_PARSE("(a (B c) D)", "((a (B c) D))");
+  TEST_PARSE("a", "(a)");
+  TEST_PARSE("A", "(A)");
+  TEST_PARSE("(1 2 3) (4 5 6)", "((1 2 3) (4 5 6))");
+  TEST_PARSE("(1 2 3)\r\n(4 5 6)", "((1 2 3) (4 5 6))");
 
   // string operations
   TEST_EVAL("(->string 123)", "123");
