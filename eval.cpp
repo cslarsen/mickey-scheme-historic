@@ -93,6 +93,19 @@ cons_t* make_closure(cons_t* args, cons_t* body, environment_t* e)
   return r;
 }
 
+// Queinnec, p. 9
+static cons_t* eprogn(cons_t* exps, environment_t* env)
+{
+  if ( pairp(exps) )
+    if ( pairp(cdr(exps)) ) {
+      eval(car(exps), env);
+      eprogn(cdr(exps), env);
+    } else
+      eval(car(exps), env);
+
+  return nil();
+}
+
 /*
  * Based on Queinnec's evaluator numero uno.
  *
@@ -148,6 +161,9 @@ cons_t* eval(cons_t* p, environment_t* e)
       cons_t *body = cddr(p);
       return make_closure(args, body, e->extend());
     }
+
+    if ( name == "begin" )
+      return eprogn(cdr(p), e);
   }
 
   // skip `begin`-form; we've got that covered elsewhere (or?)

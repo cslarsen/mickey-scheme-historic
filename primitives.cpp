@@ -21,7 +21,6 @@ closure_t* lookup_closure(symbol_t *s, environment_t *env)
 
 void load_default_defs(environment_t *e)
 {
-  e->defun("begin", defun_begin);
   e->defun("display", defun_print);
   e->defun("write", defun_print);
   e->defun("string-append", defun_strcat);
@@ -126,20 +125,6 @@ cons_t* defun_mul(cons_t *p, environment_t *env)
   return integer(product);
 }
 
-cons_t* defun_begin(cons_t* p, environment_t *env)
-{
-  // execute in order of appearance
-  cons_t *r = NULL;
-
-  for ( ; !nullp(p); p = cdr(p) )
-    if ( !listp(p) )
-      r = append(r, p);
-    else
-      r = append(r, car(p));
-
-  return r;
-}
-
 cons_t* defun_to_string(cons_t* p, environment_t *env)
 {
   std::string s;
@@ -180,15 +165,21 @@ cons_t* defun_define(cons_t *p, environment_t *env)
   return nil();
 }
 
+static cons_t* begin(cons_t* p, environment_t* e)
+{
+  return cons(symbol("begin", e), p);
+}
+
 cons_t* defun_load(cons_t *filename, environment_t *env)
 {
   if ( !stringp(car(filename)) )
     throw std::runtime_error("First argument to (load) must be a string");
 
+  //program_t *p = parse(std::string("(begin " + slurp(open_file(car(filename)->string)) + ")").c_str(), env);
   program_t *p = parse(slurp(open_file(car(filename)->string)).c_str(), env);
 
   // When reading from disk, we implicitly wrap it all in (begin ...)
-  p->root = cons(env->lookup("begin"), p->root);
+  p->root = begin(p->root, p->globals); 
 
   eval(p);
   return nil();
