@@ -1,10 +1,32 @@
 #include <stdexcept>
+#include <stack>
 #include "eval.h"
 #include "util.h"
 #include "primops.h"
 #include "primitives.h"
 #include "apply.h"
 #include "print.h"
+
+// instruction stack for backtraces
+static std::stack<cons_t*> is;
+static bool trace_stack = true;
+
+void backtrace()
+{
+  if ( !trace_stack )
+    return;
+
+  std::stack<cons_t*> p = is;
+
+  printf("Backtrace:\n");
+
+  while ( !p.empty() ) {
+    printf("- %s\n", sprint(p.top()).c_str());
+    p.pop();
+  }
+
+  printf("\n");
+}
 
 /*
  * Magic variables to hold lambda arguments
@@ -19,7 +41,14 @@ cons_t* make_closure(cons_t* args, cons_t* body, environment_t* e);
 
 cons_t* eval(program_t *p)
 {
-  return eval(p->root, p->globals);
+  try {
+    return eval(p->root, p->globals);
+  }
+  catch(...) {
+    if ( trace_stack )
+      backtrace();
+    throw;
+  }
 }
 
 static bool bool_true(cons_t* p)
@@ -238,7 +267,10 @@ cons_t* eval(cons_t* p, environment_t* e)
 
     if ( name == "apply" ) {
       // correct to use eval on parameter list?
-      return invoke( eval(cadr(p), e), eval(caddr(p), e));
+      if ( trace_stack ) is.push(p);
+      cons_t *res = invoke( eval(cadr(p), e), eval(caddr(p), e));
+      if ( trace_stack ) is.pop();
+      return res;
     }
   }
 
@@ -246,6 +278,9 @@ cons_t* eval(cons_t* p, environment_t* e)
   // skip `set!` for now; we can implement it in primitives.cpp
   // skip `lambda` for now
 
-  return invoke(  eval(car(p), e),
-                 evlis(cdr(p), e));
+  if ( trace_stack ) is.push(p);
+  cons_t *res = invoke(  eval(car(p), e),
+                        evlis(cdr(p), e));
+  if ( trace_stack ) is.pop();
+  return res;
 }
