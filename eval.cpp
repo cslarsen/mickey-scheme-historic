@@ -222,6 +222,11 @@ cons_t* eval(cons_t* p, environment_t* e)
 
     if ( name == "eval" )
       return eval(evlis(cdr(p), e), e);
+
+    if ( name == "apply" ) {
+      // correct to use eval on parameter list?
+      return invoke( eval(cadr(p), e), eval(caddr(p), e));
+    }
   }
 
   // skip `begin`-form; we've got that covered elsewhere (or?)
