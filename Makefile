@@ -12,7 +12,7 @@ check: all
 	./mickey tests/*
 
 check-scheme: all
-	./mickey tests/tests.scm
+	cd tests ; ../mickey tests.scm
 
 diff: all
 	# mickey and chicken should have same output
