@@ -78,13 +78,29 @@ static cons_t* make_curried_function(cons_t *names, cons_t *values, cons_t *body
 
 static cons_t* call_lambda(cons_t *p, environment_t* e)
 {
-  size_t params_reqd = length(e->symbols[ARGS]);
+  cons_t *args = e->symbols[ARGS];
+  cons_t *body = e->symbols[BODY];
+
+  /*
+   * We have to extend the environment
+   * to set up a new stack frame.
+   *
+   * If we DON'T do this, then we cannot
+   * perform recursion, as function
+   * params will never be updated (e.g.,
+   * the recursive Fibonacci algorithm
+   * will never terminate).
+   *
+   */
+  e = e->extend();
+
+  size_t params_reqd = length(args);
   size_t params_recv = length(p);
 
   if ( params_recv < params_reqd ) {
     // try currying (TODO: Do we need to check for any conditions?)
-    return make_curried_function(e->symbols[ARGS], p,
-                                 e->symbols[BODY],
+    return make_curried_function(args, p,
+                                 body,
                                  e->extend());
   }
 
@@ -92,7 +108,7 @@ static cons_t* call_lambda(cons_t *p, environment_t* e)
     throw std::runtime_error(format("Function only accepts %d parameters, but got %d", params_reqd, params_recv));
 
   // set up function arguments
-  for ( cons_t *value = p, *name = e->symbols[ARGS];
+  for ( cons_t *value = p, *name = args;
         !nullp(value) && !nullp(name);
         value = cdr(value),
         name = cdr(name) )
@@ -103,8 +119,6 @@ static cons_t* call_lambda(cons_t *p, environment_t* e)
 
     e->define(car(name)->symbol->name, car(value));
   }
-
-  cons_t *body = e->symbols[BODY];
 
   // now EXECUTE body with given definition
   return eval(body, e);
