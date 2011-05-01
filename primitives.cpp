@@ -30,7 +30,8 @@ void load_default_defs(environment_t *e)
   e->defun("-", defun_sub);
   e->defun("+", defun_add);
   e->defun("*", defun_mul);
-  e->defun("/", defun_div);
+  e->defun("/", defun_divf);
+  e->defun("//", defun_div);
   e->defun("sqrt", defun_sqrt);
 
   e->defun("eq?", defun_eqp);
@@ -185,6 +186,13 @@ cons_t* defun_sub(cons_t *p, environment_t* env)
   return integer(diff);
 }
 
+static bool whole_numberp(float n)
+{
+  // Return true if `n` has no decimals, i.e. is "x.0" for a value of x
+  // NOTE: Can possible do `(int)n == n` as well, but better to use floor.
+  return floor(n) == n;
+}
+
 cons_t* defun_divf(cons_t *p, environment_t *e)
 {
   if ( length(p) != 2 )
@@ -199,7 +207,9 @@ cons_t* defun_divf(cons_t *p, environment_t *e)
   if ( y == 0.0 )
     throw std::runtime_error("Division by zero");
 
-  return decimal(x/y);
+  // Automatically convert back to int if possible
+  float q = x / y;
+  return whole_numberp(q) ? integer((int)q) : decimal(q);
 }
 
 cons_t* defun_div(cons_t *p, environment_t *e)
