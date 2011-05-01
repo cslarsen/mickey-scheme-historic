@@ -136,6 +136,27 @@ cons_t* defun_add(cons_t *p, environment_t* env)
   return integer(sum);
 }
 
+cons_t* defun_subf(cons_t *p, environment_t* env)
+{
+  float sign = 1.0;
+  float diff = 0.0;
+
+  for ( ; !nullp(p); p = cdr(p) ) {
+    cons_t *i = listp(p)? car(p) : p;
+
+    if ( integerp(i) )
+      diff += (float) (sign*i->integer);
+    else if ( decimalp(i) )
+      diff += sign*i->decimal;
+    else
+      throw std::runtime_error("Cannot subtract decimal with " + to_s(type_of(i)) + ": " + sprint(i));
+
+    if ( sign ) sign = -1.0;
+  }
+
+  return decimal(diff);
+}
+
 cons_t* defun_sub(cons_t *p, environment_t* env)
 {
   int sign = 1;
@@ -145,9 +166,11 @@ cons_t* defun_sub(cons_t *p, environment_t* env)
     cons_t *i = listp(p)? car(p) : p;
 
     if ( integerp(i) ) {
-      diff = diff + (sign*i->integer);
+      diff += sign*i->integer;
       if ( sign ) sign = -1;
-    } else
+    } else if ( decimalp(i) )
+      return defun_subf(cons(decimal(diff), p), env);
+    else
       throw std::runtime_error("Cannot subtract integer with " + to_s(type_of(i)) + ": " + sprint(i));
   }
 
