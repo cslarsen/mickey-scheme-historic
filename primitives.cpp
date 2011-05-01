@@ -43,6 +43,7 @@ void load_default_defs(environment_t *e)
   e->defun("exit", defun_exit);
   e->defun("version", defun_version);
   e->defun("length", defun_length);
+  e->defun("closure-source", defun_closure_source);
 
   // cons and friends
   e->defun("list", defun_list);
@@ -587,4 +588,12 @@ cons_t* defun_greater(cons_t* p, environment_t*)
   float y = (type_of(cadr(p)) == INTEGER)? cadr(p)->integer : cadr(p)->decimal;
 
   return boolean(x > y);
+}
+
+cons_t* defun_closure_source(cons_t* p, environment_t*)
+{
+  if ( !closurep(car(p)) )
+    throw std::runtime_error("Not a closure");
+
+  return car(car(p)->closure->environment->symbols["__body__"]); // see eval.cpp
 }
