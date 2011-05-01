@@ -555,7 +555,7 @@ cons_t* defun_less(cons_t* p, environment_t*)
     throw std::runtime_error("< requires exactly two parameters");
 
   if ( !numberp(car(p)) || !numberp(cadr(p)) )
-    throw std::runtime_error("< requires two numbers");
+    throw std::runtime_error("< requires two numbers: " + sprint(p));
 
   float x = (type_of(car(p)) == INTEGER)? car(p)->integer : car(p)->decimal;
   float y = (type_of(cadr(p)) == INTEGER)? cadr(p)->integer : cadr(p)->decimal;
@@ -566,10 +566,10 @@ cons_t* defun_less(cons_t* p, environment_t*)
 cons_t* defun_greater(cons_t* p, environment_t*)
 {
   if ( length(p) != 2 )
-    throw std::runtime_error("< requires exactly two parameters");
+    throw std::runtime_error("> requires exactly two parameters");
 
   if ( !numberp(car(p)) || !numberp(cadr(p)) )
-    throw std::runtime_error("< requires two numbers");
+    throw std::runtime_error("> requires two numbers: " + sprint(p));
 
   float x = (type_of(car(p)) == INTEGER)? car(p)->integer : car(p)->decimal;
   float y = (type_of(cadr(p)) == INTEGER)? cadr(p)->integer : cadr(p)->decimal;
