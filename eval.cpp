@@ -203,8 +203,7 @@ cons_t* eval(cons_t* p, environment_t* e)
           return nil();
         }
 
-       // only set if NOT found (what's the
-      //  difference between set! and define anyway?)
+       // only set if NOT found
       if ( i == NULL )
         return defun_define(cons(def_name, evlis(def_body, e)), e);
 
