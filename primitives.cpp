@@ -519,16 +519,28 @@ cons_t* defun_eqp(cons_t* p, environment_t*)
   return boolean(eqp(car(p), cadr(p)));
 }
 
+static float to_float(cons_t* v)
+{
+  if ( !numberp(v) )
+    throw std::runtime_error("to_float only handles numbers");
+
+  // TODO: Could handle strings via atof()
+
+  return type_of(v)==DECIMAL ? v->decimal : (float) v->integer;
+}
+
 cons_t* defun_eqintp(cons_t* p, environment_t*)
 {
   cons_t *l = car(p), *r = cadr(p);
 
-  if ( type_of(l) != INTEGER || type_of(r) != INTEGER
-        || length(p) != 2 )
-  {
-    throw std::runtime_error(
-      "Equality operator (=) only works for exactly two integers");
-  }
+  if ( length(p) != 2 )
+    throw std::runtime_error("= requires exactly two parameters: " + sprint(p));
+
+  if ( !numberp(l) || !numberp(r) )
+    throw std::runtime_error("= only works on numbers: " + sprint(p));
+
+  if ( decimalp(l) || decimalp(r) )
+    return boolean(to_float(l) == to_float(r));
 
   return boolean(l->integer == r->integer);
 }
