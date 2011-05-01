@@ -19,7 +19,7 @@
 
 (define +complex
   (lambda (a b)
-    (make-z
+    (make-complex
       (+ (re a) (re b))
       (+ (im a) (im b)))))
 
