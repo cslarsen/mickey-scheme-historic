@@ -590,10 +590,18 @@ cons_t* defun_greater(cons_t* p, environment_t*)
   return boolean(x > y);
 }
 
-cons_t* defun_closure_source(cons_t* p, environment_t*)
+cons_t* defun_closure_source(cons_t* p, environment_t* e)
 {
   if ( !closurep(car(p)) )
     throw std::runtime_error("Not a closure");
 
-  return car(car(p)->closure->environment->symbols["__body__"]); // see eval.cpp
+  closure_t *c = car(p)->closure;
+
+  cons_t *body = c->environment->symbols["__body__"]; // see eval.cpp
+  cons_t *args = c->environment->symbols["__args__"];
+
+  cons_t *source = cons(symbol("lambda", e), cons(args, cons(car(body))));
+  return source;
+
+//  return car(car(p)->closure->environment->symbols["__body__"]); // see eval.cpp
 }
