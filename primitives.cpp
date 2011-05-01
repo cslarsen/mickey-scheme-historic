@@ -25,21 +25,27 @@ void load_default_defs(environment_t *e)
   e->defun("display", defun_print);
   e->defun("write", defun_print);
   e->defun("string-append", defun_strcat);
+  e->defun("->string", defun_to_string);
+
   e->defun("-", defun_sub);
   e->defun("+", defun_add);
   e->defun("*", defun_mul);
   e->defun("/", defun_div);
   e->defun("sqrt", defun_sqrt);
-  e->defun("=", defun_eqintp);
+
   e->defun("eq?", defun_eqp);
-  e->defun("->string", defun_to_string);
-  e->defun("list", defun_list);
+  e->defun("=", defun_eqintp);
+  e->defun("<", defun_less);
+  e->defun(">", defun_greater);
+
   e->defun("load", defun_load);
   e->defun("debug", defun_debug);
   e->defun("exit", defun_exit);
   e->defun("version", defun_version);
+  e->defun("length", defun_length);
 
   // cons and friends
+  e->defun("list", defun_list);
   e->defun("cons", defun_cons);
   e->defun("car", defun_car);
   e->defun("cdr", defun_cdr);
@@ -62,13 +68,10 @@ void load_default_defs(environment_t *e)
   e->defun("boolean?", defun_booleanp);
   e->defun("vector?", defun_vectorp);
 
-  e->defun("length", defun_length);
-
   e->defun("not", defun_not);
   e->defun("and", defun_and);
   e->defun("or", defun_or);
   e->defun("xor", defun_xor);
-  
 }
 
 cons_t* defun_print(cons_t *p, environment_t* env)
@@ -544,4 +547,32 @@ cons_t* defun_sqrt(cons_t* p, environment_t*)
   case INTEGER: return decimal(sqrt(car(p)->integer));
   case DECIMAL: return decimal(sqrt(car(p)->decimal));
   }
+}
+
+cons_t* defun_less(cons_t* p, environment_t*)
+{
+  if ( length(p) != 2 )
+    throw std::runtime_error("< requires exactly two parameters");
+
+  if ( !numberp(car(p)) || !numberp(cadr(p)) )
+    throw std::runtime_error("< requires two numbers");
+
+  float x = (type_of(car(p)) == INTEGER)? car(p)->integer : car(p)->decimal;
+  float y = (type_of(cadr(p)) == INTEGER)? cadr(p)->integer : cadr(p)->decimal;
+
+  return boolean(x < y);
+}
+
+cons_t* defun_greater(cons_t* p, environment_t*)
+{
+  if ( length(p) != 2 )
+    throw std::runtime_error("< requires exactly two parameters");
+
+  if ( !numberp(car(p)) || !numberp(cadr(p)) )
+    throw std::runtime_error("< requires two numbers");
+
+  float x = (type_of(car(p)) == INTEGER)? car(p)->integer : car(p)->decimal;
+  float y = (type_of(cadr(p)) == INTEGER)? cadr(p)->integer : cadr(p)->decimal;
+
+  return boolean(x > y);
 }

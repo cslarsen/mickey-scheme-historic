@@ -19,6 +19,8 @@ cons_t* defun_addf(cons_t*, environment_t*);
 cons_t* defun_add(cons_t*, environment_t*);
 cons_t* defun_sub(cons_t*, environment_t*);
 cons_t* defun_mul(cons_t*, environment_t*);
+cons_t* defun_less(cons_t*, environment_t*);
+cons_t* defun_greater(cons_t*, environment_t*);
 cons_t* defun_div(cons_t*, environment_t*);
 cons_t* defun_divf(cons_t*, environment_t*);
 cons_t *defun_sqrt(cons_t*, environment_t*);
