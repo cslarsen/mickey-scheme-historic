@@ -1,3 +1,4 @@
+#include <math.h>
 #include <stdexcept>
 #include <vector>
 #include <readline/readline.h>
@@ -27,6 +28,7 @@ void load_default_defs(environment_t *e)
   e->defun("-", defun_sub);
   e->defun("+", defun_add);
   e->defun("*", defun_mul);
+  e->defun("sqrt", defun_sqrt);
   e->defun("=", defun_eqintp);
   e->defun("eq?", defun_eqp);
   e->defun("->string", defun_to_string);
@@ -496,4 +498,13 @@ cons_t* defun_or(cons_t* p, environment_t*)
 cons_t* defun_xor(cons_t* p, environment_t*)
 {
   return boolean(xor_p(p));
+}
+
+cons_t* defun_sqrt(cons_t* p, environment_t*)
+{
+  switch ( type_of(car(p)) ) {
+  default: throw std::runtime_error("sqrt requires a number");
+  case INTEGER: return decimal(sqrt(car(p)->integer));
+  case DECIMAL: return decimal(sqrt(car(p)->decimal));
+  }
 }
