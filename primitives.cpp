@@ -154,20 +154,39 @@ cons_t* defun_sub(cons_t *p, environment_t* env)
   return integer(diff);
 }
 
+cons_t* defun_mulf(cons_t *p, environment_t *env)
+{
+  float product = 1.0;
+
+  for ( ; !nullp(p); p = cdr(p) ) {
+    cons_t *i = listp(p)? car(p) : p;
+
+    if ( integerp(i) )
+      product *= (float) i->integer;
+    else if ( decimalp(i) )
+      // automatically convert; perform rest of computation in floats
+      product *= i->decimal;
+    else
+      throw std::runtime_error("Cannot multiply integer with " + to_s(type_of(i)) + ": " + sprint(i));
+  }
+
+  return decimal(product);
+}
+
 cons_t* defun_mul(cons_t *p, environment_t *env)
 {
-  // Identity; see defun_add
   int product = 1;
 
-  for ( ; !nullp(p); p = cdr(p)) {
-    if ( integerp(p) )
-      product *= p->integer;
-    else if ( listp(p) ) {
-      cons_t *res = car(p);
-      if ( integerp(res) )
-        product *= res->integer; // else, throw (TODO)
-    } else
-      throw std::runtime_error("Cannot multiply integer with: " + sprint(p));
+  for ( ; !nullp(p); p = cdr(p) ) {
+    cons_t *i = listp(p)? car(p) : p;
+
+    if ( integerp(i) )
+      product *= i->integer;
+    else if ( decimalp(i) )
+      // automatically convert; perform rest of computation in floats
+      return defun_mulf(cons(decimal(product), p), env);
+    else
+      throw std::runtime_error("Cannot multiply integer with " + to_s(type_of(i)) + ": " + sprint(i));
   }
 
   return integer(product);
