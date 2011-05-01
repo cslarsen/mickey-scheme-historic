@@ -59,6 +59,10 @@
 (test-eq (quote (->string (eq? 3 (+ 1 2 3)))) "#f")
 (test-eq (quote (->string (list 1 2 (list 3 4)))) "(1 2 (3 4))")
 (test-eq (quote (atom? (quote abba))) #t)
+(test-eq (quote (apply + (list 1 2 3))) 6)
+(test-eq (quote (apply + (quote (1 2 3)))) 6)
+(test-eq (quote (apply + (list 1 2 3 (* 5 6)))) 36)
+(test-eq (quote (apply + (list 1 2 3 (* 5 5)))) 31)
 
 (display "\nResults\n")
 (results (quote __dummy__))

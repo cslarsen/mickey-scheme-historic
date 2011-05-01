@@ -11,6 +11,9 @@ check: all
 	echo "(run-tests)" | ./mickey
 	./mickey tests/*
 
+check-scheme: all
+	./mickey tests/tests.scm
+
 diff: all
 	# mickey and chicken should have same output
 	@echo "=== Chicken Scheme ==="
