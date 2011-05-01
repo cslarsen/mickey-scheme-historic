@@ -67,6 +67,7 @@ void load_default_defs(environment_t *e)
   e->defun("char?", defun_charp);
   e->defun("boolean?", defun_booleanp);
   e->defun("vector?", defun_vectorp);
+  e->defun("zero?", defun_zerop);
 
   e->defun("not", defun_not);
   e->defun("and", defun_and);
@@ -445,6 +446,17 @@ cons_t* defun_decimalp(cons_t* p, environment_t* env)
 cons_t* defun_nullp(cons_t* p, environment_t* env)
 {
   return boolean(nullp(car(p)));
+}
+
+cons_t* defun_zerop(cons_t* p, environment_t*)
+{
+  if ( type_of(car(p)) == INTEGER )
+    return boolean(car(p)->integer == 0);
+
+  if ( type_of(car(p)) == DECIMAL )
+    return boolean(car(p)->decimal == 0.0);
+
+  return boolean(false);
 }
 
 cons_t* defun_pairp(cons_t* p, environment_t* env)
