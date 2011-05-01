@@ -1,6 +1,11 @@
 EASY
 - Add character parsing, #\f for instance
 - Add character table
+- Add division
+- Add decimal arithmetic functions
+  - SUB
+  - DIV
+- Implement Mandelbrot example
 
 NORMAL
 - Fix environment / closure
