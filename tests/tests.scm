@@ -31,7 +31,7 @@
 (define test-eq (lambda (code expected)
   (begin
     (if
-      (not (eq? (eval code) expected))
+      (not (eq? (eval code) (eval expected)))
         (fail code expected (eval code))
         (success code expected)))))
 
