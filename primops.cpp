@@ -138,7 +138,7 @@ bool booleanp(cons_t* p)
 
 bool numberp(cons_t* p)
 {
-  return integerp(p); // or decimalp(p), etc.
+  return integerp(p) || decimalp(p);
 }
 
 bool stringp(cons_t* p)

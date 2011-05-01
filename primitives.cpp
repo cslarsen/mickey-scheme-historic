@@ -28,6 +28,7 @@ void load_default_defs(environment_t *e)
   e->defun("-", defun_sub);
   e->defun("+", defun_add);
   e->defun("*", defun_mul);
+  e->defun("/", defun_div);
   e->defun("sqrt", defun_sqrt);
   e->defun("=", defun_eqintp);
   e->defun("eq?", defun_eqp);
@@ -177,6 +178,42 @@ cons_t* defun_sub(cons_t *p, environment_t* env)
   }
 
   return integer(diff);
+}
+
+cons_t* defun_divf(cons_t *p, environment_t *e)
+{
+  if ( length(p) != 2 )
+    throw std::runtime_error("div requires exactly two parameters");
+
+  cons_t *a = car(p);
+  cons_t *b = cadr(p);
+
+  float x = (type_of(a) == DECIMAL)? a->decimal : a->integer;
+  float y = (type_of(b) == DECIMAL)? b->decimal : b->integer;
+
+  if ( y == 0.0 )
+    throw std::runtime_error("Division by zero");
+
+  return decimal(x/y);
+}
+
+cons_t* defun_div(cons_t *p, environment_t *e)
+{
+  if ( length(p) != 2 )
+    throw std::runtime_error("div requires exactly two parameters");
+
+  cons_t *a = car(p);
+  cons_t *b = cadr(p);
+
+  if ( !numberp(a) || !numberp(b) )
+    throw std::runtime_error("div only works on numbers");
+
+  if ( integerp(a) && integerp(b) ) {
+    if ( b->integer == 0 )
+      throw std::runtime_error("Division by zero");
+    return integer(a->integer / b->integer);
+  } else
+    return defun_divf(p, e);
 }
 
 cons_t* defun_mulf(cons_t *p, environment_t *env)
