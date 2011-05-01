@@ -10,6 +10,7 @@
 #include "print.h"
 #include "util.h"
 #include "file_io.h"
+#include "types.h"
 
 // TODO: Fix this, had to do it because of circular cons/util deps
 extern std::string to_s(cons_t*);
@@ -145,45 +146,23 @@ cons_t* defun_add(cons_t *p, environment_t* env)
   return integer(sum);
 }
 
-cons_t* defun_subf(cons_t *p, environment_t* env)
+static float as_float(cons_t *p, bool convert_strings = false)
 {
-  float sign = 1.0;
-  float diff = 0.0;
+  if ( type_of(p) == DECIMAL )
+    return p->decimal;
 
-  for ( ; !nullp(p); p = cdr(p) ) {
-    cons_t *i = listp(p)? car(p) : p;
+  if ( type_of(p) == INTEGER )
+    return (float) p->integer;
 
-    if ( integerp(i) )
-      diff += (float) (sign*i->integer);
-    else if ( decimalp(i) )
-      diff += sign*i->decimal;
-    else
-      throw std::runtime_error("Cannot subtract decimal with " + to_s(type_of(i)) + ": " + sprint(i));
+  if ( convert_strings ) {
+    if ( type_of(p) == STRING && isfloat(p->string) )
+      return to_f(p->string);
 
-    if ( sign ) sign = -1.0;
+    if ( type_of(p) == STRING && isinteger(p->string) )
+      return (float) to_i(p->string);
   }
 
-  return decimal(diff);
-}
-
-cons_t* defun_sub(cons_t *p, environment_t* env)
-{
-  int sign = 1;
-  int diff = 0;
-
-  for ( ; !nullp(p); p = cdr(p) ) {
-    cons_t *i = listp(p)? car(p) : p;
-
-    if ( integerp(i) ) {
-      diff += sign*i->integer;
-      if ( sign ) sign = -1;
-    } else if ( decimalp(i) )
-      return defun_subf(cons(decimal(diff), p), env);
-    else
-      throw std::runtime_error("Cannot subtract integer with " + to_s(type_of(i)) + ": " + sprint(i));
-  }
-
-  return integer(diff);
+  throw std::runtime_error("Cannot convert to float: " + sprint(p));
 }
 
 static bool whole_numberp(float n)
@@ -191,6 +170,19 @@ static bool whole_numberp(float n)
   // Return true if `n` has no decimals, i.e. is "x.0" for a value of x
   // NOTE: Can possible do `(int)n == n` as well, but better to use floor.
   return floor(n) == n;
+}
+
+cons_t* defun_sub(cons_t *p, environment_t* env)
+{
+  if ( length(p) == 0 )
+    throw std::runtime_error("No arguments to -");
+
+  float d = as_float(car(p), false);
+
+  while ( !nullp(p = cdr(p)) )
+    d -= as_float(car(p), false);
+
+  return whole_numberp(d) ? integer((int)d) : decimal(d);
 }
 
 cons_t* defun_divf(cons_t *p, environment_t *e)
