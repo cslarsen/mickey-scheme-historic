@@ -93,6 +93,24 @@ cons_t* defun_strcat(cons_t *p, environment_t* env)
   return string(s.c_str());
 }
 
+cons_t* defun_addf(cons_t *p, environment_t* env)
+{
+  float sum = 0.0;
+
+  for ( ; !nullp(p); p = cdr(p) ) {
+    cons_t *i = listp(p)? car(p) : p;
+
+    if ( integerp(i) )
+      sum += (float) i->integer;
+    else if ( decimalp(i) )
+      sum += i->decimal;
+    else
+      throw std::runtime_error("Cannot add decimal with " + to_s(type_of(i)) + ": " + sprint(i));
+  }
+
+  return decimal(sum);
+}
+
 cons_t* defun_add(cons_t *p, environment_t* env)
 {
   /*
@@ -108,6 +126,9 @@ cons_t* defun_add(cons_t *p, environment_t* env)
 
     if ( integerp(i) )
       sum += i->integer;
+    else if ( decimalp(i) )
+      // automatically convert; perform rest of computation in floats
+      return defun_addf(cons(decimal(sum), p), env);
     else
       throw std::runtime_error("Cannot add integer with " + to_s(type_of(i)) + ": " + sprint(i));
   }
