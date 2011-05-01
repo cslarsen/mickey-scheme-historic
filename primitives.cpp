@@ -602,6 +602,4 @@ cons_t* defun_closure_source(cons_t* p, environment_t* e)
 
   cons_t *source = cons(symbol("lambda", e), cons(args, cons(car(body))));
   return source;
-
-//  return car(car(p)->closure->environment->symbols["__body__"]); // see eval.cpp
 }
