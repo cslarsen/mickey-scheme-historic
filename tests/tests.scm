@@ -65,9 +65,9 @@
 (test-eq (quote (apply + (quote (1 2 3)))) 6)
 (test-eq (quote (apply + (list 1 2 3 (* 5 6)))) 36)
 (test-eq (quote (apply + (list 1 2 3 (* 5 5)))) 31)
-(test-eq (quote (z->string
-                  (*z (make-z 2 3)
-                      (make-z 5 7)))) "-11 + 29i")
+(test-eq (quote (complex->string
+                  (*complex (make-complex 2 3)
+                            (make-complex 5 7)))) "-11 + 29i")
 
 (display "\nResults\n")
 (results (quote __dummy__))
