@@ -15,6 +15,8 @@
 static const char ARGS[] = "__args__";
 static const char BODY[] = "__body__";
 
+cons_t* make_closure(cons_t* args, cons_t* body, environment_t* e);
+
 cons_t* eval(program_t *p)
 {
   return eval(p->root, p->globals);
@@ -53,13 +55,38 @@ static cons_t* invoke(cons_t* fun, cons_t* args)
   return lambda(args, env);
 }
 
+static cons_t* make_curried_function(cons_t *names, cons_t *values, cons_t *body, environment_t *e)
+{
+    // While we have (name value) pairs, set `name` => `value`
+    cons_t *n = names,
+           *v = values;
+
+    while ( !nullp(n) && !nullp(v) ) {
+      //printf("Currying '%s' => '%s'\n", sprint(car(n)).c_str(), sprint(car(v)).c_str());
+      e->define(car(n)->symbol->name, car(v));
+      n = cdr(n);
+      v = cdr(v);
+    }
+
+    //printf("Remaining argument names: '%s'\n", sprint(n).c_str());
+    //printf("Function Body: '%s'\n", sprint(body).c_str());
+
+    // The rest of the parameters names, if any, is in `n`:
+    // TODO: Should we set arguments in parent environment and extend in call below?
+    return make_closure(n, body, e);
+}
+
 static cons_t* call_lambda(cons_t *p, environment_t* e)
 {
   size_t params_reqd = length(e->symbols[ARGS]);
   size_t params_recv = length(p);
 
-  if ( params_recv < params_reqd )
-    throw std::runtime_error(format("Not enough arguments to function, need %d but only got %d", params_reqd, params_recv));
+  if ( params_recv < params_reqd ) {
+    // try currying (TODO: Do we need to check for any conditions?)
+    return make_curried_function(e->symbols[ARGS], p,
+                                 e->symbols[BODY],
+                                 e->extend());
+  }
 
   if ( params_recv > params_reqd )
     throw std::runtime_error(format("Function only accepts %d parameters, but got %d", params_reqd, params_recv));
