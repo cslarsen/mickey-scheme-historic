@@ -212,10 +212,23 @@ cons_t* eval(cons_t* p, environment_t* e)
       cons_t *def_name = cadr(p);
       cons_t *def_body = cddr(p);
 
-      // TODO: If def_name is a list, we've
-      // got an implicit lambda def:
-      // "(define (name arg1 arg2 ...) (* body of func))"
+      /*
+       * Handle implicit lambda/short form, that is, a
+       * `(define (foo <arg1 arg2 ...>) <body>)`-style
+       * definition.
+       */
+      if ( listp(def_name) ) {
+        cons_t *def_args = cdr(def_name);
+        def_name = car(def_name);
 
+        cons_t *closure = make_closure(def_args, def_body, e->extend());
+        return defun_define(cons(def_name, cons(closure)), e);
+      }
+
+      /*
+       * Ordinary `(define <name> <body>)`, where <body> can typically
+       * be `(lambda (<arg1 arg2 ...>) <body>)`.
+       */
       return defun_define(
               cons(def_name, evlis(def_body, e)), e);
     }
