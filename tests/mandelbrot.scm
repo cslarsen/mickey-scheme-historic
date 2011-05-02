@@ -29,35 +29,30 @@
 
 (load "complex.scm")
 
-(define <=
-  (lambda (x y)
-    (or (= x y)
-        (< x y))))
+(define (<= x y)
+  (or (= x y)
+      (< x y)))
 
-(define 1-
-  (lambda (n)
-    (- n 1)))
+(define (1- n)
+  (- n 1))
 
 ; C_{n+1} = C_{n}^2  + c, C_{0} = c
-(define mandelbrot?-iter
-  (lambda (z c nmax)
-    (begin
-      (if (zero? nmax)
-        (> (complex-mag z) threshold)
-        (if (> (complex-mag z) threshold)
-          #t
-          (mandelbrot?-iter (+complex c (*complex z z))
-                            c (1- nmax)))))))
+(define (mandelbrot?-iter z c nmax)
+  (if (zero? nmax) #f
+  (if (> (complex-mag z) threshold) #t
+      (mandelbrot?-iter
+        (+complex c (*complex z z))
+                  c (1- nmax)))))
 
-(define mandelbrot?
-  (lambda (z)
-    (mandelbrot?-iter (make-complex 0.0 0.0) z cutoff-steps)))
+(define (mandelbrot? z)
+  (mandelbrot?-iter
+    (make-complex 0.0 0.0)
+     z cutoff-steps))
 
-(define plot
-  (lambda (x y)
-    (display (string-append
-      (if (mandelbrot? (make-complex x y))
-          space-char dot-char)))))
+(define (plot x y)
+  (display (string-append
+    (if (mandelbrot? (make-complex x y))
+        space-char dot-char))))
 
 ;; Main
 
@@ -71,21 +66,17 @@
 (define y-stop   1.0)
 (define y-step   (/ (- y-stop y-start) (- screen-rows 1)))
 
-(define x-loop
-  (lambda (x y)
-    (if (<= x x-stop)
+(define (x-loop x y)
+  (if (not (<= x x-stop)) 0
       (begin
         (plot x y)
-        (x-loop (+ x x-step) y))
-      0)))
+        (x-loop (+ x x-step) y))))
 
-(define y-loop
-  (lambda (y)
-    (if (<= y y-stop)
+(define (y-loop y)
+  (if (not (<= y y-stop)) 0
       (begin
         (x-loop x-start y)
         (display "\n")
-        (y-loop (+ y y-step)))
-        0)))
+        (y-loop (+ y y-step)))))
 
 (y-loop y-start)
