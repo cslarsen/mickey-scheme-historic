@@ -62,18 +62,14 @@ static cons_t* make_curried_function(cons_t *names, cons_t *values, cons_t *body
     cons_t *n = names,
            *v = values;
 
+    // Curry; set <name> => <value>
     while ( !nullp(n) && !nullp(v) ) {
-      //printf("Currying '%s' => '%s'\n", sprint(car(n)).c_str(), sprint(car(v)).c_str());
       e->define(car(n)->symbol->name, car(v));
       n = cdr(n);
       v = cdr(v);
     }
 
-    //printf("Remaining argument names: '%s'\n", sprint(n).c_str());
-    //printf("Function Body: '%s'\n", sprint(body).c_str());
-
-    // The rest of the parameters names, if any, is in `n`:
-    // TODO: Should we set arguments in parent environment and extend in call below?
+    // The rest of any parameters is in `n`.
     return make_closure(n, body, e);
 }
 
@@ -127,7 +123,12 @@ static cons_t* call_lambda(cons_t *p, environment_t* e)
 
 cons_t* make_closure(cons_t* args, cons_t* body, environment_t* e)
 {
-  // this is a hack -> will shadow params with these magic names
+  // Wrap body in begin-block (or else our poor evaluator will execute
+  // expressions backwards!)... this is of course an indication that
+  // something else is terribly wrong! :-)
+  body = cons(symbol("begin", e), body);
+
+  // This is a hack -> will shadow params with these magic names (FIXME)
   e->define(ARGS, args);
   e->define(BODY, body);
 
