@@ -40,7 +40,6 @@ struct environment_t
 
   struct cons_t* lookup(const std::string& name) const;
   struct cons_t* lookup_or_throw(const std::string& name) const;
-  struct cons_t* create_symbol(const std::string& name);
   void defun(const std::string& name, lambda_t func);
   struct cons_t* define(const std::string& name, cons_t* body);
   environment_t* extend();
@@ -74,19 +73,24 @@ class symbol_t
   : public gc
  #endif
 {
-  symbol_t(); // require param
+public:
+  const std::string *n;
 
-  symbol_t(const char* s) : name(s? s : "")
+  symbol_t() : n(NULL)
   {
-    if ( name.empty() )
-      throw std::runtime_error("symbol_t() constructed with empty name");
   }
 
-  friend struct environment_t;
+  symbol_t(const symbol_t& s) : n(s.n)
+  {
+  }
 
-public:
-  std::string name;
+  const std::string& name() const
+  {
+    return *n;
+  }
 };
+
+const symbol_t* create_symbol(const std::string& s);
 
 struct cons_t
  #ifdef BOEHM_GC
@@ -101,7 +105,7 @@ struct cons_t
     float decimal;
     struct { cons_t *car, *cdr; }; // pair
     closure_t* closure;
-    symbol_t* symbol;
+    const symbol_t* symbol;
     const char* string;
     vector_t* vector;
     continuation_t* continuation;

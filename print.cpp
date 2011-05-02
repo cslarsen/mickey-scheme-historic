@@ -10,7 +10,7 @@ std::string sprint(cons_t* p, std::string& s, bool escape)
   case DECIMAL:      return s + to_s(p->decimal);
   case INTEGER:      return s + to_s(p->integer);
   case CLOSURE:      return s + (escape? to_s(p->closure) : "");
-  case SYMBOL:       return s + p->symbol->name;
+  case SYMBOL:       return s + p->symbol->name();
   case STRING:       return s + (escape? "\"" + encode_str(p->string) + "\"" : p->string);
   case VECTOR:       return s + (escape? to_s(p->vector) : "");
   case CONTINUATION: return s + (escape? to_s(p->continuation) : "");

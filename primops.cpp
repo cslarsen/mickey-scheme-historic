@@ -21,10 +21,10 @@ cons_t* list(cons_t* head, cons_t* tail)
 
 cons_t* symbol(const char* s, environment_t *env)
 {
-  // NOTE: A variable->value lookup is performed here
-  // This is probably not the correct place to do this!
-  // 
-  return env->create_symbol(s);
+  cons_t *p = new cons_t();
+  p->type = SYMBOL;
+  p->symbol = create_symbol(s);
+  return p;
 }
 
 cons_t* nil()
@@ -183,7 +183,7 @@ bool eqp(cons_t* l, cons_t* r)
   case CLOSURE: return (l->closure->function == r->closure->function
                          && l->closure->environment == r->closure->environment);
   case PAIR:    throw std::runtime_error("eq? is not implemented for pairs yet");
-  case SYMBOL:  return l->symbol->name == r->symbol->name;
+  case SYMBOL:  return l->symbol->name() == r->symbol->name();
   case STRING:  return !strcmp(l->string, r->string);
   case VECTOR:  throw std::runtime_error("Unimplemented eq? for vector"); break;
   case CONTINUATION: throw std::runtime_error("Unimplemented eq? for continuation"); break;

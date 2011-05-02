@@ -4,6 +4,24 @@
 #include "primops.h"
 #include "print.h"
 
+static std::map<std::string, symbol_t> symbols;
+
+const symbol_t* create_symbol(const std::string& s)
+{
+  if ( s.empty() )
+    throw std::runtime_error("Symbols must have names");
+
+  std::map<std::string, symbol_t>::iterator i;
+
+  if ( (i = symbols.find(s)) == symbols.end() ) {
+    symbols[s] = symbol_t();
+    i = symbols.find(s);
+    (*i).second.n = &((*i).first);
+  }
+
+  return &(*i).second;
+}
+
 std::string to_s(enum type_t type)
 {
   switch ( type ) {
@@ -33,7 +51,7 @@ std::string to_s(cons_t *p)
   case INTEGER:  return to_s(p->integer);
   case CLOSURE:  return format("#<closure %p>", p->closure);
   case PAIR:     return to_s(car(p)) + " . " + to_s(cdr(p));
-  case SYMBOL:   return p->symbol->name;
+  case SYMBOL:   return p->symbol->name();
   case STRING:   return p->string;
   case VECTOR:   return format("#<vector %p>", p->vector);
   case CONTINUATION: return format("#<continuation %p>", p->continuation);
@@ -86,15 +104,6 @@ cons_t* environment_t::lookup(const std::string& name) const
   } while ( (e = e->outer) != NULL);
 
   return NULL;
-}
-
-cons_t* environment_t::create_symbol(const std::string& name)
-{
-  cons_t *p = new cons_t();
-  p->type = SYMBOL;
-  p->symbol = new symbol_t(name.c_str());
-
-  return p;
 }
 
 void environment_t::defun(const std::string& name, lambda_t f)

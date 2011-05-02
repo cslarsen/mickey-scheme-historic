@@ -22,7 +22,7 @@ extern std::string to_s(cons_t*);
 
 closure_t* lookup_closure(symbol_t *s, environment_t *env)
 {
-  cons_t *p = env->lookup(s->name.c_str());
+  cons_t *p = env->lookup(s->name());
   return closurep(p)? p->closure : NULL;
 }
 
@@ -300,10 +300,10 @@ cons_t* defun_define(cons_t *p, environment_t *env)
   if ( !symbolp(name) )
     throw std::runtime_error("First argument to (define) must be a symbol");
 
-  if ( name->symbol->name.empty() )
+  if ( name->symbol->name().empty() )
     throw std::runtime_error("Cannot define with empty variable name"); // TODO: Even possible?
 
-  env->define(name->symbol->name, body);
+  env->define(name->symbol->name(), body);
   return nil();
 }
 
@@ -356,7 +356,7 @@ cons_t* defun_debug(cons_t *p, environment_t *env)
     s += format(" car=%p cdr=%p", p->car, p->cdr);
     break;
   case SYMBOL:
-    s += format(" name='%s'", p->symbol->name.c_str());
+    s += format(" name='%s'", p->symbol->name().c_str());
     break;
   case STRING:
     s += format(" value='%s'", p->string);

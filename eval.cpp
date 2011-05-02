@@ -64,7 +64,7 @@ static cons_t* make_curried_function(cons_t *names, cons_t *values, cons_t *body
 
     // Curry; set <name> => <value>
     while ( !nullp(n) && !nullp(v) ) {
-      e->define(car(n)->symbol->name, car(v));
+      e->define(car(n)->symbol->name(), car(v));
       n = cdr(n);
       v = cdr(v);
     }
@@ -114,7 +114,7 @@ static cons_t* call_lambda(cons_t *p, environment_t* e)
       throw std::runtime_error("lambda argument not a symbol but type "
         + to_s(type_of(car(name))) + ": " + sprint(car(name)));
 
-    e->define(car(name)->symbol->name, car(value));
+    e->define(car(name)->symbol->name(), car(value));
   }
 
   // now EXECUTE body with given definition
@@ -189,7 +189,7 @@ cons_t* eval(cons_t* p, environment_t* e)
 {
   if ( atomp(p) ) {
     if ( symbolp(p) )
-      return e->lookup_or_throw(p->symbol->name);
+      return e->lookup_or_throw(p->symbol->name());
 
     if ( numberp(p) || stringp(p) || charp(p) ||
          booleanp(p) || vectorp(p) || decimalp(p) ||
@@ -202,7 +202,7 @@ cons_t* eval(cons_t* p, environment_t* e)
   }
 
   if ( symbolp(car(p)) ) {
-    std::string name = car(p)->symbol->name;
+    std::string name = car(p)->symbol->name();
 
     if ( name == "quote" )
       return cadr(p);
@@ -248,7 +248,7 @@ cons_t* eval(cons_t* p, environment_t* e)
       cons_t *def_name = cadr(p);
       cons_t *def_body = cddr(p);
 
-      std::string name = def_name->symbol->name;
+      std::string name = def_name->symbol->name();
       environment_t *i = e;
 
       // search for definition and set if found
