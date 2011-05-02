@@ -11,6 +11,7 @@
 #include "util.h"
 #include "file_io.h"
 #include "types.h"
+#include "backtrace.h"
 
 // TODO: Fix this, had to do it because of circular cons/util deps
 extern std::string to_s(cons_t*);
@@ -46,6 +47,7 @@ void load_default_defs(environment_t *e)
   e->defun("version", defun_version);
   e->defun("length", defun_length);
   e->defun("closure-source", defun_closure_source);
+  e->defun("backtrace", defun_backtrace);
 
   // cons and friends
   e->defun("list", defun_list);
@@ -616,4 +618,10 @@ cons_t* defun_closure_source(cons_t* p, environment_t* e)
 
   cons_t *source = cons(symbol("lambda", e), cons(args, cons(car(body))));
   return source;
+}
+
+cons_t* defun_backtrace(cons_t*, environment_t*)
+{
+  backtrace();
+  return nil();
 }

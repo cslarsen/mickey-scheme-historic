@@ -66,3 +66,4 @@ cons_t* defun_or(cons_t*, environment_t*);
 cons_t* defun_xor(cons_t*, environment_t*);
 
 cons_t* defun_closure_source(cons_t*, environment_t*);
+cons_t* defun_backtrace(cons_t*, environment_t*);

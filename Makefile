@@ -1,11 +1,34 @@
-TARGETS = heap.o cons.o apply.o primitives.o types.o eval.o file_io.o parser.o print.o primops.o tokenizer.o tests.o util.o repl.o test.o mickey
-PORTABLE_TESTS = tests/hello.scm tests/begin.scm tests/math.scm tests/strings.scm
-CXX = llvm-g++
-LDFLAGS = -lreadline -lgc
+CXX      = llvm-g++
 CXXFLAGS = -g -Wall -Iinclude # -Weffc++
+LDFLAGS  = -lreadline -lgc
+
+TARGETS_O = backtrace.o \
+            heap.o \
+            cons.o \
+            apply.o \
+            primitives.o \
+            types.o \
+            eval.o \
+            file_io.o \
+            parser.o \
+            print.o \
+            primops.o \
+            tokenizer.o \
+            tests.o \
+            util.o \
+            repl.o \
+            test.o
+
+TARGETS = $(TARGETS_O) mickey
+
+PORTABLE_TESTS = tests/hello.scm \
+                 tests/begin.scm \
+                 tests/math.scm  \
+                 tests/strings.scm
+
 all: $(TARGETS)
 
-mickey: cons.o apply.o primitives.o types.o eval.o file_io.o parser.o print.o primops.o tokenizer.o tests.o util.o repl.o test.o
+mickey: $(TARGETS_O)
 
 check: all
 	echo "(run-tests)" | ./mickey

@@ -1,32 +1,11 @@
 #include <stdexcept>
-#include <stack>
 #include "eval.h"
 #include "util.h"
 #include "primops.h"
 #include "primitives.h"
 #include "apply.h"
 #include "print.h"
-
-// instruction stack for backtraces
-static std::stack<cons_t*> is;
-static bool trace_stack = true;
-
-void backtrace()
-{
-  if ( !trace_stack )
-    return;
-
-  std::stack<cons_t*> p = is;
-
-  printf("Backtrace:\n");
-
-  while ( !p.empty() ) {
-    printf("- %s\n", sprint(p.top()).c_str());
-    p.pop();
-  }
-
-  printf("\n");
-}
+#include "backtrace.h"
 
 /*
  * Magic variables to hold lambda arguments
@@ -41,14 +20,7 @@ cons_t* make_closure(cons_t* args, cons_t* body, environment_t* e);
 
 cons_t* eval(program_t *p)
 {
-  try {
-    return eval(p->root, p->globals);
-  }
-  catch(...) {
-    if ( trace_stack )
-      backtrace();
-    throw;
-  }
+  return eval(p->root, p->globals);
 }
 
 static bool bool_true(cons_t* p)
@@ -182,6 +154,22 @@ static cons_t* eprogn(cons_t* exps, environment_t* env)
   return nil();
 }
 
+static cons_t* invoke_with_trace(cons_t* op, cons_t* args, environment_t* e)
+{
+  backtrace_push(cons(op, args));
+  cons_t *r = invoke(eval(op, e), evlis(args, e));
+  backtrace_pop();
+  return r;
+}
+
+static cons_t* eval_with_trace(cons_t* expr, environment_t* e)
+{
+  backtrace_push(expr);
+  cons_t *result = eval( evlis(expr, e), e);
+  backtrace_pop();
+  return result;
+}
+
 /*
  * Based on Queinnec's evaluator numero uno.
  *
@@ -263,14 +251,11 @@ cons_t* eval(cons_t* p, environment_t* e)
       return eprogn(cdr(p), e);
 
     if ( name == "eval" )
-      return eval(evlis(cdr(p), e), e);
+      return eval_with_trace(evlis(cdr(p), e), e);
 
     if ( name == "apply" ) {
       // correct to use eval on parameter list?
-      if ( trace_stack ) is.push(p);
-      cons_t *res = invoke( eval(cadr(p), e), eval(caddr(p), e));
-      if ( trace_stack ) is.pop();
-      return res;
+      return invoke_with_trace(cadr(p), caddr(p), e);
     }
   }
 
@@ -278,9 +263,5 @@ cons_t* eval(cons_t* p, environment_t* e)
   // skip `set!` for now; we can implement it in primitives.cpp
   // skip `lambda` for now
 
-  if ( trace_stack ) is.push(p);
-  cons_t *res = invoke(  eval(car(p), e),
-                        evlis(cdr(p), e));
-  if ( trace_stack ) is.pop();
-  return res;
+  return invoke_with_trace(car(p), cdr(p), e);
 }

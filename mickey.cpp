@@ -15,6 +15,7 @@
 #include "print.h"
 #include "primitives.h"
 #include "heap.h"
+#include "backtrace.h"
 
 int main(int argc, char** argv)
 {
@@ -30,7 +31,9 @@ int main(int argc, char** argv)
         load_default_defs(env);
         defun_load(cons(string(argv[n])), env);
       } catch (const std::exception& e) {
-        fprintf(stderr, "%s\n", e.what());
+        fprintf(stderr, "Error: %s\n", e.what());
+        backtrace();
+        backtrace_clear();
         return 1;
       }
     }

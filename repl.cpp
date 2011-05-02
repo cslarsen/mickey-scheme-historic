@@ -10,6 +10,7 @@
 #include "eval.h"
 #include "primitives.h"
 #include "heap.h"
+#include "backtrace.h"
 
 // make env reachable by readline commands
 static environment_t *global_env = NULL;
@@ -188,7 +189,9 @@ int repl()
         printf("%s\n", s.c_str());
     }
     catch(const std::exception& e) {
-      fprintf(stderr, "%s\n", e.what());
+      fprintf(stderr, "Error: %s\n", e.what());
+      backtrace();
+      backtrace_clear();
     }
   }
 
