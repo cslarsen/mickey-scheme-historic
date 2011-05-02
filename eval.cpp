@@ -142,15 +142,25 @@ cons_t* make_closure(cons_t* args, cons_t* body, environment_t* e)
   return r;
 }
 
-// Queinnec, p. 9
+/*
+ * Based on Queinnec, p. 9
+ *
+ * A problem, though, is that we wrap lots of code inside
+ * (begin <body>) blocks, which is handled here.  The problem
+ * is that for code like (begin (< 1 2)) it's a bit difficult
+ * to reason about where in the code to return.
+ *
+ * So, I've tried my best below. (TODO: Make LOTS of tests for this!)
+ *
+ */
 static cons_t* eprogn(cons_t* exps, environment_t* env)
 {
   if ( pairp(exps) )
     if ( pairp(cdr(exps)) ) {
       eval(car(exps), env);
-      eprogn(cdr(exps), env);
+      return eprogn(cdr(exps), env); // originally had no return
     } else
-      eval(car(exps), env);
+      return eval(car(exps), env); // originally had no return
 
   return nil();
 }
