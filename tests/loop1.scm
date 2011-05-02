@@ -6,4 +6,6 @@
     (if (< n 2) n
         (loop (- n 1)))))
 
-(loop 3)
+(display "Printing numbers 1 to 100\n")
+(loop 100)
+(display "Done\n")
