@@ -19,6 +19,9 @@
 (show-fact 8)
 (show-fact 9)
 (show-fact 10)
+(show-fact 11)
+(show-fact 12)
+(show-fact 13) ; overflows 32-bit int
 (show-fact 20)
 (show-fact 40)
 (show-fact 80)
