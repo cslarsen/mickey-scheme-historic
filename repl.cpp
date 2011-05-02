@@ -1,6 +1,10 @@
 #include <stdio.h>
-#include <readline/readline.h>
-#include <readline/history.h>
+
+#ifdef USE_READLINE
+# include <readline/readline.h>
+# include <readline/history.h>
+#endif
+
 #include "cons.h"
 #include "util.h"
 #include "repl.h"
@@ -49,6 +53,7 @@ bool isprefix(const char* prefix, const char* fullstr)
   return *prefix == '\0';
 }
 
+#ifdef USE_READLINE
 char** auto_complete(const char *s, int start, int end)
 {
   /*
@@ -145,6 +150,21 @@ void init_readline()
   // hitting TAB will attempt auto completion
   rl_bind_key('\t', rl_complete);
 }
+#else
+char* readline(const char* prompt)
+{
+  static char buf[1024];
+  buf[0] = '\0';
+
+  printf("%s", prompt);
+  fflush(stdout);
+
+  if ( !fgets(buf, sizeof(buf), stdin) )
+    return NULL;
+
+  return *buf? buf : NULL;
+}
+#endif // USE_READLINE
 
 int repl()
 {
@@ -152,7 +172,9 @@ int repl()
   global_env = env;
   load_default_defs(env);
 
+  #ifdef USE_READLINE
   init_readline();
+  #endif
 
   // add some more definitions
   env->defun("run-tests", defun_run_tests);
@@ -178,12 +200,17 @@ int repl()
     if ( *trimr(input) == '\0' )
       continue; // empty command
 
+    #ifdef USE_READLINE
     add_history(input);
+    #endif
 
     try {
       program_t *p = parse(input, env);
       std::string s = sprint(eval(p));
+
+      #ifdef USE_READLINE
       free(input);
+      #endif
 
       if ( !s.empty() )
         printf("%s\n", s.c_str());

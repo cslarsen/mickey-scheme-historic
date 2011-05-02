@@ -72,7 +72,11 @@ bool char_in(char ch, const char* s)
 char* copy_str(const char* s)
 {
   s = s? s : "";
-  return strcpy((char*)GC_MALLOC(1 + strlen(s)), s);
+#ifdef BOHEM_GC
+  return strcpy((char*) GC_MALLOC(1 + strlen(s)), s);
+#else
+  return strcpy((char*) malloc(1 + strlen(s)), s);
+#endif
 }
 
 char* decode_literal_string(const char* s)

@@ -1,7 +1,11 @@
 #include <math.h>
 #include <stdexcept>
 #include <vector>
-#include <readline/readline.h>
+
+#ifdef USE_READLINE
+# include <readline/readline.h>
+#endif
+
 #include "heap.h"
 #include "cons.h"
 #include "eval.h"
@@ -503,9 +507,16 @@ cons_t* defun_booleanp(cons_t* p, environment_t* e)
 cons_t* defun_version(cons_t*, environment_t*)
 {
   cons_t *v = list(string("Mickey Scheme (C) 2011 Christian Stigen Larsen\n"));
+
+  #ifdef USE_READLINE
   v = append(v, cons(string(format("Using Readline %d.%d\n",
         (rl_readline_version & 0xFF00) >> 8, rl_readline_version & 0x00FF).c_str())));
+  #endif
+
+  #ifdef BOEHM_GC
   v = append(v, cons(string(format("Using Boehm-Demers-Weiser GC %d.%d\n", GC_VERSION_MAJOR, GC_VERSION_MINOR).c_str())));
+  #endif
+
   v = append(v, cons(string(format("Compiler version: %s\n", __VERSION__).c_str())));
   return v;
 }

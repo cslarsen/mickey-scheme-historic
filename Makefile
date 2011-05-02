@@ -1,6 +1,6 @@
 CXX      = llvm-g++
-CXXFLAGS = -g -Wall -Iinclude # -Weffc++
-LDFLAGS  = -lreadline -lgc
+CXXFLAGS = -g -Wall -Iinclude -DUSE_READLINE # -DBOEHM_GC
+LDFLAGS  = -lreadline # -lgc
 
 TARGETS_O = backtrace.o \
             heap.o \

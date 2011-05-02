@@ -26,7 +26,10 @@ enum type_t {
 typedef struct cons_t* (*lambda_t)(struct cons_t*, struct environment_t*);
 typedef std::map<std::string, struct cons_t*> dict_t; // TODO: Use hash_map
 
-struct environment_t : public gc
+struct environment_t
+ #ifdef BOEHM_GC
+  : public gc
+ #endif
 {
   struct environment_t *outer;
   dict_t symbols;
@@ -43,21 +46,33 @@ struct environment_t : public gc
   environment_t* extend();
 };
 
-struct continuation_t : public gc
+struct continuation_t
+ #ifdef BOEHM_GC
+  : public gc
+ #endif
 {
 };
 
-struct closure_t : public gc
+struct closure_t
+ #ifdef BOEHM_GC
+  : public gc
+ #endif
 {
   lambda_t function;
   environment_t* environment;
 };
 
-struct vector_t : public gc
+struct vector_t
+ #ifdef BOEHM_GC
+  : public gc
+ #endif
 {
 };
 
-class symbol_t : public gc
+class symbol_t
+ #ifdef BOEHM_GC
+  : public gc
+ #endif
 {
   symbol_t(); // require param
 
@@ -73,7 +88,11 @@ public:
   std::string name;
 };
 
-struct cons_t : public gc {
+struct cons_t
+ #ifdef BOEHM_GC
+  : public gc
+ #endif
+{
   type_t type;
   union {
     bool boolean;

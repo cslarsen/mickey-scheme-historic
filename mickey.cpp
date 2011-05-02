@@ -19,7 +19,9 @@
 
 int main(int argc, char** argv)
 {
+  #ifdef BOEHM_GC
   GC_INIT();
+  #endif
 
   if ( argc == 1 )
     return repl();
