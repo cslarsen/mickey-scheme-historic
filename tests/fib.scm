@@ -1,25 +1,27 @@
 ;; Fibonacci sequence, slow, recursive version
 
-(define fib
-  (lambda (n)
-    (if (= n 0) 0
-      (if (= n 1) 1
-        (+ (fib (- n 1))
-           (fib (- n 2)))))))
+(define (<= a b)
+  (or (< a b) (= a b)))
 
-(define calc
-  (lambda (n)
-    (display (string-append
-      "fib(" (->string n) ") = " (->string (fib n)) "\n"))))
+(define (fib n)
+  (if (<= n 1) n
+      (+ (fib (- n 1))
+         (fib (- n 2)))))
 
-(calc 0)
-(calc 1)
-(calc 2)
-(calc 3)
-(calc 4)
-(calc 5)
-(calc 6)
-(calc 7)
-(calc 8)
-(calc 9)
-(calc 10)
+(define (show-fib n)
+  (display (string-append
+    "fib(" (->string n) ") = " (->string (fib n)) "\n")))
+
+(show-fib 0)
+(show-fib 1)
+(show-fib 2)
+(show-fib 3)
+(show-fib 4)
+(show-fib 5)
+(show-fib 6)
+(show-fib 7)
+(show-fib 8)
+(show-fib 9)
+(show-fib 10)
+(show-fib 20)
+(show-fib 24)
