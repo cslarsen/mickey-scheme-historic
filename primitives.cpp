@@ -277,7 +277,7 @@ cons_t* defun_to_string(cons_t* p, environment_t *env)
     else if ( stringp(p) )
       s += p->string;
     else if ( listp(p) )
-      s += sprint(car(p));
+      s += print(car(p));
   }
 
   return string(s.c_str());

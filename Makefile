@@ -1,5 +1,5 @@
 CXX      = llvm-g++
-CXXFLAGS = -Wall -Iinclude -DUSE_READLINE # -DBOEHM_GC
+CXXFLAGS = -g -Wall -Iinclude -DUSE_READLINE # -DBOEHM_GC
 #CXXFLAGS = -Wall -Iinclude -DUSE_READLINE -O6 -ffast-math -fomit-frame-pointer
 LDFLAGS  = -lreadline # -lgc
 

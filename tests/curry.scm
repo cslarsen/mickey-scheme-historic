@@ -19,9 +19,9 @@
 ; So, let's do it explicitly instead, taken from
 ; http://www.engr.uconn.edu/~jeffm/Papers/curry.html
 
-(define (curry function . arguments)
+(define (curry fun . args)
   (lambda x
-    (apply function (append arguments x))))
+    (apply fun (append args x))))
 
 (define times3
   (curry multiply 3))

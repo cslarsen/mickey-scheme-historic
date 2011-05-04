@@ -74,6 +74,44 @@ static cons_t* make_curried_function(cons_t *names, cons_t *values, cons_t *body
     return make_closure(n, body, e);
 }
 
+/*
+ * Return number of required arguments, excluding
+ * "rest" arguments, e.g. "(x y z . rest)" or "rest".
+ */
+static size_t arg_length(cons_t* args)
+{ 
+  size_t count  = 0;
+  bool prev_dot = false;
+
+  cons_t *p = args;
+
+  // pure variadic function
+  if ( !nullp(args) && length(args)==1 && !symbolp(car(args)) )
+    return 0;
+
+  for ( ; !nullp(p); p = cdr(p) ) {
+    if ( symbolp(car(p)) && car(p)->symbol->name() == "." )
+      prev_dot = true;
+    else {
+      if ( prev_dot ) {
+        p = cdr(p); // so as not to break test below
+        break;
+      }
+      ++count;
+    }
+  }
+
+  if ( length(p) != 0 )
+    throw std::runtime_error("Invalid lambda signature: " + sprint(args));
+
+  return count;
+}
+
+static bool has_rest_args(cons_t* p)
+{
+  return !listp(p) || (arg_length(p) < length(p));
+}
+
 static cons_t* call_lambda(cons_t *p, environment_t* e)
 {
   cons_t *args = e->symbols[ARGS];
@@ -92,40 +130,47 @@ static cons_t* call_lambda(cons_t *p, environment_t* e)
    */
   e = e->extend();
 
-  size_t params_reqd = length(args);
+  bool   has_rest    = has_rest_args(args);
+  size_t params_reqd = arg_length(args);
   size_t params_recv = length(p);
-
-  /*
-   * TODO: If `args` is a symbol, then put ALL
-   *       parameters in it.  If it ends with
-   *       two symbols ". rest" then put rest of
-   *       args in `rest`.
-   */
-
-  // Note that for (define (foo a1 a2 a3 . arest) <body>)
-  // we MUST have three params, and then can have 0 or more,
-  // so reqd=3 but can have MORE than that, so we have that
-  // params_recv>=params_reqd in that case
 
   if ( params_recv < params_reqd ) {
     // try currying (TODO: Do we need to check for any conditions?)
-    return make_curried_function(args, p,
-                                 body,
-                                 e->extend());
+    return make_curried_function(args, p, body, e->extend());
   }
 
-  if ( params_recv > params_reqd )
-    throw std::runtime_error(format("Function only accepts %d parameters, but got %d", params_reqd, params_recv));
+  if ( params_recv > params_reqd && !has_rest ) {
+    throw std::runtime_error(format("Function only accepts %d parameters, "
+                                    "but got %d", params_reqd, params_recv));
+  }
 
-  // set up function arguments
-  for ( cons_t *value = p, *name = args;
-        !nullp(value) && !nullp(name);
-        value = cdr(value),
-        name = cdr(name) )
+  // Set up function arguments
+  cons_t *value = p, *name = args;
+  for ( ; !nullp(name);
+        value = cdr(value), name = cdr(name) )
   {
-    if ( !symbolp(car(name)) )
-      throw std::runtime_error("lambda argument not a symbol but type "
-        + to_s(type_of(car(name))) + ": " + sprint(car(name)));
+    if ( !symbolp(car(name)) ) {
+      if ( has_rest ) {
+        // Pure variadic function, e.g. (lambda x (display x)) will have
+        // all args in `x`.
+        e->define(name->symbol->name(), value);
+        break;
+      } else 
+        throw std::runtime_error("Lambda argument not a symbol but type "
+          + to_s(type_of(car(name))) + ": " + sprint(car(name)));
+    }
+
+    /*
+     * Non-pure variadic, i.e. has some set arguments and one
+     * trailing "rest"-argument.  E.g.:  (lambda (x y z . rest) <body>)
+     */
+    if ( car(name)->symbol->name() == "." ) {
+      e->define(cadr(name)->symbol->name(), value);
+      break;
+    }
+
+    if ( nullp(value) )
+      break;
 
     e->define(car(name)->symbol->name(), car(value));
   }
@@ -281,6 +326,17 @@ cons_t* eval(cons_t* p, environment_t* e)
     if ( name == "lambda" ) {
       cons_t *args = cadr(p);
       cons_t *body = cddr(p);
+
+      if ( symbolp(car(p)) && car(p)->symbol->name() == "lambda"
+            && length(p) == 2 && listp(cadr(p)) )
+      {
+        /*
+         * We have a `(lambda () <body>)` form
+         */
+        args = list(NULL);
+        body = cons(cadr(p));
+      }
+
       return make_closure(args, body, e->extend());
     }
 
