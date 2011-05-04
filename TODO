@@ -1,9 +1,4 @@
-- (lambda x <body>), altså x = rest args
 - tail call elimination
-
-REMEMBER
-- Fix (->string (list "one" "two")), we print `("one" "two")` but
-  Chicken Scheme prints `(one two)` without double quotes.
 
 EASY
 - Add character parsing, #\f for instance
@@ -17,6 +12,7 @@ EASY
 NORMAL
 - Fix environment / closure
   * Double-check closure / lexical scoping
+    * Triple-check it! Lookup example on net
 
 - Fix lambda
   * Works, but not exactly rock proof;

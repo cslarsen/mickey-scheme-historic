@@ -1,0 +1,29 @@
+Marketing & Research
+- Lag "ACID test" for Scheme.  Publiser resultater for en haug med forskjellige schemes.
+  ACID-testen var opprinnelig test av CSS der en rendret en "ACID"-figur, altså smiley.
+  Vi lager en annen test.. feks holder det at programmet forventer å printe en spesiell
+  tekst ut, feks en tekst fra Shakespeare eller noe, så kaller vi det "Macbeth test", eller
+  noe sånt... eller noe som ligner på ACID eller noe sånt.. ah, eller at den faktisk
+  printer ut en ASCII acid-figur!:D Jaa!
+
+  "ACID test for Scheme"; hvis alt går bra skal den se ut som referanserenderingen:
+
+     ,*****.
+   .* _   _ *,
+   *  o   o  *
+   *    +    *
+   * \_____/ *
+    *       *
+     *******
+
+  Ja, bare at det som printes ut er MYE større.. og innenfor 76x20, sånn den kan
+  embeddes i epost osv.
+
+  Og den bør være THOROUGH for RnRS... sånn den faktisk kan teste om forskjellige
+  schemes ikke følger spekken.
+
+- Reseach: Lag stor oversikt over hvordan forskjellige schemes løser div problem,
+  spesifikt tail call elimination (trampoline, extended trampoline, cheney on the
+  mta, osv) og GC (mark-and-sweep, boehm gc, generational, incremental, stop the
+  world, no-gc, osv) og hvordan de fikser closures/gc mot C verden.
+
