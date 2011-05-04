@@ -7,6 +7,7 @@
 #include "print.h"
 #include "backtrace.h"
 
+
 /*
  * Magic variables to hold lambda arguments
  * and code body.  Quite the hack, and should
@@ -93,6 +94,18 @@ static cons_t* call_lambda(cons_t *p, environment_t* e)
 
   size_t params_reqd = length(args);
   size_t params_recv = length(p);
+
+  /*
+   * TODO: If `args` is a symbol, then put ALL
+   *       parameters in it.  If it ends with
+   *       two symbols ". rest" then put rest of
+   *       args in `rest`.
+   */
+
+  // Note that for (define (foo a1 a2 a3 . arest) <body>)
+  // we MUST have three params, and then can have 0 or more,
+  // so reqd=3 but can have MORE than that, so we have that
+  // params_recv>=params_reqd in that case
 
   if ( params_recv < params_reqd ) {
     // try currying (TODO: Do we need to check for any conditions?)
