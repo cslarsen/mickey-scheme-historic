@@ -33,7 +33,7 @@ mickey: $(TARGETS_O)
 
 check: all
 	echo "(run-tests)" | ./mickey
-	./mickey tests/*
+	cd tests ; ../mickey *.scm
 
 check-scheme: all
 	cd tests ; ../mickey tests.scm
