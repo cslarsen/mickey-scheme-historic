@@ -1,7 +1,7 @@
 ;; Mickey Scheme
 ;;
-;; Test code from SICP
-;;
+;; Test code from SICP, taken from
+;; http://mitpress.mit.edu/sicp/code/index.html
 
 (load "test.scm")
 
