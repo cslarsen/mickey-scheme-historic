@@ -1,3 +1,6 @@
+- (lambda x <body>), altså x = rest args
+- tail call elimination
+
 EASY
 - Add character parsing, #\f for instance
 - Add character table
