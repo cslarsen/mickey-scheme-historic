@@ -1,14 +1,13 @@
-- let-forms
-- tail call elimination
-
-EASY
+NEXT STEPS, SHOULD BE ORDERED BY INCREASING DIFFICULTY
 - Add character parsing, #\f for instance
 - Add character table
-- Add division
-- Add decimal arithmetic functions
-  - SUB
-  - DIV
-- Implement Mandelbrot example
+- Add decimal arithmetic functions - SUB - DIV
+- (let), implement with lambdas (see SICP)
+- (letrec), should be straight-forward I think
+- other let forms?
+- routine to detect tail calls
+- routine to detect if we can eliminate the tail call
+....
 
 NORMAL
 - Make doubly and triply sure that environment/closure/lexical scoping ACTUALLY WORKS
