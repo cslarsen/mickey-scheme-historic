@@ -10,6 +10,7 @@ size_t length(cons_t*);
 cons_t* cons(cons_t* head, cons_t* tail = NULL);
 cons_t* list(cons_t* head, cons_t* tail = NULL);
 cons_t* append(cons_t*, cons_t*);
+cons_t* append_non_mutable(cons_t*, cons_t*);
 cons_t* symbol(const char*, environment_t*);
 cons_t* integer(int);
 cons_t* boolean(bool);

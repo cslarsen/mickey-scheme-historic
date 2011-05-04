@@ -206,6 +206,23 @@ cons_t* append(cons_t *h, cons_t *t)
   return h;
 }
 
+cons_t* append_non_mutable(cons_t *h, cons_t *t)
+{
+  cons_t *r = new cons_t();
+  memcpy(r, h, sizeof(cons_t));
+
+  if ( nullp(r) || !listp(r) )
+    return t; //throw std::runtime_error("First argument to (append) must be a list");
+  else if ( nullp(car(r)) )
+    r->car = t;
+  else if ( nullp(cdr(r)) )
+    r->cdr = t;
+  else
+    append(cdr(r), t);
+
+  return r;
+}
+
 cons_t* closure(lambda_t f, environment_t* e)
 {
   closure_t *c = new closure_t();

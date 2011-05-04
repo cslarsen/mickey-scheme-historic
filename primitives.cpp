@@ -429,7 +429,7 @@ cons_t* defun_cddr(cons_t* p, environment_t* e)
 
 cons_t* defun_append(cons_t* p, environment_t*)
 {
-  return append(car(p), cadr(p));
+  return append_non_mutable(car(p), cadr(p));
 }
 
 cons_t* defun_atomp(cons_t* p, environment_t* env)
