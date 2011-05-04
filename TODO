@@ -1,3 +1,4 @@
+- let-forms
 - tail call elimination
 
 EASY
@@ -10,17 +11,17 @@ EASY
 - Implement Mandelbrot example
 
 NORMAL
-- Fix environment / closure
-  * Double-check closure / lexical scoping
-    * Triple-check it! Lookup example on net
-
-- Fix lambda
-  * Works, but not exactly rock proof;
-    * For instance, zero parameters doesn't work
-    * Also, fix (define) short form
+- Make doubly and triply sure that environment/closure/lexical scoping ACTUALLY WORKS
+- Make doubly and triply sure that lambda ACTUALLY WORKS
 
 - We're now a proper Lisp/Scheme, celebrate!
   * OOOH, almost there!!
+    * Summary:  We have variadic lambdas, closures with lexical scoping (I think)...
+                what does that make us?????? A REAL LISP!!! :D :D :D
+                Though we ARE missing a lot of important stuff... so we're a lisp,
+                but don't have a working GC, TCO/TCE, macros, and there are prolly
+                LOTS of bugs as well in the existing stuff... Also, we don't have
+                (let)-forms, but these can be made with lambdas (SICP explains this).
 
 - After we're a lisp/scheme (basic version)
   * Make A LOT of test-functions, test everything again and again,
