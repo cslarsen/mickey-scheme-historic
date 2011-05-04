@@ -347,8 +347,8 @@ cons_t* eval(cons_t* p, environment_t* e)
       return eval_with_trace(evlis(cdr(p), e), e);
 
     if ( name == "apply" ) {
-      // correct to use eval on parameter list?
-      return invoke_with_trace(cadr(p), caddr(p), e);
+      // Correct to use eval instead of evlis (or nothing) on parameter list?
+      return invoke_with_trace(cadr(p), eval(caddr(p), e), e);
     }
   }
 
