@@ -2,6 +2,7 @@ NEXT STEPS, SHOULD BE ORDERED BY INCREASING DIFFICULTY
 - Add character parsing, #\f for instance
 - Add character table
 - Add decimal arithmetic functions - SUB - DIV
+- Add cond
 - (let), implement with lambdas (see SICP)
 - (letrec), should be straight-forward I think
 - other let forms?
