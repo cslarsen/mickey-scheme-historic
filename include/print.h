@@ -6,6 +6,9 @@
 #include "parser.h"
 #include "primops.h"
 
+#define SPRINT(x) { printf(#x " = '%s'\n", sprint(x).c_str()); }
+#define  PRINT(x) { printf(#x " = '%s'\n", print(x).c_str()); }
+
 std::string sprint(cons_t* p);
 std::string sprint(program_t* p);
 
