@@ -47,15 +47,8 @@ diff: all
 	@./mickey $(PORTABLE_TESTS)
 
 tarball: clean
-	rm -rf dist/mickey4
-	mkdir -p dist/mickey4
-	mkdir dist/mickey4/tests
-	mkdir dist/mickey4/include
-	cp -R AUTHOR BUGS COPYING INSTALL Makefile README TODO *.cpp dist/mickey4
-	cp -R include/* dist/mickey4/include/
-	cp -R tests/* dist/mickey4/tests/
-	cd dist; tar cfz mickey4-`date +%Y-%m-%d`.tar.gz mickey4
-	rm -rf dist/mickey4
+	make clean
+	cd .. ; tar cfz mickey4-`date +%Y-%m-%d`.tar.gz mickey4 ; mv mickey4-`date +%Y-%m-%d`.tar.gz mickey4/dist
 
 backup: tarball
 	cp dist/mickey4-`date +%Y-%m-%d`.tar.gz ~/Dropbox/koding/
