@@ -71,7 +71,7 @@ bool isfloat(const char* s)
    */
 
   if ( strlen(s+sign) == (digits + (dots==1) + last_f) )
-    return dots==1 || last_f; // or else it's an ordinary integer
+    return digits>0 && (dots==1 || last_f); // or else it's an ordinary integer
   else
     return false;
 }
