@@ -83,26 +83,25 @@
 (test-eq (quote                     136) 136)
 
 (results)
-(exit 0)
 
 (display "\nSICP SECTION 1.1.6\n")
 
-(define (abs x)
-  (cond ((> x 0) x)
-        ((= x 0) 0)
-        ((< x 0) (- x))))
-
-(test-eq (quote (abs  1)) 1)
-(test-eq (quote (abs -1)) 1)
-(test-eq (quote (abs  0)) 0)
-
-(define (abs x)
-  (cond ((< x 0) (- x))
-        (else x)))
-
-(test-eq (quote (abs  1)) 1)
-(test-eq (quote (abs -1)) 1)
-(test-eq (quote (abs  0)) 0)
+;(define (abs x)
+;  (cond ((> x 0) x)
+;        ((= x 0) 0)
+;        ((< x 0) (- x))))
+;
+;(test-eq (quote (abs  1)) 1)
+;(test-eq (quote (abs -1)) 1)
+;(test-eq (quote (abs  0)) 0)
+;
+;(define (abs x)
+;  (cond ((< x 0) (- x))
+;        (else x)))
+;
+;(test-eq (quote (abs  1)) 1)
+;(test-eq (quote (abs -1)) 1)
+;(test-eq (quote (abs  0)) 0)
 
 (define (abs x)
   (if (< x 0)
