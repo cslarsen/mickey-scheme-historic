@@ -95,6 +95,7 @@ Lag masse morsomme eksempelprogrammer:
      - Space invaders klone
 - Metacircular evaluator
      - Hiv på en reader og parser, start en egen repl og du har SKIKKELIG dsl språk, dvs ikke s-expressions men et skikkelig språk
+- Noe skikkelig kick ass.. hva med å rendre Calabi-Yau manifold?
 
 MARKEDSFØRING / HYPE
 - Har jo "Now you're thinking in portals", men når jeg tenker på alt over, hvordan jeg har endret mitt syn på kode, så blir det "Now you're thinking in LISP" eller "Now you're thinking in Scheme"
