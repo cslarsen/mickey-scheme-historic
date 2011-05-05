@@ -8,7 +8,6 @@
 (display "Tests from\n")
 (display "Structure and Interpretation of Comptuter Programs (SICP)\n\n")
 
-;; ---
 
 (display "SICP SECTION 1.1.1\n")
 
@@ -30,7 +29,6 @@
        6)))
   57) ; expected
 
-;; ---
 
 (display "\nSICP SECTION 1.1.2\n")
 
@@ -45,14 +43,12 @@
 (define circumference (* 2 pi radius))
 (test-eq (quote circumference) 62.831802)
 
-;; ---
 
 (display "\nSICP SECTION 1.1.3\n")
 
 (test-eq (quote (* (+ 2 (* 4 6)))) 26)
 (test-eq (quote (+ 3 5 7)) 15)
 
-;; ---
 
 (display "\nSICP SECTION 1.1.4\n")
 
@@ -69,7 +65,6 @@
   (sum-of-squares (+ a 1) (* a 2)))
 (test-eq (quote (f 5)) 136)
 
-;; ---
 
 (display "\nSICP SECTION 1.1.5\n")
 
@@ -86,6 +81,42 @@
 (test-eq (quote (+         (* 6 6)             (* 10 10))) 136)
 (test-eq (quote (+           36                   100)) 136)
 (test-eq (quote                     136) 136)
+
+(display "\nSICP SECTION 1.1.6\n")
+
+(define (abs x)
+  (cond ((> x 0) x)
+        ((= x 0) 0)
+        ((< x 0) (- x))))
+
+(test-eq (quote (abs  1)) 1)
+(test-eq (quote (abs -1)) 1)
+(test-eq (quote (abs  0)) 0)
+
+(define (abs x)
+  (cond ((< x 0) (- x))
+        (else x)))
+
+(test-eq (quote (abs  1)) 1)
+(test-eq (quote (abs -1)) 1)
+(test-eq (quote (abs  0)) 0)
+
+(define (abs x)
+  (if (< x 0)
+      (- x)
+      x))
+
+(test-eq (quote (abs  1)) 1)
+(test-eq (quote (abs -1)) 1)
+(test-eq (quote (abs  0)) 0)
+
+(test-eq (quote ((lambda (x) (and (> x 5) (< x 10))) 4)) #f)
+(test-eq (quote ((lambda (x) (and (> x 5) (< x 10))) 5)) #f)
+(test-eq (quote ((lambda (x) (and (> x 5) (< x 10))) 6)) #t)
+(test-eq (quote ((lambda (x) (and (> x 5) (< x 10))) 9)) #t)
+(test-eq (quote ((lambda (x) (and (> x 5) (< x 10))) 10)) #f)
+(test-eq (quote ((lambda (x) (and (> x 5) (< x 10))) 11)) #f)
+
 
 (display "\nRESULTS\n")
 (results)
