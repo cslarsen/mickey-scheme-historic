@@ -652,30 +652,24 @@ cons_t* defun_let(cons_t* p, environment_t* e)
    *
    */
 
-  cons_t  *names = list(NULL),
+  cons_t  *body  = cdr(p),
+          *names = list(NULL),
          *values = list(NULL);
 
   for ( cons_t *n = car(p); !nullp(n); n = cdr(n) ) {
-    printf("collecting name '%s' => '%s'\n",
-      sprint(caar(n)).c_str(),
-      sprint(car(cdar(n))).c_str());
-
-     names = cons(caar(n), names);
-    values = cons(car(cdar(n)), values);
+     names = append_non_mutable(names, list(caar(n)));
+    values = append_non_mutable(values, list(car(cdar(n))));
   }
 
-  printf("got names : "); SPRINT(names);
-  printf("got values: "); SPRINT(values);
-
   /*
-   * Todo; now just construct below and in eval,
-   * we should call return eval(defun_let(...));
+   * Build lambda expression and return it, eval will eval it :)
+   * (or we could call make_closure here):
    *
    * ((lambda (<names>) <body>) <values>)
    *
    */
-
-  throw std::runtime_error("(let) has not been implemented yet");
+  return cons(cons(symbol("lambda", e),
+    cons(names, cons(car(body)))), values);
 }
 
 cons_t* defun_backtrace(cons_t*, environment_t*)

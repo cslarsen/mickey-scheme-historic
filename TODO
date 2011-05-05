@@ -13,7 +13,6 @@ NEXT STEPS, SHOULD BE ORDERED BY INCREASING DIFFICULTY
 
   Note: This could probably be done quite nicely with macros.
 
-- (let), implement with lambdas (see SICP)
 - Add character parsing, #\f for instance
 - Add character table
 - Add decimal arithmetic functions - SUB - DIV

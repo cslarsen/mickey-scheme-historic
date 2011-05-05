@@ -82,6 +82,9 @@
 (test-eq (quote (+           36                   100)) 136)
 (test-eq (quote                     136) 136)
 
+(results)
+(exit 0)
+
 (display "\nSICP SECTION 1.1.6\n")
 
 (define (abs x)
