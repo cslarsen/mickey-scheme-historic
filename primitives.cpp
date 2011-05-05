@@ -44,7 +44,6 @@ void load_default_defs(environment_t *e)
   e->defun("=", defun_eqintp);
   e->defun("<", defun_less);
   e->defun(">", defun_greater);
-  e->defun("let", defun_let);
 
   e->defun("load", defun_load);
   e->defun("debug", defun_debug);
@@ -650,6 +649,29 @@ cons_t* defun_let(cons_t* p, environment_t* e)
    *
    * ((lambda (name-1 name-2 name-n)
    *    <body>) value-1 value-2 value-n)
+   *
+   */
+
+  cons_t  *names = list(NULL),
+         *values = list(NULL);
+
+  for ( cons_t *n = car(p); !nullp(n); n = cdr(n) ) {
+    printf("collecting name '%s' => '%s'\n",
+      sprint(caar(n)).c_str(),
+      sprint(car(cdar(n))).c_str());
+
+     names = cons(caar(n), names);
+    values = cons(car(cdar(n)), values);
+  }
+
+  printf("got names : "); SPRINT(names);
+  printf("got values: "); SPRINT(values);
+
+  /*
+   * Todo; now just construct below and in eval,
+   * we should call return eval(defun_let(...));
+   *
+   * ((lambda (<names>) <body>) <values>)
    *
    */
 
