@@ -675,7 +675,7 @@ cons_t* defun_let(cons_t* p, environment_t* e)
    *
    */
   return cons(cons(symbol("lambda", e),
-    cons(names, cons(car(body)))), values);
+          cons(names, cons(body))), values);
 }
 
 cons_t* defun_backtrace(cons_t*, environment_t*)

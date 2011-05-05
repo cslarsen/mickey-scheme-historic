@@ -310,11 +310,12 @@ cons_t* eval(cons_t* p, environment_t* e)
       environment_t *i = e;
 
       // search for definition and set if found
-      for ( ; i != NULL; i = i->outer )
+      for ( ; i != NULL; i = i->outer ) {
         if ( i->symbols.find(name) != i->symbols.end() ) {
           i->symbols[name] = car(evlis(def_body, e));
           return nil();
         }
+      }
 
        // only set if NOT found
       if ( i == NULL )
@@ -327,12 +328,10 @@ cons_t* eval(cons_t* p, environment_t* e)
       cons_t *args = cadr(p);
       cons_t *body = cddr(p);
 
-      if ( symbolp(car(p)) && car(p)->symbol->name() == "lambda"
-            && length(p) == 2 && listp(cadr(p)) )
+      // capture no argument lambda `(lambda () do-something)`
+      if ( nullp(body) && !nullp(args) )
       {
-        /*
-         * We have a `(lambda () <body>)` form
-         */
+        // We have a `(lambda () <body>)` form
         args = list(NULL);
         body = cons(cadr(p));
       }
