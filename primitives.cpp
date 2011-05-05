@@ -44,6 +44,7 @@ void load_default_defs(environment_t *e)
   e->defun("=", defun_eqintp);
   e->defun("<", defun_less);
   e->defun(">", defun_greater);
+  e->defun("let", defun_let);
 
   e->defun("load", defun_load);
   e->defun("debug", defun_debug);
@@ -633,6 +634,26 @@ cons_t* defun_closure_source(cons_t* p, environment_t* e)
 
   cons_t *source = cons(symbol("lambda", e), cons(args, cons(car(body))));
   return source;
+}
+
+cons_t* defun_let(cons_t* p, environment_t* e)
+{
+  /*
+   * Transform to lambdas:
+   *
+   * (let ((name-1 value-1)
+   *       (name-2 value-2)
+   *       (name-n value-n))
+   *       <body>)
+   *
+   * to
+   *
+   * ((lambda (name-1 name-2 name-n)
+   *    <body>) value-1 value-2 value-n)
+   *
+   */
+
+  throw std::runtime_error("(let) has not been implemented yet");
 }
 
 cons_t* defun_backtrace(cons_t*, environment_t*)

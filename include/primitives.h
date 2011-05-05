@@ -30,6 +30,7 @@ cons_t* defun_define(cons_t*, environment_t*);
 cons_t* defun_load(cons_t*, environment_t*);
 cons_t* defun_debug(cons_t*, environment_t*);
 cons_t* defun_exit(cons_t*, environment_t*);
+cons_t* defun_let(cons_t*, environment_t*);
 
 // cons and friends
 cons_t* defun_cons(cons_t*, environment_t*);
