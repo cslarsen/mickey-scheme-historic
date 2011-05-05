@@ -29,6 +29,7 @@ closure_t* lookup_closure(symbol_t *s, environment_t *env)
 void load_default_defs(environment_t *e)
 {
   e->defun("display", defun_print);
+  e->defun("newline", defun_newline);
   e->defun("write", defun_print);
   e->defun("string-append", defun_strcat);
   e->defun("->string", defun_to_string);
@@ -94,6 +95,12 @@ cons_t* defun_print(cons_t *p, environment_t* env)
       defun_print(car(p), env);
   }
 
+  return nil();
+}
+
+cons_t* defun_newline(cons_t*, environment_t*)
+{
+  printf("\n");
   return nil();
 }
 
