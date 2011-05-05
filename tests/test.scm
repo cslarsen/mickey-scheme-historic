@@ -26,12 +26,11 @@
       (->string tests) " OK: "
         (->string code) " == " (->string expected) "\n")))))
 
-(define test-eq (lambda (code expected)
-  (begin
-    (if
-      (not (eq? (eval code) (eval expected)))
+(define (test-eq code expected)
+    (if (not (eq? (eval code)
+                  (eval expected)))
         (fail code expected (eval code))
-        (success code expected)))))
+        (success code expected)))
 
 (define results (lambda ()
     (display 

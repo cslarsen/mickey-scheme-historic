@@ -185,6 +185,10 @@ cons_t* defun_sub(cons_t *p, environment_t* env)
 
   float d = as_float(car(p), false);
 
+  // (- x) => -x, instead of +x
+  if ( nullp(cdr(p)) )
+    d = -d;
+
   while ( !nullp(p = cdr(p)) )
     d -= as_float(car(p), false);
 
