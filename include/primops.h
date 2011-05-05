@@ -14,6 +14,7 @@ cons_t* append_non_mutable(cons_t*, cons_t*);
 cons_t* symbol(const char*, environment_t*);
 cons_t* integer(int);
 cons_t* boolean(bool);
+cons_t* character(char);
 cons_t* decimal(float);
 cons_t* string(const char*);
 cons_t* closure(lambda_t, environment_t*);

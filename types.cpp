@@ -46,6 +46,15 @@ bool isbool(const char* s)
   return s[0]=='#' && (s[1]=='t' || s[1]=='f');
 }
 
+bool ischar(const char* s)
+{
+  /*
+   * Format "#\x" for given x.
+   */
+  return strlen(s) == 3 &&
+    s[0]=='#' && s[1]=='\\' && isalpha(s[2]);
+}
+
 bool isfloat(const char* s)
 {
   // TODO: Make pattern complete
@@ -113,4 +122,9 @@ int to_i(const char* s)
 bool to_b(const char* s)
 {
   return s[1]=='t'? true : false;
+}
+
+char to_char(const char* s)
+{
+  return s[2];
 }

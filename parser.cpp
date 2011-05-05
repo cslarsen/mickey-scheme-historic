@@ -20,6 +20,9 @@ cons_t* type_convert(const char* token, environment_t* env)
   if ( isbool(token) )
     return boolean(to_b(token));
 
+  if ( ischar(token) )
+    return character(to_char(token));
+
   if ( !token || !*token )
     return nil();
 

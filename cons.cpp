@@ -46,7 +46,7 @@ std::string to_s(cons_t *p)
   switch ( type_of(p) ) {
   case NIL:      return "#<nil>";
   case BOOLEAN:  return to_s(p->boolean);
-  case CHAR:     return to_s(p->character);
+  case CHAR:     return to_s(p->character, false);
   case DECIMAL:  return to_s(p->decimal);
   case INTEGER:  return to_s(p->integer);
   case CLOSURE:  return format("#<closure %p>", p->closure);
@@ -75,10 +75,10 @@ std::string to_s(vector_t* p)
   return format("#<vector %p>", p);
 }
 
-std::string to_s(char p)
+std::string to_s(char p, bool escape)
 {
   // TODO: Use table instead
-  return format("#\%c", (p>32 || p<127)? p : '?' );
+  return format(escape? "#\\%c" : "%c", (p>32 || p<127)? p : '?' );
 }
 
 cons_t* environment_t::lookup_or_throw(const std::string& name) const

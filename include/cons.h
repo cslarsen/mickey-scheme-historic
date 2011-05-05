@@ -119,6 +119,6 @@ std::string to_s(enum type_t);
 std::string to_s(closure_t*);
 std::string to_s(continuation_t*);
 std::string to_s(vector_t*);
-std::string to_s(char);
+std::string to_s(char, bool);
 
 #endif

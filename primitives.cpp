@@ -52,6 +52,7 @@ void load_default_defs(environment_t *e)
   e->defun("length", defun_length);
   e->defun("closure-source", defun_closure_source);
   e->defun("backtrace", defun_backtrace);
+  e->defun("type-of", defun_type_of);
 
   // cons and friends
   e->defun("list", defun_list);
@@ -276,12 +277,10 @@ cons_t* defun_to_string(cons_t* p, environment_t *env)
   std::string s;
 
   for ( ; !nullp(p); p = cdr(p)) {
-    if ( integerp(p) )
-      s += format("%d", p->integer);
-    else if ( stringp(p) )
-      s += p->string;
-    else if ( listp(p) )
+    if ( listp(car(p)) )
       s += print(car(p));
+    else
+      s += to_s(car(p));
   }
 
   return string(s.c_str());
@@ -676,4 +675,9 @@ cons_t* defun_backtrace(cons_t*, environment_t*)
 {
   backtrace();
   return nil();
+}
+
+cons_t* defun_type_of(cons_t* p, environment_t* e)
+{
+  return symbol(to_s(type_of(car(p))).c_str(), e);
 }

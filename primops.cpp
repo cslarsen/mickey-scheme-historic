@@ -58,6 +58,14 @@ cons_t* boolean(bool f)
   return p;
 }
 
+cons_t* character(char c)
+{
+  cons_t *p = new cons_t();
+  p->type = CHAR;
+  p->character = c;
+  return p;
+}
+
 cons_t* string(const char* s)
 {
   cons_t *p = new cons_t();
