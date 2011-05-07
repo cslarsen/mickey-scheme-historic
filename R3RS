@@ -1,0 +1,237 @@
+R4RS, http://people.csail.mit.edu/jaffer/r3rs_toc.html
+
+Derived expression types, i.e. rewrite rules for the derived expression types.
+By application of these rules, any expr can be reduced to a semantical eqvivalent
+expression in which the only primitive expression types
+  (<literal>, <variable>, <call>, lambda, if set!) occur.
+
+(cond (<test> <sequence>)
+      <clause2> ...)
+== (if <test>
+      (begin <sequence>)
+      (cond <clause2> ...))
+
+(cond (<test>)
+      <clause2> ...)
+== (or <test> (cond <clause2> ...))
+
+(cond (<test> => <recipient>)
+      <clause2> ...)
+== (let ((test-result <test>)
+         (thunk2 (lambda () <recipient>))
+         (thunk3 (lambda () (cond <clause2> ...))))
+     (if test-result
+        ((thunk2) test-result)
+         (thunk3)))
+
+(cond (else <sequence>))
+== (begin <sequence>)
+
+(cond)
+== <some expression returning an unspecified value>
+
+Essential procedures:
+
+OK: quote <datum>
+NO: '<datum>
+OK: lambda <formals> <body>
+  -> usikker om <formals> KAN være empty list ()
+OK: if <test> <consequent> <alternate>
+NO: if <test> <consequent>
+OK: set! <variable> <expression>
+  -> <expression> is evaluated, and the resulting value is stored in the location to which <variable> is bound.
+    Result is unspecified.
+OK: cond
+NO: case
+OK: and
+OK: or
+OK: let
+NO: let*
+NO: letrec
+OK: begin
+NO: do
+NO: named let
+NO: delay
+NO: quasiquote
+OK: define
+OK: set!
+OK: not
+OK: boolean?
+NO: nil and t -> some implementations provide nil and t, nil og 'nil => nil, t => #t
+NO: eqv? basic design: per default, sammenlign POINTERS; men for tall, osv, sammenlign verdi
+OK: eq? -> pointer sammenligning, KAN gjerne sjekke verdi for tall, kan KUN returnere #t når eqv gjør det, så er nesten like
+NO: equal? recursively compare contents of pair, vector, string, så denne er den "ekte" equal, altså deep ==... funker ikke for list per nå, så denne må fikses, merk "may fail to terminate if its arguments are circular data structures"
+Rule of thumb: er equal hvis de printes til det samme
+OK: pair?
+OK: cons
+OK: car
+NO: set-car!
+NO: set-cdr!
+NO: caar...cdddar
+OK: cadr...cddddr
+OK: null?
+OK: list
+OK: length
+OK append
+NO: reverse
+NO: list-tail
+NO: list-ref, returns kth element of list
+NO: last-pair
+NO: memq
+NO: memv
+NO: member
+NO: assq
+NO: assv
+NO: assoc
+OK: symbol?
+NO: symbol->string
+NO: string->symbol
+OK: number?
+NO: complex?
+NO: real? (eller?)
+NO: rational?
+OK: integer?
+OK: zero?
+NO: positive?
+NO: negative?
+NO: odd?
+NO: even?
+NO: exact?
+NO: inexact?
+YES: =
+YES: <
+YES: >
+NO: <=
+NO: >=
+NO: max
+NO: min
+YES: + a b
+YES: + a
+YES: *
+YES: - a b
+YES: / 
+NO: / that gives rational number
+NO: abs
+NO: quotient
+NO: remainder
+NO: modulo
+NO: numerator
+NO: denominator
+NO: gcd
+NO: lcm
+NO: floor
+NO: ceiling
+NO: truncate
+NO: round
+NO: rationalize x y
+NO: rationalize x
+NO: exp
+NO: log
+NO: sin
+NO: cos
+NO: tan
+NO: asin
+NO: acos
+NO: atan z
+NO: atan y x
+NO: sqrt
+NO: expt
+NO: make-rectangular
+NO: make-polar
+NO: real-part
+NO: imag-part
+NO: magnitude
+NO: angle
+NO: exact->inexact
+NO: inexact->exact
+NO: number->string
+NO: string->number
+OK: char?
+NO: char=?
+NO: char<?
+NO: char>?
+NO: char<=?
+NO: char>=?
+NO: char-ci=?
+NO: char-ci<?
+NO: char-ci>?
+NO: char-ci<=?
+NO: char-ci>=?
+NO: char-alphabetic?
+NO: char-numeric?
+NO: char-whitespace?
+NO: char-upper-case?
+NO: char-lower-case?
+NO: char->integer
+NO: integer->char
+NO: char-upcase
+NO: char-downcase
+YES: string?
+NO: make-string k
+NO: make-string k char
+NO: string-length
+NO: string-ref
+NO: string-set!
+NO: string=?
+NO: string-ci=?
+NO: string<?
+NO: string>?
+NO: string<=?
+NO: string>=?
+NO: string-ci<?
+NO: string-ci>?
+NO: string-ci<=?
+NO: string-ci>=?
+NO: substring
+NO: string-append
+NO: string->list
+NO: list->string
+NO: string-copy
+NO: string-fill!
+NO: vector?
+NO: make-vector k
+NO: make-vector k fill
+NO: vector
+NO: vector-length
+NO: vector-ref
+NO: vector-set!
+NO: vector->list
+NO: list->vector
+YES: procedure?
+YES: apply proc args
+NO: apply proc arg1 ... args
+NO: map proc list
+NO: map proc list1 list2 ...
+NO: for-each proc list
+NO: for-each proc list1 list2
+NO: force <promise>
+NO: call-with-current-continuation
+NO: call-with-input-input-file string proc
+NO: call-with-output-file string proc
+NO: input-port?
+NO: output-port?
+NO: current-input-port
+NO: current-output-port
+NO: with-input-from-file
+NO: with-output-to-file
+NO: open-input-file
+NO: open-output-file
+NO: close-input-port
+NO: close-output-port
+NO: read
+NO: read port
+NO: read-char
+NO: char-ready?
+NO: char-ready? port
+NO: eof-object? obj
+YES: write -> BUT is wrong, writes to stdout
+NO: write obj port
+YES: display obj
+NO: display obj port
+YES: newline
+NO: newline port
+NO: write-char
+NO: write-char
+YES: load
+NO: transcript-on filename
+NO: transcript-off
