@@ -1,18 +1,4 @@
 NEXT STEPS, SHOULD BE ORDERED BY INCREASING DIFFICULTY
-- Add (cond ((case-1) action-1)
-            ((case-2) action-2)
-            ((case-n) action-n)
-            (else <else action>))
-
-  by transforming to
-
-      (if (case-1) action-1
-      (if (case-2) action-2
-      (if (case-n) action-n
-        <else action>)))
-
-  Note: This could probably be done quite nicely with macros.
-
 - Add character table
 - (letrec), should be straight-forward I think
 - add (let*)
