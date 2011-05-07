@@ -41,6 +41,7 @@ bool vectorp(cons_t*);
 bool charp(cons_t*);
 bool numberp(cons_t*);
 bool eqp(cons_t*, cons_t*);
+bool equalp(cons_t*, cons_t*);
 
 bool not_p(cons_t*);
 bool and_p(cons_t*);

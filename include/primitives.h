@@ -59,6 +59,7 @@ cons_t* defun_zerop(cons_t*, environment_t*);
 
 cons_t* defun_length(cons_t*, environment_t*);
 cons_t* defun_eqp(cons_t*, environment_t*);
+cons_t* defun_equalp(cons_t*, environment_t*);
 cons_t* defun_eqintp(cons_t*, environment_t*);
 
 // bool ops
@@ -70,3 +71,4 @@ cons_t* defun_xor(cons_t*, environment_t*);
 cons_t* defun_type_of(cons_t*, environment_t*);
 cons_t* defun_closure_source(cons_t*, environment_t*);
 cons_t* defun_backtrace(cons_t*, environment_t*);
+cons_t* defun_cond(cons_t*, environment_t*);

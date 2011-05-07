@@ -42,6 +42,7 @@ void load_default_defs(environment_t *e)
   e->defun("sqrt", defun_sqrt);
 
   e->defun("eq?", defun_eqp);
+  e->defun("equal?", defun_equalp);
   e->defun("=", defun_eqintp);
   e->defun("<", defun_less);
   e->defun(">", defun_greater);
@@ -544,6 +545,14 @@ cons_t* defun_eqp(cons_t* p, environment_t*)
   return boolean(eqp(car(p), cadr(p)));
 }
 
+cons_t* defun_equalp(cons_t* p, environment_t*)
+{
+  if ( length(p) != 2 )
+    throw std::runtime_error("equal? requires exactly two parameters");
+
+  return boolean(equalp(car(p), cadr(p)));
+}
+
 static float to_float(cons_t* v)
 {
   if ( !numberp(v) )
@@ -687,4 +696,46 @@ cons_t* defun_backtrace(cons_t*, environment_t*)
 cons_t* defun_type_of(cons_t* p, environment_t* e)
 {
   return symbol(to_s(type_of(car(p))).c_str(), e);
+}
+
+cons_t* defun_cond(cons_t* p, environment_t* e)
+{
+  /*
+   * Transform:
+   *
+   * (cond ((case-1) action-1)
+   *        ((case-2) action-2)
+   *        ((case-n) action-n)
+   *        (else <else action>))
+   *
+   * to
+   *
+   *  (if (case-1) action-1
+   *  (if (case-2) action-2
+   *  (if (case-n) action-n
+   *    <else action>)))
+   *
+   */
+
+  // The code below is quite messy (FIXME)
+
+  cons_t *r = list(NULL);
+  p = cdr(p);
+
+  if ( nullp(p) )
+    return r;
+
+  cons_t   *test = caar(p),
+         *action = car(cdar(p));
+
+  cons_t *otherwise = defun_cond(p, e);
+
+  if ( symbolp(test) && test->symbol->name() == "else" )
+    return append_non_mutable(r, action);
+  else 
+    return append_non_mutable(r,
+          cons(symbol("if", e),
+            cons(test,
+              cons(action,
+                cons(otherwise)))));
 }

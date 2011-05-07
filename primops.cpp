@@ -177,6 +177,13 @@ bool closurep(cons_t* p)
   return type_of(p) == CLOSURE;
 }
 
+bool equalp(cons_t* l, cons_t* r)
+{
+  // TODO: Switch equalp and eqp, and have eqp
+  //       behave as per spec, + add eqvp.
+  return eqp(l, r);
+}
+
 bool eqp(cons_t* l, cons_t* r)
 {
   if ( type_of(l) != type_of(r) )

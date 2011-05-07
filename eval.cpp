@@ -272,6 +272,11 @@ cons_t* eval(cons_t* p, environment_t* e)
         return eval(cadddr(p), e);
     }
 
+    if ( name == "cond" ) {
+      cons_t *cond = defun_cond(p, e);
+      return eval(cond, e);
+    }
+
     /*
      * Define requires one not to look up
      * the variable name, so we need to take
