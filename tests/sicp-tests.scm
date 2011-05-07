@@ -86,22 +86,22 @@
 
 (display "\nSICP SECTION 1.1.6\n")
 
-;(define (abs x)
-;  (cond ((> x 0) x)
-;        ((= x 0) 0)
-;        ((< x 0) (- x))))
-;
-;(test-eq (quote (abs  1)) 1)
-;(test-eq (quote (abs -1)) 1)
-;(test-eq (quote (abs  0)) 0)
-;
-;(define (abs x)
-;  (cond ((< x 0) (- x))
-;        (else x)))
-;
-;(test-eq (quote (abs  1)) 1)
-;(test-eq (quote (abs -1)) 1)
-;(test-eq (quote (abs  0)) 0)
+(define (abs x)
+  (cond ((> x 0) x)
+        ((= x 0) 0)
+        ((< x 0) (- x))))
+
+(test-eq (quote (abs  1)) 1)
+(test-eq (quote (abs -1)) 1)
+(test-eq (quote (abs  0)) 0)
+
+(define (abs x)
+  (cond ((< x 0) (- x))
+        (else x)))
+
+(test-eq (quote (abs  1)) 1)
+(test-eq (quote (abs -1)) 1)
+(test-eq (quote (abs  0)) 0)
 
 (define (abs x)
   (if (< x 0)
@@ -118,7 +118,6 @@
 (test-eq (quote ((lambda (x) (and (> x 5) (< x 10))) 9)) #t)
 (test-eq (quote ((lambda (x) (and (> x 5) (< x 10))) 10)) #f)
 (test-eq (quote ((lambda (x) (and (> x 5) (< x 10))) 11)) #f)
-
 
 (display "\nRESULTS\n")
 (results)
