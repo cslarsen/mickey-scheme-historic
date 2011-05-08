@@ -1,78 +1,71 @@
 R4RS, http://people.csail.mit.edu/jaffer/r3rs_toc.html
 
-Derived expression types, i.e. rewrite rules for the derived expression types.
-By application of these rules, any expr can be reduced to a semantical eqvivalent
-expression in which the only primitive expression types
-  (<literal>, <variable>, <call>, lambda, if set!) occur.
+In above doc, check out derivec expression types.
 
-(cond (<test> <sequence>)
-      <clause2> ...)
-== (if <test>
-      (begin <sequence>)
-      (cond <clause2> ...))
-
-(cond (<test>)
-      <clause2> ...)
-== (or <test> (cond <clause2> ...))
-
-(cond (<test> => <recipient>)
-      <clause2> ...)
-== (let ((test-result <test>)
-         (thunk2 (lambda () <recipient>))
-         (thunk3 (lambda () (cond <clause2> ...))))
-     (if test-result
-        ((thunk2) test-result)
-         (thunk3)))
-
-(cond (else <sequence>))
-== (begin <sequence>)
-
-(cond)
-== <some expression returning an unspecified value>
-
-Essential procedures:
-
+SUPPORTED STUFF:
 OK: quote <datum>
-NO: '<datum>
-OK: lambda <formals> <body>
-  -> usikker om <formals> KAN være empty list ()
+OK: lambda <formals> <body> -> usikker om <formals> KAN være empty list ()
 OK: if <test> <consequent> <alternate>
-NO: if <test> <consequent>
 OK: set! <variable> <expression>
   -> <expression> is evaluated, and the resulting value is stored in the location to which <variable> is bound.
     Result is unspecified.
 OK: cond
-NO: case
 OK: and
 OK: or
 OK: let
-NO: let*
-NO: letrec
 OK: begin
-NO: do
-NO: named let
-NO: delay
-NO: quasiquote
 OK: define
 OK: set!
 OK: not
 OK: boolean?
-NO: nil and t -> some implementations provide nil and t, nil og 'nil => nil, t => #t
-NO: eqv? basic design: per default, sammenlign POINTERS; men for tall, osv, sammenlign verdi
 OK: eq? -> pointer sammenligning, KAN gjerne sjekke verdi for tall, kan KUN returnere #t når eqv gjør det, så er nesten like
-NO: equal? recursively compare contents of pair, vector, string, så denne er den "ekte" equal, altså deep ==... funker ikke for list per nå, så denne må fikses, merk "may fail to terminate if its arguments are circular data structures"
-Rule of thumb: er equal hvis de printes til det samme
 OK: pair?
 OK: cons
 OK: car
-NO: set-car!
-NO: set-cdr!
-NO: caar...cdddar
-OK: cadr...cddddr
 OK: null?
 OK: list
 OK: length
-OK append
+OK: append
+OK: symbol?
+OK: number?
+OK: integer?
+OK: zero?
+OK: char?
+YES: =
+YES: <
+YES: >
+YES: + a b
+YES: + a
+YES: *
+YES: - a b
+YES: / 
+YES: string?
+YES: procedure?
+YES: apply proc args
+YES: write -> BUT is wrong, writes to stdout
+YES: display obj
+YES: newline
+YES: load
+
+UNSUPPORTED STUFF:
+
+NO: '<datum>
+NO: if <test> <consequent>
+NO: case
+NO: let*
+NO: letrec
+NO: do
+NO: named let
+NO: delay
+NO: quasiquote
+NO: nil and t -> some implementations provide nil and t, nil og 'nil => nil, t => #t
+NO: eqv? basic design: per default, sammenlign POINTERS; men for tall, osv, sammenlign verdi
+NO: equal? recursively compare contents of pair, vector, string, så denne er den "ekte" equal, altså deep ==... funker ikke for list per nå, så denne må fikses, merk "may fail to terminate if its arguments are circular data structures"
+Rule of thumb: er equal hvis de printes til det samme
+NO: set-car!
+NO: set-cdr!
+NO: caar...cdddar
+NO: cadr...cddddr
 NO: reverse
 NO: list-tail
 NO: list-ref, returns kth element of list
@@ -83,33 +76,21 @@ NO: member
 NO: assq
 NO: assv
 NO: assoc
-OK: symbol?
 NO: symbol->string
 NO: string->symbol
-OK: number?
 NO: complex?
 NO: real? (eller?)
 NO: rational?
-OK: integer?
-OK: zero?
 NO: positive?
 NO: negative?
 NO: odd?
 NO: even?
 NO: exact?
 NO: inexact?
-YES: =
-YES: <
-YES: >
 NO: <=
 NO: >=
 NO: max
 NO: min
-YES: + a b
-YES: + a
-YES: *
-YES: - a b
-YES: / 
 NO: / that gives rational number
 NO: abs
 NO: quotient
@@ -146,7 +127,6 @@ NO: exact->inexact
 NO: inexact->exact
 NO: number->string
 NO: string->number
-OK: char?
 NO: char=?
 NO: char<?
 NO: char>?
@@ -166,7 +146,6 @@ NO: char->integer
 NO: integer->char
 NO: char-upcase
 NO: char-downcase
-YES: string?
 NO: make-string k
 NO: make-string k char
 NO: string-length
@@ -197,8 +176,6 @@ NO: vector-ref
 NO: vector-set!
 NO: vector->list
 NO: list->vector
-YES: procedure?
-YES: apply proc args
 NO: apply proc arg1 ... args
 NO: map proc list
 NO: map proc list1 list2 ...
@@ -224,14 +201,10 @@ NO: read-char
 NO: char-ready?
 NO: char-ready? port
 NO: eof-object? obj
-YES: write -> BUT is wrong, writes to stdout
 NO: write obj port
-YES: display obj
 NO: display obj port
-YES: newline
 NO: newline port
 NO: write-char
 NO: write-char
-YES: load
 NO: transcript-on filename
 NO: transcript-off
