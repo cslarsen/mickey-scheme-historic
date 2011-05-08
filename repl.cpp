@@ -5,6 +5,7 @@
 # include <readline/history.h>
 #endif
 
+#include "mickey.h"
 #include "cons.h"
 #include "util.h"
 #include "repl.h"
@@ -166,6 +167,36 @@ char* readline(const char* prompt)
 }
 #endif // USE_READLINE
 
+void print_banner(environment_t* env)
+{
+  std::string readline_version =
+  #ifdef USE_READLINE
+    format("Readline %d.%d",
+      (rl_readline_version & 0xFF00) >> 8, rl_readline_version & 0x00FF);
+  #else
+    "";
+  #endif
+
+  std::string boehm_version =
+  #ifdef BOEHM_GC
+    format("Boehm-Demers-Weiser GC %d.%d", GC_VERSION_MAJOR, GC_VERSION_MINOR);
+  #else
+    "";
+  #endif
+
+  printf("%-65s _\n", "");
+  printf("%-65s  \\\n", VERSION);
+  printf("%-65s  /\\\n", __VERSION__);
+  printf("%-65s /  \\_\n", readline_version.c_str());
+  printf("%-65s       \n", boehm_version.c_str());
+
+  printf("Loaded %ld definitions\n", env->symbols.size());
+  printf("Execute (exit [ code ]) to quit\n");
+  printf("You can also (run-tests) and (list-globals)\n");
+  printf("\n");
+
+}
+
 int repl()
 {
   environment_t *env = new environment_t();
@@ -180,16 +211,7 @@ int repl()
   env->defun("run-tests", defun_run_tests);
   env->defun("list-globals", defun_list_globals);
 
-  try {
-    printf("%s\n", sprint(eval(parse("(display (version))", env))).c_str());
-  } catch ( ... ) {
-    // just in case we're working on eval
-  }
-
-  printf("Loaded %ld definitions\n", env->symbols.size());
-  printf("Execute (exit [ code ]) to quit\n");
-  printf("You can also (run-tests) and (list-globals)\n");
-  printf("\n");
+  print_banner(env);
 
   for(;;) {
     char *input;
