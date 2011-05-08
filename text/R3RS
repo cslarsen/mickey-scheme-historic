@@ -3,34 +3,32 @@ R4RS, http://people.csail.mit.edu/jaffer/r3rs_toc.html
 In above doc, check out derivec expression types.
 
 SUPPORTED STUFF:
-OK: quote <datum>
-OK: lambda <formals> <body> -> usikker om <formals> KAN være empty list ()
-OK: if <test> <consequent> <alternate>
-OK: set! <variable> <expression>
-  -> <expression> is evaluated, and the resulting value is stored in the location to which <variable> is bound.
-    Result is unspecified.
-OK: cond
-OK: and
-OK: or
-OK: let
-OK: begin
-OK: define
-OK: set!
-OK: not
-OK: boolean?
-OK: eq? -> pointer sammenligning, KAN gjerne sjekke verdi for tall, kan KUN returnere #t når eqv gjør det, så er nesten like
-OK: pair?
-OK: cons
-OK: car
-OK: null?
-OK: list
-OK: length
-OK: append
-OK: symbol?
-OK: number?
-OK: integer?
-OK: zero?
-OK: char?
+YES: quote <datum>
+YES: lambda <formals> <body> -> usikker om <formals> KAN være empty list ()
+YES: if <test> <consequent> <alternate>
+YES: set! <variable> <expression>, expr is eval'ed, result unspec
+YES: cond
+YES: and
+YES: or
+YES: let
+YES: begin
+YES: define
+YES: set!
+YES: not
+YES: boolean?
+YES: eq? -> pointer sammenligning, KAN gjerne sjekke verdi for tall, kan KUN returnere #t når eqv gjør det, så er nesten like
+YES: pair?
+YES: cons
+YES: car
+YES: null?
+YES: list
+YES: length
+YES: append
+YES: symbol?
+YES: number?
+YES: integer?
+YES: zero?
+YES: char?
 YES: =
 YES: <
 YES: >
@@ -46,11 +44,11 @@ YES: write -> BUT is wrong, writes to stdout
 YES: display obj
 YES: newline
 YES: load
+YES: if <test> <consequent>
 
 UNSUPPORTED STUFF:
 
 NO: '<datum>
-NO: if <test> <consequent>
 NO: case
 NO: let*
 NO: letrec

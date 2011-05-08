@@ -266,10 +266,16 @@ cons_t* eval(cons_t* p, environment_t* e)
       return cadr(p);
 
     if ( name == "if" ) {
-      if ( bool_true(eval(cadr(p), e)) )
+      /*
+       * Handle both (if <test> <true-action> <false-action>) [1]
+       * and (if <test> <true-action>)                        [2]
+       */
+      if ( bool_true(eval(cadr(p), e)) ) // cases [1, 2]
         return eval(caddr(p), e);
-      else
+      else if ( !nullp(cadddr(p)) )      // case [1]
         return eval(cadddr(p), e);
+      else
+        return nil();                    // case [2]
     }
 
     if ( name == "cond" ) {
