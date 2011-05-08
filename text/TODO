@@ -1,5 +1,9 @@
 NEXT STEPS, SHOULD BE ORDERED BY INCREASING DIFFICULTY
+- Add -Iinclude option
+- Add other options
+- Add tail call elimination, via longjumps (tested and should work, must have own "jumptable" for each thread, which is only 1 for our purposes)
 - Add lazy evaluation (this is actually super-simple!)
+- Add our own stop-the-world, mark-and-sweep GC (is very simple for a language like scheme!)
 - Add function "unspecified()" which returns an unspecified value.  For our purposes, it will be nil(), but
   it SHOULD have an entry point.
 - Add character table
