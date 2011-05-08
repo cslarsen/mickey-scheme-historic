@@ -34,10 +34,10 @@ mickey: $(TARGETS_O)
 
 check: all
 	echo "(run-tests)" | ./mickey
-	cd tests ; ../mickey *.scm
+	./mickey -Itests tests/*.scm
 
 check-scheme: all
-	cd tests ; ../mickey tests.scm
+	./mickey -Itests tests/tests.scm
 
 diff: all
 	# mickey and chicken should have same output
