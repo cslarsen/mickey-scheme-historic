@@ -46,12 +46,12 @@ YES: newline
 YES: load
 YES: if <test> <consequent>
 YES: number->string
+YES: let*
 
 UNSUPPORTED STUFF:
 
 NO: '<datum>
 NO: case -> trenger eqv? og memv for å få til en enkel transformasjon
-NO: let* -> hva med (let* (a 1) (b (+ a 1)) <body>) => ((lambda (a) b) <body>) 1 (+ a 1))
 NO: letrec -> tror dette går fint med eksisterende let, den er rekursiv tror jeg
 NO: named let
 NO: delay

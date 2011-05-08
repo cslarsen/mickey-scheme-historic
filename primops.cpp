@@ -104,6 +104,11 @@ cons_t* cdar(cons_t* p)
   return cdr(car(p));
 }
 
+cons_t* cadar(cons_t* p)
+{
+  return car(cdar(p));
+}
+
 type_t type_of(cons_t* p)
 {
   return p == NULL ? NIL : p->type;

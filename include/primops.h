@@ -26,6 +26,7 @@ cons_t* caar(cons_t*);
 cons_t* cadr(cons_t*);
 cons_t* cddr(cons_t*);
 cons_t* cdar(cons_t*);
+cons_t* cadar(cons_t*);
 
 bool symbolp(cons_t*);
 bool atomp(cons_t*);

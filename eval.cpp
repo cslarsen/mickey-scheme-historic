@@ -356,6 +356,9 @@ cons_t* eval(cons_t* p, environment_t* e)
     if ( name == "let" )
       return eval(defun_let(cdr(p), e), e);
 
+    if ( name == "let*" )
+      return eval(defun_letstar(cdr(p), e), e);
+
     if ( name == "eval" )
       return eval_with_trace(evlis(cdr(p), e), e);
 

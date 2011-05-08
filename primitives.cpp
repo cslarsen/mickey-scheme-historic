@@ -76,6 +76,7 @@ void load_default_defs(environment_t *e)
   e->defun("cdar", defun_cdar);
   e->defun("cddr", defun_cddr);
   e->defun("append", defun_append);
+  e->defun("reverse", defun_reverse);
 
   // predicates
   e->defun("atom?", defun_atomp);
@@ -676,6 +677,16 @@ cons_t* defun_closure_source(cons_t* p, environment_t* e)
   return source;
 }
 
+cons_t* defun_reverse(cons_t* p, environment_t*)
+{
+  cons_t *r = NULL;
+
+  for ( p = car(p); !nullp(p); p = cdr(p) )
+    r = cons(car(p), r);
+
+  return r;
+}
+
 cons_t* defun_let(cons_t* p, environment_t* e)
 {
   /*
@@ -711,6 +722,48 @@ cons_t* defun_let(cons_t* p, environment_t* e)
    */
   return cons(cons(symbol("lambda", e),
           cons(names, cons(body))), values);
+}
+
+cons_t* defun_letstar(cons_t* p, environment_t* e)
+{
+  /*
+   * Transform to nested lambdas:
+   *
+   * (let* ((name-1 value-1)
+   *        (name-2 value-2)
+   *        (name-3 value-3))
+   *        <body>)
+   * to
+   *
+   * ((lambda (name-1)
+   * ((lambda (name-2)
+   * ((lambda (name-3)
+   *   <body>) value-3))
+   *           value-2))
+   *           value-1)
+   */
+
+  cons_t  *body  = cdr(p),
+          *names = list(NULL),
+         *values = list(NULL);
+
+  for ( cons_t *n = car(p); !nullp(n); n = cdr(n) ) {
+     names = cons(caar(n), names);
+    values = cons(cadar(n), values);
+  }
+
+  // Work our way outward by constructing lambdas
+  cons_t *inner = begin(body, e);
+
+  while ( !nullp(names) && !nullp(values) ) {
+    inner = cons(cons(symbol("lambda", e),
+      cons(cons(car(names)), cons(inner))), cons(car(values)));
+
+     names = cdr(names);
+    values = cdr(values);
+  }
+
+  return inner;
 }
 
 cons_t* defun_backtrace(cons_t*, environment_t*)

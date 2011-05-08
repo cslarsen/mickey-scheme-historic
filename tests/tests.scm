@@ -46,6 +46,12 @@
 (test-eq (quote (if (> 3 2) 11)) 11)
 (test-eq (quote (if (< 1 2) 11)) 11)
 
+;; (reverse ...)
+(test-eq (quote (reverse (list 1 2 3 4))) (list 4 3 2 1))
+(test-eq (quote (reverse (list 1 2 3))) (list 3 2 1))
+(test-eq (quote (reverse (list 1 2))) (list 2 1))
+(test-eq (quote (reverse (list 1))) (list 1))
+
 (display "\nResults\n")
 (results)
 
