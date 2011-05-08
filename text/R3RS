@@ -47,6 +47,9 @@ YES: load
 YES: if <test> <consequent>
 YES: number->string
 YES: let*
+YES: set-car!
+YES: set-cdr!
+YES: reverse (but does it work for lists of lists?, e.g (reverse (list 1 2 (list 3 4)))
 
 UNSUPPORTED STUFF:
 
@@ -58,13 +61,9 @@ NO: delay
 NO: quasiquote
 NO: nil and t -> some implementations provide nil and t, nil og 'nil => nil, t => #t
 NO: eqv? basic design: per default, sammenlign POINTERS; men for tall, osv, sammenlign verdi
-NO: equal? recursively compare contents of pair, vector, string, så denne er den "ekte" equal, altså deep ==... funker ikke for list per nå, så denne må fikses, merk "may fail to terminate if its arguments are circular data structures"
-Rule of thumb: er equal hvis de printes til det samme
-NO: set-car!
-NO: set-cdr!
+NO: equal? recursively compare contants of pair, vector, osv.. så denne er "ekte": Rule of thumb: er equal hvis de printes til det samme
 NO: caar...cdddar
 NO: cadr...cddddr
-NO: reverse
 NO: list-tail
 NO: list-ref, returns kth element of list
 NO: last-pair

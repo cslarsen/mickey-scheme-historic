@@ -829,3 +829,23 @@ cons_t* defun_number_to_string(cons_t* p, environment_t* e)
 
   return defun_to_string(p, e);
 }
+
+cons_t* defun_set_car(cons_t* p, environment_t* e)
+{
+  if ( !symbolp(car(p)) )
+    throw std::runtime_error("Not a symbol: " + sprint(car(p)));
+
+  std::string name = car(p)->symbol->name();
+  e->lookup(name)->car = cadr(p);
+  return nil();
+}
+
+cons_t* defun_set_cdr(cons_t* p, environment_t* e)
+{
+  if ( !symbolp(car(p)) )
+    throw std::runtime_error("Not a symbol: " + sprint(car(p)));
+
+  std::string name = car(p)->symbol->name();
+  e->lookup(name)->cdr = cadr(p);
+  return nil();
+}
