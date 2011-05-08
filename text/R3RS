@@ -45,14 +45,14 @@ YES: display obj
 YES: newline
 YES: load
 YES: if <test> <consequent>
+YES: number->string
 
 UNSUPPORTED STUFF:
 
 NO: '<datum>
-NO: case
-NO: let*
-NO: letrec
-NO: do
+NO: case -> trenger eqv? og memv for å få til en enkel transformasjon
+NO: let* -> hva med (let* (a 1) (b (+ a 1)) <body>) => ((lambda (a) b) <body>) 1 (+ a 1))
+NO: letrec -> tror dette går fint med eksisterende let, den er rekursiv tror jeg
 NO: named let
 NO: delay
 NO: quasiquote
@@ -123,7 +123,6 @@ NO: magnitude
 NO: angle
 NO: exact->inexact
 NO: inexact->exact
-NO: number->string
 NO: string->number
 NO: char=?
 NO: char<?

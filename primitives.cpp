@@ -42,6 +42,7 @@ void load_default_defs(environment_t *e)
   e->defun("write", defun_print);
   e->defun("string-append", defun_strcat);
   e->defun("->string", defun_to_string);
+  e->defun("number->string", defun_number_to_string);
 
   e->defun("-", defun_sub);
   e->defun("+", defun_add);
@@ -763,4 +764,15 @@ cons_t* defun_cond(cons_t* p, environment_t* e)
             cons(test,
               cons(action,
                 cons(otherwise)))));
+}
+
+cons_t* defun_number_to_string(cons_t* p, environment_t* e)
+{
+  if ( !numberp(car(p)) )
+    throw std::runtime_error("Not a number: " + sprint(p));
+
+  if ( length(p) != 1 )
+    throw std::runtime_error("Bad argument count");
+
+  return defun_to_string(p, e);
 }

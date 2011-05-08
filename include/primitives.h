@@ -72,3 +72,4 @@ cons_t* defun_type_of(cons_t*, environment_t*);
 cons_t* defun_closure_source(cons_t*, environment_t*);
 cons_t* defun_backtrace(cons_t*, environment_t*);
 cons_t* defun_cond(cons_t*, environment_t*);
+cons_t* defun_number_to_string(cons_t*, environment_t*);
