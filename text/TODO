@@ -1,6 +1,4 @@
 NEXT STEPS, SHOULD BE ORDERED BY INCREASING DIFFICULTY
-- Add -Iinclude option
-- Add other options
 - Add tail call elimination, via longjumps (tested and should work, must have own "jumptable" for each thread, which is only 1 for our purposes)
 - Add lazy evaluation (this is actually super-simple!)
 - Add our own stop-the-world, mark-and-sweep GC (is very simple for a language like scheme!)
@@ -12,6 +10,7 @@ NEXT STEPS, SHOULD BE ORDERED BY INCREASING DIFFICULTY
 - other let forms? -> flet, fluid-let? named let
 - routine to detect tail calls
 - routine to detect if we can eliminate the tail call
+- Refactor the code, it's A MESS at the moment...
 ....
 
 NORMAL
