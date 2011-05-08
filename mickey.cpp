@@ -9,6 +9,7 @@
  *                                                        /  \\
  */
 
+#include "options.h"
 #include "repl.h"
 #include "parser.h"
 #include "eval.h"
@@ -17,8 +18,36 @@
 #include "heap.h"
 #include "backtrace.h"
 
+void execute(const char* file)
+{
+  try {
+    environment_t *env = new environment_t();
+    load_default_defs(env);
+
+    reset_for_programs(&global_opts);
+    global_opts.current_filename = file;
+
+    defun_load(cons(string(file)), env);
+  } catch (const std::exception& e) {
+    const char* file = global_opts.current_filename;
+    bool    has_file = file && strcmp(file, "-");
+
+    fprintf(stderr, "Error%s%s: %s\n",
+      has_file? " in " : "",
+      has_file? file : "",
+      e.what());
+
+    backtrace();
+    backtrace_clear();
+    exit(1);
+  }
+}
+
 int main(int argc, char** argv)
 {
+  bool rest_is_files = false; // used with option `--`
+  set_default(&global_opts);
+
   #ifdef BOEHM_GC
   GC_INIT();
   #endif
@@ -26,19 +55,15 @@ int main(int argc, char** argv)
   if ( argc == 1 )
     return repl();
 
-  for ( int n=1; n<argc; ++n )
-    if ( argv[n][0] != '-' ) {
-      try {
-        environment_t *env = new environment_t();
-        load_default_defs(env);
-        defun_load(cons(string(argv[n])), env);
-      } catch (const std::exception& e) {
-        fprintf(stderr, "Error: %s\n", e.what());
-        backtrace();
-        backtrace_clear();
-        return 1;
-      }
-    }
+  for ( int n=1; n<argc; ++n ) {
+    if ( !rest_is_files && argv[n][0] == '-' ) {
+      if ( argv[n][1] == '\0' )
+        execute("-"); // stdin
+      else
+        rest_is_files |= parse_option(argv[n], &global_opts);
+    } else
+      execute(argv[n]); // file
+  }
 
   return 0;
 }

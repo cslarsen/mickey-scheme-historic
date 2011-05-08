@@ -1,4 +1,5 @@
 #include <math.h>
+#include <sys/stat.h>
 #include <stdexcept>
 #include <vector>
 
@@ -6,6 +7,8 @@
 # include <readline/readline.h>
 #endif
 
+#include "mickey.h"
+#include "options.h"
 #include "heap.h"
 #include "cons.h"
 #include "eval.h"
@@ -19,6 +22,12 @@
 
 // TODO: Fix this, had to do it because of circular cons/util deps
 extern std::string to_s(cons_t*);
+
+static bool file_exists(const char* s)
+{
+  struct stat st;
+  return !stat(s, &st)? S_ISREG(st.st_mode) : false;
+}
 
 closure_t* lookup_closure(symbol_t *s, environment_t *env)
 {
@@ -328,10 +337,26 @@ cons_t* defun_load(cons_t *filename, environment_t *env)
   if ( !stringp(car(filename)) )
     throw std::runtime_error("First argument to (load) must be a string");
 
-  //program_t *p = parse(std::string("(begin " + slurp(open_file(car(filename)->string)) + ")").c_str(), env);
-  program_t *p = parse(slurp(open_file(car(filename)->string)).c_str(), env);
+  
+  program_t *p;
 
-  // When reading from disk, we implicitly wrap it all in (begin ...)
+  // read from stdin?
+  if ( !strcmp(car(filename)->string, "-") )
+    p = parse(slurp(stdin).c_str(), env);
+  else {
+    // first try filename without include path
+    std::string path = car(filename)->string;
+
+    // no cigar? try include path
+    if ( !file_exists(path.c_str()) )
+      path = format("%s/%s",
+               global_opts.include_path,
+               car(filename)->string);
+
+    p = parse(slurp(open_file(path.c_str())).c_str(), env);
+  }
+
+  // When reading from file, we implicitly wrap it all in (begin ...)
   p->root = begin(p->root, p->globals); 
 
   eval(p);
@@ -517,7 +542,7 @@ cons_t* defun_booleanp(cons_t* p, environment_t* e)
 
 cons_t* defun_version(cons_t*, environment_t*)
 {
-  cons_t *v = list(string("Mickey Scheme (C) 2011 Christian Stigen Larsen\n"));
+  cons_t *v = list(string(format("%s\n", VERSION).c_str()));
 
   #ifdef USE_READLINE
   v = append(v, cons(string(format("Using Readline %d.%d\n",

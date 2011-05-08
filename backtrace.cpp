@@ -31,7 +31,7 @@ void backtrace_clear()
 
 void backtrace()
 {
-  if ( !trace_stack )
+  if ( !trace_stack || is.empty() )
     return;
 
   std::stack<cons_t*> p = is;
