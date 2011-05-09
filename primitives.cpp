@@ -52,7 +52,6 @@ void load_default_defs(environment_t *e)
   e->defun("*", defun_mul);
   e->defun("/", defun_divf);
   e->defun("//", defun_div);
-  e->defun("sqrt", defun_sqrt);
 
   e->defun("eq?", defun_eqp);
   e->defun("equal?", defun_equalp);
@@ -629,16 +628,6 @@ cons_t* defun_or(cons_t* p, environment_t*)
 cons_t* defun_xor(cons_t* p, environment_t*)
 {
   return boolean(xor_p(p));
-}
-
-cons_t* defun_sqrt(cons_t* p, environment_t*)
-{
-  // TODO: If number < 0, return complex root (??)
-  switch ( type_of(car(p)) ) {
-  default: assert_number(p); return nil(); break;
-  case INTEGER: return decimal(sqrt(car(p)->integer));
-  case DECIMAL: return decimal(sqrt(car(p)->decimal));
-  }
 }
 
 cons_t* defun_less(cons_t* p, environment_t*)
