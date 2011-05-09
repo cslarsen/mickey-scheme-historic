@@ -110,12 +110,6 @@ static void assert_length(const cons_t* p, const size_t& length_)
       "Function expects exactly %lu parameters; got %lu", length_, plen));
 }
 
-static void assert_integer(const cons_t* p)
-{
-  if ( !integerp(p) )
-    throw std::runtime_error("Expected integer argument, got: " + sprint(p));
-}
-
 static void assert_number(const cons_t* p)
 {
   if ( !numberp(p) )
@@ -255,8 +249,7 @@ cons_t* defun_sub(cons_t *p, environment_t* env)
 
 cons_t* defun_divf(cons_t *p, environment_t *e)
 {
-  if ( length(p) != 2 )
-    throw std::runtime_error("div requires exactly two parameters");
+  assert_length(p, 2);
 
   cons_t *a = car(p);
   cons_t *b = cadr(p);
@@ -274,14 +267,13 @@ cons_t* defun_divf(cons_t *p, environment_t *e)
 
 cons_t* defun_div(cons_t *p, environment_t *e)
 {
-  if ( length(p) != 2 )
-    throw std::runtime_error("div requires exactly two parameters");
+  assert_length(p, 2);
 
   cons_t *a = car(p);
   cons_t *b = cadr(p);
 
-  if ( !numberp(a) || !numberp(b) )
-    throw std::runtime_error("div only works on numbers");
+  assert_number(a);
+  assert_number(b);
 
   if ( integerp(a) && integerp(b) ) {
     if ( b->integer == 0 )
@@ -604,48 +596,40 @@ cons_t* defun_length(cons_t* p, environment_t*)
 
 cons_t* defun_eqp(cons_t* p, environment_t*)
 {
-  if ( length(p) != 2 )
-    throw std::runtime_error("eq? requires exactly two parameters");
-
+  assert_length(p, 2);
   return boolean(eqp(car(p), cadr(p)));
 }
 
 cons_t* defun_equalp(cons_t* p, environment_t*)
 {
-  if ( length(p) != 2 )
-    throw std::runtime_error("equal? requires exactly two parameters");
-
+  assert_length(p, 2);
   return boolean(equalp(car(p), cadr(p)));
 }
 
 static float to_float(cons_t* v)
 {
-  if ( !numberp(v) )
-    throw std::runtime_error("to_float only handles numbers");
-
   // TODO: Could handle strings via atof()
-
+  assert_number(v);
   return type_of(v)==DECIMAL ? v->decimal : (float) v->integer;
 }
 
 cons_t* defun_eqintp(cons_t* p, environment_t*)
 {
-  cons_t *l = car(p), *r = cadr(p);
+  assert_length(p, 2);
+  assert_number(car(p));
+  assert_number(cadr(p));
 
-  if ( length(p) != 2 )
-    throw std::runtime_error("= requires exactly two parameters: " + sprint(p));
+  cons_t *l = car(p),
+         *r = cadr(p);
 
-  if ( !numberp(l) || !numberp(r) )
-    throw std::runtime_error("= only works on numbers: " + sprint(p));
-
-  if ( decimalp(l) || decimalp(r) )
-    return boolean(to_float(l) == to_float(r));
-
-  return boolean(l->integer == r->integer);
+  return (decimalp(l) || decimalp(r)) ?
+    boolean(to_float(l) == to_float(r)) :
+    boolean(l->integer == r->integer);
 }
 
 cons_t* defun_not(cons_t* p, environment_t*)
 {
+  assert_length(p, 1);
   return boolean(not_p(p));
 }
 
@@ -666,8 +650,9 @@ cons_t* defun_xor(cons_t* p, environment_t*)
 
 cons_t* defun_sqrt(cons_t* p, environment_t*)
 {
+  // TODO: If number < 0, return complex root (??)
   switch ( type_of(car(p)) ) {
-  default: throw std::runtime_error("sqrt requires a number");
+  default: assert_number(p); return nil(); break;
   case INTEGER: return decimal(sqrt(car(p)->integer));
   case DECIMAL: return decimal(sqrt(car(p)->decimal));
   }
@@ -675,11 +660,9 @@ cons_t* defun_sqrt(cons_t* p, environment_t*)
 
 cons_t* defun_less(cons_t* p, environment_t*)
 {
-  if ( length(p) != 2 )
-    throw std::runtime_error("< requires exactly two parameters");
-
-  if ( !numberp(car(p)) || !numberp(cadr(p)) )
-    throw std::runtime_error("< requires two numbers: " + sprint(p));
+  assert_length(p, 2);
+  assert_number(car(p));
+  assert_number(cadr(p));
 
   float x = (type_of(car(p)) == INTEGER)? car(p)->integer : car(p)->decimal;
   float y = (type_of(cadr(p)) == INTEGER)? cadr(p)->integer : cadr(p)->decimal;
@@ -689,11 +672,9 @@ cons_t* defun_less(cons_t* p, environment_t*)
 
 cons_t* defun_greater(cons_t* p, environment_t*)
 {
-  if ( length(p) != 2 )
-    throw std::runtime_error("> requires exactly two parameters");
-
-  if ( !numberp(car(p)) || !numberp(cadr(p)) )
-    throw std::runtime_error("> requires two numbers: " + sprint(p));
+  assert_length(p, 2);
+  assert_number(car(p));
+  assert_number(cadr(p));
 
   float x = (type_of(car(p)) == INTEGER)? car(p)->integer : car(p)->decimal;
   float y = (type_of(cadr(p)) == INTEGER)? cadr(p)->integer : cadr(p)->decimal;
@@ -859,12 +840,8 @@ cons_t* defun_cond(cons_t* p, environment_t* e)
 
 cons_t* defun_number_to_string(cons_t* p, environment_t* e)
 {
-  if ( !numberp(car(p)) )
-    throw std::runtime_error("Not a number: " + sprint(p));
-
-  if ( length(p) != 1 )
-    throw std::runtime_error("Bad argument count");
-
+  assert_number(car(p));
+  assert_length(p, 1);
   return defun_to_string(p, e);
 }
 

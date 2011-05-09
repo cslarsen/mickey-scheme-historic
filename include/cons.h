@@ -92,6 +92,10 @@ public:
 
 const symbol_t* create_symbol(const std::string& s);
 
+/*
+ * TODO: To cons_t, Add `marked` (for GC) and `mutable/immutable` (per spec)
+ */
+
 struct cons_t
  #ifdef BOEHM_GC
   : public gc
