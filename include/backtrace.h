@@ -5,3 +5,5 @@ void backtrace_push(cons_t* expr);
 void backtrace_pop();
 void backtrace_clear();
 void backtrace();
+bool backtracing();
+cons_t* backtrace_top();

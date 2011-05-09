@@ -238,7 +238,7 @@ int repl()
         printf("%s\n", s.c_str());
     }
     catch(const std::exception& e) {
-      fprintf(stderr, "Error: %s\n", e.what());
+      fprintf(stderr, "%s\n", e.what());
       backtrace();
       backtrace_clear();
     }

@@ -101,19 +101,31 @@ void load_default_defs(environment_t *e)
   e->defun("abs", defun_abs);
 }
 
-static void assert_length(const cons_t* p, const size_t& length_)
+static void assert_length(const cons_t* p, const size_t& e)
 {
-  const size_t plen = length(const_cast<cons_t*>(p));
+  const size_t l = length(const_cast<cons_t*>(p));
 
-  if ( plen != length_ )
+  if ( e != l )
     throw std::runtime_error(format(
-      "Function expects exactly %lu parameters; got %lu", length_, plen));
+      "Function expects exactly %lu parameters but got %lu: `%s´",
+        e, l, sprint(p).c_str()));
+}
+
+static void assert_type(enum type_t type, cons_t* p)
+{
+  if ( type_of(p) != type )
+    throw std::runtime_error(format("Function expected a %s but got a %s: `%s´",
+      to_s(type).c_str(),
+      to_s(type_of(p)).c_str(),
+      sprint(p).c_str()));
 }
 
 static void assert_number(const cons_t* p)
 {
   if ( !numberp(p) )
-    throw std::runtime_error("Expected number argument, got: " + sprint(p));
+    throw std::runtime_error(format("Function expected a number but got a %s: `%s´",
+      to_s(type_of(p)).c_str(),
+      sprint(p).c_str()));
 }
 
 cons_t* defun_abs(cons_t* p, environment_t*)
@@ -342,15 +354,10 @@ cons_t* defun_list(cons_t* p, environment_t *env)
 
 cons_t* defun_define(cons_t *p, environment_t *env)
 {
-  /*
-   * Format: (define <name> <body>)
-   */
-
+  // (define <name> <body>)
+  assert_type(SYMBOL, car(p));
   cons_t *name = car(p);
   cons_t *body = cadr(p);
-
-  if ( !symbolp(name) )
-    throw std::runtime_error("First argument to (define) must be a symbol");
 
   if ( name->symbol->name().empty() )
     throw std::runtime_error("Cannot define with empty variable name"); // TODO: Even possible?
@@ -366,9 +373,7 @@ static cons_t* begin(cons_t* p, environment_t* e)
 
 cons_t* defun_load(cons_t *filename, environment_t *env)
 {
-  if ( !stringp(car(filename)) )
-    throw std::runtime_error("First argument to (load) must be a string");
-
+  assert_type(STRING, car(filename));
   
   program_t *p;
 
@@ -684,8 +689,7 @@ cons_t* defun_greater(cons_t* p, environment_t*)
 
 cons_t* defun_closure_source(cons_t* p, environment_t* e)
 {
-  if ( !closurep(car(p)) )
-    throw std::runtime_error("Not a closure");
+  assert_type(CLOSURE, car(p));
 
   closure_t *c = car(p)->closure;
 
@@ -847,9 +851,7 @@ cons_t* defun_number_to_string(cons_t* p, environment_t* e)
 
 cons_t* defun_set_car(cons_t* p, environment_t* e)
 {
-  if ( !symbolp(car(p)) )
-    throw std::runtime_error("Not a symbol: " + sprint(car(p)));
-
+  assert_type(SYMBOL, car(p));
   std::string name = car(p)->symbol->name();
   e->lookup(name)->car = cadr(p);
   return nil();
@@ -857,9 +859,7 @@ cons_t* defun_set_car(cons_t* p, environment_t* e)
 
 cons_t* defun_set_cdr(cons_t* p, environment_t* e)
 {
-  if ( !symbolp(car(p)) )
-    throw std::runtime_error("Not a symbol: " + sprint(car(p)));
-
+  assert_type(SYMBOL, car(p));
   std::string name = car(p)->symbol->name();
   e->lookup(name)->cdr = cadr(p);
   return nil();

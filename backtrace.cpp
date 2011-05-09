@@ -42,3 +42,13 @@ void backtrace()
     p.pop();
   }
 }
+
+bool backtracing()
+{
+  return trace_stack;
+}
+
+cons_t* backtrace_top()
+{
+  return is.empty()? nil() : is.top();
+}
