@@ -52,6 +52,20 @@
 (test-eq (quote (reverse (list 1 2))) (list 2 1))
 (test-eq (quote (reverse (list 1))) (list 1))
 
+;; (abs <int>)
+(test-eq (quote (abs -2)) 2)
+(test-eq (quote (abs -1)) 1)
+(test-eq (quote (abs 0)) 0)
+(test-eq (quote (abs 1)) 1)
+(test-eq (quote (abs 2)) 2)
+;; (abs <float>)
+(test-eq (quote (abs -2.1)) 2.1)
+(test-eq (quote (abs -1.1)) 1.1)
+(test-eq (quote (abs 0.1)) 0.1)
+(test-eq (quote (abs -0.1)) 0.1)
+(test-eq (quote (abs 1.1)) 1.1)
+(test-eq (quote (abs 2.1)) 2.1)
+
 (display "\nResults\n")
 (results)
 

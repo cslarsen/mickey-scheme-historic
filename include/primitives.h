@@ -78,4 +78,4 @@ cons_t* defun_reverse(cons_t*, environment_t*);
 cons_t* defun_set_car(cons_t*, environment_t*);
 cons_t* defun_set_cdr(cons_t*, environment_t*);
 cons_t* defun_file_existsp(cons_t*, environment_t*);
-
+cons_t* defun_abs(cons_t* p, environment_t*);

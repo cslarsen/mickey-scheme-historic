@@ -1,7 +1,7 @@
 #include "print.h"
 #include "util.h"
 
-std::string sprint(cons_t* p, std::string& s, bool escape)
+std::string sprint(const cons_t* p, std::string& s, bool escape)
 {
   switch ( type_of(p) ) {
   case NIL:          return s;
@@ -28,24 +28,24 @@ std::string sprint(cons_t* p, std::string& s, bool escape)
   return s;
 }
 
-std::string sprint(cons_t* p)
+std::string sprint(const cons_t* p)
 {
   std::string s;
   return sprint(listp(p) ? cons(p) : p, s, true);
 }
 
-std::string sprint(program_t* p)
+std::string sprint(const program_t* p)
 {
   return sprint(p->root);
 }
 
-std::string print(cons_t* p)
+std::string print(const cons_t* p)
 {
   std::string s;
   return sprint(list(p) ? cons(p) : p, s, false);
 }
 
-std::string print(program_t* p)
+std::string print(const program_t* p)
 {
   return print(p->root);
 }

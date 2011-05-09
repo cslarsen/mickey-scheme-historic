@@ -98,6 +98,42 @@ void load_default_defs(environment_t *e)
   e->defun("and", defun_and);
   e->defun("or", defun_or);
   e->defun("xor", defun_xor);
+  e->defun("abs", defun_abs);
+}
+
+static void assert_length(const cons_t* p, const size_t& length_)
+{
+  const size_t plen = length(const_cast<cons_t*>(p));
+
+  if ( plen != length_ )
+    throw std::runtime_error(format(
+      "Function expects exactly %lu parameters; got %lu", length_, plen));
+}
+
+static void assert_integer(const cons_t* p)
+{
+  if ( !integerp(p) )
+    throw std::runtime_error("Expected integer argument, got: " + sprint(p));
+}
+
+static void assert_number(const cons_t* p)
+{
+  if ( !numberp(p) )
+    throw std::runtime_error("Expected number argument, got: " + sprint(p));
+}
+
+cons_t* defun_abs(cons_t* p, environment_t*)
+{
+  assert_length(p, 1);
+  assert_number(car(p));
+
+  if ( decimalp(car(p)) ) {
+    float n = car(p)->decimal;
+    return decimal(n<0.0? -n : n);
+  }
+
+  int n = car(p)->integer;
+  return integer(n<0? -n : n);
 }
 
 cons_t* defun_print(cons_t *p, environment_t* env)

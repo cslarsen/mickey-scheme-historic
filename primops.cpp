@@ -2,16 +2,16 @@
 #include "primops.h"
 #include "util.h"
 
-cons_t* cons(cons_t* head, cons_t* tail)
+cons_t* cons(const cons_t* head, const cons_t* tail)
 {
   cons_t *p = new cons_t();
   p->type = PAIR;
-  p->car = head;
-  p->cdr = tail;
+  p->car = const_cast<cons_t*>(head);
+  p->cdr = const_cast<cons_t*>(tail);
   return p;
 }
 
-cons_t* list(cons_t* head, cons_t* tail)
+cons_t* list(const cons_t* head, const cons_t* tail)
 {
   if ( tail == NULL )
     return cons(head, tail);
@@ -74,122 +74,122 @@ cons_t* string(const char* s)
   return p;
 }
 
-cons_t* car(cons_t* p)
+cons_t* car(const cons_t* p)
 {
   return ( p != NULL && p->type == PAIR ) ? p->car : NULL;
 }
 
-cons_t* cdr(cons_t* p)
+cons_t* cdr(const cons_t* p)
 {
   return ( p != NULL && p->type == PAIR ) ? p->cdr : NULL;
 }
 
-cons_t* caar(cons_t* p)
+cons_t* caar(const cons_t* p)
 {
   return car(car(p));
 }
 
-cons_t* cadr(cons_t* p)
+cons_t* cadr(const cons_t* p)
 {
   return car(cdr(p));
 }
 
-cons_t* cddr(cons_t* p)
+cons_t* cddr(const cons_t* p)
 {
   return cdr(cdr(p));
 }
 
-cons_t* cdar(cons_t* p)
+cons_t* cdar(const cons_t* p)
 {
   return cdr(car(p));
 }
 
-cons_t* cadar(cons_t* p)
+cons_t* cadar(const cons_t* p)
 {
   return car(cdar(p));
 }
 
-type_t type_of(cons_t* p)
+type_t type_of(const cons_t* p)
 {
   return p == NULL ? NIL : p->type;
 }
 
-bool symbolp(cons_t* p)
+bool symbolp(const cons_t* p)
 {
   return type_of(p) == SYMBOL;
 }
 
-bool atomp(cons_t* p)
+bool atomp(const cons_t* p)
 {
   return !pairp(p); // Queinnec, p. 4
 }
 
-bool integerp(cons_t* p)
+bool integerp(const cons_t* p)
 {
   return type_of(p) == INTEGER;
 }
 
-bool decimalp(cons_t* p)
+bool decimalp(const cons_t* p)
 {
   return type_of(p) == DECIMAL;
 }
 
-bool vectorp(cons_t* p)
+bool vectorp(const cons_t* p)
 {
   return type_of(p) == VECTOR;
 }
 
-bool charp(cons_t* p)
+bool charp(const cons_t* p)
 {
   return type_of(p) == CHAR;
 }
 
-bool booleanp(cons_t* p)
+bool booleanp(const cons_t* p)
 {
   return type_of(p) == BOOLEAN;
 }
 
-bool numberp(cons_t* p)
+bool numberp(const cons_t* p)
 {
   return integerp(p) || decimalp(p);
 }
 
-bool stringp(cons_t* p)
+bool stringp(const cons_t* p)
 {
   return type_of(p) == STRING;
 }
 
-bool nullp(cons_t* p)
+bool nullp(const cons_t* p)
 {
   return type_of(p) == NIL
     || (type_of(p)==PAIR && type_of(car(p))==NIL && type_of(cdr(p))==NIL);
 }
 
-bool pairp(cons_t* p)
+bool pairp(const cons_t* p)
 {
   // (1) A pair is a list, (2) except for the empty list '()
   return listp(p) &&                   // (1)
     !(nullp(car(p)) && nullp(cdr(p))); // (2)
 }
 
-bool listp(cons_t* p)
+bool listp(const cons_t* p)
 {
   return type_of(p) == PAIR;
 }
 
-bool closurep(cons_t* p)
+bool closurep(const cons_t* p)
 {
   return type_of(p) == CLOSURE;
 }
 
-bool equalp(cons_t* l, cons_t* r)
+bool equalp(const cons_t* l, const cons_t* r)
 {
   // TODO: Switch equalp and eqp, and have eqp
   //       behave as per spec, + add eqvp.
   return eqp(l, r);
 }
 
-bool eqp(cons_t* l, cons_t* r)
+bool eqp(const cons_t* l, const cons_t* r)
 {
   if ( type_of(l) != type_of(r) )
     return false;
@@ -256,36 +256,37 @@ cons_t* closure(lambda_t f, environment_t* e)
   return p;
 }
 
-size_t length(cons_t *p)
+size_t length(const cons_t *p)
 {
   size_t n = 0;
 
   while ( !nullp(p) ) {
-    ++n; p = cdr(p);
+    p = cdr(p);
+    ++n;
   }
 
   return n;
 }
 
-bool not_p(cons_t* p)
+bool not_p(const cons_t* p)
 {
   // all other types + values are considered true in scheme
   return booleanp(car(p)) && car(p)->boolean == false;
 }
 
-bool and_p(cons_t* p)
+bool and_p(const cons_t* p)
 {
   // implement in terms of not_p
   return !not_p(p) && !not_p(cdr(p));
 }
 
-bool or_p(cons_t* p)
+bool or_p(const cons_t* p)
 {
   // implement in terms of not_p
   return !not_p(p) || !not_p(cdr(p));
 }
 
-bool xor_p(cons_t* p)
+bool xor_p(const cons_t* p)
 {
   return !not_p(p) ^ !not_p(cdr(p));
 }
