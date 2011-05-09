@@ -321,7 +321,7 @@ vector-length
 vector-map
 vector-ref
 vector-set!
-vector?
+* vector?
 with-exception-handler
 with-input-from-file
 with-output-to-file

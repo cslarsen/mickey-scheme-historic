@@ -26,6 +26,61 @@
 // TODO: Fix this, had to do it because of circular cons/util deps
 extern std::string to_s(cons_t*);
 
+named_function_t exports_base[] = {
+  {"*", proc_mul},
+  {"+", proc_add},
+  {"-", proc_sub},
+  {"->string", proc_to_string},
+  {"/", proc_divf},
+  {"//", proc_div},
+  {"<", proc_less},
+  {"=", proc_eqintp},
+  {">", proc_greater},
+  {"abs", proc_abs},
+  {"and", proc_and},
+  {"append", proc_append},
+  {"atom?", proc_atomp},
+  {"backtrace", proc_backtrace},
+  {"boolean?", proc_booleanp},
+  {"caar", proc_caar},
+  {"cadr", proc_cadr},
+  {"car", proc_car},
+  {"cdar", proc_cdar},
+  {"cddr", proc_cddr},
+  {"cdr", proc_cdr},
+  {"char?", proc_charp},
+  {"closure-source", proc_closure_source},
+  {"cons", proc_cons},
+  {"debug", proc_debug},
+  {"display", proc_print},
+  {"eq?", proc_eqp},
+  {"equal?", proc_equalp},
+  {"exit", proc_exit},
+  {"file-exists?", proc_file_existsp},
+  {"float?", proc_decimalp},
+  {"integer?", proc_integerp},
+  {"length", proc_length},
+  {"list", proc_list},
+  {"list?", proc_listp},
+  {"load", proc_load},
+  {"newline", proc_newline},
+  {"not", proc_not},
+  {"null?", proc_nullp},
+  {"number->string", proc_number_to_string},
+  {"or", proc_or},
+  {"pair?", proc_pairp},
+  {"procedure?", proc_procedurep},
+  {"reverse", proc_reverse},
+  {"string-append", proc_strcat},
+  {"symbol?", proc_symbolp},
+  {"type-of", proc_type_of},
+  {"vector?", proc_vectorp},
+  {"version", proc_version},
+  {"write", proc_print},
+  {"xor", proc_xor},
+  {"zero?", proc_zerop},
+  {NULL, NULL}};
+
 static bool file_exists(const char* s)
 {
   struct stat st;
@@ -40,72 +95,11 @@ closure_t* lookup_closure(symbol_t *s, environment_t *env)
 
 void load_default_defs(environment_t *e)
 {
-  e->defun("display", defun_print);
-  e->defun("newline", defun_newline);
-  e->defun("write", defun_print);
-  e->defun("string-append", defun_strcat);
-  e->defun("->string", defun_to_string);
-  e->defun("number->string", defun_number_to_string);
-
-  e->defun("-", defun_sub);
-  e->defun("+", defun_add);
-  e->defun("*", defun_mul);
-  e->defun("/", defun_divf);
-  e->defun("//", defun_div);
-
-  e->defun("eq?", defun_eqp);
-  e->defun("equal?", defun_equalp);
-  e->defun("=", defun_eqintp);
-  e->defun("<", defun_less);
-  e->defun(">", defun_greater);
-
-  e->defun("load", defun_load);
-  e->defun("debug", defun_debug);
-  e->defun("exit", defun_exit);
-  e->defun("version", defun_version);
-  e->defun("length", defun_length);
-  e->defun("closure-source", defun_closure_source);
-  e->defun("backtrace", defun_backtrace);
-  e->defun("type-of", defun_type_of);
-
-  e->defun("file-exists?", defun_file_existsp);
-
-  // cons and friends
-  e->defun("list", defun_list);
-  e->defun("cons", defun_cons);
-  e->defun("car", defun_car);
-  e->defun("cdr", defun_cdr);
-  e->defun("caar", defun_caar);
-  e->defun("cadr", defun_cadr);
-  e->defun("cdar", defun_cdar);
-  e->defun("cddr", defun_cddr);
-  e->defun("append", defun_append);
-  e->defun("reverse", defun_reverse);
-
-  // predicates
-  e->defun("atom?", defun_atomp);
-  e->defun("symbol?", defun_symbolp);
-  e->defun("integer?", defun_integerp);
-  e->defun("float?", defun_decimalp);
-  e->defun("null?", defun_nullp);
-  e->defun("pair?", defun_pairp);
-  e->defun("list?", defun_listp);
-  e->defun("procedure?", defun_procedurep);
-  e->defun("char?", defun_charp);
-  e->defun("boolean?", defun_booleanp);
-  e->defun("vector?", defun_vectorp);
-  e->defun("zero?", defun_zerop);
-
-  e->defun("not", defun_not);
-  e->defun("and", defun_and);
-  e->defun("or", defun_or);
-  e->defun("xor", defun_xor);
-  e->defun("abs", defun_abs);
-
+  import(e, exports_base);
   import(e, exports_math);
 }
 
-cons_t* defun_abs(cons_t* p, environment_t*)
+cons_t* proc_abs(cons_t* p, environment_t*)
 {
   assert_length(p, 1);
   assert_number(car(p));
@@ -119,25 +113,25 @@ cons_t* defun_abs(cons_t* p, environment_t*)
   return integer(n<0? -n : n);
 }
 
-cons_t* defun_print(cons_t *p, environment_t* env)
+cons_t* proc_print(cons_t *p, environment_t* env)
 {
   for ( ; !nullp(p); p = cdr(p) ) {
     if ( !listp(p) )
       printf("%s", to_s(p).c_str());
     else
-      defun_print(car(p), env);
+      proc_print(car(p), env);
   }
 
   return nil();
 }
 
-cons_t* defun_newline(cons_t*, environment_t*)
+cons_t* proc_newline(cons_t*, environment_t*)
 {
   printf("\n");
   return nil();
 }
 
-cons_t* defun_strcat(cons_t *p, environment_t* env)
+cons_t* proc_strcat(cons_t *p, environment_t* env)
 {
   std::string s;
 
@@ -145,12 +139,12 @@ cons_t* defun_strcat(cons_t *p, environment_t* env)
     if ( !listp(p) )
       s += to_s(p);
     else
-      s += defun_strcat(car(p), env)->string;
+      s += proc_strcat(car(p), env)->string;
 
   return string(s.c_str());
 }
 
-cons_t* defun_addf(cons_t *p, environment_t* env)
+cons_t* proc_addf(cons_t *p, environment_t* env)
 {
   float sum = 0.0;
 
@@ -168,7 +162,7 @@ cons_t* defun_addf(cons_t *p, environment_t* env)
   return decimal(sum);
 }
 
-cons_t* defun_add(cons_t *p, environment_t* env)
+cons_t* proc_add(cons_t *p, environment_t* env)
 {
   /*
    * Integers have an IDENTITY, so we can do this,
@@ -185,7 +179,7 @@ cons_t* defun_add(cons_t *p, environment_t* env)
       sum += i->integer;
     else if ( decimalp(i) )
       // automatically convert; perform rest of computation in floats
-      return defun_addf(cons(decimal(sum), p), env);
+      return proc_addf(cons(decimal(sum), p), env);
     else
       throw std::runtime_error("Cannot add integer with " + to_s(type_of(i)) + ": " + sprint(i));
   }
@@ -219,7 +213,7 @@ static bool whole_numberp(float n)
   return floor(n) == n;
 }
 
-cons_t* defun_sub(cons_t *p, environment_t* env)
+cons_t* proc_sub(cons_t *p, environment_t* env)
 {
   if ( length(p) == 0 )
     throw std::runtime_error("No arguments to -");
@@ -236,7 +230,7 @@ cons_t* defun_sub(cons_t *p, environment_t* env)
   return whole_numberp(d) ? integer((int)d) : decimal(d);
 }
 
-cons_t* defun_divf(cons_t *p, environment_t *e)
+cons_t* proc_divf(cons_t *p, environment_t *e)
 {
   assert_length(p, 2);
 
@@ -254,7 +248,7 @@ cons_t* defun_divf(cons_t *p, environment_t *e)
   return whole_numberp(q) ? integer((int)q) : decimal(q);
 }
 
-cons_t* defun_div(cons_t *p, environment_t *e)
+cons_t* proc_div(cons_t *p, environment_t *e)
 {
   assert_length(p, 2);
 
@@ -269,10 +263,10 @@ cons_t* defun_div(cons_t *p, environment_t *e)
       throw std::runtime_error("Division by zero");
     return integer(a->integer / b->integer);
   } else
-    return defun_divf(p, e);
+    return proc_divf(p, e);
 }
 
-cons_t* defun_mulf(cons_t *p, environment_t *env)
+cons_t* proc_mulf(cons_t *p, environment_t *env)
 {
   float product = 1.0;
 
@@ -291,7 +285,7 @@ cons_t* defun_mulf(cons_t *p, environment_t *env)
   return decimal(product);
 }
 
-cons_t* defun_mul(cons_t *p, environment_t *env)
+cons_t* proc_mul(cons_t *p, environment_t *env)
 {
   int product = 1;
 
@@ -302,7 +296,7 @@ cons_t* defun_mul(cons_t *p, environment_t *env)
       product *= i->integer;
     else if ( decimalp(i) )
       // automatically convert; perform rest of computation in floats
-      return defun_mulf(cons(decimal(product), p), env);
+      return proc_mulf(cons(decimal(product), p), env);
     else
       throw std::runtime_error("Cannot multiply integer with " + to_s(type_of(i)) + ": " + sprint(i));
   }
@@ -310,7 +304,7 @@ cons_t* defun_mul(cons_t *p, environment_t *env)
   return integer(product);
 }
 
-cons_t* defun_to_string(cons_t* p, environment_t *env)
+cons_t* proc_to_string(cons_t* p, environment_t *env)
 {
   std::string s;
 
@@ -324,12 +318,12 @@ cons_t* defun_to_string(cons_t* p, environment_t *env)
   return string(s.c_str());
 }
 
-cons_t* defun_list(cons_t* p, environment_t *env)
+cons_t* proc_list(cons_t* p, environment_t *env)
 {
   return nullp(p) ? list(NULL) : p;
 }
 
-cons_t* defun_define(cons_t *p, environment_t *env)
+cons_t* proc_define(cons_t *p, environment_t *env)
 {
   // (define <name> <body>)
   assert_type(SYMBOL, car(p));
@@ -348,7 +342,7 @@ static cons_t* begin(cons_t* p, environment_t* e)
   return cons(symbol("begin", e), p);
 }
 
-cons_t* defun_load(cons_t *filename, environment_t *env)
+cons_t* proc_load(cons_t *filename, environment_t *env)
 {
   assert_type(STRING, car(filename));
   
@@ -377,7 +371,7 @@ cons_t* defun_load(cons_t *filename, environment_t *env)
   return nil();
 }
 
-cons_t* defun_debug(cons_t *p, environment_t *env)
+cons_t* proc_debug(cons_t *p, environment_t *env)
 {
   std::string s;
 
@@ -420,30 +414,30 @@ cons_t* defun_debug(cons_t *p, environment_t *env)
   s += "\n";
 
   if ( type_of(p) == PAIR ) {
-    s += defun_debug(car(p), env)->string;
-    s += defun_debug(cdr(p), env)->string;
+    s += proc_debug(car(p), env)->string;
+    s += proc_debug(cdr(p), env)->string;
   }
 
   return string(s.c_str());
 }
 
-cons_t* defun_exit(cons_t* p, environment_t*)
+cons_t* proc_exit(cons_t* p, environment_t*)
 {
   exit(integerp(car(p))? car(p)->integer : 0);
   return NULL;
 }
 
-cons_t* defun_cons(cons_t* p, environment_t* e)
+cons_t* proc_cons(cons_t* p, environment_t* e)
 {
   return cons(car(p), cadr(p));
 }
 
-cons_t* defun_car(cons_t* p, environment_t* env)
+cons_t* proc_car(cons_t* p, environment_t* env)
 {
   return caar(p);
 }
 
-cons_t* defun_cdr(cons_t* p, environment_t* env)
+cons_t* proc_cdr(cons_t* p, environment_t* env)
 {
   /*
    * NOTE:  We have a special (and potentially UGLY) case
@@ -455,59 +449,59 @@ cons_t* defun_cdr(cons_t* p, environment_t* env)
   return r? r : cons(NULL);
 }
 
-cons_t* defun_caar(cons_t* p, environment_t* e)
+cons_t* proc_caar(cons_t* p, environment_t* e)
 {
   return car(caar(p));
 }
 
-cons_t* defun_cadr(cons_t* p, environment_t* e)
+cons_t* proc_cadr(cons_t* p, environment_t* e)
 {
-  return car(defun_cdr(p, e));
+  return car(proc_cdr(p, e));
 }
 
-cons_t* defun_cdar(cons_t* p, environment_t* e)
+cons_t* proc_cdar(cons_t* p, environment_t* e)
 {
-  return cdr(defun_car(p, e));
+  return cdr(proc_car(p, e));
 }
 
-cons_t* defun_cddr(cons_t* p, environment_t* e)
+cons_t* proc_cddr(cons_t* p, environment_t* e)
 {
-  // see defun_cdr for UGLINESS
-  cons_t *r = cdr(defun_cdr(p, e));
+  // see proc_cdr for UGLINESS
+  cons_t *r = cdr(proc_cdr(p, e));
   return r? r : cons(NULL); // <= UGLY PUGLY
 }
 
-cons_t* defun_append(cons_t* p, environment_t*)
+cons_t* proc_append(cons_t* p, environment_t*)
 {
   return append_non_mutable(car(p), cadr(p));
 }
 
-cons_t* defun_atomp(cons_t* p, environment_t* env)
+cons_t* proc_atomp(cons_t* p, environment_t* env)
 {
   return boolean(atomp(car(p)));
 }
 
-cons_t* defun_symbolp(cons_t* p, environment_t* env)
+cons_t* proc_symbolp(cons_t* p, environment_t* env)
 {
   return boolean(symbolp(car(p)));
 }
 
-cons_t* defun_integerp(cons_t* p, environment_t* env)
+cons_t* proc_integerp(cons_t* p, environment_t* env)
 {
   return boolean(integerp(car(p)));
 }
 
-cons_t* defun_decimalp(cons_t* p, environment_t* env)
+cons_t* proc_decimalp(cons_t* p, environment_t* env)
 {
   return boolean(decimalp(car(p)));
 }
 
-cons_t* defun_nullp(cons_t* p, environment_t* env)
+cons_t* proc_nullp(cons_t* p, environment_t* env)
 {
   return boolean(nullp(car(p)));
 }
 
-cons_t* defun_zerop(cons_t* p, environment_t*)
+cons_t* proc_zerop(cons_t* p, environment_t*)
 {
   if ( type_of(car(p)) == INTEGER )
     return boolean(car(p)->integer == 0);
@@ -518,7 +512,7 @@ cons_t* defun_zerop(cons_t* p, environment_t*)
   return boolean(false);
 }
 
-cons_t* defun_pairp(cons_t* p, environment_t* env)
+cons_t* proc_pairp(cons_t* p, environment_t* env)
 {
   /*
    * TODO: This works by BRUTE FORCE;
@@ -529,32 +523,32 @@ cons_t* defun_pairp(cons_t* p, environment_t* env)
   return boolean(pairp(car(p)));
 }
 
-cons_t* defun_listp(cons_t* p, environment_t* env)
+cons_t* proc_listp(cons_t* p, environment_t* env)
 {
   return boolean(listp(car(p)));
 }
 
-cons_t* defun_procedurep(cons_t* p, environment_t* e)
+cons_t* proc_procedurep(cons_t* p, environment_t* e)
 {
   return boolean(closurep(car(p)));
 }
 
-cons_t* defun_vectorp(cons_t* p, environment_t* e)
+cons_t* proc_vectorp(cons_t* p, environment_t* e)
 {
   return boolean(vectorp(car(p)));
 }
 
-cons_t* defun_charp(cons_t* p, environment_t* e)
+cons_t* proc_charp(cons_t* p, environment_t* e)
 {
   return boolean(charp(car(p)));
 }
 
-cons_t* defun_booleanp(cons_t* p, environment_t* e)
+cons_t* proc_booleanp(cons_t* p, environment_t* e)
 {
   return boolean(booleanp(car(p)));
 }
 
-cons_t* defun_version(cons_t*, environment_t*)
+cons_t* proc_version(cons_t*, environment_t*)
 {
   cons_t *v = list(string(format("%s\n", VERSION).c_str()));
 
@@ -571,18 +565,18 @@ cons_t* defun_version(cons_t*, environment_t*)
   return v;
 }
 
-cons_t* defun_length(cons_t* p, environment_t*)
+cons_t* proc_length(cons_t* p, environment_t*)
 {
   return integer(length(car(p)));
 }
 
-cons_t* defun_eqp(cons_t* p, environment_t*)
+cons_t* proc_eqp(cons_t* p, environment_t*)
 {
   assert_length(p, 2);
   return boolean(eqp(car(p), cadr(p)));
 }
 
-cons_t* defun_equalp(cons_t* p, environment_t*)
+cons_t* proc_equalp(cons_t* p, environment_t*)
 {
   assert_length(p, 2);
   return boolean(equalp(car(p), cadr(p)));
@@ -595,7 +589,7 @@ static float to_float(cons_t* v)
   return type_of(v)==DECIMAL ? v->decimal : (float) v->integer;
 }
 
-cons_t* defun_eqintp(cons_t* p, environment_t*)
+cons_t* proc_eqintp(cons_t* p, environment_t*)
 {
   assert_length(p, 2);
   assert_number(car(p));
@@ -609,28 +603,28 @@ cons_t* defun_eqintp(cons_t* p, environment_t*)
     boolean(l->integer == r->integer);
 }
 
-cons_t* defun_not(cons_t* p, environment_t*)
+cons_t* proc_not(cons_t* p, environment_t*)
 {
   assert_length(p, 1);
   return boolean(not_p(p));
 }
 
-cons_t* defun_and(cons_t* p, environment_t*)
+cons_t* proc_and(cons_t* p, environment_t*)
 {
   return boolean(and_p(p));
 }
 
-cons_t* defun_or(cons_t* p, environment_t*)
+cons_t* proc_or(cons_t* p, environment_t*)
 {
   return boolean(or_p(p));
 }
 
-cons_t* defun_xor(cons_t* p, environment_t*)
+cons_t* proc_xor(cons_t* p, environment_t*)
 {
   return boolean(xor_p(p));
 }
 
-cons_t* defun_less(cons_t* p, environment_t*)
+cons_t* proc_less(cons_t* p, environment_t*)
 {
   assert_length(p, 2);
   assert_number(car(p));
@@ -642,7 +636,7 @@ cons_t* defun_less(cons_t* p, environment_t*)
   return boolean(x < y);
 }
 
-cons_t* defun_greater(cons_t* p, environment_t*)
+cons_t* proc_greater(cons_t* p, environment_t*)
 {
   assert_length(p, 2);
   assert_number(car(p));
@@ -654,7 +648,7 @@ cons_t* defun_greater(cons_t* p, environment_t*)
   return boolean(x > y);
 }
 
-cons_t* defun_closure_source(cons_t* p, environment_t* e)
+cons_t* proc_closure_source(cons_t* p, environment_t* e)
 {
   assert_type(CLOSURE, car(p));
 
@@ -667,7 +661,7 @@ cons_t* defun_closure_source(cons_t* p, environment_t* e)
   return source;
 }
 
-cons_t* defun_reverse(cons_t* p, environment_t*)
+cons_t* proc_reverse(cons_t* p, environment_t*)
 {
   cons_t *r = NULL;
 
@@ -677,7 +671,7 @@ cons_t* defun_reverse(cons_t* p, environment_t*)
   return r;
 }
 
-cons_t* defun_let(cons_t* p, environment_t* e)
+cons_t* proc_let(cons_t* p, environment_t* e)
 {
   /*
    * Transform to lambdas:
@@ -714,7 +708,7 @@ cons_t* defun_let(cons_t* p, environment_t* e)
           cons(names, cons(body))), values);
 }
 
-cons_t* defun_letstar(cons_t* p, environment_t* e)
+cons_t* proc_letstar(cons_t* p, environment_t* e)
 {
   /*
    * Transform to nested lambdas:
@@ -756,18 +750,18 @@ cons_t* defun_letstar(cons_t* p, environment_t* e)
   return inner;
 }
 
-cons_t* defun_backtrace(cons_t*, environment_t*)
+cons_t* proc_backtrace(cons_t*, environment_t*)
 {
   backtrace();
   return nil();
 }
 
-cons_t* defun_type_of(cons_t* p, environment_t* e)
+cons_t* proc_type_of(cons_t* p, environment_t* e)
 {
   return symbol(to_s(type_of(car(p))).c_str(), e);
 }
 
-cons_t* defun_cond(cons_t* p, environment_t* e)
+cons_t* proc_cond(cons_t* p, environment_t* e)
 {
   /*
    * Transform:
@@ -797,7 +791,7 @@ cons_t* defun_cond(cons_t* p, environment_t* e)
   cons_t   *test = caar(p),
          *action = car(cdar(p));
 
-  cons_t *otherwise = defun_cond(p, e);
+  cons_t *otherwise = proc_cond(p, e);
 
   if ( symbolp(test) && test->symbol->name() == "else" )
     return append_non_mutable(r, action);
@@ -809,14 +803,14 @@ cons_t* defun_cond(cons_t* p, environment_t* e)
                 cons(otherwise)))));
 }
 
-cons_t* defun_number_to_string(cons_t* p, environment_t* e)
+cons_t* proc_number_to_string(cons_t* p, environment_t* e)
 {
   assert_number(car(p));
   assert_length(p, 1);
-  return defun_to_string(p, e);
+  return proc_to_string(p, e);
 }
 
-cons_t* defun_set_car(cons_t* p, environment_t* e)
+cons_t* proc_set_car(cons_t* p, environment_t* e)
 {
   assert_type(SYMBOL, car(p));
   std::string name = car(p)->symbol->name();
@@ -824,7 +818,7 @@ cons_t* defun_set_car(cons_t* p, environment_t* e)
   return nil();
 }
 
-cons_t* defun_set_cdr(cons_t* p, environment_t* e)
+cons_t* proc_set_cdr(cons_t* p, environment_t* e)
 {
   assert_type(SYMBOL, car(p));
   std::string name = car(p)->symbol->name();
@@ -832,7 +826,7 @@ cons_t* defun_set_cdr(cons_t* p, environment_t* e)
   return nil();
 }
 
-cons_t* defun_file_existsp(cons_t* p, environment_t*)
+cons_t* proc_file_existsp(cons_t* p, environment_t*)
 {
   return boolean(file_exists(car(p)->string));
 }

@@ -27,7 +27,7 @@ void execute(const char* file)
     reset_for_programs(&global_opts);
     global_opts.current_filename = file;
 
-    defun_load(cons(string(file)), env);
+    proc_load(cons(string(file)), env);
   } catch (const std::exception& e) {
     const char* file = global_opts.current_filename;
     bool    has_file = file && strcmp(file, "-");

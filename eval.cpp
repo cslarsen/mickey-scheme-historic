@@ -279,7 +279,7 @@ cons_t* eval(cons_t* p, environment_t* e)
     }
 
     if ( name == "cond" ) {
-      cons_t *cond = defun_cond(p, e);
+      cons_t *cond = proc_cond(p, e);
       return eval(cond, e);
     }
 
@@ -302,14 +302,14 @@ cons_t* eval(cons_t* p, environment_t* e)
         def_name = car(def_name);
 
         cons_t *closure = make_closure(def_args, def_body, e->extend());
-        return defun_define(cons(def_name, cons(closure)), e);
+        return proc_define(cons(def_name, cons(closure)), e);
       }
 
       /*
        * Ordinary `(define <name> <body>)`, where <body> can typically
        * be `(lambda (<arg1 arg2 ...>) <body>)`.
        */
-      return defun_define(
+      return proc_define(
               cons(def_name, evlis(def_body, e)), e);
     }
 
@@ -330,16 +330,16 @@ cons_t* eval(cons_t* p, environment_t* e)
 
        // only set if NOT found
       if ( i == NULL )
-        return defun_define(cons(def_name, evlis(def_body, e)), e);
+        return proc_define(cons(def_name, evlis(def_body, e)), e);
 
       return nil();
     }
 
     if ( name == "set-car!" )
-      return defun_set_car(cons(cadr(p), evlis(cddr(p), e)), e);
+      return proc_set_car(cons(cadr(p), evlis(cddr(p), e)), e);
 
     if ( name == "set-cdr!" )
-      return defun_set_cdr(cons(cadr(p), evlis(cddr(p), e)), e);
+      return proc_set_cdr(cons(cadr(p), evlis(cddr(p), e)), e);
 
     if ( name == "lambda" ) {
       cons_t *args = cadr(p);
@@ -360,10 +360,10 @@ cons_t* eval(cons_t* p, environment_t* e)
       return eprogn(cdr(p), e);
 
     if ( name == "let" )
-      return eval(defun_let(cdr(p), e), e);
+      return eval(proc_let(cdr(p), e), e);
 
     if ( name == "let*" )
-      return eval(defun_letstar(cdr(p), e), e);
+      return eval(proc_letstar(cdr(p), e), e);
 
     if ( name == "eval" )
       return eval_with_trace(evlis(cdr(p), e), e);

@@ -1,3 +1,6 @@
+#ifndef INC_MICKEY_MODULE_H
+#define INC_MICKEY_MODULE_H
+
 #include "cons.h"
 
 struct named_function_t {
@@ -6,3 +9,5 @@ struct named_function_t {
 };
 
 void import(environment_t*, named_function_t*);
+
+#endif
