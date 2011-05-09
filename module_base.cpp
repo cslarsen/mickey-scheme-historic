@@ -594,7 +594,7 @@ cons_t* proc_let(cons_t* p, environment_t* e)
    *
    */
   return cons(cons(symbol("lambda", e),
-          cons(names, cons(body))), values);
+          cons(names, cons(proc_begin(body, e)))), values);
 }
 
 cons_t* proc_letstar(cons_t* p, environment_t* e)
