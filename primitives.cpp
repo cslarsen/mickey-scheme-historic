@@ -19,6 +19,9 @@
 #include "file_io.h"
 #include "types.h"
 #include "backtrace.h"
+#include "module.h"
+#include "module_math.h"
+#include "assertions.h"
 
 // TODO: Fix this, had to do it because of circular cons/util deps
 extern std::string to_s(cons_t*);
@@ -99,33 +102,8 @@ void load_default_defs(environment_t *e)
   e->defun("or", defun_or);
   e->defun("xor", defun_xor);
   e->defun("abs", defun_abs);
-}
 
-static void assert_length(const cons_t* p, const size_t& e)
-{
-  const size_t l = length(const_cast<cons_t*>(p));
-
-  if ( e != l )
-    throw std::runtime_error(format(
-      "Function expects exactly %lu parameters but got %lu: `%s´",
-        e, l, sprint(p).c_str()));
-}
-
-static void assert_type(enum type_t type, cons_t* p)
-{
-  if ( type_of(p) != type )
-    throw std::runtime_error(format("Function expected a %s but got a %s: `%s´",
-      to_s(type).c_str(),
-      to_s(type_of(p)).c_str(),
-      sprint(p).c_str()));
-}
-
-static void assert_number(const cons_t* p)
-{
-  if ( !numberp(p) )
-    throw std::runtime_error(format("Function expected a number but got a %s: `%s´",
-      to_s(type_of(p)).c_str(),
-      sprint(p).c_str()));
+  import(e, exports_math);
 }
 
 cons_t* defun_abs(cons_t* p, environment_t*)

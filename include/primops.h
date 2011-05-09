@@ -49,4 +49,6 @@ bool and_p(const cons_t*);
 bool or_p(const cons_t*);
 bool xor_p(const cons_t*);
 
+double number_to_double(const cons_t*);
+
 #endif

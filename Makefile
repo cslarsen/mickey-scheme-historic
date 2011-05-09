@@ -3,7 +3,10 @@ CXXFLAGS = -g -Wall -Iinclude -DUSE_READLINE # -DBOEHM_GC
 #CXXFLAGS = -Wall -Iinclude -DUSE_READLINE -O6 -ffast-math -fomit-frame-pointer
 LDFLAGS  = -lreadline # -lgc
 
-TARGETS_O = options.o \
+TARGETS_O = assertions.o \
+            module.o \
+            module_math.o \
+            options.o \
             backtrace.o \
             heap.o \
             cons.o \

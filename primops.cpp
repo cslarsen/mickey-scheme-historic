@@ -1,6 +1,8 @@
 #include <stdexcept>
 #include "primops.h"
 #include "util.h"
+#include "assertions.h"
+#include "print.h"
 
 cons_t* cons(const cons_t* head, const cons_t* tail)
 {
@@ -289,4 +291,16 @@ bool or_p(const cons_t* p)
 bool xor_p(const cons_t* p)
 {
   return !not_p(p) ^ !not_p(cdr(p));
+}
+
+double number_to_double(const cons_t* p)
+{
+  assert_number(p);
+
+  switch ( type_of(p) ) {
+  default:
+    throw std::runtime_error("Unsupported number->double conversion: " + sprint(p));
+  case INTEGER: return static_cast<double>(p->integer);
+  case DECIMAL: return static_cast<double>(p->decimal);
+  }
 }
