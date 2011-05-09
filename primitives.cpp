@@ -26,7 +26,7 @@ extern std::string to_s(cons_t*);
 static bool file_exists(const char* s)
 {
   struct stat st;
-  return !stat(s, &st)? S_ISREG(st.st_mode) : false;
+  return !stat(s, &st);
 }
 
 closure_t* lookup_closure(symbol_t *s, environment_t *env)
@@ -65,6 +65,8 @@ void load_default_defs(environment_t *e)
   e->defun("closure-source", defun_closure_source);
   e->defun("backtrace", defun_backtrace);
   e->defun("type-of", defun_type_of);
+
+  e->defun("file-exists?", defun_file_existsp);
 
   // cons and friends
   e->defun("list", defun_list);
@@ -848,4 +850,9 @@ cons_t* defun_set_cdr(cons_t* p, environment_t* e)
   std::string name = car(p)->symbol->name();
   e->lookup(name)->cdr = cadr(p);
   return nil();
+}
+
+cons_t* defun_file_existsp(cons_t* p, environment_t*)
+{
+  return boolean(file_exists(car(p)->string));
 }

@@ -77,3 +77,5 @@ cons_t* defun_number_to_string(cons_t*, environment_t*);
 cons_t* defun_reverse(cons_t*, environment_t*);
 cons_t* defun_set_car(cons_t*, environment_t*);
 cons_t* defun_set_cdr(cons_t*, environment_t*);
+cons_t* defun_file_existsp(cons_t*, environment_t*);
+
