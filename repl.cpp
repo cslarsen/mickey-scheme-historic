@@ -16,6 +16,7 @@
 #include "primitives.h"
 #include "heap.h"
 #include "backtrace.h"
+#include "options.h"
 #include "module_base.h"
 #include "module_math.h"
 
@@ -208,6 +209,9 @@ int repl()
   import(env, exports_base);
   import(env, exports_math);
   import(env, exports_repl);
+
+  if ( global_opts.verbose )
+    printf("\n");
 
   #ifdef USE_READLINE
   init_readline();
