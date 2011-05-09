@@ -5,6 +5,8 @@
 #include "types.h"
 #include "eval.h"
 #include "primitives.h"
+#include "module_base.h"
+#include "module_math.h"
 
 #define TEST_REPL(expr, expect) TEST_STREQ(sprint(eval(parse(expr))), expect);
 #define TEST_EVAL(expr, expect) TEST_STREQ(print(eval(parse(expr))), expect);
@@ -24,7 +26,8 @@ program_t* parse(const char *program)
 
 void run_tests()
 {
-  load_default_defs(&globals);
+  import(&globals, exports_base);
+  import(&globals, exports_math);
 
   { std::string format_abbc5d = format("a%sc%dd", "bb", 5); 
     TEST_STREQ(format_abbc5d, "abbc5d"); }

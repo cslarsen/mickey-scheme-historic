@@ -38,11 +38,11 @@ struct environment_t
   {
   }
 
+  environment_t* extend();
   struct cons_t* lookup(const std::string& name) const;
   struct cons_t* lookup_or_throw(const std::string& name) const;
-  void defun(const std::string& name, lambda_t func);
+  struct cons_t* define(const std::string& name, lambda_t func);
   struct cons_t* define(const std::string& name, cons_t* body);
-  environment_t* extend();
 };
 
 struct continuation_t
@@ -124,5 +124,6 @@ std::string to_s(closure_t*);
 std::string to_s(continuation_t*);
 std::string to_s(vector_t*);
 std::string to_s(char, bool);
+std::string to_s(struct cons_t *p);;
 
 #endif

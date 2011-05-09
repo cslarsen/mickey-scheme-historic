@@ -5,6 +5,7 @@ LDFLAGS  = -lreadline # -lgc
 
 TARGETS_O = assertions.o \
             module.o \
+            module_base.o \
             module_math.o \
             options.o \
             backtrace.o \

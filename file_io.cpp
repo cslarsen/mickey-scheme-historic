@@ -1,3 +1,4 @@
+#include <sys/stat.h>
 #include <string>
 #include "file_io.h"
 
@@ -9,4 +10,10 @@ std::string slurp(FILE *f)
     r += c;
 
   return r;
+}
+
+bool file_exists(const char* s)
+{
+  struct stat st;
+  return !stat(s, &st);
 }

@@ -5,10 +5,10 @@ std::string sprint(const cons_t* p, std::string& s, bool escape)
 {
   switch ( type_of(p) ) {
   case NIL:          return s;
-  case BOOLEAN:      return s + to_s(p->boolean);
+  case BOOLEAN:      return s + to_s_bool(p->boolean);
   case CHAR:         return s + to_s(p->character, escape);
-  case DECIMAL:      return s + to_s(p->decimal);
-  case INTEGER:      return s + to_s(p->integer);
+  case DECIMAL:      return s + to_s_float(p->decimal);
+  case INTEGER:      return s + to_s_int(p->integer);
   case CLOSURE:      return s + (escape? to_s(p->closure) : "");
   case SYMBOL:       return s + p->symbol->name();
   case STRING:       return s + (escape? "\"" + encode_str(p->string) + "\"" : p->string);

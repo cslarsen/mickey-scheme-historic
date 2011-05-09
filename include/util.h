@@ -4,9 +4,9 @@
 #include "cons.h"
 #endif
 
-std::string to_s(int n);
-std::string to_s(float n);
-std::string to_s(bool f);
+std::string to_s_int(int n);
+std::string to_s_float(float n);
+std::string to_s_bool(bool f);
 std::string format(const char *fmt, ...);
 std::string toupper(const std::string& s);
 

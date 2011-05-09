@@ -45,10 +45,10 @@ std::string to_s(cons_t *p)
 {
   switch ( type_of(p) ) {
   case NIL:      return "#<nil>";
-  case BOOLEAN:  return to_s(p->boolean);
+  case BOOLEAN:  return to_s_bool(p->boolean);
   case CHAR:     return to_s(p->character, false);
-  case DECIMAL:  return to_s(p->decimal);
-  case INTEGER:  return to_s(p->integer);
+  case DECIMAL:  return to_s_float(p->decimal);
+  case INTEGER:  return to_s_int(p->integer);
   case CLOSURE:  return format("#<closure %p>", p->closure);
   case PAIR:     return to_s(car(p)) + " . " + to_s(cdr(p));
   case SYMBOL:   return p->symbol->name();
@@ -106,9 +106,10 @@ cons_t* environment_t::lookup(const std::string& name) const
   return NULL;
 }
 
-void environment_t::defun(const std::string& name, lambda_t f)
+struct cons_t* environment_t::define(const std::string& name, lambda_t f)
 {
   symbols[name] = closure(f, this);
+  return symbols[name];
 }
 
 struct cons_t* environment_t::define(const std::string& name, cons_t* body)

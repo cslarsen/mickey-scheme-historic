@@ -1,3 +1,4 @@
+#include <math.h> // floor
 #include <stdexcept>
 #include "primops.h"
 #include "util.h"
@@ -303,4 +304,16 @@ double number_to_double(const cons_t* p)
   case INTEGER: return static_cast<double>(p->integer);
   case DECIMAL: return static_cast<double>(p->decimal);
   }
+}
+
+float number_to_float(const cons_t* p)
+{
+  return static_cast<float>(number_to_double(p));
+}
+
+bool iswhole(float n)
+{
+  // Return true if `n` has no decimals, i.e. is "x.0" for a value of x
+  // NOTE: Can possible do `(int)n == n` as well, but better to use floor.
+  return floor(n) == n;
 }

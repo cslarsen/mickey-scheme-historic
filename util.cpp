@@ -20,21 +20,21 @@ char* trimr(char* s)
   return s;
 }
 
-std::string to_s(int n)
+std::string to_s_int(int n)
 {
-  char buf[32];
+  char buf[64];
   sprintf(buf, "%d", n);
   return std::string(buf);
 }
 
-std::string to_s(float n)
+std::string to_s_float(float n)
 {
-  char buf[32];
+  char buf[64];
   sprintf(buf, "%f", n);
   return std::string(buf);
 }
 
-std::string to_s(bool f)
+std::string to_s_bool(bool f)
 {
   return std::string(f? "#t" : "#f");
 }

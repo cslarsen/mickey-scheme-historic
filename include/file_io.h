@@ -26,3 +26,4 @@ public:
 };
 
 std::string slurp(FILE*);
+bool file_exists(const char*);

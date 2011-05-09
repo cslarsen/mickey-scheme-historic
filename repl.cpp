@@ -16,11 +16,13 @@
 #include "primitives.h"
 #include "heap.h"
 #include "backtrace.h"
+#include "module_base.h"
+#include "module_math.h"
 
 // make env reachable by readline commands
 static environment_t *global_env = NULL;
 
-cons_t* defun_list_globals(cons_t*, environment_t *env)
+cons_t* proc_list_globals(cons_t*, environment_t *env)
 {
   cons_t *r = NULL;
 
@@ -37,11 +39,16 @@ cons_t* defun_list_globals(cons_t*, environment_t *env)
   return r;
 }
 
-cons_t* defun_run_tests(cons_t*, environment_t*)
+cons_t* proc_run_tests(cons_t*, environment_t*)
 {
   run_tests();
   return nil();
 }
+
+named_function_t exports_repl[] = {
+  {"run-tests", proc_run_tests},
+  {"list-globals", proc_list_globals},
+  {NULL, NULL}};
 
 bool isprefix(const char* prefix, const char* fullstr)
 {
@@ -65,7 +72,7 @@ char** auto_complete(const char *s, int start, int end)
 
   static size_t last_hit = 0;
 
-  cons_t *all_commands = defun_list_globals(NULL, global_env);
+  cons_t *all_commands = proc_list_globals(NULL, global_env);
   size_t count = 0;
 
   // Count number of hits
@@ -107,7 +114,7 @@ char* readline_auto_completion(const char* s, int state)
   // Start-state; build list of completion hits
   if ( state == 0 ) {
     // get all commands
-    cons_t *all_commands = defun_list_globals(NULL, global_env);
+    cons_t *all_commands = proc_list_globals(NULL, global_env);
     size_t count = 0;
 
     // count number of hits
@@ -189,29 +196,27 @@ void print_banner(environment_t* env)
   printf("%-65s  /\\\n", __VERSION__);
   printf("%-65s /  \\_\n", readline_version.c_str());
   printf("%-65s       \n", boehm_version.c_str());
-
-  printf("Loaded %ld definitions\n", env->symbols.size());
-  printf("Execute (exit [ code ]) to quit\n");
-  printf("You can also (run-tests) and (list-globals)\n");
-  printf("\n");
-
 }
 
 int repl()
 {
-  environment_t *env = new environment_t();
-  global_env = env;
-  load_default_defs(env);
+  global_env = new environment_t();
+  environment_t *env = global_env;
+
+  print_banner(env);
+
+  import(env, exports_base);
+  import(env, exports_math);
+  import(env, exports_repl);
 
   #ifdef USE_READLINE
   init_readline();
   #endif
 
-  // add some more definitions
-  env->defun("run-tests", defun_run_tests);
-  env->defun("list-globals", defun_list_globals);
-
-  print_banner(env);
+  printf("Loaded %ld definitions\n", env->symbols.size());
+  printf("Execute (exit [ code ]) to quit\n");
+  printf("You can also (run-tests) and (list-globals)\n");
+  printf("\n");
 
   for(;;) {
     char *input;

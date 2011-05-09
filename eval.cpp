@@ -6,7 +6,7 @@
 #include "apply.h"
 #include "print.h"
 #include "backtrace.h"
-
+#include "module_base.h"
 
 /*
  * Magic variables to hold lambda arguments

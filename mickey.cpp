@@ -17,12 +17,16 @@
 #include "primitives.h"
 #include "heap.h"
 #include "backtrace.h"
+#include "module_base.h"
+#include "module_math.h"
 
 void execute(const char* file)
 {
   try {
     environment_t *env = new environment_t();
-    load_default_defs(env);
+
+    import(env, exports_base);
+    import(env, exports_math);
 
     reset_for_programs(&global_opts);
     global_opts.current_filename = file;
@@ -46,6 +50,8 @@ void execute(const char* file)
 int main(int argc, char** argv)
 {
   bool rest_is_files = false; // used with option `--`
+  bool run_repl = true;
+
   set_default(&global_opts);
 
   #ifdef BOEHM_GC
@@ -61,9 +67,14 @@ int main(int argc, char** argv)
         execute("-"); // stdin
       else
         rest_is_files |= parse_option(argv[n], &global_opts);
-    } else
+    } else {
       execute(argv[n]); // file
+      run_repl = false;
+    }
   }
+
+  if ( run_repl )
+    repl();
 
   return 0;
 }
