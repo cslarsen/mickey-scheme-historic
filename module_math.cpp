@@ -20,6 +20,8 @@ MAKE_PROC(proc_tan, tan);
 MAKE_PROC(proc_asin, asin);
 MAKE_PROC(proc_acos, acos);
 MAKE_PROC(proc_sqrt, sqrt);
+MAKE_PROC(proc_ceil, ceil);
+MAKE_PROC(proc_floor, floor);
 
 cons_t* proc_atan(cons_t* p, environment_t*)
 {
@@ -42,5 +44,7 @@ named_function_t exports_math[] = {
   {"acos", proc_acos},
   {"atan", proc_atan},
   {"sqrt", proc_sqrt},
+  {"ceiling", proc_ceil},
+  {"floor", proc_floor},
   {NULL, NULL}
 };

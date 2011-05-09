@@ -21,16 +21,16 @@ Alphabetic index:
 * >
 >=
 * abs
-acos
+* acos
 * and
 angle
 * append
 * apply
-asin
+* asin
 assoc
 assq
 assv
-atan
+* atan
 #b
 backquote
 * begin
@@ -40,9 +40,8 @@ blob-u8-ref
 blob-u8-set!
 blob?
 * boolean?
-
-caar
-cadr
+* caar
+* cadr
 call-with-current-continuation
 call-with-input-file
 call-with-output-file
@@ -55,7 +54,7 @@ catch
 cdddar
 cddddr
 * cdr
-ceiling
+* ceiling
 ceiling-quotient
 ceiling-remainder
 ceiling/
@@ -93,7 +92,7 @@ continuation
 copy-blob
 copy-blob!
 copy-partial-blob!
-cos
+* cos
 current-error-port
 current-input-port
 current-jiffy
@@ -113,7 +112,7 @@ dynamic-wind
 * else
 eof-object?
 * eq?
-equal?
+* equal? <- except for lists
 eqv?
 error
 escape
@@ -124,7 +123,7 @@ euclidean-quotient
 euclidean-remainder
 euclidean/
 * eval
-ven?
+ven? <-- ????
 exact
 exact->inexact
 exact-integer-sqrt
@@ -132,14 +131,14 @@ exact-integer?
 exact?
 exactness
 except
-exp
+* exp
 export
 expt
 * #f
 false
 file-exists?
 finite?
-floor
+* floor
 floor-quotient
 floor-remainder
 floor/
@@ -190,7 +189,7 @@ list-tail
 * list?
 * load
 location
-log
+* log
 magnitude
 make-blob
 make-list
@@ -241,7 +240,7 @@ predicate
 prefix
 * procedure?
 quasiquote
-quote
+* quote
 quotient
 raise
 raise-continuable
@@ -264,7 +263,7 @@ scheme-report-environment
 * set-car!
 * set-cdr!
 setcar
-sin
+* sin
 * sqrt
 string
 string->list
@@ -303,7 +302,7 @@ symbol->string
 * symbol?
 syntax-rules
 #t
-tan
+* tan
 truncate
 truncate-quotient
 truncate-remainder
