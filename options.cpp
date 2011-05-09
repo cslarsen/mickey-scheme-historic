@@ -1,3 +1,14 @@
+/*
+ * Mickey Scheme
+ *
+ * Copyright (C) 2011 Christian Stigen Larsen <csl@sublevel3.org>
+ * http://csl.sublevel3.org                              _
+ *                                                        \
+ * Distributed under the modified BSD license.            /\
+ * Please post bugfixes and suggestions to the author.   /  \_
+ *                                                          
+ */
+
 #include <stdio.h>
 #include <string.h>
 
@@ -9,7 +20,6 @@
 #include "mickey.h"
 #include "options.h"
 #include "cons.h"
-#include "primitives.h"
 #include "parser.h"
 
 options_t global_opts;

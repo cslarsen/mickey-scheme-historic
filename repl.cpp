@@ -1,3 +1,14 @@
+/*
+ * Mickey Scheme
+ *
+ * Copyright (C) 2011 Christian Stigen Larsen <csl@sublevel3.org>
+ * http://csl.sublevel3.org                              _
+ *                                                        \
+ * Distributed under the modified BSD license.            /\
+ * Please post bugfixes and suggestions to the author.   /  \_
+ *                                                          
+ */
+
 #include <stdio.h>
 
 #ifdef USE_READLINE
@@ -13,7 +24,6 @@
 #include "parser.h"
 #include "print.h"
 #include "eval.h"
-#include "primitives.h"
 #include "heap.h"
 #include "backtrace.h"
 #include "options.h"

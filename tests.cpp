@@ -1,10 +1,20 @@
+/*
+ * Mickey Scheme
+ *
+ * Copyright (C) 2011 Christian Stigen Larsen <csl@sublevel3.org>
+ * http://csl.sublevel3.org                              _
+ *                                                        \
+ * Distributed under the modified BSD license.            /\
+ * Please post bugfixes and suggestions to the author.   /  \_
+ *                                                          
+ */
+
 #include "test.h"
 #include "tests.h"
 #include "print.h"
 #include "parser.h"
 #include "types.h"
 #include "eval.h"
-#include "primitives.h"
 #include "module_base.h"
 #include "module_math.h"
 

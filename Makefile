@@ -3,27 +3,26 @@ CXXFLAGS = -g -Wall -Iinclude -DUSE_READLINE # -DBOEHM_GC
 #CXXFLAGS = -Wall -Iinclude -DUSE_READLINE -O6 -ffast-math -fomit-frame-pointer
 LDFLAGS  = -lreadline # -lgc
 
-TARGETS_O = assertions.o \
-            module.o \
-            module_base.o \
-            module_math.o \
-            options.o \
-            backtrace.o \
-            heap.o \
-            cons.o \
+TARGETS_O = heap.o \
+            test.o \
             apply.o \
-            primitives.o \
-            types.o \
-            eval.o \
-            file_io.o \
-            parser.o \
-            print.o \
-            primops.o \
+            module.o \
+            options.o \
             tokenizer.o \
-            tests.o \
+            file_io.o \
             util.o \
+            parser.o \
+            types.o \
+            module_math.o \
+            assertions.o \
+            print.o \
             repl.o \
-            test.o
+            primops.o \
+            eval.o \
+            backtrace.o \
+            module_base.o \
+            cons.o \
+            tests.o
 
 TARGETS = $(TARGETS_O) mickey
 
