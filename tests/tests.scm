@@ -14,13 +14,13 @@
 (test-eq (quote (* 1 2 3 4)) 24)
 (test-eq (quote (- 1 2 3 4)) -8)
 (test-eq (quote (string-append "a" "b" "b" "a")) "abba")
-(test-eq (quote (->string 12345)) "12345")
-(test-eq (quote (->string #f)) "#f")
-(test-eq (quote (->string #t)) "#t")
-(test-eq (quote (->string (eq? 1 2))) "#f")
-(test-eq (quote (->string (eq? 3 (+ 1 2)))) "#t")
-(test-eq (quote (->string (eq? 3 (+ 1 2 3)))) "#f")
-(test-eq (quote (->string (list 1 2 (list 3 4)))) "(1 2 (3 4))")
+(test-eq (quote (number->string 12345)) "12345")
+(test-eq (quote (boolean->string #f)) "#f")
+(test-eq (quote (boolean->string #t)) "#t")
+(test-eq (quote (boolean->string (eq? 1 2))) "#f")
+(test-eq (quote (boolean->string (eq? 3 (+ 1 2)))) "#t")
+(test-eq (quote (boolean->string (eq? 3 (+ 1 2 3)))) "#f")
+(test-eq (quote (list->string (list 1 2 (list 3 4)))) "(1 2 (3 4))")
 (test-eq (quote (atom? (quote abba))) #t)
 (test-eq (quote (apply + (list 1 2 3))) 6)
 (test-eq (quote (apply + (quote (1 2 3)))) 6)
@@ -65,6 +65,22 @@
 (test-eq (quote (abs -0.1)) 0.1)
 (test-eq (quote (abs 1.1)) 1.1)
 (test-eq (quote (abs 2.1)) 2.1)
+
+;; alist?
+(test-eq (quote (alist? (list (list (quote a) 1) (list (quote b) 2) (list (quote c) 3)))) #t)
+(test-eq (quote (alist? (list))) #t) ; empty lists are alist too
+(test-eq (quote (alist? (list (list)))) #f) ; but inner-list must have at least one element
+(test-eq (quote (alist? (list (list 1)))) #t) ; but inner-list must have at least one element
+(test-eq (quote (alist? (list (list 1 2 3)))) #t) ; can have more too, it seems
+(test-eq (quote (alist? (list (list (quote a) 1 2) (list (quote b) 2) (list (quote c) 3)))) #t)
+(test-eq (quote (alist? (list (list (quote one) 1) (list (quote two) 2) (list (quote three) 3)))) #t)
+
+;; assq
+; TODO: Have to make test-eq a macro
+;(test-eq (quote (assq (quote two) (list (list (quote one) 1) (list (quote two) 2) (list (quote three) 3)))) (quote (list (quote two) 2)))
+;(test-eq (quote (assq (quote one) (list (list (quote one) 1) (list (quote two) 2) (list (quote three) 3)))) (quote (list (quote one) 1)))
+;(test-eq (quote (assq (quote three) (list (list (quote one) 1) (list (quote two) 2) (list (quote three) 3)))) (quote (list (quote three) 3)))
+;(test-eq (quote (assq (quote threee) (list (list (quote one) 1) (list (quote two) 2) (list (quote three) 3)))) #f)
 
 (display "\nResults\n")
 (results)

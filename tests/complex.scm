@@ -48,5 +48,5 @@
 (define complex->string
   (lambda (z)
     (string-append
-      (->string (re z)) " + "
-      (->string (im z)) "i")))
+      (number->string (re z)) " + "
+      (number->string (im z)) "i")))

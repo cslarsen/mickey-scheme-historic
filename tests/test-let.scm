@@ -5,8 +5,8 @@
 
 (define (calc-area r)
   (display (string-append
-    "A circle with radius " (->string r)
-    " has area " (->string (circle-area r)) "\n")))
+    "A circle with radius " (number->string r)
+    " has area " (number->string (circle-area r)) "\n")))
 
 (calc-area 0)
 (calc-area 1)

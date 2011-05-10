@@ -24,10 +24,10 @@
 
 (define (show-sqrt x)
   (display (string-append
-    "my-sqrt(" (->string x) ") = "
-      (->string (my-sqrt x))
-    " vs builtin sqrt(" (->string x) ") = "
-      (->string (sqrt x)) "\n")))
+    "my-sqrt(" (number->string x) ") = "
+      (number->string (my-sqrt x))
+    " vs builtin sqrt(" (number->string x) ") = "
+      (number->string (sqrt x)) "\n")))
 
 (show-sqrt 0)
 (show-sqrt 1)

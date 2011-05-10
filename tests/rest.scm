@@ -1,8 +1,8 @@
 (define (print-each prefix . rest)
   (define (print-one x)
-    (display (string-append
-                (->string prefix)
-                (->string x) "\n")))
+    (display (string-append prefix
+      (if (string? x) x (number->string x))
+      "\n")))
   (define (print-list xs)
     (if (not (null? xs))
         (begin

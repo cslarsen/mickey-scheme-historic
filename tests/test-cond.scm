@@ -5,8 +5,8 @@
 
 (define (test x y)
   (display (string-append
-    (->string x) " and " (->string y) ": "
-    (->string (test-cond x y)) "\n")))
+    (number->string x) " and " (number->string y) ": "
+    (symbol->string (test-cond x y)) "\n")))
 
 (test 3 2)
 (test 2 3)

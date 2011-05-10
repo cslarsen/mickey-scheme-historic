@@ -1,7 +1,8 @@
 (define eat-all-params
   (lambda all-params
-    (display (string-append
-      "Here is a list: " (->string all-params) "\n"))))
+    (display "Here is a list: ")
+    (display all-params)
+    (newline)))
 
 (eat-all-params "one")
 (eat-all-params "one" "two")

@@ -1,5 +1,18 @@
 ;; Test of different variadic lambda forms
 
+(define (list-of-strings->string s)
+  (if (null? s) ""
+    (string-append (car s)
+    (if (not (zero? (length (cdr s)))) " " "")
+    (list-of-strings->string (cdr s)))))
+
+(define (->string s)
+  (cond ((number? s) (number->string s))
+        ((symbol? s) (symbol->string s))
+        ((list? s) (list-of-strings->string s))
+        ((string? s) s)
+        (else "")))
+
 (define no-args
   (lambda ()
     (display "no-args\n")))
@@ -7,17 +20,17 @@
 (define one-arg
   (lambda (x)
     (display (string-append
-      "one-arg, with x='" x "'\n"))))
+      "one-arg, with x='" (->string x) "'\n"))))
 
 (define one-arg-rest
   (lambda (x . rest)
     (display (string-append
-      "one-arg-rest with x='" x "' and rest='" (->string rest) "'\n"))))
+      "one-arg-rest with x='" (->string x) "' and rest='" (->string rest) "'\n"))))
 
 (define two-arg-rest
   (lambda (x y . rest)
     (display (string-append
-      "two-arg-rest with x='" x "' y='" y "' and rest='" (->string rest) "'\n"))))
+      "two-arg-rest with x='" (->string x) "' y='" (->string y) "' and rest='" (->string rest) "'\n"))))
 
 (define rest-arg
   (lambda rest

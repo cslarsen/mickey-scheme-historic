@@ -6,7 +6,7 @@
 
 (define (show-fact n)
   (display (string-append
-    (->string n) "! = " (->string (fact n)) "\n")))
+    (number->string n) "! = " (number->string (fact n)) "\n")))
 
 (show-fact 0)
 (show-fact 1)

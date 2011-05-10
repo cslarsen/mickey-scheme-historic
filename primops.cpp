@@ -103,9 +103,24 @@ cons_t* caar(const cons_t* p)
   return car(car(p));
 }
 
+cons_t* caaar(const cons_t* p)
+{
+  return car(caar(p));
+}
+
 cons_t* cadr(const cons_t* p)
 {
   return car(cdr(p));
+}
+
+cons_t* caadr(const cons_t* p)
+{
+  return car(cadr(p));
+}
+
+cons_t* caddr(const cons_t* p)
+{
+  return car(cddr(p));
 }
 
 cons_t* cddr(const cons_t* p)
@@ -121,6 +136,11 @@ cons_t* cdar(const cons_t* p)
 cons_t* cadar(const cons_t* p)
 {
   return car(cdar(p));
+}
+
+cons_t* cadaar(const cons_t* p)
+{
+  return car(cdr(car(car(p))));
 }
 
 type_t type_of(const cons_t* p)

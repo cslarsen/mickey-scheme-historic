@@ -40,14 +40,19 @@ cons_t* proc_abs(cons_t* p, environment_t*)
   return integer(n<0? -n : n);
 }
 
-cons_t* proc_print(cons_t *p, environment_t* env)
+cons_t* proc_display(cons_t *p, environment_t* env)
 {
   for ( ; !nullp(p); p = cdr(p) ) {
-    if ( !listp(p) )
-      printf("%s", to_s(p).c_str());
-    else
-      proc_print(car(p), env);
+    printf("%s", print(car(p)).c_str());
   }
+
+  return nil();
+}
+
+cons_t* proc_write(cons_t *p, environment_t* env)
+{
+  for ( ; !nullp(p); p = cdr(p) )
+    printf("%s", sprint(car(p)).c_str());
 
   return nil();
 }
@@ -63,10 +68,7 @@ cons_t* proc_strcat(cons_t *p, environment_t* env)
   std::string s;
 
   for ( ; !nullp(p); p = cdr(p) )
-    if ( !listp(p) )
-      s += to_s(p);
-    else
-      s += proc_strcat(car(p), env)->string;
+    s += print(car(p)).c_str();
 
   return string(s.c_str());
 }
@@ -83,7 +85,7 @@ cons_t* proc_addf(cons_t *p, environment_t* env)
     else if ( decimalp(i) )
       sum += i->decimal;
     else
-      throw std::runtime_error("Cannot add decimal with " + to_s(type_of(i)) + ": " + sprint(i));
+      throw std::runtime_error("Cannot add decimal with " + to_s_type(type_of(i)) + ": " + sprint(i));
   }
 
   return decimal(sum);
@@ -108,7 +110,7 @@ cons_t* proc_add(cons_t *p, environment_t* env)
       // automatically convert; perform rest of computation in floats
       return proc_addf(cons(decimal(sum), p), env);
     else
-      throw std::runtime_error("Cannot add integer with " + to_s(type_of(i)) + ": " + sprint(i));
+      throw std::runtime_error("Cannot add integer with " + to_s_type(type_of(i)) + ": " + sprint(i));
   }
 
   return integer(sum);
@@ -180,7 +182,7 @@ cons_t* proc_mulf(cons_t *p, environment_t *env)
       // automatically convert; perform rest of computation in floats
       product *= i->decimal;
     else
-      throw std::runtime_error("Cannot multiply integer with " + to_s(type_of(i)) + ": " + sprint(i));
+      throw std::runtime_error("Cannot multiply integer with " + to_s_type(type_of(i)) + ": " + sprint(i));
   }
 
   return decimal(product);
@@ -199,7 +201,7 @@ cons_t* proc_mul(cons_t *p, environment_t *env)
       // automatically convert; perform rest of computation in floats
       return proc_mulf(cons(decimal(product), p), env);
     else
-      throw std::runtime_error("Cannot multiply integer with " + to_s(type_of(i)) + ": " + sprint(i));
+      throw std::runtime_error("Cannot multiply integer with " + to_s_type(type_of(i)) + ": " + sprint(i));
   }
 
   return integer(product);
@@ -213,7 +215,7 @@ cons_t* proc_to_string(cons_t* p, environment_t *env)
     if ( listp(car(p)) )
       s += print(car(p));
     else
-      s += to_s(car(p));
+      s += to_s_cons(car(p));
   }
 
   return string(s.c_str());
@@ -271,7 +273,7 @@ cons_t* proc_debug(cons_t *p, environment_t *env)
 {
   std::string s;
 
-  s = format("adr=%-11p type=%-7s", p, to_s(type_of(p)).c_str());
+  s = format("adr=%-11p type=%-7s", p, to_s_type(type_of(p)).c_str());
 
   switch ( type_of(p) ) {
   case NIL: break;
@@ -330,7 +332,9 @@ cons_t* proc_cons(cons_t* p, environment_t* e)
 
 cons_t* proc_car(cons_t* p, environment_t* env)
 {
-  return caar(p);
+  assert_length(p, 1);
+  assert_type(PAIR, p);
+  return car(car(p));
 }
 
 cons_t* proc_cdr(cons_t* p, environment_t* env)
@@ -341,30 +345,46 @@ cons_t* proc_cdr(cons_t* p, environment_t* env)
    *        so we explicitly check for it here, although we
    *        probably SHOULD NOT (TODO).
    */
-  cons_t *r = cdar(p);
-  return r? r : cons(NULL);
+  assert_length(p, 1);
+  assert_type(PAIR, p);
+  cons_t *r = cdr(car(p));
+  return nullp(r)? list(NULL) : r;
 }
 
 cons_t* proc_caar(cons_t* p, environment_t* e)
 {
-  return car(caar(p));
+  return car(proc_car(p,e));
+}
+
+cons_t* proc_caaar(cons_t* p, environment_t* e)
+{
+  return caar(proc_car(p,e));
 }
 
 cons_t* proc_cadr(cons_t* p, environment_t* e)
 {
-  return car(proc_cdr(p, e));
+  return car(proc_cdr(p,e));
+}
+
+cons_t* proc_caadr(cons_t* p, environment_t* e)
+{
+  return caar(proc_cdr(p,e));
 }
 
 cons_t* proc_cdar(cons_t* p, environment_t* e)
 {
-  return cdr(proc_car(p, e));
+  assert_length(p, 1);
+  assert_type(PAIR, p);
+  cons_t *r = cdar(car(p));
+  return nullp(r)? list(NULL) : r;
 }
 
 cons_t* proc_cddr(cons_t* p, environment_t* e)
 {
-  // see proc_cdr for UGLINESS
-  cons_t *r = cdr(proc_cdr(p, e));
-  return r? r : cons(NULL); // <= UGLY PUGLY
+  assert_length(p, 1);
+  assert_type(PAIR, p);
+  cons_t *r = cddr(car(p));
+  return nullp(r)? list(NULL) : r;
 }
 
 cons_t* proc_append(cons_t* p, environment_t*)
@@ -410,37 +430,49 @@ cons_t* proc_zerop(cons_t* p, environment_t*)
 
 cons_t* proc_pairp(cons_t* p, environment_t* env)
 {
-  /*
-   * TODO: This works by BRUTE FORCE;
-   *       fix the evaluator (lookup+eval evlis there)
-   *       and fix the parser (don't cons the car before
-   *       returning)
-   */
+  assert_length(p, 1);
   return boolean(pairp(car(p)));
 }
 
 cons_t* proc_listp(cons_t* p, environment_t* env)
 {
+  assert_length(p, 1);
   return boolean(listp(car(p)));
+}
+
+cons_t* proc_numberp(cons_t* p, environment_t*)
+{
+  assert_length(p, 1);
+  return boolean(numberp(car(p)));
+}
+
+cons_t* proc_stringp(cons_t* p, environment_t*)
+{
+  assert_length(p, 1);
+  return boolean(stringp(car(p)));
 }
 
 cons_t* proc_procedurep(cons_t* p, environment_t* e)
 {
+  assert_length(p, 1);
   return boolean(closurep(car(p)));
 }
 
 cons_t* proc_vectorp(cons_t* p, environment_t* e)
 {
+  assert_length(p, 1);
   return boolean(vectorp(car(p)));
 }
 
 cons_t* proc_charp(cons_t* p, environment_t* e)
 {
+  assert_length(p, 1);
   return boolean(charp(car(p)));
 }
 
 cons_t* proc_booleanp(cons_t* p, environment_t* e)
 {
+  assert_length(p, 1);
   return boolean(booleanp(car(p)));
 }
 
@@ -647,7 +679,7 @@ cons_t* proc_backtrace(cons_t*, environment_t*)
 
 cons_t* proc_type_of(cons_t* p, environment_t* e)
 {
-  return symbol(to_s(type_of(car(p))).c_str(), e);
+  return symbol(to_s_type(type_of(car(p))).c_str(), e);
 }
 
 cons_t* proc_cond(cons_t* p, environment_t* e)
@@ -694,8 +726,29 @@ cons_t* proc_cond(cons_t* p, environment_t* e)
 
 cons_t* proc_number_to_string(cons_t* p, environment_t* e)
 {
-  assert_number(car(p));
   assert_length(p, 1);
+  assert_number(car(p));
+  return proc_to_string(p, e);
+}
+
+cons_t* proc_symbol_to_string(cons_t* p, environment_t* e)
+{
+  assert_length(p, 1);
+  assert_type(SYMBOL, car(p));
+  return proc_to_string(p, e);
+}
+
+cons_t* proc_boolean_to_string(cons_t* p, environment_t* e)
+{
+  assert_length(p, 1);
+  assert_type(BOOLEAN, car(p));
+  return proc_to_string(p, e);
+}
+
+cons_t* proc_list_to_string(cons_t* p, environment_t* e)
+{
+  assert_length(p, 1);
+  assert_type(PAIR, car(p));
   return proc_to_string(p, e);
 }
 
@@ -725,22 +778,71 @@ cons_t* proc_begin(cons_t* p, environment_t* e)
   return cons(symbol("begin", e), p);
 }
 
+cons_t* proc_gteq(cons_t* p, environment_t* e)
+{
+  return boolean(proc_eqintp(p, e) || proc_greater(p, e));
+}
+
+cons_t* proc_lteq(cons_t* p, environment_t* e)
+{
+  return boolean(proc_eqintp(p, e) || proc_less(p, e));
+}
+
+cons_t* proc_alistp(cons_t* p, environment_t*)
+{
+  assert_length(p, 1);
+  p = car(p);
+
+  // Must be a list of lists, each with at least one element
+  for ( ; !nullp(p); p = cdr(p) ) {
+    if ( !length(car(p)) || nullp(caar(p)) ||
+          pairp(caar(p)) ) return boolean(false);
+  }
+
+  return boolean(true);
+}
+
+cons_t* proc_assq(cons_t* p, environment_t* e)
+{
+  assert_length(p, 2);
+
+  cons_t *find = car(p),
+        *alist = cadr(p);
+
+  for ( p = alist; !nullp(p); p = cdr(p) )
+    if ( proc_eqp(list(find, caar(p)), e)->boolean )
+      return car(p);
+
+  // Not found
+  return boolean(false);
+}
+
 named_function_t exports_base[] = {
   {"*", proc_mul},
   {"+", proc_add},
   {"-", proc_sub},
-  {"->string", proc_to_string},
   {"/", proc_divf},
-  {"//", proc_div},
+  {":closure-source", proc_closure_source},
+  {":debug", proc_debug},
+  {":exit", proc_exit},
+  {":type-of", proc_type_of},
+  {":version", proc_version},
   {"<", proc_less},
+  {"<=", proc_lteq},
   {"=", proc_eqintp},
   {">", proc_greater},
+  {">=", proc_gteq},
   {"abs", proc_abs},
+  {"alist?", proc_alistp},
   {"and", proc_and},
   {"append", proc_append},
+  {"assq", proc_assq},
   {"atom?", proc_atomp},
   {"backtrace", proc_backtrace},
+  {"boolean->string", proc_boolean_to_string},
   {"boolean?", proc_booleanp},
+  {"caaar", proc_caaar},
+  {"caadr", proc_caadr},
   {"caar", proc_caar},
   {"cadr", proc_cadr},
   {"car", proc_car},
@@ -748,34 +850,33 @@ named_function_t exports_base[] = {
   {"cddr", proc_cddr},
   {"cdr", proc_cdr},
   {"char?", proc_charp},
-  {"closure-source", proc_closure_source},
   {"cons", proc_cons},
-  {"debug", proc_debug},
-  {"display", proc_print},
+  {"display", proc_display},
   {"eq?", proc_eqp},
   {"equal?", proc_equalp},
-  {"exit", proc_exit},
   {"file-exists?", proc_file_existsp},
   {"float?", proc_decimalp},
   {"integer?", proc_integerp},
   {"length", proc_length},
   {"list", proc_list},
+  {"list->string", proc_list_to_string},
   {"list?", proc_listp},
   {"load", proc_load},
   {"newline", proc_newline},
   {"not", proc_not},
   {"null?", proc_nullp},
   {"number->string", proc_number_to_string},
+  {"number?", proc_numberp},
   {"or", proc_or},
   {"pair?", proc_pairp},
   {"procedure?", proc_procedurep},
   {"reverse", proc_reverse},
   {"string-append", proc_strcat},
+  {"string?", proc_stringp},
+  {"symbol->string", proc_symbol_to_string},
   {"symbol?", proc_symbolp},
-  {"type-of", proc_type_of},
   {"vector?", proc_vectorp},
-  {"version", proc_version},
-  {"write", proc_print},
+  {"write", proc_write},
   {"xor", proc_xor},
   {"zero?", proc_zerop},
   {NULL, NULL}};

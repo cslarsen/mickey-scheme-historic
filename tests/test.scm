@@ -14,17 +14,15 @@
   (begin
     (test+1 (quote _))
     (fail+1 (quote _))
-    (display (string-append
-      (->string tests) " FAIL: "
-        (->string code) " != " (->string expected) "\n"
-        "  Actual result: '" (->string actual) "'\n")))))
+    (display tests) (display " FAIL: ")
+    (display code) (display " != ") (display expected) (newline)
+    (display "  Actual result: '") (display actual) (display "'") (newline))))
 
 (define success (lambda (code expected)
   (begin
     (test+1 (quote _))
-    (display (string-append
-      (->string tests) " OK: "
-        (->string code) " == " (->string expected) "\n")))))
+    (display tests) (display " OK: ")
+    (display code) (display " == ") (display expected) (newline))))
 
 (define (test-eq code expected)
     (if (not (eq? (eval code)
@@ -35,7 +33,7 @@
 (define results (lambda ()
     (display 
       (string-append
-        (->string (- tests failed)) " / " (->string tests) " tests OK, "
-          (->string failed) " failed\n"))))
+        (number->string (- tests failed)) " / " (number->string tests) " tests OK, "
+          (number->string failed) " failed\n"))))
 
 

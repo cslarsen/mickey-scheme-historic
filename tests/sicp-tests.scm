@@ -139,9 +139,9 @@
 (define (sqrt x)
   (sqrt-iter 1.0 x))
 
-(test-eq (quote (->string (sqrt 9))) "3.000092")
+(test-eq (quote (number->string (sqrt 9))) "3.000092")
 (test-eq (quote (sqrt (+ 100 37))) 11.704700)
-(test-eq (quote (->string (sqrt (+ (sqrt 2) (sqrt 3))))) "1.773928")
+(test-eq (quote (number->string (sqrt (+ (sqrt 2) (sqrt 3))))) "1.773928")
 (test-eq (quote (square (sqrt 1000))) 1000.000427)
 
 (display "\nSICP SECTION 1.1.8\n")

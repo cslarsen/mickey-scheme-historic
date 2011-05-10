@@ -74,7 +74,7 @@ static cons_t* make_curried_function(cons_t *names, cons_t *values, cons_t *body
            *v = values;
 
     // Curry; set <name> => <value>
-    while ( !nullp(n) && !nullp(v) ) {
+    while ( !nullp(n) ) {
       e->define(car(n)->symbol->name(), car(v));
       n = cdr(n);
       v = cdr(v);
@@ -167,7 +167,7 @@ static cons_t* call_lambda(cons_t *p, environment_t* e)
         break;
       } else 
         throw std::runtime_error("Lambda argument not a symbol but type "
-          + to_s(type_of(car(name))) + ": " + sprint(car(name)));
+          + to_s_type(type_of(car(name))) + ": " + sprint(car(name)));
     }
 
     /*

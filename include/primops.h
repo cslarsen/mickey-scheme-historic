@@ -34,10 +34,14 @@ cons_t* nil();
 cons_t* car(const cons_t*);
 cons_t* cdr(const cons_t*);
 cons_t* caar(const cons_t*);
+cons_t* caaar(const cons_t*);
 cons_t* cadr(const cons_t*);
+cons_t* caadr(const cons_t*);
+cons_t* caddr(const cons_t*);
 cons_t* cddr(const cons_t*);
 cons_t* cdar(const cons_t*);
 cons_t* cadar(const cons_t*);
+cons_t* cadaar(const cons_t*);
 
 bool symbolp(const cons_t*);
 bool atomp(const cons_t*);

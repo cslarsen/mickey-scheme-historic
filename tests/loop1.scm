@@ -1,7 +1,7 @@
 ;; Testing simple recursion loop
 
 (define (loop n)
-  (display (string-append (->string n) " "))
+  (display (string-append (number->string n) " "))
   (if (= n 1)
       (display "\n") ; stop
       (loop (- n 1))))

@@ -10,7 +10,7 @@
 
 (define (show-fib n)
   (display (string-append
-    "fib(" (->string n) ") = " (->string (fib n)) "\n")))
+    "fib(" (number->string n) ") = " (number->string (fib n)) "\n")))
 
 (show-fib 0)
 (show-fib 1)

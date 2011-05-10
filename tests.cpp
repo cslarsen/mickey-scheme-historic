@@ -150,16 +150,21 @@ void run_tests()
   TEST_PARSE("(1 2 3)\r\n(4 5 6)", "((1 2 3) (4 5 6))");
 
   // string operations
-  TEST_EVAL("(->string 123)", "123");
-  TEST_EVAL("(->string (list 1 2 (list 3 4)))", "(1 2 (3 4))");
-  TEST_EVAL("(->string (list 1 2 (list 3 (list 4 4 5) 4)))", "(1 2 (3 (4 4 5) 4))");
-  TEST_EVAL("(->string (list 1 2 (list 3 4 (* 3 30))))", "(1 2 (3 4 90))");
+  TEST_EVAL("(number->string 123)", "123");
+  TEST_EVAL("(list->string (list 1 2 (list 3 4)))", "(1 2 (3 4))");
+  TEST_EVAL("(list->string (list 1 2 (list 3 (list 4 4 5) 4)))", "(1 2 (3 (4 4 5) 4))");
+  TEST_EVAL("(list->string (list 1 2 (list 3 4 (* 3 30))))", "(1 2 (3 4 90))");
   TEST_EVAL("(string-append \"one\" \"two\" \"three\")", "onetwothree");
 
   // side-effects / printing to console
   TEST_EVAL("(display 123)", "");
   TEST_EVAL("(display (+ 3 3 5))", "");
   TEST_EVAL("(display \"hello\")", "");
+
+  // edge cases: car, cdr, etc
+  TEST_EVAL("(cdar (list (list 1)))", "()");
+  TEST_EVAL("(cddr (list 1 (list 2 3 4)))", "()");
+  TEST_EVAL("(cddr (list 1 (list 2 3 4) (list 5 6)))", "((5 6))");
 
   // plus operator
   TEST_EVAL("(+ 0)", "0");
@@ -220,10 +225,10 @@ void run_tests()
   TEST_EVAL("(null? 1)", "#f");
   TEST_EVAL("(null? (quote a))", "#f");
   TEST_EVAL("(null? (list))", "#t");
-//  TEST_EVAL("(null? (car (list 1)))", "#f"); // -- car/cdr doesn't work yet (TODO)
-//  TEST_EVAL("(null? (cdr (list 1)))", "#t");
+  TEST_EVAL("(null? (car (list 1)))", "#f"); // -- car/cdr doesn't work yet (TODO)
+  TEST_EVAL("(null? (cdr (list 1)))", "#t");
 
-  TEST_EVAL("(procedure?)", "#f");
+  TEST_EVAL("(procedure? #t)", "#f");
   TEST_EVAL("(procedure? 123)", "#f");
   TEST_EVAL("(procedure? (quote abba-rules))", "#f");
   TEST_EVAL("(procedure? procedure?)", "#t");
@@ -233,7 +238,7 @@ void run_tests()
   TEST_EVAL("(procedure? (+ 1 2))", "#f");
 
   TEST_EVAL("(pair? (list 1 2 3))", "#t");
-  TEST_EVAL("(pair?)", "#f");
+  TEST_EVAL("(pair? #t)", "#f");
   TEST_EVAL("(pair? 123)", "#f");
   TEST_EVAL("(pair? (quote abba))", "#f");
   TEST_EVAL("(pair? (+ 1 2))", "#f"); // cause "(+ 1 2)" evaluates to "3"
@@ -242,7 +247,6 @@ void run_tests()
   TEST_EVAL("(pair? (+))", "#f");
   TEST_EVAL("(pair? +)", "#f");
   TEST_EVAL("(pair? (list))", "#f");
-  TEST_EVAL("(pair? 1 2)", "#f"); // actually, should be error b/c "1 2" is not a list
 
   TEST_EVAL("(list? 1)", "#f");
   TEST_EVAL("(list? (+ 1 2))", "#f");
@@ -256,7 +260,6 @@ void run_tests()
   TEST_EVAL("(length (list 1))", "1");
   TEST_EVAL("(length (list 1 2))", "2");
   TEST_EVAL("(length (list 1 2 3))", "3");
-//  TEST_EVAL("(length 0)", "0"); // should throw
   TEST_EVAL("(length (list 1 2 (list 3 4)))", "3");
 
   // difference between PAIR and LIST

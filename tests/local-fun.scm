@@ -21,5 +21,5 @@
 (if (not (eq? (inner1 456) 123))
   (display (string-append
     "Error, inner1 at global scope did not return 123, but: "
-      (->string (inner1 456) "\n")))
+      (number->string (inner1 456) "\n")))
   (display "Ok, inner1 works fine\n"))

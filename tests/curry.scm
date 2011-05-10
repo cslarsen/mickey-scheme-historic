@@ -34,8 +34,8 @@
 ; ... and try it!
 (define test
   (lambda (x)
-    (display (string-append
-      (->string x) "*3 = " (->string (times3 x)) "\n"))))
+    (display x) (display "*3 = ")
+    (display (times3 x)) (newline)))
 
 (display "Testing currying:\n")
 (test 1)
