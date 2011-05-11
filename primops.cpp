@@ -218,9 +218,10 @@ bool closurep(const cons_t* p)
 
 bool equalp(const cons_t* l, const cons_t* r)
 {
-  // TODO: Switch equalp and eqp, and have eqp
-  //       behave as per spec, + add eqvp.
-  return eqp(l, r);
+  // SLOW, but sure.
+  if ( type_of(l) == type_of(r) )
+    return sprint(l) == sprint(r);
+  return false;
 }
 
 bool eqp(const cons_t* l, const cons_t* r)

@@ -179,18 +179,6 @@ void run_tests()
   TEST_EVAL("(+ (* 5 5) 4 12)", "41"); 
 
   // predicates
-  TEST_EVAL("(atom? 1)", "#t");
-  TEST_EVAL("(atom? (list 1 2))", "#f");
-  TEST_EVAL("(atom? (list 1))", "#f");
-  TEST_EVAL("(atom? list)", "#t");
-  TEST_EVAL("(atom? (quote abba))", "#t");
-  TEST_EVAL("(atom? 123)", "#t");
-  TEST_EVAL("(atom? (+ 1 2))", "#t");
-  TEST_EVAL("(atom? (list))", "#t");
-  TEST_EVAL("(atom? atom?)", "#t");
-  TEST_EVAL("(atom? (+))", "#t");
-  TEST_EVAL("(atom? +)", "#t");
-
   TEST_EVAL("(symbol? 1)", "#f");
   TEST_EVAL("(symbol? 10)", "#f");
   TEST_EVAL("(symbol? (quote a))", "#t");

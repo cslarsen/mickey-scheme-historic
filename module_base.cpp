@@ -392,11 +392,6 @@ cons_t* proc_append(cons_t* p, environment_t*)
   return append_non_mutable(car(p), cadr(p));
 }
 
-cons_t* proc_atomp(cons_t* p, environment_t* env)
-{
-  return boolean(atomp(car(p)));
-}
-
 cons_t* proc_symbolp(cons_t* p, environment_t* env)
 {
   return boolean(symbolp(car(p)));
@@ -502,6 +497,37 @@ cons_t* proc_eqp(cons_t* p, environment_t*)
 {
   assert_length(p, 2);
   return boolean(eqp(car(p), cadr(p)));
+}
+
+cons_t* proc_eqvp(cons_t* p, environment_t*)
+{
+  assert_length(p, 2);
+
+  cons_t *l = car(p),
+         *r = cadr(p);
+
+  if ( type_of(l) != type_of(r) )
+    return boolean(false);
+
+  switch ( type_of(l) ) {
+  case NIL:     return boolean(true);
+  case BOOLEAN: return boolean(l == r);
+  case SYMBOL:  return boolean(l->symbol->name() == r->symbol->name());
+  case INTEGER: // Also make sure both are exact/both inexact (TODO)
+                return boolean(l->integer == r->integer); 
+  case DECIMAL: // Check both exact/both inexact
+                return boolean(l->decimal == r->decimal);
+  case CHAR:    return boolean(l->character == r->character);
+  case PAIR:    return boolean(nullp(l) && nullp(r)? true : l == r);
+  case VECTOR:  return boolean(l == r);
+  case STRING:  return boolean(l == r);
+  case CLOSURE: // double-check with section 6.1 and 4.1.4 (TODO)
+                return boolean(l->closure == r->closure);
+  case CONTINUATION:
+                return boolean(l->continuation == r->continuation);
+  }
+
+  return boolean(false);
 }
 
 cons_t* proc_equalp(cons_t* p, environment_t*)
@@ -796,20 +822,6 @@ cons_t* proc_lteq(cons_t* p, environment_t* e)
   return boolean(proc_eqintp(p, e) || proc_less(p, e));
 }
 
-cons_t* proc_alistp(cons_t* p, environment_t*)
-{
-  assert_length(p, 1);
-  p = car(p);
-
-  // Must be a list of lists, each with at least one element
-  for ( ; !nullp(p); p = cdr(p) ) {
-    if ( !length(car(p)) || nullp(caar(p)) ||
-          pairp(caar(p)) ) return boolean(false);
-  }
-
-  return boolean(true);
-}
-
 cons_t* proc_assq(cons_t* p, environment_t* e)
 {
   assert_length(p, 2);
@@ -819,6 +831,36 @@ cons_t* proc_assq(cons_t* p, environment_t* e)
 
   for ( p = alist; !nullp(p); p = cdr(p) )
     if ( proc_eqp(list(find, caar(p)), e)->boolean )
+      return car(p);
+
+  // Not found
+  return boolean(false);
+}
+
+cons_t* proc_assv(cons_t* p, environment_t* e)
+{
+  assert_length(p, 2);
+
+  cons_t *find = car(p),
+        *alist = cadr(p);
+
+  for ( p = alist; !nullp(p); p = cdr(p) )
+    if ( proc_eqvp(list(find, caar(p)), e)->boolean )
+      return car(p);
+
+  // Not found
+  return boolean(false);
+}
+
+cons_t* proc_assoc(cons_t* p, environment_t* e)
+{
+  assert_length(p, 2);
+
+  cons_t *find = car(p),
+        *alist = cadr(p);
+
+  for ( p = alist; !nullp(p); p = cdr(p) )
+    if ( proc_equalp(list(find, caar(p)), e)->boolean )
       return car(p);
 
   // Not found
@@ -841,11 +883,11 @@ named_function_t exports_base[] = {
   {">", proc_greater},
   {">=", proc_gteq},
   {"abs", proc_abs},
-  {"alist?", proc_alistp},
   {"and", proc_and},
   {"append", proc_append},
+  {"assoc", proc_assoc},
   {"assq", proc_assq},
-  {"atom?", proc_atomp},
+  {"assq", proc_assv},
   {"backtrace", proc_backtrace},
   {"boolean->string", proc_boolean_to_string},
   {"boolean?", proc_booleanp},
@@ -861,6 +903,7 @@ named_function_t exports_base[] = {
   {"cons", proc_cons},
   {"display", proc_display},
   {"eq?", proc_eqp},
+  {"eqv?", proc_eqvp},
   {"equal?", proc_equalp},
   {"file-exists?", proc_file_existsp},
   {"float?", proc_decimalp},

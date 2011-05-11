@@ -21,7 +21,6 @@
 (test-eq (quote (boolean->string (eq? 3 (+ 1 2)))) "#t")
 (test-eq (quote (boolean->string (eq? 3 (+ 1 2 3)))) "#f")
 (test-eq (quote (list->string (list 1 2 (list 3 4)))) "(1 2 (3 4))")
-(test-eq (quote (atom? (quote abba))) #t)
 (test-eq (quote (apply + (list 1 2 3))) 6)
 (test-eq (quote (apply + (quote (1 2 3)))) 6)
 (test-eq (quote (apply + (list 1 2 3 (* 5 6)))) 36)
@@ -66,21 +65,31 @@
 (test-eq (quote (abs 1.1)) 1.1)
 (test-eq (quote (abs 2.1)) 2.1)
 
-;; alist?
-(test-eq (quote (alist? (list (list (quote a) 1) (list (quote b) 2) (list (quote c) 3)))) #t)
-(test-eq (quote (alist? (list))) #t) ; empty lists are alist too
-(test-eq (quote (alist? (list (list)))) #f) ; but inner-list must have at least one element
-(test-eq (quote (alist? (list (list 1)))) #t) ; but inner-list must have at least one element
-(test-eq (quote (alist? (list (list 1 2 3)))) #t) ; can have more too, it seems
-(test-eq (quote (alist? (list (list (quote a) 1 2) (list (quote b) 2) (list (quote c) 3)))) #t)
-(test-eq (quote (alist? (list (list (quote one) 1) (list (quote two) 2) (list (quote three) 3)))) #t)
-
 ;; assq
 ; TODO: Have to make test-eq a macro
 ;(test-eq (quote (assq (quote two) (list (list (quote one) 1) (list (quote two) 2) (list (quote three) 3)))) (quote (list (quote two) 2)))
 ;(test-eq (quote (assq (quote one) (list (list (quote one) 1) (list (quote two) 2) (list (quote three) 3)))) (quote (list (quote one) 1)))
 ;(test-eq (quote (assq (quote three) (list (list (quote one) 1) (list (quote two) 2) (list (quote three) 3)))) (quote (list (quote three) 3)))
 ;(test-eq (quote (assq (quote threee) (list (list (quote one) 1) (list (quote two) 2) (list (quote three) 3)))) #f)
+
+;; eqv? tests from R7RS, section 6.1
+(test-eq (quote (eqv? (quote a) (quote a))) #t) ;; (eqv? 'a 'a)
+(test-eq (quote (eqv? (quote a) (quote b))) #f)
+(test-eq (quote (eqv? 2 2)) #t)
+(test-eq (quote (eqv? 2 1)) #f)
+(test-eq (quote (eqv? (list) (list))) #t) ;; (eqv? '() '())
+(test-eq (quote (eqv? 100000000 100000000)) #t)
+(test-eq (quote (eqv? (cons 1 2) (cons 1 2))) #f)
+(test-eq (quote (eqv? (lambda () 1) (lambda () 2))) #f)
+(test-eq (quote (eqv? #f (quote nil))) #f)
+(test-eq (quote (let ((p (lambda (x) x)))
+                  (eqv? p p))) #t)
+
+;; unspecified tests for eqv
+; (eqv? "" "")
+; (eqv? '#() '#())
+; (eqv? (lambda (x) x) (lambda (x) x))
+; (eqv? (lambda (x) x) (lambda (y) y))
 
 (display "\nResults\n")
 (results)
