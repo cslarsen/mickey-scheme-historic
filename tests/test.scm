@@ -25,15 +25,12 @@
     (display code) (display " == ") (display expected) (newline))))
 
 (define (test-eq code expected)
-    (if (not (eq? (eval code)
-                  (eval expected)))
-        (fail code expected (eval code))
-        (success code expected)))
+  (if (not (equal? (eval code) expected))
+      (fail code expected code)
+      (success code expected)))
 
 (define results (lambda ()
     (display 
       (string-append
         (number->string (- tests failed)) " / " (number->string tests) " tests OK, "
           (number->string failed) " failed\n"))))
-
-
