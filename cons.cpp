@@ -33,7 +33,7 @@ const symbol_t* create_symbol(const std::string& s)
   return &(*i).second;
 }
 
-std::string to_s_type(enum type_t type)
+std::string to_s(enum type_t type)
 {
   switch ( type ) {
   case NIL:          return "nil";      break;
@@ -52,16 +52,16 @@ std::string to_s_type(enum type_t type)
   return "#<unknown type>";
 }
 
-std::string to_s_cons(cons_t *p)
+std::string to_s(cons_t *p)
 {
   switch ( type_of(p) ) {
   case NIL:      return "#<nil>";
-  case BOOLEAN:  return to_s_bool(p->boolean);
-  case CHAR:     return to_s_char(p->character, false);
-  case DECIMAL:  return to_s_float(p->decimal);
-  case INTEGER:  return to_s_int(p->integer);
+  case BOOLEAN:  return to_s(p->boolean);
+  case CHAR:     return to_s(p->character, false);
+  case DECIMAL:  return to_s(p->decimal);
+  case INTEGER:  return to_s(p->integer);
   case CLOSURE:  return format("#<closure %p>", p->closure);
-  case PAIR:     return to_s_cons(car(p)) + " . " + to_s_cons(cdr(p));
+  case PAIR:     return to_s(car(p)) + " . " + to_s(cdr(p));
   case SYMBOL:   return p->symbol->name();
   case STRING:   return p->string;
   case VECTOR:   return format("#<vector %p>", p->vector);
@@ -71,22 +71,22 @@ std::string to_s_cons(cons_t *p)
   return "#<unknown type>";
 }
 
-std::string to_s_closure(closure_t* p)
+std::string to_s(closure_t* p)
 {
   return format("#<closure %p>", p);
 }
 
-std::string to_s_cont(continuation_t* p)
+std::string to_s(continuation_t* p)
 {
   return format("#<continuation %p>", p);
 }
 
-std::string to_s_vec(vector_t* p)
+std::string to_s(vector_t* p)
 {
   return format("#<vector %p>", p);
 }
 
-std::string to_s_char(char p, bool escape)
+std::string to_s(char p, bool escape)
 {
   // TODO: Use table instead
   return format(escape? "#\\%c" : "%c", (p>32 || p<127)? p : '?' );

@@ -16,15 +16,15 @@ std::string sprint(const cons_t* p, std::string& s, bool escape)
 {
   switch ( type_of(p) ) {
   case NIL:          return s;
-  case BOOLEAN:      return s + to_s_bool(p->boolean);
-  case CHAR:         return s + to_s_char(p->character, escape);
-  case DECIMAL:      return s + to_s_float(p->decimal);
-  case INTEGER:      return s + to_s_int(p->integer);
-  case CLOSURE:      return s + (escape? to_s_closure(p->closure) : "");
+  case BOOLEAN:      return s + to_s(p->boolean);
+  case CHAR:         return s + to_s(p->character, escape);
+  case DECIMAL:      return s + to_s(p->decimal);
+  case INTEGER:      return s + to_s(p->integer);
+  case CLOSURE:      return s + (escape? to_s(p->closure) : "");
   case SYMBOL:       return s + p->symbol->name();
   case STRING:       return s + (escape? "\"" + encode_str(p->string) + "\"" : p->string);
-  case VECTOR:       return s + (escape? to_s_vec(p->vector) : "");
-  case CONTINUATION: return s + (escape? to_s_cont(p->continuation) : "");
+  case VECTOR:       return s + (escape? to_s(p->vector) : "");
+  case CONTINUATION: return s + (escape? to_s(p->continuation) : "");
   case PAIR: {
     std::string head = sprint(car(p), s, escape);
     std::string tail = (atomp(cdr(p)) && !nullp(cdr(p)) ?

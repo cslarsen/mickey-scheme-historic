@@ -39,8 +39,8 @@ void assert_type(const enum type_t type, cons_t* p)
 {
   if ( type_of(p) != type )
     throw std::runtime_error(format("Function expected %s but got %s: `%s´",
-      indef_art(to_s_type(type)).c_str(),
-      indef_art(to_s_type(type_of(p))).c_str(),
+      indef_art(to_s(type)).c_str(),
+      indef_art(to_s(type_of(p))).c_str(),
       sprint(p).c_str()));
 }
 
@@ -48,6 +48,6 @@ void assert_number(const cons_t* p)
 {
   if ( !numberp(p) )
     throw std::runtime_error(format("Function expected a number but got a %s: `%s´",
-      to_s_type(type_of(p)).c_str(),
+      to_s(type_of(p)).c_str(),
       sprint(p).c_str()));
 }

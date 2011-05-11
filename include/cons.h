@@ -130,11 +130,11 @@ struct cons_t
 // Should be in util, but cannot due to circular
 // dependencies between cons.h and util.h (TODO: Fix that)
 std::string encode_str(const char*);
-std::string to_s_type(enum type_t);
-std::string to_s_closure(closure_t*);
-std::string to_s_cont(continuation_t*);
-std::string to_s_vec(vector_t*);
-std::string to_s_char(char, bool);
-std::string to_s_cons(struct cons_t *p);;
+std::string to_s(enum type_t);
+std::string to_s(closure_t*);
+std::string to_s(continuation_t*);
+std::string to_s(vector_t*);
+std::string to_s(char, bool);
+std::string to_s(struct cons_t *p);;
 
 #endif

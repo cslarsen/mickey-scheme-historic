@@ -167,7 +167,7 @@ static cons_t* call_lambda(cons_t *p, environment_t* e)
         break;
       } else 
         throw std::runtime_error("Lambda argument not a symbol but type "
-          + to_s_type(type_of(car(name))) + ": " + sprint(car(name)));
+          + to_s(type_of(car(name))) + ": " + sprint(car(name)));
     }
 
     /*

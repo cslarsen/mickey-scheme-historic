@@ -85,7 +85,7 @@ cons_t* proc_addf(cons_t *p, environment_t* env)
     else if ( decimalp(i) )
       sum += i->decimal;
     else
-      throw std::runtime_error("Cannot add decimal with " + to_s_type(type_of(i)) + ": " + sprint(i));
+      throw std::runtime_error("Cannot add decimal with " + to_s(type_of(i)) + ": " + sprint(i));
   }
 
   return decimal(sum);
@@ -110,7 +110,7 @@ cons_t* proc_add(cons_t *p, environment_t* env)
       // automatically convert; perform rest of computation in floats
       return proc_addf(cons(decimal(sum), p), env);
     else
-      throw std::runtime_error("Cannot add integer with " + to_s_type(type_of(i)) + ": " + sprint(i));
+      throw std::runtime_error("Cannot add integer with " + to_s(type_of(i)) + ": " + sprint(i));
   }
 
   return integer(sum);
@@ -182,7 +182,7 @@ cons_t* proc_mulf(cons_t *p, environment_t *env)
       // automatically convert; perform rest of computation in floats
       product *= i->decimal;
     else
-      throw std::runtime_error("Cannot multiply integer with " + to_s_type(type_of(i)) + ": " + sprint(i));
+      throw std::runtime_error("Cannot multiply integer with " + to_s(type_of(i)) + ": " + sprint(i));
   }
 
   return decimal(product);
@@ -201,7 +201,7 @@ cons_t* proc_mul(cons_t *p, environment_t *env)
       // automatically convert; perform rest of computation in floats
       return proc_mulf(cons(decimal(product), p), env);
     else
-      throw std::runtime_error("Cannot multiply integer with " + to_s_type(type_of(i)) + ": " + sprint(i));
+      throw std::runtime_error("Cannot multiply integer with " + to_s(type_of(i)) + ": " + sprint(i));
   }
 
   return integer(product);
@@ -215,7 +215,7 @@ cons_t* proc_to_string(cons_t* p, environment_t *env)
     if ( listp(car(p)) )
       s += print(car(p));
     else
-      s += to_s_cons(car(p));
+      s += to_s(car(p));
   }
 
   return string(s.c_str());
@@ -273,7 +273,7 @@ cons_t* proc_debug(cons_t *p, environment_t *env)
 {
   std::string s;
 
-  s = format("adr=%-11p type=%-7s", p, to_s_type(type_of(p)).c_str());
+  s = format("adr=%-11p type=%-7s", p, to_s(type_of(p)).c_str());
 
   switch ( type_of(p) ) {
   case NIL: break;
@@ -679,7 +679,7 @@ cons_t* proc_backtrace(cons_t*, environment_t*)
 
 cons_t* proc_type_of(cons_t* p, environment_t* e)
 {
-  return symbol(to_s_type(type_of(car(p))).c_str(), e);
+  return symbol(to_s(type_of(car(p))).c_str(), e);
 }
 
 cons_t* proc_cond(cons_t* p, environment_t* e)
