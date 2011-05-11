@@ -287,5 +287,8 @@ void run_tests()
   TEST_EVAL("hello", "(html (body (p (Hello, world!))))");
   TEST_REPL("hello", "(html (body (p (\"Hello, world!\"))))");
 
+  // quote
+  TEST_EVAL("(eval (quote (list 1 2 (quote 3) 3)))", "(1 2 3 3)");
+
   results();
 }
