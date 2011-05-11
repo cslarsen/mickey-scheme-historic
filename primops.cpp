@@ -219,9 +219,8 @@ bool closurep(const cons_t* p)
 bool equalp(const cons_t* l, const cons_t* r)
 {
   // SLOW, but sure.
-  if ( type_of(l) == type_of(r) )
-    return sprint(l) == sprint(r);
-  return false;
+  return type_of(l) != type_of(r) ? false :
+          print(l) == print(r);
 }
 
 bool eqp(const cons_t* l, const cons_t* r)

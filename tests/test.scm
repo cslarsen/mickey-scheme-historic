@@ -10,27 +10,26 @@
   (lambda (_foo)
     (set! failed (+ failed 1))))
 
-(define fail (lambda (code expected actual)
-  (begin
-    (test+1 (quote _))
-    (fail+1 (quote _))
-    (display tests) (display " FAIL: ")
-    (display code) (display " != ") (display expected) (newline)
-    (display "  Actual result: '") (display actual) (display "'") (newline))))
+(define (fail code expected actual)
+  (test+1 (quote _))
+  (fail+1 (quote _))
+  (display tests) (display " FAIL: ")
+  (display code) (display " != ") (display expected) (newline)
+  (display "  Actual result: '") (display actual) (display "'") (newline))
 
-(define success (lambda (code expected)
-  (begin
-    (test+1 (quote _))
-    (display tests) (display " OK: ")
-    (display code) (display " == ") (display expected) (newline))))
+(define (success code expected)
+  (test+1 (quote _))
+  (display tests) (display " OK: ")
+  (display code) (display " == ") (display expected) (newline))
 
 (define (test-eq code expected)
-  (if (not (equal? (eval code) expected))
-      (fail code expected code)
-      (success code expected)))
+  (let ((result (eval code)))
+    (if (equal? result expected)
+      (success code expected)
+      (fail code expected result))))
 
-(define results (lambda ()
-    (display 
-      (string-append
-        (number->string (- tests failed)) " / " (number->string tests) " tests OK, "
-          (number->string failed) " failed\n"))))
+(define (results)
+  (display 
+    (string-append
+      (number->string (- tests failed)) " / " (number->string tests) " tests OK, "
+        (number->string failed) " failed\n")))
