@@ -43,7 +43,7 @@ cons_t* type_convert(const char* token, environment_t* env)
 
 cons_t* parse_list(environment_t *env)
 {
-  cons_t *p = NULL;
+  cons_t *p = list(NULL);
   const char *token;
 
   while ( (token = get_token()) != NULL ) {
@@ -54,12 +54,12 @@ cons_t* parse_list(environment_t *env)
       cons_t *obj = type_convert(token+1, env);
 
       if ( !nullp(obj) ) 
-        p = append(p, list(obj, parse_list(env)));
+        p = append_non_mutable(p, list(obj, parse_list(env)));
       else
-        p = append(p, list(parse_list(env)));
+        p = append_non_mutable(p, list(parse_list(env)));
     } else {
       cons_t *obj = type_convert(token, env);
-      p = append(p, list(obj));
+      p = append_non_mutable(p, list(obj));
     }
   }
 
