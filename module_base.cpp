@@ -726,9 +726,17 @@ cons_t* proc_cond(cons_t* p, environment_t* e)
 
 cons_t* proc_number_to_string(cons_t* p, environment_t* e)
 {
-  assert_length(p, 1);
+  assert_length(p, 1, 2);
   assert_number(car(p));
-  return proc_to_string(p, e);
+
+  int radix = 10;
+  if ( !nullp(cadr(p)) ) {
+    assert_type(INTEGER, cadr(p));
+    radix = cadr(p)->integer;
+  }
+
+  // TODO: Implement use of radix
+  return proc_to_string(cons(car(p)), e);
 }
 
 cons_t* proc_symbol_to_string(cons_t* p, environment_t* e)

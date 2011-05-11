@@ -30,3 +30,6 @@ bool char_in(char ch, const char* s);
 
 char* decode_literal_string(const char* s);
 std::string encode_str(const char* s);
+
+// Prefix string with indefinite article (i.e., "a" or "an")
+std::string indef_art(const std::string&);

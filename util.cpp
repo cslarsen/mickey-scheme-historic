@@ -12,6 +12,7 @@
 #include <ctype.h> // toupper
 #include <stdarg.h>
 #include "util.h"
+#include "types.h"
 
 std::string toupper(const std::string& str)
 {
@@ -133,4 +134,9 @@ std::string encode_str(const char* s)
   }
 
   return r;
+}
+
+std::string indef_art(const std::string& s)
+{
+  return (isvowel(s[0])? "an " : "a ") + s;
 }

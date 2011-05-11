@@ -20,3 +20,4 @@ float to_f(const char*);
 int to_i(const char*);
 bool to_b(const char*);
 char to_char(const char*);
+bool isvowel(char);

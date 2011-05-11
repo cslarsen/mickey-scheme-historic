@@ -139,3 +139,14 @@ char to_char(const char* s)
 {
   return s[2];
 }
+
+bool isvowel(char c)
+{
+  switch ( c ) {
+  case 'a': case 'e': case 'i':
+  case 'o': case 'u': case 'y':
+    return true;
+  default:
+    return false;
+  }
+}
