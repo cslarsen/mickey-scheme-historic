@@ -19,7 +19,7 @@ type_t type_of(const cons_t* p);
 size_t length(const cons_t*);
 
 cons_t* cons(const cons_t* head, const cons_t* tail = NULL);
-cons_t* list(const cons_t* head, const cons_t* tail = NULL);
+cons_t* list(const cons_t* head = NULL, const cons_t* tail = NULL);
 cons_t* append(cons_t*, cons_t*);
 cons_t* append_non_mutable(cons_t*, cons_t*);
 cons_t* symbol(const char*, environment_t*);

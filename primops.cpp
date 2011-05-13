@@ -246,17 +246,21 @@ bool eqp(const cons_t* l, const cons_t* r)
   return false;
 }
 
+#include "print.h"
+
 cons_t* append(cons_t *h, cons_t *t)
 {
-  if ( nullp(h) || !listp(h) )
-    return t; //throw std::runtime_error("First argument to (append) must be a list");
-  else if ( nullp(car(h)) )
-    h->car = t;
-  else if ( nullp(cdr(h)) )
-    h->cdr = t;
-  else
-    append(cdr(h), t);
+  cons_t *p = h;
 
+  // Empty list?
+  if ( nullp(car(p)) )
+    return cons(t);
+
+  // Add to end of list
+  while ( !nullp(cdr(p)) )
+    p = cdr(p);
+
+  p->cdr = cons(t);
   return h;
 }
 
@@ -272,7 +276,7 @@ cons_t* append_non_mutable(cons_t *h, cons_t *t)
   else if ( nullp(cdr(r)) )
     r->cdr = t;
   else
-    append(cdr(r), t);
+    append_non_mutable(cdr(r), t);
 
   return r;
 }

@@ -42,7 +42,7 @@ cons_t* proc_list_globals(cons_t*, environment_t *env)
 
     while ( i != env->symbols.end() ) {
       std::string n = (*i).first;
-      r = append(cons(string(n.c_str())), r);
+      r = append(r, string(n.c_str()));
       ++i;
     }
   }
