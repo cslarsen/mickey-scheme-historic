@@ -127,6 +127,19 @@
 ; (eqv? (lambda (x) x) (lambda (x) x))
 ; (eqv? (lambda (x) x) (lambda (y) y))
 
+;; round
+(test-eq (quote (round 0.9)) 1)
+(test-eq (quote (round 1.0)) 1)
+(test-eq (quote (round 1.1)) 1)
+(test-eq (quote (round 1.2)) 1)
+(test-eq (quote (round 1.3)) 1)
+(test-eq (quote (round 1.4)) 1)
+(test-eq (quote (round 1.5)) 2)
+(test-eq (quote (round 1.6)) 2)
+(test-eq (quote (round 2.49)) 2)
+(test-eq (quote (round 2.50)) 3) ;; NOTE: Chicken and MIT Scheme reports 2! IEEE-754 magic or?
+(test-eq (quote (round 2.51)) 3) ;; NOTE: Chicken and MIT Scheme reports 2! IEEE-754 magic or?
+
 (display "\nResults\n")
 (results)
 

@@ -9,6 +9,7 @@
  *                                                          
  */
 
+#include <math.h>
 #include "mickey.h" // VERSION
 #include "cons.h" // to_s(cons_t*)
 #include "module.h"
@@ -897,6 +898,15 @@ cons_t* proc_positivep(cons_t* p, environment_t*)
                                     car(p)->decimal > 0);
 }
 
+cons_t* proc_round(cons_t* p, environment_t*)
+{
+  assert_length(p, 1);
+  assert_number(car(p));
+  return integer(round(integerp(car(p)) ?
+    car(p)->integer :
+    car(p)->decimal));
+}
+
 named_function_t exports_base[] = {
   {"*", proc_mul},
   {"+", proc_add},
@@ -956,6 +966,7 @@ named_function_t exports_base[] = {
   {"procedure?", proc_procedurep},
   {"real?", proc_decimalp},
   {"reverse", proc_reverse},
+  {"round", proc_round},
   {"string-append", proc_strcat},
   {"string?", proc_stringp},
   {"symbol->string", proc_symbol_to_string},
