@@ -28,8 +28,8 @@
 (test-eq (quote (complex->string
                   (*complex (make-complex 2 3)
                             (make-complex 5 7)))) "-11 + 29i")
-(test-eq (quote (- 0.5 -1.5)) 2.0)
-(test-eq (quote (- 0.5 -10.5)) 11.0)
+(test-eq (quote (- 0.5 -1.5)) 2)
+(test-eq (quote (- 0.5 -10.5)) 11)
 (test-eq (quote (- 1 2 3)) -4)
 (test-eq (quote (- 1)) -1)
 (test-eq (quote (- 2)) -2)
