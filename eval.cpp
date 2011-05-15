@@ -376,7 +376,7 @@ cons_t* eval(cons_t* p, environment_t* e)
       return eval(proc_letstar(cdr(p), e), e);
 
     if ( name == "eval" )
-      return eval_with_trace(evlis(cdr(p), e), e);
+      return eval_with_trace(cdr(p), e);
 
     if ( name == "apply" ) {
       // Correct to use eval instead of evlis (or nothing) on parameter list?

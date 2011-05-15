@@ -13,6 +13,7 @@
 #include "parser.h"
 #include "types.h"
 #include "util.h"
+#include "print.h"
 
 cons_t* type_convert(const char* token, environment_t* env)
 {
@@ -43,14 +44,16 @@ cons_t* type_convert(const char* token, environment_t* env)
 
 cons_t* parse_list(environment_t *env)
 {
-  cons_t *p = list();
+  cons_t *p = NULL;
   const char *t;
 
   while ( (t = get_token()) != NULL && *t != ')' ) {
     bool paren = (*t == '(');
 
-    p = append(p, paren? parse_list(env) :
-          type_convert(t + paren, env));
+    cons_t *add = paren? parse_list(env) :
+                         type_convert(t + paren, env);
+
+    p = nullp(p)? cons(add) : append(p, cons(add));
   }
 
   return p;

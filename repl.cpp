@@ -35,14 +35,14 @@ static environment_t *global_env = NULL;
 
 cons_t* proc_list_globals(cons_t*, environment_t *env)
 {
-  cons_t *r = NULL;
+  cons_t *r = list(NULL);
 
   for ( ; env != NULL; env = env->outer ) {
     dict_t::const_iterator i = env->symbols.begin();
 
     while ( i != env->symbols.end() ) {
       std::string n = (*i).first;
-      r = append(cons(string(n.c_str())), r);
+      r = append(r, cons(string(n.c_str())));
       ++i;
     }
   }

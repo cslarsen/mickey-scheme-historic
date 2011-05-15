@@ -131,7 +131,7 @@ void run_tests()
   TEST_STREQ(sprint(cons(cons(cons(NULL, NULL), NULL))), "((()))");
 
   // (append nil (list 1 2))
-  TEST_STREQ(sprint(append(NULL, list(integer(1), integer(2)))), "(1 2)");
+  TEST_STREQ(sprint(append(list(NULL), list(integer(1), integer(2)))), "(1 2)");
 
   // parser
   TEST_PARSE("(cOns 1 2)", "((cOns 1 2))");
