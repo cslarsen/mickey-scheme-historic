@@ -158,6 +158,13 @@
 (test-eq (quote (min 4.2 2.3 3)) 2.3)
 (test-eq (quote (min 4.2)) 4.2)
 
+;; max
+(test-eq (quote (max 1 2 3)) 3)
+(test-eq (quote (max 4 2 3)) 4)
+(test-eq (quote (max 4.2 2 3)) 4.2)
+(test-eq (quote (max 4.2 2.3 3)) 4.2)
+(test-eq (quote (max 4.2)) 4.2)
+
 (display "\nResults\n")
 (results)
 
