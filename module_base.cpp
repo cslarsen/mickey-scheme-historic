@@ -881,6 +881,22 @@ cons_t* proc_oddp(cons_t* p, environment_t*)
   return boolean(car(p)->integer & 1);
 }
 
+cons_t* proc_negativep(cons_t* p, environment_t*)
+{
+  assert_length(p, 1);
+  assert_number(car(p));
+  return boolean(integerp(car(p)) ? car(p)->integer < 0 :
+                                    car(p)->decimal < 0);
+}
+
+cons_t* proc_positivep(cons_t* p, environment_t*)
+{
+  assert_length(p, 1);
+  assert_number(car(p));
+  return boolean(integerp(car(p)) ? car(p)->integer > 0 :
+                                    car(p)->decimal > 0);
+}
+
 named_function_t exports_base[] = {
   {"*", proc_mul},
   {"+", proc_add},
@@ -928,6 +944,7 @@ named_function_t exports_base[] = {
   {"list->string", proc_list_to_string},
   {"list?", proc_listp},
   {"load", proc_load},
+  {"negative?", proc_negativep},
   {"newline", proc_newline},
   {"not", proc_not},
   {"null?", proc_nullp},
@@ -936,6 +953,7 @@ named_function_t exports_base[] = {
   {"odd?", proc_oddp},
   {"or", proc_or},
   {"pair?", proc_pairp},
+  {"positive?", proc_positivep},
   {"procedure?", proc_procedurep},
   {"reverse", proc_reverse},
   {"string-append", proc_strcat},

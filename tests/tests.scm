@@ -91,6 +91,23 @@
 (test-eq (quote (odd? 100)) #f)
 (test-eq (quote (odd? 1000)) #f)
 
+;; positive, negative
+(test-eq (quote (negative? 0)) #f)
+(test-eq (quote (negative? 1)) #f)
+(test-eq (quote (negative? 2)) #f)
+(test-eq (quote (negative? 3)) #f)
+(test-eq (quote (negative? -1)) #t)
+(test-eq (quote (negative? -2)) #t)
+(test-eq (quote (negative? -3)) #t)
+;;
+(test-eq (quote (positive? 0)) #f)
+(test-eq (quote (positive? 1)) #t)
+(test-eq (quote (positive? 2)) #t)
+(test-eq (quote (positive? 3)) #t)
+(test-eq (quote (positive? -1)) #f)
+(test-eq (quote (positive? -2)) #f)
+(test-eq (quote (positive? -3)) #f)
+
 ;; eqv? tests from R7RS, section 6.1
 (test-eq (quote (eqv? (quote a) (quote a))) #t) ;; (eqv? 'a 'a)
 (test-eq (quote (eqv? (quote a) (quote b))) #f)
