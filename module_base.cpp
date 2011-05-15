@@ -389,7 +389,7 @@ cons_t* proc_cddr(cons_t* p, environment_t* e)
 
 cons_t* proc_append(cons_t* p, environment_t*)
 {
-  return append_non_mutable(car(p), cadr(p));
+  return append(car(p), cadr(p));
 }
 
 cons_t* proc_symbolp(cons_t* p, environment_t* env)
@@ -640,8 +640,8 @@ cons_t* proc_let(cons_t* p, environment_t* e)
          *values = list(NULL);
 
   for ( cons_t *n = car(p); !nullp(n); n = cdr(n) ) {
-     names = append_non_mutable(names, list(caar(n)));
-    values = append_non_mutable(values, list(car(cdar(n))));
+     names = append(names, list(caar(n)));
+    values = append(values, list(car(cdar(n))));
   }
 
   /*
@@ -741,9 +741,9 @@ cons_t* proc_cond(cons_t* p, environment_t* e)
   cons_t *otherwise = proc_cond(p, e);
 
   if ( symbolp(test) && test->symbol->name() == "else" )
-    return append_non_mutable(r, action);
+    return append(r, action);
   else 
-    return append_non_mutable(r,
+    return append(r,
           cons(symbol("if", e),
             cons(test,
               cons(action,

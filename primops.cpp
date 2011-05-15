@@ -246,39 +246,29 @@ bool eqp(const cons_t* l, const cons_t* r)
   return false;
 }
 
-#include "print.h"
-
 cons_t* append(cons_t *h, cons_t *t)
 {
+  if ( !listp(h) )
+    throw std::runtime_error("First argument to append must be a list");
+
+  if ( length(h) == 0 ) 
+    return t;
+
+  // Find end of list
   cons_t *p = h;
 
-  // Empty list?
-  if ( nullp(car(p)) )
-    return cons(t);
-
-  // Add to end of list
-  while ( !nullp(cdr(p)) )
+  while ( pairp(cdr(p)) && !nullp(cdr(p)) )
     p = cdr(p);
 
-  p->cdr = cons(t);
-  return h;
-}
-
-cons_t* append_non_mutable(cons_t *h, cons_t *t)
-{
-  cons_t *r = new cons_t();
-  memcpy(r, h, sizeof(cons_t));
-
-  if ( nullp(r) || !listp(r) )
-    return t; //throw std::runtime_error("First argument to (append) must be a list");
-  else if ( nullp(car(r)) )
-    r->car = t;
-  else if ( nullp(cdr(r)) )
-    r->cdr = t;
+  // Insert new item
+  if ( nullp(cdr(p)) )
+      // as cons cell
+      p->cdr = t;
   else
-    append_non_mutable(cdr(r), t);
+    // as pair
+    p->cdr = cons(p->cdr, t);
 
-  return r;
+  return h;
 }
 
 cons_t* closure(lambda_t f, environment_t* e)
