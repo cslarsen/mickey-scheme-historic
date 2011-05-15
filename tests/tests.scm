@@ -128,17 +128,28 @@
 ; (eqv? (lambda (x) x) (lambda (y) y))
 
 ;; round
-(test-eq (quote (round 0.9)) 1)
-(test-eq (quote (round 1.0)) 1)
-(test-eq (quote (round 1.1)) 1)
-(test-eq (quote (round 1.2)) 1)
-(test-eq (quote (round 1.3)) 1)
-(test-eq (quote (round 1.4)) 1)
-(test-eq (quote (round 1.5)) 2)
-(test-eq (quote (round 1.6)) 2)
-(test-eq (quote (round 2.49)) 2)
-(test-eq (quote (round 2.50)) 3) ;; NOTE: Chicken and MIT Scheme reports 2! IEEE-754 magic or?
-(test-eq (quote (round 2.51)) 3) ;; NOTE: Chicken and MIT Scheme reports 2! IEEE-754 magic or?
+(test-eq (quote (round 1)) 1)
+(test-eq (quote (round 2)) 2)
+(test-eq (quote (round 0.9)) 1.0)
+(test-eq (quote (round 1.0)) 1.0)
+(test-eq (quote (round 1.1)) 1.0)
+(test-eq (quote (round 1.2)) 1.0)
+(test-eq (quote (round 1.3)) 1.0)
+(test-eq (quote (round 1.4)) 1.0)
+(test-eq (quote (round 1.5)) 2.0)
+(test-eq (quote (round 1.6)) 2.0)
+(test-eq (quote (round 2.49)) 2.0)
+(test-eq (quote (round 2.50)) 3.0) ;; NOTE: Chicken and MIT Scheme reports 2! IEEE-754 magic or?
+(test-eq (quote (round 2.51)) 3.0)
+
+;; truncate
+(test-eq (quote (truncate 1.1)) 1.0)
+(test-eq (quote (truncate 1.4)) 1.0)
+(test-eq (quote (truncate 1.5)) 1.0)
+(test-eq (quote (truncate 1.6)) 1.0)
+(test-eq (quote (truncate 1.9)) 1.0)
+(test-eq (quote (truncate 1)) 1)
+(test-eq (quote (truncate 2)) 2)
 
 (display "\nResults\n")
 (results)

@@ -902,9 +902,22 @@ cons_t* proc_round(cons_t* p, environment_t*)
 {
   assert_length(p, 1);
   assert_number(car(p));
-  return integer(round(integerp(car(p)) ?
-    car(p)->integer :
-    car(p)->decimal));
+
+  if ( integerp(car(p)) )
+    return integer(car(p)->integer);
+  else
+    return decimal(roundf(car(p)->decimal));
+}
+
+cons_t* proc_truncate(cons_t* p, environment_t*)
+{
+  assert_length(p, 1);
+  assert_number(car(p));
+
+  if ( integerp(car(p)) )
+    return integer(car(p)->integer);
+  else
+    return decimal(truncf(car(p)->decimal));
 }
 
 named_function_t exports_base[] = {
@@ -971,6 +984,7 @@ named_function_t exports_base[] = {
   {"string?", proc_stringp},
   {"symbol->string", proc_symbol_to_string},
   {"symbol?", proc_symbolp},
+  {"truncate", proc_truncate},
   {"vector?", proc_vectorp},
   {"write", proc_write},
   {"xor", proc_xor},
