@@ -73,6 +73,24 @@
 (test-eq (quote (assq (quote two) (list (list (quote one) 1) (list (quote two) 2) (list (quote three) 3)))) (list (quote two) 2))
 (test-eq (quote (assq (quote threee) (list (list (quote one) 1) (list (quote two) 2) (list (quote three) 3)))) #f)
 
+;; even, odd
+(test-eq (quote (even? 0)) #t) ;; correct in MIT Scheme
+(test-eq (quote (even? 1)) #f)
+(test-eq (quote (even? 2)) #t)
+(test-eq (quote (even? 3)) #f)
+(test-eq (quote (even? 4)) #t)
+(test-eq (quote (even? 9)) #f)
+(test-eq (quote (even? 100)) #t)
+(test-eq (quote (even? 1000)) #t)
+(test-eq (quote (odd? 0)) #f) ;; correct in MIT Scheme
+(test-eq (quote (odd? 1)) #t)
+(test-eq (quote (odd? 2)) #f)
+(test-eq (quote (odd? 3)) #t)
+(test-eq (quote (odd? 4)) #f)
+(test-eq (quote (odd? 9)) #t)
+(test-eq (quote (odd? 100)) #f)
+(test-eq (quote (odd? 1000)) #f)
+
 ;; eqv? tests from R7RS, section 6.1
 (test-eq (quote (eqv? (quote a) (quote a))) #t) ;; (eqv? 'a 'a)
 (test-eq (quote (eqv? (quote a) (quote b))) #f)

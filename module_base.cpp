@@ -867,6 +867,20 @@ cons_t* proc_assoc(cons_t* p, environment_t* e)
   return boolean(false);
 }
 
+cons_t* proc_evenp(cons_t* p, environment_t*)
+{
+  assert_length(p, 1);
+  assert_type(INTEGER, car(p));
+  return boolean(!(car(p)->integer & 1));
+}
+
+cons_t* proc_oddp(cons_t* p, environment_t*)
+{
+  assert_length(p, 1);
+  assert_type(INTEGER, car(p));
+  return boolean(car(p)->integer & 1);
+}
+
 named_function_t exports_base[] = {
   {"*", proc_mul},
   {"+", proc_add},
@@ -903,8 +917,9 @@ named_function_t exports_base[] = {
   {"cons", proc_cons},
   {"display", proc_display},
   {"eq?", proc_eqp},
-  {"eqv?", proc_eqvp},
   {"equal?", proc_equalp},
+  {"eqv?", proc_eqvp},
+  {"even?", proc_evenp},
   {"file-exists?", proc_file_existsp},
   {"float?", proc_decimalp},
   {"integer?", proc_integerp},
@@ -918,6 +933,7 @@ named_function_t exports_base[] = {
   {"null?", proc_nullp},
   {"number->string", proc_number_to_string},
   {"number?", proc_numberp},
+  {"odd?", proc_oddp},
   {"or", proc_or},
   {"pair?", proc_pairp},
   {"procedure?", proc_procedurep},
@@ -930,5 +946,5 @@ named_function_t exports_base[] = {
   {"write", proc_write},
   {"xor", proc_xor},
   {"zero?", proc_zerop},
-  {NULL, NULL}};
-
+  {NULL, NULL}
+};
