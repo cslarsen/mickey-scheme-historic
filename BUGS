@@ -4,12 +4,7 @@
 
 Should be an error
 
---- Quote stuff
-(eval (quote three))
-(quote three)
-
 --- String parsing is incomplete (should demand complete parse)
 0> (display "error )
 "ERROR 1> 
 2> 
-
