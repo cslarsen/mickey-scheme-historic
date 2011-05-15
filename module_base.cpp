@@ -920,6 +920,23 @@ cons_t* proc_truncate(cons_t* p, environment_t*)
     return decimal(truncf(car(p)->decimal));
 }
 
+cons_t* proc_min(cons_t* p, environment_t*)
+{
+  assert_length_min(p, 1);
+  cons_t *min = car(p);
+
+  while ( !nullp(p) ) {
+    assert_number(car(p));
+
+    if ( number_to_float(car(p)) < number_to_float(min) )
+      min = car(p);
+
+    p = cdr(p);
+  }
+
+  return min;
+}
+
 named_function_t exports_base[] = {
   {"*", proc_mul},
   {"+", proc_add},
@@ -966,6 +983,7 @@ named_function_t exports_base[] = {
   {"list->string", proc_list_to_string},
   {"list?", proc_listp},
   {"load", proc_load},
+  {"min", proc_min},
   {"negative?", proc_negativep},
   {"newline", proc_newline},
   {"not", proc_not},

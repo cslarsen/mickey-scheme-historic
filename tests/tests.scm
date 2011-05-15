@@ -151,6 +151,13 @@
 (test-eq (quote (truncate 1)) 1)
 (test-eq (quote (truncate 2)) 2)
 
+;; min
+(test-eq (quote (min 1 2 3)) 1)
+(test-eq (quote (min 4 2 3)) 2)
+(test-eq (quote (min 4.2 2 3)) 2)
+(test-eq (quote (min 4.2 2.3 3)) 2.3)
+(test-eq (quote (min 4.2)) 4.2)
+
 (display "\nResults\n")
 (results)
 

@@ -35,6 +35,16 @@ void assert_length(const cons_t* p, const size_t min, const size_t max)
         min, max, l, sprint(p).c_str()));
 }
 
+void assert_length_min(const cons_t* p, const size_t min)
+{
+  const size_t l = length(const_cast<cons_t*>(p));
+
+  if ( l<min )
+    throw std::runtime_error(format(
+      "Function expects at least %lu parameters got %lu: `%s´",
+        min, l, sprint(p).c_str()));
+}
+
 void assert_type(const enum type_t type, cons_t* p)
 {
   if ( type_of(p) != type )
