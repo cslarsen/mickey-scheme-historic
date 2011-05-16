@@ -1,3 +1,7 @@
+- Allow #\tab and friends, including "#\ "
+- Fix expt for fractional exponents
+- Look into exact->inexact stuff
+
 NEXT STEPS, SHOULD BE ORDERED BY INCREASING DIFFICULTY
 - Add tail call elimination, via longjumps (tested and should work, must have own "jumptable" for each thread, which is only 1 for our purposes)
 - Add lazy evaluation (this is actually super-simple!)

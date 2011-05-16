@@ -165,6 +165,28 @@
 (test-eq (quote (max 4.2 2.3 3)) 4.2)
 (test-eq (quote (max 4.2)) 4.2)
 
+;; expt
+(test-eq (expt 2 0) 1)
+(test-eq (expt 2 1) 2)
+(test-eq (expt 2 2) 4)
+(test-eq (expt 2 3) 8)
+(test-eq (expt 3 3) 27)
+
+;; char-whitespace
+(test-eq (quote (char-whitespace? #\a)) #f)
+(test-eq (quote (char-whitespace? #\b)) #f)
+(test-eq (quote (char-whitespace? #\c)) #f)
+; TODO: Test for #\tab and friends
+
+;; modulo
+(test-eq (modulo 10 6) 4)
+(test-eq (modulo 10 5) 0)
+(test-eq (modulo 10 4) 2)
+(test-eq (modulo 10 3) 1)
+(test-eq (modulo 10 2) 0)
+(test-eq (modulo 10 1) 0)
+; TODO: Test negative modulo, (modulo 10 -3)
+
 (display "\nResults\n")
 (results)
 

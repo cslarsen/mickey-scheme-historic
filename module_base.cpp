@@ -1009,6 +1009,32 @@ cons_t* proc_expt(cons_t* p, environment_t*)
   return decimal(r);
 }
 
+cons_t* proc_char_whitespacep(cons_t* p, environment_t*)
+{
+  assert_length(p, 1);
+  assert_type(CHAR, car(p));
+  return boolean(isspace(car(p)->character));
+}
+
+cons_t* proc_modulo(cons_t* p, environment_t*)
+{
+  assert_length(p, 2);
+
+  cons_t *a = car(p),
+         *b = cadr(p);
+
+  assert_type(INTEGER, a);
+  assert_type(INTEGER, b);
+
+  if ( b->integer == 0 )
+    throw std::runtime_error("Division by zero");
+
+  if ( b->integer < 0 )
+    throw std::runtime_error("Negative modulus operations not implemented"); // TODO
+
+  return integer(a->integer % b->integer);
+}
+
 named_function_t exports_base[] = {
   {"*", proc_mul},
   {"+", proc_add},
@@ -1041,6 +1067,7 @@ named_function_t exports_base[] = {
   {"cdar", proc_cdar},
   {"cddr", proc_cddr},
   {"cdr", proc_cdr},
+  {"char-whitespace?", proc_char_whitespacep},
   {"char?", proc_charp},
   {"cons", proc_cons},
   {"display", proc_display},
@@ -1058,6 +1085,7 @@ named_function_t exports_base[] = {
   {"load", proc_load},
   {"max", proc_max},
   {"min", proc_min},
+  {"modulo", proc_modulo},
   {"negative?", proc_negativep},
   {"newline", proc_newline},
   {"not", proc_not},
