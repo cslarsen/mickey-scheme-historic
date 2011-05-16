@@ -1127,6 +1127,24 @@ cons_t* proc_list_to_string(cons_t* p, environment_t*)
   return string(s.c_str());
 }
 
+cons_t* proc_list_tail(cons_t* p, environment_t*)
+{
+  assert_length(p, 2);
+  assert_type(PAIR, car(p));
+  assert_type(INTEGER, cadr(p));
+
+  size_t n = cadr(p)->integer;
+  p = car(p);
+
+  if ( n > length(p) )
+    throw std::runtime_error("List is too short for your list-tail argument");
+
+  while ( n-- )
+    p = cdr(p);
+
+  return p;
+}
+
 named_function_t exports_base[] = {
   {"*", proc_mul},
   {"+", proc_add},
@@ -1184,6 +1202,7 @@ named_function_t exports_base[] = {
   {"length", proc_length},
   {"list", proc_list},
   {"list->string", proc_list_to_string},
+  {"list-tail", proc_list_tail},
   {"list?", proc_listp},
   {"load", proc_load},
   {"max", proc_max},

@@ -254,6 +254,11 @@
 (test-eq (quote (list->string (list #\a #\b #\c))) "abc")
 (test-eq (quote (list->string (list #\a #\b #\b #\A))) "abbA")
 
+(test-eq (quote (list-tail (list 1 2 3) 0)) (list 1 2 3))
+(test-eq (quote (list-tail (list 1 2 3) 1)) (list 2 3))
+(test-eq (quote (list-tail (list 1 2 3) 2)) (list 3))
+(test-eq (quote (list-tail (list 1 2 3) 3)) (list))
+
 (display "\nResults\n")
 (results)
 
