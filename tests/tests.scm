@@ -259,6 +259,30 @@
 (test-eq (quote (list-tail (list 1 2 3) 2)) (list 3))
 (test-eq (quote (list-tail (list 1 2 3) 3)) (list))
 
+;; member
+(test-eq (quote (member 10 (list 1 2 3))) #f)
+(test-eq (quote (member 10 (list 10 20 30))) (list 10 20 30))
+(test-eq (quote (member 20 (list 10 20 30))) (list 20 30))
+(test-eq (quote (member 20 (list 10 20 30 (quote bee) (quote cee)))) (list 20 30 (quote bee) (quote cee)))
+(test-eq (quote (member 30 (list 10 20 30))) (list 30))
+(test-eq (quote (member 40 (list 10 20 30))) #f)
+
+;; memv (TODO: insert eqv? specific check)
+(test-eq (quote (memv 10 (list 1 2 3))) #f)
+(test-eq (quote (memv 10 (list 10 20 30))) (list 10 20 30))
+(test-eq (quote (memv 20 (list 10 20 30))) (list 20 30))
+(test-eq (quote (memv 20 (list 10 20 30 (quote bee) (quote cee)))) (list 20 30 (quote bee) (quote cee)))
+(test-eq (quote (memv 30 (list 10 20 30))) (list 30))
+(test-eq (quote (memv 40 (list 10 20 30))) #f)
+
+;; memq (TODO: insert eq? specific check)
+(test-eq (quote (memq 10 (list 1 2 3))) #f)
+(test-eq (quote (memq 10 (list 10 20 30))) (list 10 20 30))
+(test-eq (quote (memq 20 (list 10 20 30))) (list 20 30))
+(test-eq (quote (memq 20 (list 10 20 30 (quote bee) (quote cee)))) (list 20 30 (quote bee) (quote cee)))
+(test-eq (quote (memq 30 (list 10 20 30))) (list 30))
+(test-eq (quote (memq 40 (list 10 20 30))) #f)
+
 (display "\nResults\n")
 (results)
 

@@ -503,32 +503,7 @@ cons_t* proc_eqp(cons_t* p, environment_t*)
 cons_t* proc_eqvp(cons_t* p, environment_t*)
 {
   assert_length(p, 2);
-
-  cons_t *l = car(p),
-         *r = cadr(p);
-
-  if ( type_of(l) != type_of(r) )
-    return boolean(false);
-
-  switch ( type_of(l) ) {
-  case NIL:     return boolean(true);
-  case BOOLEAN: return boolean(l == r);
-  case SYMBOL:  return boolean(l->symbol->name() == r->symbol->name());
-  case INTEGER: // Also make sure both are exact/both inexact (TODO)
-                return boolean(l->integer == r->integer); 
-  case DECIMAL: // Check both exact/both inexact
-                return boolean(l->decimal == r->decimal);
-  case CHAR:    return boolean(l->character == r->character);
-  case PAIR:    return boolean(nullp(l) && nullp(r)? true : l == r);
-  case VECTOR:  return boolean(l == r);
-  case STRING:  return boolean(l == r);
-  case CLOSURE: // double-check with section 6.1 and 4.1.4 (TODO)
-                return boolean(l->closure == r->closure);
-  case CONTINUATION:
-                return boolean(l->continuation == r->continuation);
-  }
-
-  return boolean(false);
+  return boolean(eqvp(car(p), cadr(p)));
 }
 
 cons_t* proc_equalp(cons_t* p, environment_t*)
@@ -1145,6 +1120,39 @@ cons_t* proc_list_tail(cons_t* p, environment_t*)
   return p;
 }
 
+static cons_t* proc_member_fptr(cons_t* p, environment_t*, bool (*compare)(const cons_t*, const cons_t*))
+{
+  assert_length(p, 2);
+  assert_type(PAIR, cadr(p));
+
+  cons_t *needle = car(p),
+       *haystack = cadr(p);
+
+  while ( !nullp(haystack) ) {
+    if ( compare(needle, car(haystack)) )
+      return haystack;
+
+    haystack = cdr(haystack);
+  }
+
+  return boolean(false);
+}
+
+cons_t* proc_member(cons_t* p, environment_t* e)
+{
+  return proc_member_fptr(p, e, equalp);
+}
+
+cons_t* proc_memv(cons_t* p, environment_t* e)
+{
+  return proc_member_fptr(p, e, eqvp);
+}
+
+cons_t* proc_memq(cons_t* p, environment_t* e)
+{
+  return proc_member_fptr(p, e, eqp);
+}
+
 named_function_t exports_base[] = {
   {"*", proc_mul},
   {"+", proc_add},
@@ -1206,6 +1214,9 @@ named_function_t exports_base[] = {
   {"list?", proc_listp},
   {"load", proc_load},
   {"max", proc_max},
+  {"member", proc_member},
+  {"memq", proc_memq},
+  {"memv", proc_memv},
   {"min", proc_min},
   {"modulo", proc_modulo},
   {"negative?", proc_negativep},

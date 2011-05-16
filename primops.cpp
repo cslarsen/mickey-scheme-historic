@@ -246,6 +246,32 @@ bool eqp(const cons_t* l, const cons_t* r)
   return false;
 }
 
+bool eqvp(const cons_t* l, const cons_t* r)
+{
+  if ( type_of(l) != type_of(r) )
+    return false;
+
+  switch ( type_of(l) ) {
+  case NIL:     return true;
+  case BOOLEAN: return l == r;
+  case SYMBOL:  return l->symbol->name() == r->symbol->name();
+  case INTEGER: // Also make sure both are exact/both inexact (TODO)
+                return l->integer == r->integer; 
+  case DECIMAL: // Check both exact/both inexact
+                return l->decimal == r->decimal;
+  case CHAR:    return l->character == r->character;
+  case PAIR:    return nullp(l) && nullp(r)? true : l == r;
+  case VECTOR:  return l == r;
+  case STRING:  return l == r;
+  case CLOSURE: // double-check with section 6.1 and 4.1.4 (TODO)
+                return l->closure == r->closure;
+  case CONTINUATION:
+                return l->continuation == r->continuation;
+  }
+
+  return false;
+}
+
 cons_t* append(cons_t *h, cons_t *t)
 {
   if ( !listp(h) )

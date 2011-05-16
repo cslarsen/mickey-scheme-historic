@@ -57,6 +57,7 @@ bool charp(const cons_t*);
 bool numberp(const cons_t*);
 bool eqp(const cons_t*, const cons_t*);
 bool equalp(const cons_t*, const cons_t*);
+bool eqvp(const cons_t*, const cons_t*);
 
 bool not_p(const cons_t*);
 bool and_p(const cons_t*);
