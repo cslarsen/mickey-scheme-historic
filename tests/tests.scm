@@ -248,6 +248,12 @@
 (test-eq (quote (char-=? #\h #\e)) #f)
 (test-eq (quote (char-=? #\r #\w)) #f)
 
+;; conversion
+(test-eq (quote (integer->char 65)) (quote #\A))
+(test-eq (quote (integer->char 97)) (quote #\a))
+(test-eq (quote (list->string (list #\a #\b #\c))) "abc")
+(test-eq (quote (list->string (list #\a #\b #\b #\A))) "abbA")
+
 (display "\nResults\n")
 (results)
 

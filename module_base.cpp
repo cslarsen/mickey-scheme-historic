@@ -780,13 +780,6 @@ cons_t* proc_boolean_to_string(cons_t* p, environment_t* e)
   return proc_to_string(p, e);
 }
 
-cons_t* proc_list_to_string(cons_t* p, environment_t* e)
-{
-  assert_length(p, 1);
-  assert_type(PAIR, car(p));
-  return proc_to_string(p, e);
-}
-
 cons_t* proc_set_car(cons_t* p, environment_t* e)
 {
   assert_type(SYMBOL, car(p));
@@ -1110,6 +1103,30 @@ cons_t* proc_char_gtep(cons_t* p, environment_t*)
   return boolean(car(p)->character >= cadr(p)->character);
 }
 
+cons_t* proc_integer_to_char(cons_t* p, environment_t*)
+{
+  assert_length(p, 1);
+  assert_type(INTEGER, car(p));
+  return character(static_cast<char>(car(p)->integer));
+}
+
+cons_t* proc_list_to_string(cons_t* p, environment_t*)
+{
+  assert_type(PAIR, car(p));
+  p = car(p);
+
+  // list of char -> string
+  std::string s;
+
+  while ( !nullp(p) ) {
+    assert_type(CHAR, car(p));
+    s += car(p)->character;
+    p = cdr(p);
+  }
+
+  return string(s.c_str());
+}
+
 named_function_t exports_base[] = {
   {"*", proc_mul},
   {"+", proc_add},
@@ -1162,6 +1179,7 @@ named_function_t exports_base[] = {
   {"even?", proc_evenp},
   {"expt", proc_expt},
   {"file-exists?", proc_file_existsp},
+  {"integer->char", proc_integer_to_char},
   {"integer?", proc_integerp},
   {"length", proc_length},
   {"list", proc_list},
