@@ -1035,6 +1035,81 @@ cons_t* proc_modulo(cons_t* p, environment_t*)
   return integer(a->integer % b->integer);
 }
 
+cons_t* proc_char_to_integer(cons_t* p, environment_t*)
+{
+  assert_length(p, 1);
+  assert_type(CHAR, car(p));
+  return integer(static_cast<int>(car(p)->character));
+}
+
+cons_t* proc_char_alphabeticp(cons_t* p, environment_t*)
+{
+  assert_length(p, 1);
+  assert_type(CHAR, car(p));
+  return boolean(isalpha(car(p)->character));
+}
+
+cons_t* proc_char_numericp(cons_t* p, environment_t*)
+{
+  assert_length(p, 1);
+  assert_type(CHAR, car(p));
+  return boolean(isdigit(car(p)->character));
+}
+
+cons_t* proc_char_lowercasep(cons_t* p, environment_t*)
+{
+  assert_length(p, 1);
+  assert_type(CHAR, car(p));
+  return boolean(islower(car(p)->character));
+}
+
+cons_t* proc_char_uppercasep(cons_t* p, environment_t*)
+{
+  assert_length(p, 1);
+  assert_type(CHAR, car(p));
+  return boolean(isupper(car(p)->character));
+}
+
+cons_t* proc_char_ltep(cons_t* p, environment_t*)
+{
+  assert_length(p, 2);
+  assert_type(CHAR, car(p));
+  assert_type(CHAR, cadr(p));
+  return boolean(car(p)->character <= cadr(p)->character);
+}
+
+cons_t* proc_char_ltp(cons_t* p, environment_t*)
+{
+  assert_length(p, 2);
+  assert_type(CHAR, car(p));
+  assert_type(CHAR, cadr(p));
+  return boolean(car(p)->character < cadr(p)->character);
+}
+
+cons_t* proc_char_eqp(cons_t* p, environment_t*)
+{
+  assert_length(p, 2);
+  assert_type(CHAR, car(p));
+  assert_type(CHAR, cadr(p));
+  return boolean(car(p)->character == cadr(p)->character);
+}
+
+cons_t* proc_char_gtp(cons_t* p, environment_t*)
+{
+  assert_length(p, 2);
+  assert_type(CHAR, car(p));
+  assert_type(CHAR, cadr(p));
+  return boolean(car(p)->character > cadr(p)->character);
+}
+
+cons_t* proc_char_gtep(cons_t* p, environment_t*)
+{
+  assert_length(p, 2);
+  assert_type(CHAR, car(p));
+  assert_type(CHAR, cadr(p));
+  return boolean(car(p)->character >= cadr(p)->character);
+}
+
 named_function_t exports_base[] = {
   {"*", proc_mul},
   {"+", proc_add},
@@ -1067,6 +1142,16 @@ named_function_t exports_base[] = {
   {"cdar", proc_cdar},
   {"cddr", proc_cddr},
   {"cdr", proc_cdr},
+  {"char-<=?", proc_char_ltep},
+  {"char-<?", proc_char_ltp},
+  {"char-=?", proc_char_eqp},
+  {"char->=?", proc_char_gtep},
+  {"char->?", proc_char_gtp},
+  {"char->integer", proc_char_to_integer},
+  {"char-alphabetic?", proc_char_alphabeticp},
+  {"char-lower-case?", proc_char_lowercasep},
+  {"char-numeric?", proc_char_numericp},
+  {"char-upper-case?", proc_char_uppercasep},
   {"char-whitespace?", proc_char_whitespacep},
   {"char?", proc_charp},
   {"cons", proc_cons},

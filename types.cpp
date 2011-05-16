@@ -63,7 +63,7 @@ bool ischar(const char* s)
    * Format "#\x" for given x.
    */
   return strlen(s) == 3 &&
-    s[0]=='#' && s[1]=='\\' && isalpha(s[2]);
+    s[0]=='#' && s[1]=='\\' && (isalpha(s[2]) || isdigit(s[2]));
 }
 
 bool isfloat(const char* s)

@@ -166,11 +166,11 @@
 (test-eq (quote (max 4.2)) 4.2)
 
 ;; expt
-(test-eq (expt 2 0) 1)
-(test-eq (expt 2 1) 2)
-(test-eq (expt 2 2) 4)
-(test-eq (expt 2 3) 8)
-(test-eq (expt 3 3) 27)
+(test-eq (quote (expt 2 0)) 1)
+(test-eq (quote (expt 2 1)) 2)
+(test-eq (quote (expt 2 2)) 4)
+(test-eq (quote (expt 2 3)) 8)
+(test-eq (quote (expt 3 3)) 27)
 
 ;; char-whitespace
 (test-eq (quote (char-whitespace? #\a)) #f)
@@ -179,13 +179,74 @@
 ; TODO: Test for #\tab and friends
 
 ;; modulo
-(test-eq (modulo 10 6) 4)
-(test-eq (modulo 10 5) 0)
-(test-eq (modulo 10 4) 2)
-(test-eq (modulo 10 3) 1)
-(test-eq (modulo 10 2) 0)
-(test-eq (modulo 10 1) 0)
+(test-eq (quote (modulo 10 6)) 4)
+(test-eq (quote (modulo 10 5)) 0)
+(test-eq (quote (modulo 10 4)) 2)
+(test-eq (quote (modulo 10 3)) 1)
+(test-eq (quote (modulo 10 2)) 0)
+(test-eq (quote (modulo 10 1)) 0)
 ; TODO: Test negative modulo, (modulo 10 -3)
+
+;; char functions
+(test-eq (quote (char->integer #\a)) 97)
+(test-eq (quote (char->integer #\b)) 98)
+(test-eq (quote (char->integer #\A)) 65)
+;;
+(test-eq (quote (char-alphabetic? #\a)) #t)
+(test-eq (quote (char-alphabetic? #\A)) #t)
+(test-eq (quote (char-alphabetic? #\2)) #f)
+(test-eq (quote (char-alphabetic? #\8)) #f)
+;;
+(test-eq (quote (char-lower-case? #\8)) #f)
+(test-eq (quote (char-lower-case? #\Z)) #f)
+(test-eq (quote (char-lower-case? #\A)) #f)
+(test-eq (quote (char-lower-case? #\H)) #f)
+(test-eq (quote (char-lower-case? #\z)) #t)
+(test-eq (quote (char-lower-case? #\a)) #t)
+(test-eq (quote (char-lower-case? #\h)) #t)
+;;
+(test-eq (quote (char-upper-case? #\8)) #f)
+(test-eq (quote (char-upper-case? #\Z)) #t)
+(test-eq (quote (char-upper-case? #\A)) #t)
+(test-eq (quote (char-upper-case? #\H)) #t)
+(test-eq (quote (char-upper-case? #\z)) #f)
+(test-eq (quote (char-upper-case? #\a)) #f)
+(test-eq (quote (char-upper-case? #\h)) #f)
+;;
+(test-eq (quote (char-numeric? #\8)) #t)
+(test-eq (quote (char-numeric? #\Z)) #f)
+(test-eq (quote (char-numeric? #\A)) #f)
+(test-eq (quote (char-numeric? #\a)) #f)
+(test-eq (quote (char-numeric? #\0)) #t)
+(test-eq (quote (char-numeric? #\1)) #t)
+(test-eq (quote (char-numeric? #\9)) #t)
+;;
+(test-eq (quote (char-<=? #\9 #\0)) #f)
+(test-eq (quote (char-<=? #\3 #\5)) #t)
+(test-eq (quote (char-<=? #\a #\z)) #t)
+(test-eq (quote (char-<=? #\a #\a)) #t)
+(test-eq (quote (char-<=? #\h #\e)) #f)
+(test-eq (quote (char-<=? #\r #\w)) #t)
+;;
+(test-eq (quote (char->=? #\9 #\0)) #t)
+(test-eq (quote (char->=? #\3 #\5)) #f)
+(test-eq (quote (char->=? #\a #\z)) #f)
+(test-eq (quote (char->=? #\a #\a)) #t)
+(test-eq (quote (char->=? #\h #\e)) #t)
+(test-eq (quote (char->=? #\r #\w)) #f)
+;;
+(test-eq (quote (char->? #\9 #\0)) #t)
+(test-eq (quote (char->? #\3 #\5)) #f)
+(test-eq (quote (char->? #\a #\a)) #f)
+(test-eq (quote (char->? #\h #\e)) #t)
+(test-eq (quote (char->? #\r #\w)) #f)
+;;
+(test-eq (quote (char-=? #\9 #\0)) #f)
+(test-eq (quote (char-=? #\3 #\5)) #f)
+(test-eq (quote (char-=? #\a #\a)) #t)
+(test-eq (quote (char-=? #\4 #\4)) #t)
+(test-eq (quote (char-=? #\h #\e)) #f)
+(test-eq (quote (char-=? #\r #\w)) #f)
 
 (display "\nResults\n")
 (results)

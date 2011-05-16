@@ -20,7 +20,7 @@
 (define (success code expected)
   (test+1 (quote _))
   (display tests) (display " OK: ")
-  (display code) (display " == ") (display expected) (newline))
+  (display code) (display " ==> ") (display expected) (newline))
 
 (define (test-eq code expected)
   (let ((result (eval code)))
