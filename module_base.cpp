@@ -954,6 +954,61 @@ cons_t* proc_max(cons_t* p, environment_t*)
   return max;
 }
 
+cons_t* proc_expt(cons_t* p, environment_t*)
+{
+  assert_length(p, 2);
+
+  cons_t *base = car(p),
+         *expn = cadr(p);
+
+  assert_number(base);
+  assert_number(expn);
+
+  bool exact = integerp(base) && integerp(expn);
+
+  if ( exact ) {
+    int a = base->integer,
+        n = expn->integer,
+        r = a;
+
+    // Per definition
+    if ( n == 0 )
+      return integer(1);
+
+    if ( n < 0 )
+      throw std::runtime_error("Negative exponents not implemented");
+
+    // This is a slow version
+    // TODO: Implement O(log n) version
+    while ( n-- > 1 )
+      r *= a;
+
+    return integer(r);
+  }
+
+  // Floating point exponentiation
+  float a = number_to_float(base),
+        n = number_to_float(expn),
+        r = a;
+
+  if ( n == 0.0 )
+    return decimal(1.0);
+
+  if ( n < 0.0 )
+    throw std::runtime_error("Negative exponents not implemented");
+
+  while ( floor(n) > 1.0 ) {
+    r *= a;
+    n -= 1.0;
+  }
+
+  if ( n > 1.0 )
+    throw std::runtime_error("Fractional exponents not supported");
+
+  // TODO: Compute r^n, where n is in [0..1)
+  return decimal(r);
+}
+
 named_function_t exports_base[] = {
   {"*", proc_mul},
   {"+", proc_add},
@@ -993,6 +1048,7 @@ named_function_t exports_base[] = {
   {"equal?", proc_equalp},
   {"eqv?", proc_eqvp},
   {"even?", proc_evenp},
+  {"expt", proc_expt},
   {"file-exists?", proc_file_existsp},
   {"integer?", proc_integerp},
   {"length", proc_length},
