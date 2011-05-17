@@ -68,4 +68,7 @@ double number_to_double(const cons_t*);
 float number_to_float(const cons_t*);
 bool iswhole(float);
 
+int gcd(int a, int b);
+int lcm(int a, int b);
+
 #endif

@@ -1158,20 +1158,17 @@ cons_t* proc_gcd(cons_t* p, environment_t* e)
   assert_length(p, 2);
   assert_type(INTEGER, car(p));
   assert_type(INTEGER, cadr(p));
-
   int a = car(p)->integer, b = cadr(p)->integer;
+  return integer(gcd(a, b));
+}
 
-  if ( a == 0 )
-    return integer(b);
-
-  while ( b ) {
-    if ( a > b )
-      a -= b;
-    else
-      b -= a;
-  }
-
-  return integer(a);
+cons_t* proc_lcm(cons_t* p, environment_t* e)
+{
+  assert_length(p, 2);
+  assert_type(INTEGER, car(p));
+  assert_type(INTEGER, cadr(p));
+  int a = car(p)->integer, b = cadr(p)->integer;
+  return integer(lcm(a, b));
 }
 
 named_function_t exports_base[] = {
@@ -1229,6 +1226,7 @@ named_function_t exports_base[] = {
   {"gcd", proc_gcd},
   {"integer->char", proc_integer_to_char},
   {"integer?", proc_integerp},
+  {"lcm", proc_lcm},
   {"length", proc_length},
   {"list", proc_list},
   {"list->string", proc_list_to_string},

@@ -283,12 +283,14 @@
 (test-eq (quote (memq 30 (list 10 20 30))) (list 30))
 (test-eq (quote (memq 40 (list 10 20 30))) #f)
 
-;; gcd
+;; gcd, lcm
 (test-eq (quote (gcd 10 2)) 2)
 (test-eq (quote (gcd 10 3)) 1)
 (test-eq (quote (gcd 10 5)) 5)
 (test-eq (quote (gcd 5 10)) 5)
 (test-eq (quote (gcd 1230 4560)) 30)
+(test-eq (quote (lcm 4 6)) 12)
+(test-eq (quote (lcm 6 4)) 12)
 
 (display "\nResults\n")
 (results)

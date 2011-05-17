@@ -368,3 +368,23 @@ bool iswhole(float n)
   // NOTE: Can possible do `(int)n == n` as well, but better to use floor.
   return floor(n) == n;
 }
+
+int gcd(int a, int b)
+{
+  if ( a == 0 )
+    return b;
+
+  while ( b ) {
+    if ( a > b )
+      a -= b;
+    else
+      b -= a;
+  }
+
+  return a;
+}
+
+int lcm(int a, int b)
+{
+  return a*b / gcd(a, b);
+}
