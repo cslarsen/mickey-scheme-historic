@@ -1201,13 +1201,22 @@ cons_t* proc_string_to_number(cons_t* p, environment_t* e)
 {
   assert_length(p, 1);
   assert_type(STRING, car(p));
+
   const char *s = car(p)->string;
+
   if ( isfloat(s) )
     return decimal(to_f(s));
   else if ( isinteger(s) )
     return integer(to_i(s));
 
   return boolean(false);
+}
+
+cons_t* proc_string_length(cons_t* p, environment_t*)
+{
+  assert_length(p, 1);
+  assert_type(STRING, car(p));
+  return integer(strlen(car(p)->string));
 }
 
 named_function_t exports_base[] = {
@@ -1297,6 +1306,7 @@ named_function_t exports_base[] = {
   {"string->number", proc_string_to_number},
   {"string->symbol", proc_string_to_symbol},
   {"string-append", proc_strcat},
+  {"string-length", proc_string_length},
   {"string?", proc_stringp},
   {"symbol->string", proc_symbol_to_string},
   {"symbol?", proc_symbolp},

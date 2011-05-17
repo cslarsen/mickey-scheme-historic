@@ -307,6 +307,11 @@
 (test-eq (quote (string->number "456")) 456)
 (test-eq (quote (string->number "1.2")) 1.2)
 (test-eq (quote (string->number "1.5")) 1.5)
+(test-eq (quote (string-length "abba")) 4)
+(test-eq (quote (string-length "abb")) 3)
+(test-eq (quote (string-length "ab")) 2)
+(test-eq (quote (string-length "a")) 1)
+(test-eq (quote (string-length "")) 0)
 
 (display "\nResults\n")
 (results)
