@@ -1153,6 +1153,27 @@ cons_t* proc_memq(cons_t* p, environment_t* e)
   return proc_member_fptr(p, e, eqp);
 }
 
+cons_t* proc_gcd(cons_t* p, environment_t* e)
+{
+  assert_length(p, 2);
+  assert_type(INTEGER, car(p));
+  assert_type(INTEGER, cadr(p));
+
+  int a = car(p)->integer, b = cadr(p)->integer;
+
+  if ( a == 0 )
+    return integer(b);
+
+  while ( b ) {
+    if ( a > b )
+      a -= b;
+    else
+      b -= a;
+  }
+
+  return integer(a);
+}
+
 named_function_t exports_base[] = {
   {"*", proc_mul},
   {"+", proc_add},
@@ -1205,6 +1226,7 @@ named_function_t exports_base[] = {
   {"even?", proc_evenp},
   {"expt", proc_expt},
   {"file-exists?", proc_file_existsp},
+  {"gcd", proc_gcd},
   {"integer->char", proc_integer_to_char},
   {"integer?", proc_integerp},
   {"length", proc_length},
