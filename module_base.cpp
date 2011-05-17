@@ -1244,6 +1244,46 @@ cons_t* proc_substring(cons_t* p, environment_t*)
              len->integer).c_str());
 }
 
+cons_t* proc_string_ltp(cons_t* p, environment_t*)
+{
+  assert_length(p, 2);
+  assert_type(STRING, car(p));
+  assert_type(STRING, cadr(p));
+  return boolean(strcmp(car(p)->string, cadr(p)->string) < 0);
+}
+
+cons_t* proc_string_ltep(cons_t* p, environment_t*)
+{
+  assert_length(p, 2);
+  assert_type(STRING, car(p));
+  assert_type(STRING, cadr(p));
+  return boolean(strcmp(car(p)->string, cadr(p)->string) <= 0);
+}
+
+cons_t* proc_string_eqp(cons_t* p, environment_t*)
+{
+  assert_length(p, 2);
+  assert_type(STRING, car(p));
+  assert_type(STRING, cadr(p));
+  return boolean(strcmp(car(p)->string, cadr(p)->string) == 0);
+}
+
+cons_t* proc_string_gtep(cons_t* p, environment_t*)
+{
+  assert_length(p, 2);
+  assert_type(STRING, car(p));
+  assert_type(STRING, cadr(p));
+  return boolean(strcmp(car(p)->string, cadr(p)->string) >= 0);
+}
+
+cons_t* proc_string_gtp(cons_t* p, environment_t*)
+{
+  assert_length(p, 2);
+  assert_type(STRING, car(p));
+  assert_type(STRING, cadr(p));
+  return boolean(strcmp(car(p)->string, cadr(p)->string) > 0);
+}
+
 named_function_t exports_base[] = {
   {"*", proc_mul},
   {"+", proc_add},
@@ -1333,6 +1373,11 @@ named_function_t exports_base[] = {
   {"string->symbol", proc_string_to_symbol},
   {"string-append", proc_strcat},
   {"string-length", proc_string_length},
+  {"string<=?", proc_string_ltep},
+  {"string<?", proc_string_ltp},
+  {"string=?", proc_string_eqp},
+  {"string>=?", proc_string_gtep},
+  {"string>?", proc_string_gtp},
   {"string?", proc_stringp},
   {"substring", proc_substring},
   {"symbol->string", proc_symbol_to_string},
