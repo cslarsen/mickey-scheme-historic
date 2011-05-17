@@ -299,7 +299,14 @@
 (test-eq (quote (list-ref (list 1 2 3 4) 0)) 1)
 (test-eq (quote (list-ref (list 1 2 3 4) 3)) 4)
 
+;; string conversion
 (test-eq (quote (string->list "hey")) (list #\h #\e #\y))
+(test-eq (quote (string->symbol "hey")) (quote hey))
+(test-eq (quote (string->number "abba")) #f)
+(test-eq (quote (string->number "123")) 123)
+(test-eq (quote (string->number "456")) 456)
+(test-eq (quote (string->number "1.2")) 1.2)
+(test-eq (quote (string->number "1.5")) 1.5)
 
 (display "\nResults\n")
 (results)

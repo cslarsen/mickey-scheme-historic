@@ -21,6 +21,7 @@
 #include "options.h" // global_opts
 #include "backtrace.h"
 #include "eval.h"
+#include "types.h"
 
 // For version printing
 #ifdef USE_READLINE
@@ -1189,6 +1190,26 @@ cons_t* proc_string_to_list(cons_t* p, environment_t*)
   return r;
 }
 
+cons_t* proc_string_to_symbol(cons_t* p, environment_t* e)
+{
+  assert_length(p, 1);
+  assert_type(STRING, car(p));
+  return symbol(car(p)->string, e);
+}
+
+cons_t* proc_string_to_number(cons_t* p, environment_t* e)
+{
+  assert_length(p, 1);
+  assert_type(STRING, car(p));
+  const char *s = car(p)->string;
+  if ( isfloat(s) )
+    return decimal(to_f(s));
+  else if ( isinteger(s) )
+    return integer(to_i(s));
+
+  return boolean(false);
+}
+
 named_function_t exports_base[] = {
   {"*", proc_mul},
   {"+", proc_add},
@@ -1273,6 +1294,8 @@ named_function_t exports_base[] = {
   {"reverse", proc_reverse},
   {"round", proc_round},
   {"string->list", proc_string_to_list},
+  {"string->number", proc_string_to_number},
+  {"string->symbol", proc_string_to_symbol},
   {"string-append", proc_strcat},
   {"string?", proc_stringp},
   {"symbol->string", proc_symbol_to_string},
