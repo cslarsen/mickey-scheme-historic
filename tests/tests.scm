@@ -312,6 +312,14 @@
 (test-eq (quote (string-length "ab")) 2)
 (test-eq (quote (string-length "a")) 1)
 (test-eq (quote (string-length "")) 0)
+;;
+(test-eq (quote (substring "Hello!" 0 0)) "")
+(test-eq (quote (substring "Hello!" 0 1)) "H")
+(test-eq (quote (substring "Hello!" 0 3)) "Hel")
+(test-eq (quote (substring "Hello!" 1 3)) "ell")
+(test-eq (quote (substring "Hello!" 1 3)) "ell")
+(test-eq (quote (substring "Hello!" 1 4)) "ello")
+(test-eq (quote (substring "Hello!" 2 4)) "llo!")
 
 (display "\nResults\n")
 (results)

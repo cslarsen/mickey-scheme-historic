@@ -1219,6 +1219,31 @@ cons_t* proc_string_length(cons_t* p, environment_t*)
   return integer(strlen(car(p)->string));
 }
 
+cons_t* proc_string(cons_t* p, environment_t*)
+{
+  assert_length(p, 1);
+  assert_type(CHAR, car(p));
+  char s[2] = {car(p)->character, '\0'};
+  return string(s);
+}
+
+cons_t* proc_substring(cons_t* p, environment_t*)
+{
+  assert_length(p, 3);
+
+  cons_t *str = car(p),
+       *start = cadr(p),
+         *len = caddr(p);
+
+  assert_type(STRING, str);
+  assert_type(INTEGER, start);
+  assert_type(INTEGER, len);
+
+  return string(std::string(str->string).
+      substr(start->integer,
+             len->integer).c_str());
+}
+
 named_function_t exports_base[] = {
   {"*", proc_mul},
   {"+", proc_add},
@@ -1302,12 +1327,14 @@ named_function_t exports_base[] = {
   {"real?", proc_decimalp},
   {"reverse", proc_reverse},
   {"round", proc_round},
+  {"string", proc_string},
   {"string->list", proc_string_to_list},
   {"string->number", proc_string_to_number},
   {"string->symbol", proc_string_to_symbol},
   {"string-append", proc_strcat},
   {"string-length", proc_string_length},
   {"string?", proc_stringp},
+  {"substring", proc_substring},
   {"symbol->string", proc_symbol_to_string},
   {"symbol?", proc_symbolp},
   {"truncate", proc_truncate},
