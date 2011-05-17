@@ -1120,6 +1120,11 @@ cons_t* proc_list_tail(cons_t* p, environment_t*)
   return p;
 }
 
+cons_t* proc_list_ref(cons_t* p, environment_t* e)
+{
+  return car(proc_list_tail(p, e));
+}
+
 static cons_t* proc_member_fptr(cons_t* p, environment_t*, bool (*compare)(const cons_t*, const cons_t*))
 {
   assert_length(p, 2);
@@ -1230,6 +1235,7 @@ named_function_t exports_base[] = {
   {"length", proc_length},
   {"list", proc_list},
   {"list->string", proc_list_to_string},
+  {"list-ref", proc_list_ref},
   {"list-tail", proc_list_tail},
   {"list?", proc_listp},
   {"load", proc_load},

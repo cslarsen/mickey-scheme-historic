@@ -292,6 +292,13 @@
 (test-eq (quote (lcm 4 6)) 12)
 (test-eq (quote (lcm 6 4)) 12)
 
+;; list-ref
+(test-eq (quote (list-ref (list 1 2 3) 2)) 3)
+(test-eq (quote (list-ref (list 1 2 3) 1)) 2)
+(test-eq (quote (list-ref (list 1 2 3) 0)) 1)
+(test-eq (quote (list-ref (list 1 2 3 4) 0)) 1)
+(test-eq (quote (list-ref (list 1 2 3 4) 3)) 4)
+
 (display "\nResults\n")
 (results)
 
