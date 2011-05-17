@@ -299,6 +299,8 @@
 (test-eq (quote (list-ref (list 1 2 3 4) 0)) 1)
 (test-eq (quote (list-ref (list 1 2 3 4) 3)) 4)
 
+(test-eq (quote (string->list "hey")) (list #\h #\e #\y))
+
 (display "\nResults\n")
 (results)
 

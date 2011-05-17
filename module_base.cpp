@@ -1167,13 +1167,26 @@ cons_t* proc_gcd(cons_t* p, environment_t* e)
   return integer(gcd(a, b));
 }
 
-cons_t* proc_lcm(cons_t* p, environment_t* e)
+cons_t* proc_lcm(cons_t* p, environment_t*)
 {
   assert_length(p, 2);
   assert_type(INTEGER, car(p));
   assert_type(INTEGER, cadr(p));
   int a = car(p)->integer, b = cadr(p)->integer;
   return integer(lcm(a, b));
+}
+
+cons_t* proc_string_to_list(cons_t* p, environment_t*)
+{
+  assert_length(p, 1);
+  assert_type(STRING, car(p));
+
+  cons_t *r = list(NULL);
+
+  for ( const char* s = car(p)->string; *s; ++s )
+    r = append(r, list(character(*s)));
+
+  return r;
 }
 
 named_function_t exports_base[] = {
@@ -1259,6 +1272,7 @@ named_function_t exports_base[] = {
   {"real?", proc_decimalp},
   {"reverse", proc_reverse},
   {"round", proc_round},
+  {"string->list", proc_string_to_list},
   {"string-append", proc_strcat},
   {"string?", proc_stringp},
   {"symbol->string", proc_symbol_to_string},
