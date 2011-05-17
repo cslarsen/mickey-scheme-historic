@@ -320,11 +320,14 @@
 (test-eq (quote (substring "Hello!" 1 3)) "ell")
 (test-eq (quote (substring "Hello!" 1 4)) "ello")
 (test-eq (quote (substring "Hello!" 2 4)) "llo!")
-
-;; string comparison
+;;
 (test-eq (quote (string=? "hey" "hey")) #t)
 (test-eq (quote (string=? "hey" "heya")) #f)
 (test-eq (quote (string<=? "hey" "heya")) #t)
+;;
+(test-eq (quote (string-ref "hey" 0)) #\h)
+(test-eq (quote (string-ref "hey" 1)) #\e)
+(test-eq (quote (string-ref "hey" 2)) #\y)
 
 (display "\nResults\n")
 (results)

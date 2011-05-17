@@ -1284,6 +1284,18 @@ cons_t* proc_string_gtp(cons_t* p, environment_t*)
   return boolean(strcmp(car(p)->string, cadr(p)->string) > 0);
 }
 
+cons_t* proc_string_ref(cons_t* p, environment_t*)
+{
+  assert_length(p, 2);
+  assert_type(STRING, car(p));
+  assert_type(INTEGER, cadr(p));
+
+  if ( static_cast<size_t>(cadr(p)->integer) >= strlen(car(p)->string) )
+    throw std::runtime_error("string-ref argument out of bounds");
+
+  return character(car(p)->string[ cadr(p)->integer]);
+}
+
 named_function_t exports_base[] = {
   {"*", proc_mul},
   {"+", proc_add},
@@ -1373,6 +1385,7 @@ named_function_t exports_base[] = {
   {"string->symbol", proc_string_to_symbol},
   {"string-append", proc_strcat},
   {"string-length", proc_string_length},
+  {"string-ref", proc_string_ref},
   {"string<=?", proc_string_ltep},
   {"string<?", proc_string_ltp},
   {"string=?", proc_string_eqp},
