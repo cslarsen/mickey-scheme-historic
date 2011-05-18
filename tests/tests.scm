@@ -329,6 +329,25 @@
 (test-eq (quote (string-ref "hey" 1)) #\e)
 (test-eq (quote (string-ref "hey" 2)) #\y)
 
+;; append tests
+(test-eq (quote (append (list) 1)) (1))
+(test-eq (quote (append (list) 1)) (1))
+(test-eq (quote (append (list) (list 1 2))) (list 1 2))
+(test-eq (quote (append (list) (list 1 2))) (list 1 2))
+(test-eq (quote (append (list 1))) (list 1))
+(test-eq (quote (append (list 1))) (list 1))
+(test-eq (quote (append (list 1) 2)) (cons 1 2))
+(test-eq (quote (append (list 1) (list 3))) (list 1 3))
+(test-eq (quote (append (list 1) (list 3 4))) (list 1 3 4))
+(test-eq (quote (append (list 1) (list 3 4) 5)) (cons 1 (cons 3 (cons 4 5))))
+(test-eq (quote (append (append (list 1 2 3) (list 4)) (list 5 6) 7)) (cons 1 (cons 2 (cons 3 (cons 4 (cons 5 (cons 6 7)))))))
+
+;; Regression test: append should not mutate
+(define a (list 1))
+(append a 2)
+(append a 3)
+(test-eq (quote a) (list 1))
+
 (display "\nResults\n")
 (results)
 

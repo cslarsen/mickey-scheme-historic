@@ -274,27 +274,7 @@ bool eqvp(const cons_t* l, const cons_t* r)
 
 cons_t* append(cons_t *h, cons_t *t)
 {
-  if ( !listp(h) )
-    throw std::runtime_error("First argument to append must be a list");
-
-  if ( length(h) == 0 ) 
-    return t;
-
-  // Find end of list
-  cons_t *p = h;
-
-  while ( pairp(cdr(p)) && !nullp(cdr(p)) )
-    p = cdr(p);
-
-  // Insert new item
-  if ( nullp(cdr(p)) )
-      // as cons cell
-      p->cdr = t;
-  else
-    // as pair
-    p->cdr = cons(p->cdr, t);
-
-  return h;
+  return nullp(h)? t : cons(car(h), append(cdr(h), t));
 }
 
 cons_t* closure(lambda_t f, environment_t* e)

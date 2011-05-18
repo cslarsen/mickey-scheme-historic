@@ -391,7 +391,14 @@ cons_t* proc_cddr(cons_t* p, environment_t* e)
 
 cons_t* proc_append(cons_t* p, environment_t*)
 {
-  return append(car(p), cadr(p));
+  cons_t *r = append(car(p), cadr(p));
+
+  while ( !nullp(caddr(p)) ) {
+    r = append(r, caddr(p));
+    p = cddr(p);
+  }
+  
+  return r;
 }
 
 cons_t* proc_symbolp(cons_t* p, environment_t* env)
