@@ -348,6 +348,15 @@
 (append a 3)
 (test-eq (quote a) (list 1))
 
+;; Quoting
+(test-eq (quote 'hey) (quote hey))
+(test-eq (quote 'hey) 'hey)
+(test-eq (quote ''hey) ''hey)
+;
+(test-eq (quote (append '(1 2 3) 4)) (cons 1 (cons 2 (cons 3 4))))
+(test-eq (quote (apply + '(1 2 3))) 6)
+(test-eq '(apply + '(1 2 3)) 6) ; is double-quote ok?
+
 (display "\nResults\n")
 (results)
 

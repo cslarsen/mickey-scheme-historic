@@ -1,3 +1,9 @@
+--- Quoting is not completely robust, e.g. this
+mickey> '(1 2 '3)
+translates to
+  (1 2 (quote . 3))
+which looks funny
+
 --- Charmap not full, cannot set whitespace chars, e.g.
 "#\ " does not work, but should.
 

@@ -42,7 +42,9 @@ cons_t* type_convert(const char* token, environment_t* env)
   return symbol(token, env);
 }
 
-cons_t* parse_list(environment_t *env)
+static cons_t* parse_quote(const char* t, environment_t* env);
+
+cons_t* parse_list(environment_t *env, bool quoting = false)
 {
   cons_t *p = NULL;
   const char *t;
@@ -50,13 +52,40 @@ cons_t* parse_list(environment_t *env)
   while ( (t = get_token()) != NULL && *t != ')' ) {
     bool paren = (*t == '(');
 
-    cons_t *add = paren? parse_list(env) :
-                         type_convert(t + paren, env);
+    cons_t *add;
+
+    if ( isquote(t) )
+      add = parse_quote(t, env);
+    else
+      add = paren? parse_list(env) :
+                   type_convert(t + paren, env);
 
     p = nullp(p)? cons(add) : append(p, cons(add));
+
+    /* Added this to prevent the rest of the program to be
+     * treated as being quoted. I.e., the following happened
+     * before this:
+     *
+     * mickey> '(1 2 3) 4
+     * translated to "(quote (1 2 3) 4)", which is wrong
+     */
+    if ( quoting )
+      break;
   }
 
   return p;
+}
+
+cons_t* parse_quote(const char* t, environment_t* env)
+{
+  bool quoted_symbol = (t[1] != '\0');
+
+  cons_t *r = cons(symbol("quote", env),
+    quoted_symbol ?
+      cons(type_convert(t+1, env)) :
+      parse_list(env, true));
+
+  return r;
 }
 
 program_t* parse(const char *program, environment_t *env)

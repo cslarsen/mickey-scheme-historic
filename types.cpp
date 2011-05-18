@@ -150,3 +150,8 @@ bool isvowel(char c)
     return false;
   }
 }
+
+bool isquote(const char* s)
+{
+  return s[0] == '\'';
+}
