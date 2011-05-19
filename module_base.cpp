@@ -1303,6 +1303,39 @@ cons_t* proc_string_ref(cons_t* p, environment_t*)
   return character(car(p)->string[ cadr(p)->integer]);
 }
 
+cons_t* proc_nanp(cons_t* p, environment_t*)
+{
+  assert_length(p, 1);
+  assert_number(car(p));
+
+  if ( type_of(car(p)) == INTEGER )
+    return boolean(false);
+
+  return boolean(isnan(car(p)->decimal));
+}
+
+cons_t* proc_infinitep(cons_t* p, environment_t*)
+{
+  assert_length(p, 1);
+  assert_number(car(p));
+
+  if ( type_of(car(p)) == INTEGER )
+    return boolean(false);
+
+  return boolean(fpclassify(car(p)->decimal) == FP_INFINITE);
+}
+
+cons_t* proc_finitep(cons_t* p, environment_t*)
+{
+  assert_length(p, 1);
+  assert_number(car(p));
+
+  if ( type_of(car(p)) == INTEGER )
+    return boolean(false);
+
+  return boolean(isfinite(car(p)->decimal));
+}
+
 named_function_t exports_base[] = {
   {"*", proc_mul},
   {"+", proc_add},
@@ -1355,7 +1388,9 @@ named_function_t exports_base[] = {
   {"even?", proc_evenp},
   {"expt", proc_expt},
   {"file-exists?", proc_file_existsp},
+  {"finite?", proc_infinitep},
   {"gcd", proc_gcd},
+  {"infinite?", proc_infinitep},
   {"integer->char", proc_integer_to_char},
   {"integer?", proc_integerp},
   {"lcm", proc_lcm},
@@ -1372,6 +1407,7 @@ named_function_t exports_base[] = {
   {"memv", proc_memv},
   {"min", proc_min},
   {"modulo", proc_modulo},
+  {"nan?", proc_nanp},
   {"negative?", proc_negativep},
   {"newline", proc_newline},
   {"not", proc_not},
