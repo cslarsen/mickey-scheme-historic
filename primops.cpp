@@ -9,6 +9,7 @@
  *                                                          
  */
 
+#include <stdint.h> // limits
 #include <math.h> // floor
 #include <stdexcept>
 #include "primops.h"
@@ -344,9 +345,12 @@ decimal_t number_to_float(const cons_t* p)
 
 bool iswhole(decimal_t n)
 {
+  if ( !isfinite(n) || isnan(n) || !isnormal(n) )
+    return false;
+
   // Return true if `n` has no decimals, i.e. is "x.0" for a value of x
   // NOTE: Can possible do `(int)n == n` as well, but better to use floor.
-  return floor(n) == n;
+  return (floor(n) == n) && !(n <= INT_MIN || n >= INT_MAX);
 }
 
 int gcd(int a, int b)

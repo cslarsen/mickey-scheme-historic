@@ -145,9 +145,6 @@ cons_t* proc_divf(cons_t *p, environment_t *e)
   decimal_t x = (type_of(a) == DECIMAL)? a->decimal : a->integer;
   decimal_t y = (type_of(b) == DECIMAL)? b->decimal : b->integer;
 
-  if ( y == 0.0 )
-    throw std::runtime_error("Division by zero");
-
   // Automatically convert back to int if possible
   decimal_t q = x / y;
   return iswhole(q)? integer(static_cast<int>(q)) : decimal(q);
