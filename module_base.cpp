@@ -34,7 +34,7 @@ cons_t* proc_abs(cons_t* p, environment_t*)
   assert_number(car(p));
 
   if ( decimalp(car(p)) ) {
-    float n = car(p)->decimal;
+    decimal_t n = car(p)->decimal;
     return decimal(n<0.0? -n : n);
   }
 
@@ -77,13 +77,13 @@ cons_t* proc_strcat(cons_t *p, environment_t* env)
 
 cons_t* proc_addf(cons_t *p, environment_t* env)
 {
-  float sum = 0.0;
+  decimal_t sum = 0.0;
 
   for ( ; !nullp(p); p = cdr(p) ) {
     cons_t *i = listp(p)? car(p) : p;
 
     if ( integerp(i) )
-      sum += (float) i->integer;
+      sum += static_cast<decimal_t>(i->integer);
     else if ( decimalp(i) )
       sum += i->decimal;
     else
@@ -123,7 +123,7 @@ cons_t* proc_sub(cons_t *p, environment_t* env)
   if ( length(p) == 0 )
     throw std::runtime_error("No arguments to -");
 
-  float d = number_to_float(car(p));
+  decimal_t d = number_to_float(car(p));
 
   // (- x) => -x, instead of +x
   if ( nullp(cdr(p)) )
@@ -142,14 +142,14 @@ cons_t* proc_divf(cons_t *p, environment_t *e)
   cons_t *a = car(p);
   cons_t *b = cadr(p);
 
-  float x = (type_of(a) == DECIMAL)? a->decimal : a->integer;
-  float y = (type_of(b) == DECIMAL)? b->decimal : b->integer;
+  decimal_t x = (type_of(a) == DECIMAL)? a->decimal : a->integer;
+  decimal_t y = (type_of(b) == DECIMAL)? b->decimal : b->integer;
 
   if ( y == 0.0 )
     throw std::runtime_error("Division by zero");
 
   // Automatically convert back to int if possible
-  float q = x / y;
+  decimal_t q = x / y;
   return iswhole(q)? integer(static_cast<int>(q)) : decimal(q);
 }
 
@@ -173,13 +173,13 @@ cons_t* proc_div(cons_t *p, environment_t *e)
 
 cons_t* proc_mulf(cons_t *p, environment_t *env)
 {
-  float product = 1.0;
+  decimal_t product = 1.0;
 
   for ( ; !nullp(p); p = cdr(p) ) {
     cons_t *i = listp(p)? car(p) : p;
 
     if ( integerp(i) )
-      product *= (float) i->integer;
+      product *= static_cast<decimal_t>(i->integer);
     else if ( decimalp(i) )
       // automatically convert; perform rest of computation in floats
       product *= i->decimal;
@@ -561,8 +561,8 @@ cons_t* proc_less(cons_t* p, environment_t*)
   assert_number(car(p));
   assert_number(cadr(p));
 
-  float x = (type_of(car(p)) == INTEGER)? car(p)->integer : car(p)->decimal;
-  float y = (type_of(cadr(p)) == INTEGER)? cadr(p)->integer : cadr(p)->decimal;
+  decimal_t x = (type_of(car(p)) == INTEGER)? car(p)->integer : car(p)->decimal;
+  decimal_t y = (type_of(cadr(p)) == INTEGER)? cadr(p)->integer : cadr(p)->decimal;
 
   return boolean(x < y);
 }
@@ -573,8 +573,8 @@ cons_t* proc_greater(cons_t* p, environment_t*)
   assert_number(car(p));
   assert_number(cadr(p));
 
-  float x = (type_of(car(p)) == INTEGER)? car(p)->integer : car(p)->decimal;
-  float y = (type_of(cadr(p)) == INTEGER)? cadr(p)->integer : cadr(p)->decimal;
+  decimal_t x = (type_of(car(p)) == INTEGER)? car(p)->integer : car(p)->decimal;
+  decimal_t y = (type_of(cadr(p)) == INTEGER)? cadr(p)->integer : cadr(p)->decimal;
 
   return boolean(x > y);
 }
@@ -963,9 +963,9 @@ cons_t* proc_expt(cons_t* p, environment_t*)
   }
 
   // Floating point exponentiation
-  float a = number_to_float(base),
-        n = number_to_float(expn),
-        r = a;
+  decimal_t a = number_to_float(base),
+            n = number_to_float(expn),
+            r = a;
 
   if ( n == 0.0 )
     return decimal(1.0);

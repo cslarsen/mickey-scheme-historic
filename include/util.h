@@ -11,12 +11,12 @@
 
 #ifndef INC_MICKEY_UTIL_H
 #define INC_MICKEY_UTIL_H
+
 #include <string>
 #include "cons.h"
-#endif
 
 std::string to_s(int n);
-std::string to_s(float n);
+std::string to_s(decimal_t n);
 std::string to_s(bool f);
 std::string format(const char *fmt, ...);
 std::string toupper(const std::string& s);
@@ -33,3 +33,5 @@ std::string encode_str(const char* s);
 
 // Prefix string with indefinite article (i.e., "a" or "an")
 std::string indef_art(const std::string&);
+
+#endif

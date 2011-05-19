@@ -56,7 +56,7 @@ cons_t* integer(int n)
   return p;
 }
 
-cons_t* decimal(float n)
+cons_t* decimal(decimal_t n)
 {
   cons_t *p = new cons_t();
   p->type = DECIMAL;
@@ -337,12 +337,12 @@ double number_to_double(const cons_t* p)
   }
 }
 
-float number_to_float(const cons_t* p)
+decimal_t number_to_float(const cons_t* p)
 {
-  return static_cast<float>(number_to_double(p));
+  return static_cast<decimal_t>(number_to_double(p));
 }
 
-bool iswhole(float n)
+bool iswhole(decimal_t n)
 {
   // Return true if `n` has no decimals, i.e. is "x.0" for a value of x
   // NOTE: Can possible do `(int)n == n` as well, but better to use floor.

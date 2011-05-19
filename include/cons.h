@@ -9,6 +9,8 @@
  *                                                          
  */
 
+typedef double decimal_t;
+
 #ifndef INC_MICKEY_CONS_H
 #define INC_MICKEY_CONS_H
 
@@ -117,7 +119,7 @@ struct cons_t
     bool boolean;
     char character;
     int integer;
-    float decimal;
+    decimal_t decimal;
     struct { cons_t *car, *cdr; }; // pair
     closure_t* closure;
     const symbol_t* symbol;

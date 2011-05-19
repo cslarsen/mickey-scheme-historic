@@ -39,7 +39,7 @@ std::string to_s(int n)
   return std::string(buf);
 }
 
-std::string to_s(float n)
+std::string to_s(decimal_t n)
 {
   char buf[64];
   sprintf(buf, "%f", n);

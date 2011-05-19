@@ -25,7 +25,7 @@ cons_t* symbol(const char*, environment_t*);
 cons_t* integer(int);
 cons_t* boolean(bool);
 cons_t* character(char);
-cons_t* decimal(float);
+cons_t* decimal(decimal_t);
 cons_t* string(const char*);
 cons_t* closure(lambda_t, environment_t*);
 cons_t* nil();
@@ -65,8 +65,8 @@ bool or_p(const cons_t*);
 bool xor_p(const cons_t*);
 
 double number_to_double(const cons_t*);
-float number_to_float(const cons_t*);
-bool iswhole(float);
+decimal_t number_to_float(const cons_t*);
+bool iswhole(decimal_t);
 
 int gcd(int a, int b);
 int lcm(int a, int b);

@@ -114,9 +114,9 @@ bool isatom(const char* s)
   return isalpha(s[0]) && (empty(s+1) ? true : all(s+1, isalnum));
 }
 
-float to_f(const char* s)
+decimal_t to_f(const char* s)
 {
-  return (float) atof(s);
+  return static_cast<decimal_t>(atof(s));
 }
 
 int to_i(const char* s)
