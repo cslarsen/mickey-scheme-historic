@@ -249,6 +249,22 @@ static cons_t* eval_with_trace(cons_t* expr, environment_t* e)
   return result;
 }
 
+static cons_t* eval_quasiquote(cons_t* p, environment_t* e)
+{
+  // Find unquote
+  if ( symbolp(car(p)) ) {
+    std::string n = car(p)->symbol->name();
+
+    // TODO: Only allow this if we're explicitly inside quasiquote
+    if ( n == "unquote" || n == "," )
+      return eval(cdr(p), e);
+  }
+
+  return !pairp(p) ? p :
+    cons(eval_quasiquote(car(p), e),
+         eval_quasiquote(cdr(p), e));
+}
+
 /*
  * Based on Queinnec's evaluator numero uno.
  *
@@ -274,6 +290,9 @@ cons_t* eval(cons_t* p, environment_t* e)
 
     if ( name == "quote" )
       return cadr(p);
+
+    if ( name == "quasiquote" )
+      return eval_quasiquote(cadr(p), e);
 
     if ( name == "if" ) {
       /*
