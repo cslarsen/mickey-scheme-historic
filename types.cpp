@@ -153,5 +153,15 @@ bool isvowel(char c)
 
 bool isquote(const char* s)
 {
-  return s[0] == '\'';
+  return *s=='\'';
+}
+
+bool isquasiquote(const char* s)
+{
+  return *s == '`';
+}
+
+bool isunquote(const char* s)
+{
+  return *s == ',';
 }

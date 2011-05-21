@@ -16,6 +16,8 @@ bool isinteger(const char*);
 bool isstring(const char*);
 bool isatom(const char*);
 bool isquote(const char*);
+bool isquasiquote(const char*);
+bool isunquote(const char*);
 bool isbool(const char*);
 bool ischar(const char*);
 
