@@ -356,6 +356,8 @@
 (test-eq (quote (append '(1 2 3) 4)) (cons 1 (cons 2 (cons 3 4))))
 (test-eq (quote (apply + '(1 2 3))) 6)
 (test-eq '(apply + '(1 2 3)) 6) ; is double-quote ok?
+;
+(test-eq (quote (quasiquote (1 2 (unquote (+ 3 4))))) '(1 2 7))
 
 (display "\nResults\n")
 (results)
