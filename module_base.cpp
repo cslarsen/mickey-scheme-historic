@@ -788,12 +788,12 @@ cons_t* proc_begin(cons_t* p, environment_t* e)
 
 cons_t* proc_gteq(cons_t* p, environment_t* e)
 {
-  return boolean(proc_eqintp(p, e) || proc_greater(p, e));
+  return boolean(proc_eqintp(p, e)->boolean || proc_greater(p, e)->boolean);
 }
 
 cons_t* proc_lteq(cons_t* p, environment_t* e)
 {
-  return boolean(proc_eqintp(p, e) || proc_less(p, e));
+  return boolean(proc_eqintp(p, e)->boolean || proc_less(p, e)->boolean);
 }
 
 cons_t* proc_assq(cons_t* p, environment_t* e)
