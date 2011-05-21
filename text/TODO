@@ -3,16 +3,15 @@
 - Look into exact->inexact stuff
 
 NEXT STEPS, SHOULD BE ORDERED BY INCREASING DIFFICULTY
-- Add tail call elimination, via longjumps (tested and should work, must have own "jumptable" for each thread, which is only 1 for our purposes)
-- Add lazy evaluation (this is actually super-simple!)
-- Add our own stop-the-world, mark-and-sweep GC (is very simple for a language like scheme!)
-- Add function "unspecified()" which returns an unspecified value.  For our purposes, it will be nil(), but
-  it SHOULD have an entry point.
 - Add character table
+- Add function "unspecified()" which returns an unspecified value.  For our purposes, it will be nil(), but it SHOULD have an entry point.
+- Add lazy evaluation (this is actually super-simple!)
 - (letrec), should be straight-forward I think
+- Add our own stop-the-world, mark-and-sweep GC (is very simple for a language like scheme!)
 - other let forms? -> flet, fluid-let? named let
 - routine to detect tail calls
 - routine to detect if we can eliminate the tail call
+- Add tail call elimination, via longjumps (tested and should work, must have own "jumptable" for each thread, which is only 1 for our purposes)
 - Refactor the code, it's A MESS at the moment...
 ....
 
@@ -71,5 +70,3 @@ DOWN THE LINE
 - call/cc
 - delay/force
 - Macros
-
-
