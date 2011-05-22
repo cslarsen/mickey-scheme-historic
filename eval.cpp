@@ -394,6 +394,9 @@ cons_t* eval(cons_t* p, environment_t* e)
     if ( name == "let*" )
       return eval(proc_letstar(cdr(p), e), e);
 
+    if ( name == "letrec" )
+      return eval(proc_letrec(cdr(p), e), e);
+
     if ( name == "eval" )
       return eval_with_trace(cdr(p), e);
 

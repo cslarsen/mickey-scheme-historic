@@ -678,6 +678,64 @@ cons_t* proc_letstar(cons_t* p, environment_t* e)
   return inner;
 }
 
+cons_t* proc_letrec(cons_t* p, environment_t* e)
+{
+  /*
+   * Transform to begin-define with dummy initial values
+   * and using set! to update with correct ones:
+   *
+   * (letrec ((name-1 value-1)
+   *          (name-2 value-2)
+   *          (name-3 value-3))
+   *         <body>)
+   * to
+   *
+   * (let ((name-1 #f)
+   *       (name-2 #f)
+   *       (name-3 #f))
+   *   (set! name-1 value1)
+   *   (set! name-2 value2)
+   *   (set! name-3 value3)
+   *    <body>)
+   */
+
+  cons_t  *body  = cdr(p),
+          *names = list(NULL),
+         *values = list(NULL);
+
+  for ( cons_t *n = car(p); !nullp(n); n = cdr(n) ) {
+     names = cons(caar(n), names);
+    values = cons(cadar(n), values);
+  }
+
+  // do not clutter other environments
+  cons_t *r = NULL;
+
+  // (define name-N #f)
+  for ( cons_t *n=names; !nullp(n); n=cdr(n) )
+    r = append(r, cons(cons(car(n),
+                       cons(boolean(false)))));
+
+  // wrap in: (let ((key value) ...))
+  r = cons(symbol("let", e), list(r));
+
+  // (set! name-N value-N)
+  for ( cons_t *n=names,
+               *v=values;
+        !nullp(n) && !nullp(v);
+        n=cdr(n), v=cdr(v) )
+  {
+    r = append(r, cons(cons(symbol("set!", e),
+                              cons(car(n),
+                              cons(car(v))))));
+  }
+
+  // add <body>
+  r = append(r, body);
+
+  return r;
+}
+
 cons_t* proc_backtrace(cons_t*, environment_t*)
 {
   backtrace();
