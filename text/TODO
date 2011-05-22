@@ -1,3 +1,4 @@
+- Add letrec*, letrec
 - Allow #\tab and friends, including "#\ "
 - Fix expt for fractional exponents
 - Look into exact->inexact stuff
@@ -6,7 +7,6 @@ NEXT STEPS, SHOULD BE ORDERED BY INCREASING DIFFICULTY
 - Add character table
 - Add function "unspecified()" which returns an unspecified value.  For our purposes, it will be nil(), but it SHOULD have an entry point.
 - Add lazy evaluation (this is actually super-simple!)
-- (letrec), should be straight-forward I think
 - Add our own stop-the-world, mark-and-sweep GC (is very simple for a language like scheme!)
 - other let forms? -> flet, fluid-let? named let
 - routine to detect tail calls
@@ -14,10 +14,6 @@ NEXT STEPS, SHOULD BE ORDERED BY INCREASING DIFFICULTY
 - Add tail call elimination, via longjumps (tested and should work, must have own "jumptable" for each thread, which is only 1 for our purposes)
 - Refactor the code, it's A MESS at the moment...
 ....
-
-NORMAL
-- Make doubly and triply sure that environment/closure/lexical scoping ACTUALLY WORKS
-- Make doubly and triply sure that lambda ACTUALLY WORKS
 
 - We're now a proper Lisp/Scheme, celebrate!
   * OOOH, almost there!!
@@ -32,8 +28,6 @@ NORMAL
   * Make A LOT of test-functions, test everything again and again,
     test edge cases, look up all the subtle stuff and create tests for them,
     we will aim for complete compliance with spec...
-
-- Add let, letrec, fluid-rec etc
 
 HARDER
 - Add library functions
