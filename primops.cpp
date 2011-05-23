@@ -372,3 +372,9 @@ int lcm(int a, int b)
 {
   return a*b / gcd(a, b);
 }
+
+cons_t* nil_coalesce(cons_t* p)
+{
+  // Always return list; empty list if null
+  return !nullp(p)? p : list(NULL);
+}

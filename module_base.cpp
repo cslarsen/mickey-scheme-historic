@@ -222,7 +222,7 @@ cons_t* proc_to_string(cons_t* p, environment_t *env)
 
 cons_t* proc_list(cons_t* p, environment_t *env)
 {
-  return nullp(p) ? list(NULL) : p;
+  return nil_coalesce(p);
 }
 
 cons_t* proc_define(cons_t *p, environment_t *env)
@@ -347,7 +347,7 @@ cons_t* proc_cdr(cons_t* p, environment_t* env)
   assert_length(p, 1);
   assert_type(PAIR, p);
   cons_t *r = cdr(car(p));
-  return nullp(r)? list(NULL) : r;
+  return nil_coalesce(r);
 }
 
 cons_t* proc_caar(cons_t* p, environment_t* e)
@@ -375,7 +375,7 @@ cons_t* proc_cdar(cons_t* p, environment_t* e)
   assert_length(p, 1);
   assert_type(PAIR, p);
   cons_t *r = cdar(car(p));
-  return nullp(r)? list(NULL) : r;
+  return nil_coalesce(r);
 }
 
 cons_t* proc_cddr(cons_t* p, environment_t* e)
@@ -383,7 +383,7 @@ cons_t* proc_cddr(cons_t* p, environment_t* e)
   assert_length(p, 1);
   assert_type(PAIR, p);
   cons_t *r = cddr(car(p));
-  return nullp(r)? list(NULL) : r;
+  return nil_coalesce(r);
 }
 
 cons_t* proc_append(cons_t* p, environment_t*)
@@ -1180,7 +1180,7 @@ cons_t* proc_list_tail(cons_t* p, environment_t*)
   while ( n-- )
     p = cdr(p);
 
-  return p;
+  return nil_coalesce(p);
 }
 
 cons_t* proc_list_ref(cons_t* p, environment_t* e)

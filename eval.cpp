@@ -145,8 +145,11 @@ static cons_t* call_lambda(cons_t *p, environment_t* e)
   size_t params_recv = length(p);
 
   if ( params_recv < params_reqd ) {
+    throw std::runtime_error(format("Function requires %d parameters, but got %d",
+      params_reqd, params_recv));
+
     // try currying (TODO: Do we need to check for any conditions?)
-    return make_curried_function(args, p, body, e->extend());
+    //return make_curried_function(args, p, body, e->extend());
   }
 
   if ( params_recv > params_reqd && !has_rest ) {

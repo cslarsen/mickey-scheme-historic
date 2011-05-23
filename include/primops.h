@@ -70,5 +70,6 @@ bool iswhole(decimal_t);
 
 int gcd(int a, int b);
 int lcm(int a, int b);
+cons_t* nil_coalesce(cons_t* p);
 
 #endif
