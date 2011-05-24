@@ -1,3 +1,4 @@
+- Add memoization to lazy evaluation form
 - Add letrec*, letrec
 - Allow #\tab and friends, including "#\ "
 - Fix expt for fractional exponents

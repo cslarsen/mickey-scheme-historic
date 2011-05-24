@@ -67,6 +67,7 @@ static cons_t* invoke(cons_t* fun, cons_t* args)
   return lambda(args, env);
 }
 
+/*
 static cons_t* make_curried_function(cons_t *names, cons_t *values, cons_t *body, environment_t *e)
 {
     // While we have (name value) pairs, set `name` => `value`
@@ -83,6 +84,7 @@ static cons_t* make_curried_function(cons_t *names, cons_t *values, cons_t *body
     // The rest of any parameters is in `n`.
     return make_closure(n, body, e);
 }
+*/
 
 /*
  * Return number of required arguments, excluding
@@ -407,6 +409,22 @@ cons_t* eval(cons_t* p, environment_t* e)
       // Correct to use eval instead of evlis (or nothing) on parameter list?
       return invoke_with_trace(cadr(p), eval(caddr(p), e), e);
     }
+
+    if ( name == "delay" ) {
+      /*
+       * Convert to (lambda () <body>)
+       *
+       * TODO: Lazy evaluation should MEMOIZE, per the
+       *       standard.  Add this.
+       */
+      return eval(cons(symbol("lambda", e),
+                    cons(list(NULL),
+                      cons(cadr(p)))), e);
+    }
+
+    if ( name == "force" )
+      return eval(list(cadr(p)), e);
+
   }
 
   // skip `begin`-form; we've got that covered elsewhere (or?)
