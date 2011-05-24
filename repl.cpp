@@ -247,14 +247,17 @@ int repl()
 
     try {
       program_t *p = parse(input, env);
-      std::string s = sprint(eval(p));
 
       #ifdef USE_READLINE
       free(input);
       #endif
 
-      if ( !s.empty() )
-        printf("%s\n", s.c_str());
+      for ( cons_t *i = p->root; !nullp(i); i = cdr(i) ) {
+        std::string s = sprint(eval(car(i), p->globals));
+
+        if ( !s.empty() )
+         printf("%s\n", s.c_str());
+      }
     }
     catch(const std::exception& e) {
       fprintf(stderr, "%s\n", e.what());
