@@ -1,3 +1,4 @@
+- Kjør tests/variadic.scm, problemet er bare (->string rest), som feiler fordi rest er ikke satt.. Fikses ved å sette () som default value for rest, feks.  Eller sjekke standarden.
 - Add memoization to lazy evaluation form
 - Add letrec*, letrec
 - Allow #\tab and friends, including "#\ "
