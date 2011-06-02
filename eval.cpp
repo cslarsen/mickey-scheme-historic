@@ -28,6 +28,7 @@ static const char ARGS[] = "__args__";
 static const char BODY[] = "__body__";
 
 cons_t* make_closure(cons_t* args, cons_t* body, environment_t* e);
+extern cons_t* proc_do(cons_t*, environment_t*);
 
 cons_t* eval(program_t *p)
 {
@@ -401,6 +402,9 @@ cons_t* eval(cons_t* p, environment_t* e)
 
     if ( name == "letrec" )
       return eval(proc_letrec(cdr(p), e), e);
+
+    if ( name == "do" )
+      return eval(proc_do(p, e), e);
 
     if ( name == "eval" )
       return eval_with_trace(cdr(p), e);

@@ -1391,6 +1391,79 @@ cons_t* proc_finitep(cons_t* p, environment_t*)
   return boolean(isfinite(car(p)->decimal));
 }
 
+cons_t* proc_do(cons_t* p, environment_t* e)
+{
+  /*
+   * Expand according to r7rs, pp. 56:
+   *
+   *  (letrec
+   *    ((loop (lambda (<var1> <var2> <varN>) 
+   *         (if <test>
+   *             (begin
+   *               (if #f #f) ; used to get unspecified value
+   *               <expr>)
+   *             (begin
+   *               <command>
+   *               (loop (<step1> <step2> <stepN>)))))))
+   *    (loop <init1> <init2> <initN>))
+   */
+
+  cons_t *vars = cadr(p),
+         *test = caaddr(p),
+         *test_body = cons(symbol("begin",e), cdaddr(p)),
+         *body = cons(symbol("begin",e), cdddr(p));
+
+  // find variable names, initial values and stgeps
+  cons_t *names = list(NULL),
+         *init  = list(NULL),
+         *step  = list(NULL);
+
+  for ( cons_t *n = vars; !nullp(n); n = cdr(n) ) {
+    names = append(names, cons(caar(n)));
+    init  = append(init, cons(cadar(n)));
+    step  = append(step, cons(caddar(n)));
+  }
+
+  // (loop <step1> <step2> <stepN>)
+  cons_t* loop = cons(symbol("loop", e));
+  for ( cons_t *n = step; !nullp(n); n = cdr(n) )
+    loop = append(loop, cons(car(n)));
+
+  // (begin <body> (loop ...))
+  body = append(body, cons(loop));
+
+  // (if <test> <test_body> (begin <body> (loop ...))
+  cons_t *if_expr =
+    cons(symbol("if", e),
+      cons(test,
+        cons(test_body,
+          cons(body))));
+
+  // (lambda (<var1> <var2> <varN>) <if_expr>)
+  cons_t *lambda =
+    cons(symbol("lambda", e),
+      cons(names,
+        cons(if_expr)));
+
+  // (loop <lambda>)
+  loop =
+    cons(symbol("loop", e),
+      cons(lambda));
+
+  // (loop <init1> <init2> <initN>)
+  cons_t *loop_init =
+    cons(symbol("loop", e),
+      init);
+
+  // (letrec ((loop <loop_body)) (loop <init1> ...))
+  cons_t *letrec =
+    cons(symbol("letrec", e),
+      cons(list(loop),
+       cons(loop_init)));
+
+  return letrec;
+}
+
 named_function_t exports_base[] = {
   {"*", proc_mul},
   {"+", proc_add},

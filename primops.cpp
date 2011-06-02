@@ -129,6 +129,21 @@ cons_t* cddr(const cons_t* p)
   return cdr(cdr(p));
 }
 
+cons_t* cdddr(const cons_t* p)
+{
+  return cdr(cdr(cdr(p)));
+}
+
+cons_t* cdaddr(const cons_t* p)
+{
+  return cdr(car(cdr(cdr(p))));
+}
+
+cons_t* caaddr(const cons_t* p)
+{
+  return car(car(cdr(cdr(p))));
+}
+
 cons_t* cdar(const cons_t* p)
 {
   return cdr(car(p));
@@ -137,6 +152,11 @@ cons_t* cdar(const cons_t* p)
 cons_t* cadar(const cons_t* p)
 {
   return car(cdar(p));
+}
+
+cons_t* caddar(const cons_t* p)
+{
+  return car(cdr(cdar(p)));
 }
 
 cons_t* cadaar(const cons_t* p)
