@@ -7,29 +7,12 @@
 
 NEXT STEPS, SHOULD BE ORDERED BY INCREASING DIFFICULTY
 - Add character table
-- Add function "unspecified()" which returns an unspecified value.  For our purposes, it will be nil(), but it SHOULD have an entry point.
-- Add lazy evaluation (this is actually super-simple!)
 - Add our own stop-the-world, mark-and-sweep GC (is very simple for a language like scheme!)
 - other let forms? -> flet, fluid-let? named let
 - routine to detect tail calls
 - routine to detect if we can eliminate the tail call
 - Add tail call elimination, via longjumps (tested and should work, must have own "jumptable" for each thread, which is only 1 for our purposes)
 - Refactor the code, it's A MESS at the moment...
-....
-
-- We're now a proper Lisp/Scheme, celebrate!
-  * OOOH, almost there!!
-    * Summary:  We have variadic lambdas, closures with lexical scoping (I think)...
-                what does that make us?????? A REAL LISP!!! :D :D :D
-                Though we ARE missing a lot of important stuff... so we're a lisp,
-                but don't have a working GC, TCO/TCE, macros, and there are prolly
-                LOTS of bugs as well in the existing stuff... Also, we don't have
-                (let)-forms, but these can be made with lambdas (SICP explains this).
-
-- After we're a lisp/scheme (basic version)
-  * Make A LOT of test-functions, test everything again and again,
-    test edge cases, look up all the subtle stuff and create tests for them,
-    we will aim for complete compliance with spec...
 
 HARDER
 - Add library functions
@@ -39,9 +22,8 @@ HARDER
 - Add (fast) vector/SSE support through #(1 2 3)
 - Add parallelization support (through some lib; see comp benchmarks game)
 - Check up Hewitt's actor model, how it was solved in scheme
-- Add support for continuation
+- Add support for continuations
 - Add support for first class continuations
-- Add support for delay/force
 
 NEXT STEPS
 - Make all llvm primitives callable by interpreter
