@@ -169,6 +169,13 @@ static cons_t* call_lambda(cons_t *p, environment_t* e)
       if ( has_rest ) {
         // Pure variadic function, e.g. (lambda x (display x)) will have
         // all args in `x`.
+
+        /*
+         * If noe value has been set, give it a default something.
+         */
+        if ( nullp(value) )
+          value = list(NULL);
+
         e->define(name->symbol->name(), value);
         break;
       } else 
@@ -181,6 +188,17 @@ static cons_t* call_lambda(cons_t *p, environment_t* e)
      * trailing "rest"-argument.  E.g.:  (lambda (x y z . rest) <body>)
      */
     if ( car(name)->symbol->name() == "." ) {
+
+      if ( nullp(value) ) {
+        /*
+         * We have a function with named argument and a rest
+         * argument that has not been explicitly set.  Give it a default
+         * value to avoid having it crash functions that require this
+         * variable to have been bound to something.
+         */
+        value = list(NULL);
+      }
+
       e->define(cadr(name)->symbol->name(), value);
       break;
     }
