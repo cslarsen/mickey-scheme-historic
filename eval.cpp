@@ -437,7 +437,8 @@ cons_t* eval(cons_t* p, environment_t* e)
        * Convert to (lambda () <body>)
        *
        * TODO: Lazy evaluation should MEMOIZE, per the
-       *       standard.  Add this.
+       *       standard.  Add this. (OR, make a macro-system,
+       *       and implement delay via that.)
        */
       return eval(cons(symbol("lambda", e),
                     cons(list(NULL),
