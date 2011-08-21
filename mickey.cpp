@@ -21,7 +21,9 @@
 
 void execute(const char* file)
 {
+#ifndef NO_EXCEPTIONS
   try {
+#endif
     environment_t *env = new environment_t();
 
     import(env, exports_base);
@@ -31,6 +33,7 @@ void execute(const char* file)
     global_opts.current_filename = file;
 
     proc_load(cons(string(file)), env);
+#ifndef NO_EXCEPTIONS
   } catch (const std::exception& e) {
     const char* file = global_opts.current_filename;
     bool    has_file = file && strcmp(file, "-");
@@ -44,6 +47,7 @@ void execute(const char* file)
     backtrace_clear();
     exit(1);
   }
+#endif
 }
 
 int main(int argc, char** argv)

@@ -245,7 +245,9 @@ int repl()
     add_history(input);
     #endif
 
+#ifndef NO_EXCEPTIONS
     try {
+#endif
       program_t *p = parse(input, env);
 
       #ifdef USE_READLINE
@@ -258,12 +260,17 @@ int repl()
         if ( !s.empty() )
          printf("%s\n", s.c_str());
       }
+#ifndef NO_EXCEPTIONS
     }
+#endif
+
+#ifndef NO_EXCEPTIONS
     catch(const std::exception& e) {
       fprintf(stderr, "%s\n", e.what());
       backtrace();
       backtrace_clear();
     }
+#endif
   }
 
   return 0;

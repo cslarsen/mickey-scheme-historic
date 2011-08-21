@@ -15,6 +15,7 @@
 #include <ctype.h>
 #include "types.h"
 #include "util.h"
+#include "raise.h"
 
 static int count(const char *s, int (*check)(int))
 {
@@ -122,7 +123,7 @@ decimal_t to_f(const char* s)
 int to_i(const char* s)
 {
   if ( s == NULL )
-    throw std::runtime_error("Cannot convert NULL to INTEGER");
+    raise(std::runtime_error("Cannot convert NULL to INTEGER"));
 
   int has_sign = (char_in(*s, "+-"));
   int sign = (s[0]=='-'? -1 : 1);

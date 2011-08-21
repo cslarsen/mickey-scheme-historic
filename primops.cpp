@@ -16,6 +16,7 @@
 #include "util.h"
 #include "assertions.h"
 #include "print.h"
+#include "raise.h"
 
 cons_t* cons(const cons_t* head, const cons_t* tail)
 {
@@ -257,11 +258,11 @@ bool eqp(const cons_t* l, const cons_t* r)
   case DECIMAL: return l->decimal == r->decimal;
   case CLOSURE: return (l->closure->function == r->closure->function
                          && l->closure->environment == r->closure->environment);
-  case PAIR:    throw std::runtime_error("eq? is not implemented for pairs yet");
+  case PAIR:    raise(std::runtime_error("eq? is not implemented for pairs yet"));
   case SYMBOL:  return l->symbol->name() == r->symbol->name();
   case STRING:  return !strcmp(l->string, r->string);
-  case VECTOR:  throw std::runtime_error("Unimplemented eq? for vector"); break;
-  case CONTINUATION: throw std::runtime_error("Unimplemented eq? for continuation"); break;
+  case VECTOR:  raise(std::runtime_error("Unimplemented eq? for vector")); break;
+  case CONTINUATION: raise(std::runtime_error("Unimplemented eq? for continuation")); break;
   }
 
   return false;
@@ -352,7 +353,7 @@ double number_to_double(const cons_t* p)
 
   switch ( type_of(p) ) {
   default:
-    throw std::runtime_error("Unsupported number->double conversion: " + sprint(p));
+    raise(std::runtime_error("Unsupported number->double conversion: " + sprint(p)));
   case INTEGER: return static_cast<double>(p->integer);
   case DECIMAL: return static_cast<double>(p->decimal);
   }

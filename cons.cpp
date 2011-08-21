@@ -14,13 +14,14 @@
 #include "util.h"
 #include "primops.h"
 #include "print.h"
+#include "raise.h"
 
 static std::map<std::string, symbol_t> symbols;
 
 const symbol_t* create_symbol(const std::string& s)
 {
   if ( s.empty() )
-    throw std::runtime_error("Symbols must have names");
+    raise(std::runtime_error("Symbols must have names"));
 
   std::map<std::string, symbol_t>::iterator i;
 
@@ -97,7 +98,7 @@ cons_t* environment_t::lookup_or_throw(const std::string& name) const
   cons_t *p = lookup(name);
 
   if ( p == NULL )
-    throw std::runtime_error("Unbound variable: " + name);
+    raise(std::runtime_error("Unbound variable: " + name));
 
   return p;
 }

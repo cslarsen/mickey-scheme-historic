@@ -87,7 +87,7 @@ cons_t* proc_addf(cons_t *p, environment_t* env)
     else if ( decimalp(i) )
       sum += i->decimal;
     else
-      throw std::runtime_error("Cannot add decimal with " + to_s(type_of(i)) + ": " + sprint(i));
+      raise(std::runtime_error("Cannot add decimal with " + to_s(type_of(i)) + ": " + sprint(i)));
   }
 
   return decimal(sum);
@@ -112,7 +112,7 @@ cons_t* proc_add(cons_t *p, environment_t* env)
       // automatically convert; perform rest of computation in floats
       return proc_addf(cons(decimal(sum), p), env);
     else
-      throw std::runtime_error("Cannot add integer with " + to_s(type_of(i)) + ": " + sprint(i));
+      raise(std::runtime_error("Cannot add integer with " + to_s(type_of(i)) + ": " + sprint(i)));
   }
 
   return integer(sum);
@@ -121,7 +121,7 @@ cons_t* proc_add(cons_t *p, environment_t* env)
 cons_t* proc_sub(cons_t *p, environment_t* env)
 {
   if ( length(p) == 0 )
-    throw std::runtime_error("No arguments to -");
+    raise(std::runtime_error("No arguments to -"));
 
   decimal_t d = number_to_float(car(p));
 
@@ -162,7 +162,7 @@ cons_t* proc_div(cons_t *p, environment_t *e)
 
   if ( integerp(a) && integerp(b) ) {
     if ( b->integer == 0 )
-      throw std::runtime_error("Division by zero");
+      raise(std::runtime_error("Division by zero"));
     return integer(a->integer / b->integer);
   } else
     return proc_divf(p, e);
@@ -181,7 +181,7 @@ cons_t* proc_mulf(cons_t *p, environment_t *env)
       // automatically convert; perform rest of computation in floats
       product *= i->decimal;
     else
-      throw std::runtime_error("Cannot multiply integer with " + to_s(type_of(i)) + ": " + sprint(i));
+      raise(std::runtime_error("Cannot multiply integer with " + to_s(type_of(i)) + ": " + sprint(i)));
   }
 
   return decimal(product);
@@ -200,7 +200,7 @@ cons_t* proc_mul(cons_t *p, environment_t *env)
       // automatically convert; perform rest of computation in floats
       return proc_mulf(cons(decimal(product), p), env);
     else
-      throw std::runtime_error("Cannot multiply integer with " + to_s(type_of(i)) + ": " + sprint(i));
+      raise(std::runtime_error("Cannot multiply integer with " + to_s(type_of(i)) + ": " + sprint(i)));
   }
 
   return integer(product);
@@ -233,7 +233,7 @@ cons_t* proc_define(cons_t *p, environment_t *env)
   cons_t *body = cadr(p);
 
   if ( name->symbol->name().empty() )
-    throw std::runtime_error("Cannot define with empty variable name"); // TODO: Even possible?
+    raise(std::runtime_error("Cannot define with empty variable name")); // TODO: Even possible?
 
   env->define(name->symbol->name(), body);
   return nil();
@@ -1007,7 +1007,7 @@ cons_t* proc_expt(cons_t* p, environment_t*)
       return integer(1);
 
     if ( n < 0 )
-      throw std::runtime_error("Negative exponents not implemented");
+      raise(std::runtime_error("Negative exponents not implemented"));
 
     // This is a slow version
     // TODO: Implement O(log n) version
@@ -1026,7 +1026,7 @@ cons_t* proc_expt(cons_t* p, environment_t*)
     return decimal(1.0);
 
   if ( n < 0.0 )
-    throw std::runtime_error("Negative exponents not implemented");
+    raise(std::runtime_error("Negative exponents not implemented"));
 
   while ( floor(n) > 1.0 ) {
     r *= a;
@@ -1034,7 +1034,7 @@ cons_t* proc_expt(cons_t* p, environment_t*)
   }
 
   if ( n > 1.0 )
-    throw std::runtime_error("Fractional exponents not supported");
+    raise(std::runtime_error("Fractional exponents not supported"));
 
   // TODO: Compute r^n, where n is in [0..1)
   return decimal(r);
@@ -1058,10 +1058,10 @@ cons_t* proc_modulo(cons_t* p, environment_t*)
   assert_type(INTEGER, b);
 
   if ( b->integer == 0 )
-    throw std::runtime_error("Division by zero");
+    raise(std::runtime_error("Division by zero"));
 
   if ( b->integer < 0 )
-    throw std::runtime_error("Negative modulus operations not implemented"); // TODO
+    raise(std::runtime_error("Negative modulus operations not implemented")); // TODO
 
   return integer(a->integer % b->integer);
 }
@@ -1175,7 +1175,7 @@ cons_t* proc_list_tail(cons_t* p, environment_t*)
   p = car(p);
 
   if ( n > length(p) )
-    throw std::runtime_error("List is too short for your list-tail argument");
+    raise(std::runtime_error("List is too short for your list-tail argument"));
 
   while ( n-- )
     p = cdr(p);
@@ -1353,7 +1353,7 @@ cons_t* proc_string_ref(cons_t* p, environment_t*)
   assert_type(INTEGER, cadr(p));
 
   if ( static_cast<size_t>(cadr(p)->integer) >= strlen(car(p)->string) )
-    throw std::runtime_error("string-ref argument out of bounds");
+    raise(std::runtime_error("string-ref argument out of bounds"));
 
   return character(car(p)->string[ cadr(p)->integer]);
 }

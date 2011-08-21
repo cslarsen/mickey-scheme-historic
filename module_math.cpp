@@ -14,6 +14,7 @@
 #include "module_math.h"
 #include "primops.h"
 #include "assertions.h"
+#include "raise.h"
 
 #define MAKE_PROC(name, math_fun)                       \
   cons_t* name(cons_t* p, environment_t*)               \
@@ -40,9 +41,9 @@ cons_t* proc_atan(cons_t* p, environment_t*)
     assert_number(car(p));
     return decimal(atan(number_to_double(car(p))));
   } else if ( length(p) == 2 ) {
-    throw std::runtime_error("Two-argument atan is not (yet) supported");
+    raise(std::runtime_error("Two-argument atan is not (yet) supported"));
   } else
-    throw std::runtime_error("Function atan requires one or two arguments");
+    raise(std::runtime_error("Function atan requires one or two arguments"));
 }
 
 named_function_t exports_math[] = {

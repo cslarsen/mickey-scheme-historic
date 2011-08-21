@@ -17,6 +17,7 @@
 #include "print.h"
 #include "backtrace.h"
 #include "module_base.h"
+#include "raise.h"
 
 /*
  * Magic variables to hold lambda arguments
@@ -115,7 +116,7 @@ static size_t arg_length(cons_t* args)
   }
 
   if ( length(p) != 0 )
-    throw std::runtime_error("Invalid lambda signature: " + sprint(args));
+    raise(std::runtime_error("Invalid lambda signature: " + sprint(args)));
 
   return count;
 }
@@ -148,16 +149,16 @@ static cons_t* call_lambda(cons_t *p, environment_t* e)
   size_t params_recv = length(p);
 
   if ( params_recv < params_reqd ) {
-    throw std::runtime_error(format("Function requires %d parameters, but got %d",
-      params_reqd, params_recv));
+    raise(std::runtime_error(format("Function requires %d parameters, but got %d",
+      params_reqd, params_recv)));
 
     // try currying (TODO: Do we need to check for any conditions?)
     //return make_curried_function(args, p, body, e->extend());
   }
 
   if ( params_recv > params_reqd && !has_rest ) {
-    throw std::runtime_error(format("Function only accepts %d parameters, "
-                                    "but got %d", params_reqd, params_recv));
+    raise(std::runtime_error(format("Function only accepts %d parameters, "
+                                    "but got %d", params_reqd, params_recv)));
   }
 
   // Set up function arguments
@@ -179,8 +180,8 @@ static cons_t* call_lambda(cons_t *p, environment_t* e)
         e->define(name->symbol->name(), value);
         break;
       } else 
-        throw std::runtime_error("Lambda argument not a symbol but type "
-          + to_s(type_of(car(name))) + ": " + sprint(car(name)));
+        raise(std::runtime_error("Lambda argument not a symbol but type "
+          + to_s(type_of(car(name))) + ": " + sprint(car(name))));
     }
 
     /*
@@ -306,7 +307,7 @@ cons_t* eval(cons_t* p, environment_t* e)
       return p;
     }
 
-    throw std::runtime_error("Cannot evaluate: " + sprint(p));
+    raise(std::runtime_error("Cannot evaluate: " + sprint(p)));
   }
 
   if ( symbolp(car(p)) ) {

@@ -17,6 +17,7 @@
 #include "eval.h"
 #include "module_base.h"
 #include "module_math.h"
+#include "raise.h"
 
 #define TEST_REPL(expr, expect) TEST_STREQ(sprint(eval(parse(expr))), expect);
 #define TEST_EVAL(expr, expect) TEST_STREQ(print(eval(parse(expr))), expect);

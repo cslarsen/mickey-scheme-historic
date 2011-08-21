@@ -11,6 +11,7 @@
 
 #include <stdio.h>
 #include <stdexcept>
+#include "raise.h"
 #include "util.h"
 
 class open_file {
@@ -22,7 +23,7 @@ public:
   open_file(const char* name, const char* access = "rt") : f(fopen(name, access))
   {
     if ( f == NULL )
-      throw std::runtime_error(format("Could not open file: %s",  name));
+      raise(std::runtime_error(format("Could not open file: %s",  name)));
   }
 
   ~open_file()

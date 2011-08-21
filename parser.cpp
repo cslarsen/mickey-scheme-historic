@@ -14,6 +14,7 @@
 #include "types.h"
 #include "util.h"
 #include "print.h"
+#include "raise.h"
 
 cons_t* type_convert(const char* token, environment_t* env)
 {
@@ -125,7 +126,7 @@ program_t* parse(const char *program, environment_t *env)
   set_source(program);
 
   if ( env == NULL )
-    throw std::runtime_error("parse: null environment");
+    raise(std::runtime_error("parse: null environment"));
 
   program_t *p = new program_t();
   p->globals = env;
