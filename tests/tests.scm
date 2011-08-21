@@ -360,6 +360,28 @@
 (test-eq (quote (quasiquote (1 2 (unquote (+ 3 4))))) '(1 2 7))
 (test-eq (quote `(1 2 ,(+ 3 4) 3 y)) '(1 2 7 3 y))
 
+;; Module math
+(test-eq '(ceiling 3.0) 3.0)
+(test-eq '(ceiling 3.1) 4.0)
+(test-eq '(ceiling 3.4) 4.0)
+(test-eq '(ceiling 3.5) 4.0)
+(test-eq '(ceiling 3.6) 4.0)
+;
+(test-eq '(floor 3.0) 3.0)
+(test-eq '(floor 3.1) 3.0)
+(test-eq '(floor 3.4) 3.0)
+(test-eq '(floor 3.5) 3.0)
+(test-eq '(floor 3.6) 3.0)
+(test-eq '(floor 3.9) 3.0)
+(test-eq '(floor 3.999) 3.0)
+;
+(test-eq '(sqrt 3.999) 1.99975)
+(test-eq '(sqrt 4.0) 2.0)
+(test-eq '(sqrt -4.0) (sqrt -1)) ; nan
+;
+(test-eq '(exp 1) 2.71828)
+(test-eq '(exp 2) 7.38906)
+
 (display "\nResults\n")
 (results)
 
