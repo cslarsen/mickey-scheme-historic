@@ -9,7 +9,7 @@
  *                                                          
  */
 
-#include <math.h>
+#include <cmath>
 #include "mickey.h" // VERSION
 #include "cons.h" // to_s(cons_t*)
 #include "module.h"
@@ -22,6 +22,16 @@
 #include "backtrace.h"
 #include "eval.h"
 #include "types.h"
+
+#include "llvm/Module.h"
+#include "llvm/Function.h"
+#include "llvm/PassManager.h"
+#include "llvm/CallingConv.h"
+#include "llvm/Analysis/Verifier.h"
+#include "llvm/Assembly/PrintModulePass.h"
+#include "llvm/Support/IRBuilder.h"
+#include "llvm/Support/raw_ostream.h"
+#include "llvm/LLVMContext.h"
 
 // For version printing
 #ifdef USE_READLINE
@@ -1366,7 +1376,7 @@ cons_t* proc_nanp(cons_t* p, environment_t*)
   if ( type_of(car(p)) == INTEGER )
     return boolean(false);
 
-  return boolean(isnan(car(p)->decimal));
+  return boolean(std::isnan(car(p)->decimal));
 }
 
 cons_t* proc_infinitep(cons_t* p, environment_t*)
@@ -1377,7 +1387,7 @@ cons_t* proc_infinitep(cons_t* p, environment_t*)
   if ( type_of(car(p)) == INTEGER )
     return boolean(false);
 
-  return boolean(fpclassify(car(p)->decimal) == FP_INFINITE);
+  return boolean(std::fpclassify(car(p)->decimal) == FP_INFINITE);
 }
 
 cons_t* proc_finitep(cons_t* p, environment_t*)
@@ -1388,7 +1398,79 @@ cons_t* proc_finitep(cons_t* p, environment_t*)
   if ( type_of(car(p)) == INTEGER )
     return boolean(false);
 
-  return boolean(isfinite(car(p)->decimal));
+  return boolean(std::isfinite(car(p)->decimal));
+}
+
+llvm::Module* makeLLVMModule()
+{
+  using namespace llvm;
+LLVMContext& ctx = getGlobalContext();
+  Module* mod = new Module(StringRef("tut2"), ctx);
+  
+  Constant* c = mod->getOrInsertFunction("gcd",
+                                         IntegerType::get(ctx, 32),
+                                         IntegerType::get(ctx, 32),
+                                         IntegerType::get(ctx, 32),
+                                         NULL);
+  llvm::Function* gcd = cast<llvm::Function>(c);
+  
+  llvm::Function::arg_iterator args = gcd->arg_begin();
+  Value* x = args++;
+  x->setName("x");
+  Value* y = args++;
+  y->setName("y");
+  BasicBlock* entry = BasicBlock::Create(getGlobalContext(), "entry", gcd);
+  BasicBlock* ret = BasicBlock::Create(getGlobalContext(), "return", gcd);
+  BasicBlock* cond_false = BasicBlock::Create(getGlobalContext(), "cond_false", gcd);
+  BasicBlock* cond_true = BasicBlock::Create(getGlobalContext(), "cond_true", gcd);
+  BasicBlock* cond_false_2 = BasicBlock::Create(getGlobalContext(), "cond_false", gcd);
+ IRBuilder<> builder(entry);
+  Value* xEqualsY = builder.CreateICmpEQ(x, y, "tmp");
+  builder.CreateCondBr(xEqualsY, ret, cond_false);
+ builder.SetInsertPoint(ret);
+  builder.CreateRet(x);
+builder.SetInsertPoint(cond_false);
+  Value* xLessThanY = builder.CreateICmpULT(x, y, "tmp");
+  builder.CreateCondBr(xLessThanY, cond_true, cond_false_2);
+builder.SetInsertPoint(cond_true);
+  Value* yMinusX = builder.CreateSub(y, x, "tmp");
+  std::vector<Value*> args1;
+  args1.push_back(x);
+  args1.push_back(yMinusX);
+  Value* recur_1 = builder.CreateCall(gcd, args1.begin(), args1.end(), "tmp");
+  builder.CreateRet(recur_1);
+  
+  builder.SetInsertPoint(cond_false_2);
+  Value* xMinusY = builder.CreateSub(x, y, "tmp");
+  std::vector<Value*> args2;
+  args2.push_back(xMinusY);
+  args2.push_back(y);
+  Value* recur_2 = builder.CreateCall(gcd, args2.begin(), args2.end(), "tmp");
+  builder.CreateRet(recur_2);
+  
+  return mod;
+}
+
+cons_t* proc_llvmtest(cons_t*p, environment_t* e)
+{
+  static int compiled = 0;
+
+  if ( compiled )
+    return list(NULL);
+
+  using namespace llvm;
+  Module* Mod = makeLLVMModule();
+  verifyModule(*Mod, PrintMessageAction);
+
+  PassManager PM;
+  PM.add(createPrintModulePass(&outs()));
+  PM.run(*Mod);
+
+  delete Mod;
+  return 0;
+
+  compiled = 1;
+  return list(NULL);
 }
 
 cons_t* proc_do(cons_t* p, environment_t* e)
@@ -1571,5 +1653,6 @@ named_function_t exports_base[] = {
   {"write", proc_write},
   {"xor", proc_xor},
   {"zero?", proc_zerop},
+  {"llvm-test", proc_llvmtest},
   {NULL, NULL}
 };

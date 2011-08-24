@@ -1,8 +1,10 @@
-LLVM_CXXFLAGS = ${shell /usr/local/Cellar/llvm/2.9/bin/llvm-config --cxxflags}
+LLVM_CONFIG   = llvm-config
+LLVM_CXXFLAGS = ${shell $(LLVM_CONFIG) --cxxflags}
+LLVM_LDFLAGS  = ${shell $(LLVM_CONFIG) --ldflags --libs}
+
 CXX      = llvm-g++
-CXXFLAGS = -g -Wall -Iinclude -DUSE_READLINE -DNO_EXCEPTIONS ${LLVM_CXXFLAGS}
-#CXXFLAGS = -Wall -Iinclude -DUSE_READLINE -O6 -ffast-math -fomit-frame-pointer
-LDFLAGS  = -lreadline # -lgc
+CXXFLAGS = -Wall -Iinclude -DUSE_READLINE -DNO_EXCEPTIONS ${LLVM_CXXFLAGS}
+LDFLAGS  = -lreadline ${LLVM_LDFLAGS}
 
 TARGETS_O = raise.o \
             heap.o \
