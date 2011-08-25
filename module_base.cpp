@@ -1475,38 +1475,26 @@ cons_t* proc_llvm_gcd(cons_t* p, environment_t* e)
   assert_type(INTEGER, cadr(p));
 
   if ( Mod == NULL ) {
-    bool r = InitializeNativeTarget();
-    printf("InitializeNativeTarget returned %d\n", r);
+    InitializeNativeTarget();
 
-    printf("Creating LLVM GCD function\n");
     Mod = makeLLVMModule();
     verifyModule(*Mod, PrintMessageAction);
 
-    PassManager PM;
-    PM.add(createPrintModulePass(&outs()));
-    PM.run(*Mod);
-
-    // Create execution engine
-    printf("Creating execution engine\n");
-
     std::string ErrStr;
-    //TheExecutionEngine = EngineBuilder(OurModuleProvider).setErrorStr(&ErrStr).create();
     TheExecutionEngine = EngineBuilder(Mod).setErrorStr(&ErrStr).create();
 
     if ( TheExecutionEngine == NULL )
       raise(std::runtime_error(ErrStr));
 
-    printf("JIT compiling LLVM GCD function\n");
     // JIT compile function
     llvm::Function *LF = llvm_gcd;
     void *FPtr = TheExecutionEngine->getPointerToFunction(LF);
 
-    // Cast function and CALL it (aaaaaww yeah)
-    //double (*FP)() = (double (*)())FPtr;
+    // Cast to correct function signature
     myFunc = (gcd_fp)FPtr;
   }
 
-  // Call gcd function
+  // Call native gcd function
   return integer(myFunc(car(p)->integer, cadr(p)->integer));
 }
 
