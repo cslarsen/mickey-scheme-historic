@@ -9,6 +9,7 @@
  *                                                          
  */
 
+#include "repl.h"
 #include "raise.h"
 
 void raise(const std::exception& e)
@@ -19,6 +20,11 @@ void raise(const std::exception& e)
   /*
    * TODO: Longjump back to REPL here, or error catcher.
    */
+  if ( jmpbuf_repl != NULL ) {
+    longjmp(*jmpbuf_repl, 1);
+    return;
+  }
+
   exit(1);
 #else
   throw e;

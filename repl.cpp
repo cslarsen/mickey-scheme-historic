@@ -33,6 +33,12 @@
 // make env reachable by readline commands
 static environment_t *global_env = NULL;
 
+#ifdef NO_EXCEPTIONS
+# include "setjmp.h"
+// simulate exception handling with longjump
+jmp_buf *jmpbuf_repl = NULL;
+#endif
+
 cons_t* proc_list_globals(cons_t*, environment_t *env)
 {
   cons_t *r = list(NULL);
@@ -244,6 +250,17 @@ int repl()
     #ifdef USE_READLINE
     add_history(input);
     #endif
+
+#ifdef NO_EXCEPTIONS
+
+    jmpbuf_repl = (jmp_buf*)malloc(sizeof(jmp_buf));
+
+    if ( setjmp(*jmpbuf_repl) ) {
+      backtrace();
+      backtrace_clear();
+      continue;
+    }
+#endif
 
 #ifndef NO_EXCEPTIONS
     try {

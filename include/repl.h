@@ -9,6 +9,11 @@
  *                                                          
  */
 
+#ifdef NO_EXCEPTIONS
+# include "setjmp.h"
+extern jmp_buf* jmpbuf_repl;
+#endif
+
 #include "cons.h"
 
 int repl();
