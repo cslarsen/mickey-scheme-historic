@@ -55,7 +55,6 @@ diff: all
 	@./mickey $(PORTABLE_TESTS)
 
 tarball: clean
-	make clean
 	rm -f dist/*
 	cd .. ; tar cfz mickey4-`date +%Y-%m-%d`.tar.gz mickey4 ; mv mickey4-`date +%Y-%m-%d`.tar.gz mickey4/dist
 
