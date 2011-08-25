@@ -21,3 +21,9 @@
  * will be raised.
  */
 void raise(const std::exception& e);
+
+#ifdef NO_EXCEPTIONS
+# include <setjmp.h>
+extern jmp_buf catch_point;
+# define exception_raised() setjmp(catch_point)
+#endif

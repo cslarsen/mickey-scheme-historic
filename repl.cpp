@@ -29,15 +29,10 @@
 #include "options.h"
 #include "module_base.h"
 #include "module_math.h"
+#include "raise.h"
 
 // make env reachable by readline commands
 static environment_t *global_env = NULL;
-
-#ifdef NO_EXCEPTIONS
-# include "setjmp.h"
-// simulate exception handling with longjump
-jmp_buf *jmpbuf_repl = NULL;
-#endif
 
 cons_t* proc_list_globals(cons_t*, environment_t *env)
 {
@@ -252,10 +247,7 @@ int repl()
     #endif
 
 #ifdef NO_EXCEPTIONS
-
-    jmpbuf_repl = (jmp_buf*)malloc(sizeof(jmp_buf));
-
-    if ( setjmp(*jmpbuf_repl) ) {
+    if ( exception_raised() ) {
       backtrace();
       backtrace_clear();
       continue;

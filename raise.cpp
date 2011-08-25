@@ -12,20 +12,15 @@
 #include "repl.h"
 #include "raise.h"
 
+#ifdef NO_EXCEPTIONS
+jmp_buf catch_point;
+#endif
+
 void raise(const std::exception& e)
 {
 #ifdef NO_EXCEPTIONS
-  printf("Exception raised: %s\n", e.what());
-
-  /*
-   * TODO: Longjump back to REPL here, or error catcher.
-   */
-  if ( jmpbuf_repl != NULL ) {
-    longjmp(*jmpbuf_repl, 1);
-    return;
-  }
-
-  exit(1);
+  printf("Exception: %s\n", e.what());
+  longjmp(catch_point, 1);
 #else
   throw e;
 #endif
