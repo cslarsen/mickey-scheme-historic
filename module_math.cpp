@@ -44,6 +44,9 @@ cons_t* proc_atan(cons_t* p, environment_t*)
     raise(std::runtime_error("Two-argument atan is not (yet) supported"));
   } else
     raise(std::runtime_error("Function atan requires one or two arguments"));
+
+  // make explicit return, so that the compiler is happy
+  return list(NULL);
 }
 
 named_function_t exports_math[] = {

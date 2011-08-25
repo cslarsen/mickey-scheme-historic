@@ -32,6 +32,8 @@
 #include "llvm/Support/IRBuilder.h"
 #include "llvm/Support/raw_ostream.h"
 #include "llvm/LLVMContext.h"
+#include "llvm/ExecutionEngine/JIT.h"
+#include "llvm/Target/TargetSelect.h"
 
 // For version printing
 #ifdef USE_READLINE
@@ -1401,11 +1403,13 @@ cons_t* proc_finitep(cons_t* p, environment_t*)
   return boolean(std::isfinite(car(p)->decimal));
 }
 
+llvm::Function *llvm_gcd = NULL;
+
 llvm::Module* makeLLVMModule()
 {
   using namespace llvm;
-LLVMContext& ctx = getGlobalContext();
-  Module* mod = new Module(StringRef("tut2"), ctx);
+  LLVMContext& ctx = getGlobalContext();
+  Module* mod = new Module(StringRef("llvm_gcd"), ctx);
   
   Constant* c = mod->getOrInsertFunction("gcd",
                                          IntegerType::get(ctx, 32),
@@ -1413,6 +1417,7 @@ LLVMContext& ctx = getGlobalContext();
                                          IntegerType::get(ctx, 32),
                                          NULL);
   llvm::Function* gcd = cast<llvm::Function>(c);
+  llvm_gcd = gcd;
   
   llvm::Function::arg_iterator args = gcd->arg_begin();
   Value* x = args++;
@@ -1424,15 +1429,15 @@ LLVMContext& ctx = getGlobalContext();
   BasicBlock* cond_false = BasicBlock::Create(getGlobalContext(), "cond_false", gcd);
   BasicBlock* cond_true = BasicBlock::Create(getGlobalContext(), "cond_true", gcd);
   BasicBlock* cond_false_2 = BasicBlock::Create(getGlobalContext(), "cond_false", gcd);
- IRBuilder<> builder(entry);
+  IRBuilder<> builder(entry);
   Value* xEqualsY = builder.CreateICmpEQ(x, y, "tmp");
   builder.CreateCondBr(xEqualsY, ret, cond_false);
- builder.SetInsertPoint(ret);
+  builder.SetInsertPoint(ret);
   builder.CreateRet(x);
-builder.SetInsertPoint(cond_false);
+  builder.SetInsertPoint(cond_false);
   Value* xLessThanY = builder.CreateICmpULT(x, y, "tmp");
   builder.CreateCondBr(xLessThanY, cond_true, cond_false_2);
-builder.SetInsertPoint(cond_true);
+  builder.SetInsertPoint(cond_true);
   Value* yMinusX = builder.CreateSub(y, x, "tmp");
   std::vector<Value*> args1;
   args1.push_back(x);
@@ -1451,26 +1456,58 @@ builder.SetInsertPoint(cond_true);
   return mod;
 }
 
-cons_t* proc_llvmtest(cons_t*p, environment_t* e)
+/*
+ * LLVM, JIT-compiled gcd!
+ */
+cons_t* proc_llvm_gcd(cons_t* p, environment_t* e)
 {
-  static int compiled = 0;
-
-  if ( compiled )
-    return list(NULL);
-
   using namespace llvm;
-  Module* Mod = makeLLVMModule();
-  verifyModule(*Mod, PrintMessageAction);
 
-  PassManager PM;
-  PM.add(createPrintModulePass(&outs()));
-  PM.run(*Mod);
+  static Module* Mod = NULL;
+  static ExecutionEngine* TheExecutionEngine;
 
-  delete Mod;
-  return 0;
+  typedef int (*gcd_fp)(int, int);
+  static gcd_fp myFunc = NULL;
 
-  compiled = 1;
-  return list(NULL);
+  // Params
+  assert_length(p, 2);
+  assert_type(INTEGER, car(p));
+  assert_type(INTEGER, cadr(p));
+
+  if ( Mod == NULL ) {
+    bool r = InitializeNativeTarget();
+    printf("InitializeNativeTarget returned %d\n", r);
+
+    printf("Creating LLVM GCD function\n");
+    Mod = makeLLVMModule();
+    verifyModule(*Mod, PrintMessageAction);
+
+    PassManager PM;
+    PM.add(createPrintModulePass(&outs()));
+    PM.run(*Mod);
+
+    // Create execution engine
+    printf("Creating execution engine\n");
+
+    std::string ErrStr;
+    //TheExecutionEngine = EngineBuilder(OurModuleProvider).setErrorStr(&ErrStr).create();
+    TheExecutionEngine = EngineBuilder(Mod).setErrorStr(&ErrStr).create();
+
+    if ( TheExecutionEngine == NULL )
+      raise(std::runtime_error(ErrStr));
+
+    printf("JIT compiling LLVM GCD function\n");
+    // JIT compile function
+    llvm::Function *LF = llvm_gcd;
+    void *FPtr = TheExecutionEngine->getPointerToFunction(LF);
+
+    // Cast function and CALL it (aaaaaww yeah)
+    //double (*FP)() = (double (*)())FPtr;
+    myFunc = (gcd_fp)FPtr;
+  }
+
+  // Call gcd function
+  return integer(myFunc(car(p)->integer, cadr(p)->integer));
 }
 
 cons_t* proc_do(cons_t* p, environment_t* e)
@@ -1653,6 +1690,6 @@ named_function_t exports_base[] = {
   {"write", proc_write},
   {"xor", proc_xor},
   {"zero?", proc_zerop},
-  {"llvm-test", proc_llvmtest},
+  {"llvm:gcd", proc_llvm_gcd},
   {NULL, NULL}
 };

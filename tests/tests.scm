@@ -391,6 +391,11 @@
 (test-eq '(/ (log 256) (log 2)) 8)
 (test-eq '(/ (log 1024) (log 2)) 10)
 
+;; LLVM JIT
+(test-eq '(llvm:gcd (* 11 123) (* 2 11)) 11)
+(test-eq '(llvm:gcd (* 12 123) (* 2 12)) 12)
+(test-eq '(llvm:gcd 444 555) (gcd 444 555))
+
 (display "\nResults\n")
 (results)
 
