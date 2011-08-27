@@ -23,17 +23,19 @@
 #include "eval.h"
 #include "types.h"
 
-#include "llvm/Module.h"
-#include "llvm/Function.h"
-#include "llvm/PassManager.h"
-#include "llvm/CallingConv.h"
-#include "llvm/Analysis/Verifier.h"
-#include "llvm/Assembly/PrintModulePass.h"
-#include "llvm/Support/IRBuilder.h"
-#include "llvm/Support/raw_ostream.h"
-#include "llvm/LLVMContext.h"
-#include "llvm/ExecutionEngine/JIT.h"
-#include "llvm/Target/TargetSelect.h"
+#ifdef USE_LLVM
+# include "llvm/Module.h"
+# include "llvm/Function.h"
+# include "llvm/PassManager.h"
+# include "llvm/CallingConv.h"
+# include "llvm/Analysis/Verifier.h"
+# include "llvm/Assembly/PrintModulePass.h"
+# include "llvm/Support/IRBuilder.h"
+# include "llvm/Support/raw_ostream.h"
+# include "llvm/LLVMContext.h"
+# include "llvm/ExecutionEngine/JIT.h"
+# include "llvm/Target/TargetSelect.h"
+#endif
 
 // For version printing
 #ifdef USE_READLINE
@@ -1403,7 +1405,8 @@ cons_t* proc_finitep(cons_t* p, environment_t*)
   return boolean(std::isfinite(car(p)->decimal));
 }
 
-llvm::Function *llvm_gcd = NULL;
+#ifdef USE_LLVM
+static llvm::Function *llvm_gcd = NULL; // Dirty, ugly hack
 
 llvm::Module* makeLLVMModule()
 {
@@ -1497,6 +1500,7 @@ cons_t* proc_llvm_gcd(cons_t* p, environment_t* e)
   // Call native gcd function
   return integer(myFunc(car(p)->integer, cadr(p)->integer));
 }
+#endif // USE_LLVM
 
 cons_t* proc_do(cons_t* p, environment_t* e)
 {
@@ -1678,6 +1682,8 @@ named_function_t exports_base[] = {
   {"write", proc_write},
   {"xor", proc_xor},
   {"zero?", proc_zerop},
+#ifdef USE_LLVM
   {"llvm:gcd", proc_llvm_gcd},
+#endif
   {NULL, NULL}
 };

@@ -3,7 +3,7 @@ LLVM_CXXFLAGS = ${shell $(LLVM_CONFIG) --cxxflags}
 LLVM_LDFLAGS  = ${shell $(LLVM_CONFIG) --ldflags --libs}
 
 CXX      = llvm-g++
-CXXFLAGS = -Wall -Iinclude -DUSE_READLINE -DNO_EXCEPTIONS ${LLVM_CXXFLAGS}
+CXXFLAGS = -Wall -Iinclude -DUSE_LLVM -DUSE_READLINE -DNO_EXCEPTIONS ${LLVM_CXXFLAGS}
 LDFLAGS  = -lreadline ${LLVM_LDFLAGS}
 
 TARGETS_O = raise.o \
