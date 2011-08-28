@@ -166,3 +166,20 @@ bool isunquote(const char* s)
 {
   return *s == ',';
 }
+
+enum type_t to_type_t(const char* s)
+{
+  switch ( s[0] ) {
+  default:
+  case 'n': return NIL;
+  case 'b': return !strcmp(s, "boolean")? BOOLEAN : NIL;
+  case 'c': return !strcmp(s, "char")? CHAR :
+                   !strcmp(s, "closure")? CLOSURE :
+                   !strcmp(s, "continuation")? CONTINUATION : NIL;
+  case 'i': return !strcmp(s, "integer")? INTEGER : NIL;
+  case 'd': return !strcmp(s, "decimal")? DECIMAL : NIL;
+  case 'p': return !strcmp(s, "pair")? PAIR : NIL;
+  case 's': return !strcmp(s, "symbol")? SYMBOL : !strcmp(s, "string")? STRING : NIL;
+  case 'v': return !strcmp(s, "vector")? VECTOR : NIL;
+  }
+}

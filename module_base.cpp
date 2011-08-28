@@ -1412,26 +1412,36 @@ llvm::Module* makeLLVMModule()
 {
   using namespace llvm;
   LLVMContext& ctx = getGlobalContext();
+
+  // Create module
   Module* mod = new Module(StringRef("llvm_gcd"), ctx);
-  
+ 
+  // Create function 
   Constant* c = mod->getOrInsertFunction("gcd",
                                          IntegerType::get(ctx, 32),
                                          IntegerType::get(ctx, 32),
                                          IntegerType::get(ctx, 32),
                                          NULL);
   llvm::Function* gcd = cast<llvm::Function>(c);
+
+  // For passing out; not very good code
   llvm_gcd = gcd;
-  
+ 
+  // Set up input args for function
   llvm::Function::arg_iterator args = gcd->arg_begin();
   Value* x = args++;
   x->setName("x");
   Value* y = args++;
   y->setName("y");
+
+  // Code flow blocks
   BasicBlock* entry = BasicBlock::Create(getGlobalContext(), "entry", gcd);
   BasicBlock* ret = BasicBlock::Create(getGlobalContext(), "return", gcd);
   BasicBlock* cond_false = BasicBlock::Create(getGlobalContext(), "cond_false", gcd);
   BasicBlock* cond_true = BasicBlock::Create(getGlobalContext(), "cond_true", gcd);
   BasicBlock* cond_false_2 = BasicBlock::Create(getGlobalContext(), "cond_false", gcd);
+
+  // Building up code
   IRBuilder<> builder(entry);
   Value* xEqualsY = builder.CreateICmpEQ(x, y, "tmp");
   builder.CreateCondBr(xEqualsY, ret, cond_false);
@@ -1480,6 +1490,7 @@ cons_t* proc_llvm_gcd(cons_t* p, environment_t* e)
   if ( Mod == NULL ) {
     InitializeNativeTarget();
 
+    // Create function that contains gcd function
     Mod = makeLLVMModule();
     verifyModule(*Mod, PrintMessageAction);
 

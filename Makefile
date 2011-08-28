@@ -25,6 +25,7 @@ TARGETS_O = raise.o \
             eval.o \
             backtrace.o \
             module_base.o \
+            module_assert.o \
             cons.o \
             tests.o
 

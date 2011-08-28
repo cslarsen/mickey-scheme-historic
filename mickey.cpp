@@ -18,6 +18,7 @@
 #include "backtrace.h"
 #include "module_base.h"
 #include "module_math.h"
+#include "module_assert.h"
 
 void execute(const char* file)
 {
@@ -28,6 +29,7 @@ void execute(const char* file)
 
     import(env, exports_base);
     import(env, exports_math);
+    import(env, exports_assert);
 
     reset_for_programs(&global_opts);
     global_opts.current_filename = file;

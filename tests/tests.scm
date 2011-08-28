@@ -396,6 +396,21 @@
 (test-eq '(llvm:gcd (* 12 123) (* 2 12)) 12)
 (test-eq '(llvm:gcd 444 555) (gcd 444 555))
 
+;; Assertion module
+(test-eq '(assert-type 'string "foo") #t)
+(test-eq '(assert-type 'integer 123) #t)
+(test-eq '(assert-type 'decimal 123.45) #t)
+(test-eq '(assert-type 'pair (list 'a 'b)) #t)
+(test-eq '(assert-type 'symbol 'foo) #t)
+(test-eq '(assert-number 123) #t)
+(test-eq '(assert-number 123.3) #t)
+(test-eq '(assert-number 0) #t)
+(test-eq '(assert-number 0.0) #t)
+(test-eq '(assert-length 3 (list 1 2 3)) #t)
+(test-eq '(assert-length 1 10 (list 1 2 3)) #t)
+(test-eq '(assert-length-min 2 (list 1 2 3)) #t)
+(test-eq '(assert-length-min 2 (list 1 2)) #t)
+
 (display "\nResults\n")
 (results)
 
