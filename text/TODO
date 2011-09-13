@@ -1,6 +1,5 @@
-- Kjør tests/variadic.scm, problemet er bare (->string rest), som feiler fordi rest er ikke satt.. Fikses ved å sette () som default value for rest, feks.  Eller sjekke standarden.
 - Add memoization to lazy evaluation form
-- Add letrec*, letrec
+- Add letrec*, let-values, let*-values
 - Allow #\tab and friends, including "#\ "
 - Fix expt for fractional exponents
 - Look into exact->inexact stuff
@@ -8,10 +7,20 @@
 NEXT STEPS, SHOULD BE ORDERED BY INCREASING DIFFICULTY
 - Add character table
 - Add our own stop-the-world, mark-and-sweep GC (is very simple for a language like scheme!)
-- other let forms? -> flet, fluid-let? named let
-- routine to detect tail calls
-- routine to detect if we can eliminate the tail call
-- Add tail call elimination, via longjumps (tested and should work, must have own "jumptable" for each thread, which is only 1 for our purposes)
+- Add missing LET forms
+  - Named let:
+      (let foo
+        (begin
+          (display "bar\n")
+          (foo)))
+  - Other let forms:
+    - letrec*
+    - let-values
+    - let*-values
+- Add nested comments, #| .... |# .. also find out how nesting works, i.e., can we do #| .. #| .. |# .. |#
+   (it says "properly nested #| and |# pairs", so I guess the count needs to be equal for each corresponding #| |#?)
+- Add continuation passing style (CPS) transform for all code
+  - Add tail call elimination via CPS
 - Refactor the code, it's A MESS at the moment...
 
 HARDER
@@ -43,8 +52,7 @@ NEXT STEPS
   (At least many of them).
 
 DOWN THE LINE
-- Add utf-8 support for strings, consider making it default
+- Add utf-8 support for strings, consider making it default (also in variable-names? check the standard)
 - Tail-call optimization
-- call/cc
-- delay/force
+- continuations: call/cc
 - Macros
