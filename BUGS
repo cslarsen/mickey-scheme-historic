@@ -1,19 +1,22 @@
---- Quoting is not completely robust, e.g. this
-mickey> '(1 2 '3)
-translates to
-  (1 2 (quote . 3))
-which looks funny
+--- Parsing of characters (section 6.3.4 in r7rs 3rd draft), doesn't work with #\) and #\(
+--- because of the way the parser is currently built.  E.g.:
 
---- Charmap not full, cannot set whitespace chars, e.g.
-"#\ " does not work, but should.
+mickey> (display #\))
+Exception: Unbound variable: #\
+Backtrace:
+ - (display #\)
+
+=> This can only be fixed by making #\ a known delimiter at the first parsing stage.
+
+--- Space "#\ " can work with ANY non-printable character in last position, e.g. type
+    "#\<CTRL+V, TAB>" will give a space.  This is a bug, although a very subtle one.
 
 --- Does not check operator:
 > (1 2 3)
 1
 
-Should be an error
+Should be an error, because `1´ is not a function that takes arguments.
 
---- String parsing is incomplete (should demand complete parse)
-0> (display "error )
-"ERROR 1> 
-2> 
+--- (run-tests) does not work
+
+When did it stop working?

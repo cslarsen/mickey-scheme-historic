@@ -411,6 +411,11 @@
 (test-eq '(assert-length-min 2 (list 1 2 3)) #t)
 (test-eq '(assert-length-min 2 (list 1 2)) #t)
 
+;; Characters
+;; TODO: FIX THIS.  Here we get a CHAR from #\x28 and compare with a STRING "(",
+;;                  so Mickey will not implicitly compare chars and strings!
+(test-eq #\x28 "(")
+
 (display "\nResults\n")
 (results)
 

@@ -47,6 +47,18 @@ static int isdot(int s)
   return s == '.';
 }
 
+static int ishex(int s)
+{
+  return isdigit(s) ||
+    (s>='a' && s<='f') ||
+    (s>='A' && s<='F');
+}
+
+bool ishex(const char* s)
+{
+  return !empty(s) && all(s, ishex);
+}
+
 bool isinteger(const char* s)
 {
   int sign = (s[0]=='-' || s[0]=='+');
@@ -60,11 +72,7 @@ bool isbool(const char* s)
 
 bool ischar(const char* s)
 {
-  /*
-   * Format "#\x" for given x.
-   */
-  return strlen(s) == 3 &&
-    s[0]=='#' && s[1]=='\\' && (isalpha(s[2]) || isdigit(s[2]));
+  return s[0]=='#' && s[1]=='\\';
 }
 
 bool isfloat(const char* s)
@@ -138,7 +146,41 @@ bool to_b(const char* s)
 
 char to_char(const char* s)
 {
-  return s[2];
+  // Example: "#\ "
+  // TODO: How will this work? `(display #\<CTRL+V, CTRL+TAB>)´ ?
+  if ( strlen(s) == 2 )
+    return ' ';
+
+  // Example: "#\A", etc.
+  if ( strlen(s) == 3 )
+    // TODO: Only allow SPECIFIC character ranges
+    return s[2];
+
+  // Example: "#\x28" -> '('
+  if ( strlen(s)>3 && s[2] == 'x' && ishex(s+3) ) {
+    long code = strtol(s+3, (char**)NULL, 16);
+
+    if ( code > 0x7F ) // U+0000 --- U+007F, i.e., the ASCII repertoire
+      raise(std::runtime_error("Unicode characters are not suppoted"));
+
+    return static_cast<char>(code);
+  }
+
+  // Example: "#\space"
+  // TODO: Make ONE giant table that we use for all character mappings
+  s += 2;
+  if ( !strcmp(s, "space") )   return ' ';
+  if ( !strcmp(s, "tab") )     return '\t';
+  if ( !strcmp(s, "newline") ) return '\n';
+  if ( !strcmp(s, "return" ) ) return '\r';
+  if ( !strcmp(s, "null" ) )   return '\0';
+  if ( !strcmp(s, "alarm") )   return '\a';
+  if ( !strcmp(s, "backspace") ) return '\x8';
+  if ( !strcmp(s, "escape") )  return '\x1b';
+  if ( !strcmp(s, "delete") )   return '\x7f';
+
+  raise(std::runtime_error("Unrecognized character literal"));
+  return '\0'; // make compiler happy
 }
 
 bool isvowel(char c)
