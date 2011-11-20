@@ -1,6 +1,5 @@
 - Add memoization to lazy evaluation form
 - Add letrec*, let-values, let*-values
-- Allow #\tab and friends, including "#\ "
 - Fix expt for fractional exponents
 - Look into exact->inexact stuff
 
