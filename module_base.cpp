@@ -618,7 +618,8 @@ cons_t* proc_let(cons_t* p, environment_t* e)
   /*
    * Transform to lambdas:
    *
-   * (let ((name-1 value-1)
+   * (let <name>
+   *      ((name-1 value-1)
    *       (name-2 value-2)
    *       (name-n value-n))
    *       <body>)
@@ -628,11 +629,28 @@ cons_t* proc_let(cons_t* p, environment_t* e)
    * ((lambda (name-1 name-2 name-n)
    *    <body>) value-1 value-2 value-n)
    *
+   * If an OPTIONAL <name> is given, we have a "named let"
+   * which will produce the output:
+   *
+   * (letrec
+   *   ((<name> (lambda
+   *              (name-1 name-2 name-n)
+   *              <body>)))
+   *   (<name> value-1 value-2 value-n))
+   *
    */
 
-  cons_t  *body  = cdr(p),
-          *names = list(NULL),
-         *values = list(NULL);
+  cons_t *name = NULL;
+
+  // named let?
+  if ( symbolp(car(p)) ) {
+    name = car(p);
+       p = cdr(p);
+  }
+
+  cons_t *body = cdr(p),
+        *names = list(NULL),
+       *values = list(NULL);
 
   for ( cons_t *n = car(p); !nullp(n); n = cdr(n) ) {
      names = append(names, list(caar(n)));
@@ -640,14 +658,27 @@ cons_t* proc_let(cons_t* p, environment_t* e)
   }
 
   /*
+   * Normal let:
+   *
    * Build lambda expression and return it, eval will eval it :)
    * (or we could call make_closure here):
    *
    * ((lambda (<names>) <body>) <values>)
    *
    */
-  return cons(cons(symbol("lambda", e),
-          cons(names, cons(proc_begin(body, e)))), values);
+  if ( !name )
+    return cons(cons(symbol("lambda", e),
+           cons(names, cons(proc_begin(body, e)))), values);
+
+  /*
+   * Transform named let to letrec.
+   */
+  return cons(symbol("letrec", e),            // (letrec
+           cons(cons(cons(name,               //   ((<name>
+             cons(cons(symbol("lambda", e),   //      (lambda
+               cons(names,                    //        (name-1 .. name-n)
+               cons(proc_begin(body, e))))))),//        (begin <body>))))
+           cons(cons(name, values))));        //   (<name> value-1 .. value-n))
 }
 
 cons_t* proc_letstar(cons_t* p, environment_t* e)

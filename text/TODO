@@ -8,14 +8,7 @@ RANDOM STUFF
 
 NEXT STEPS, SHOULD BE ORDERED BY INCREASING DIFFICULTY
 - Add simple mark-and-sweep GC (simple; currently not needed)
-- Add named let: (let foo (begin (display "hey\n") (foo)))
-- Add missing LET forms
-  - Named let:
-      (let foo
-        (begin
-          (display "bar\n")
-          (foo)))
-  - Other let forms:
+- Add missing LET forms (are they all in r7rs?):
     - letrec*
     - let-values
     - let*-values
