@@ -30,7 +30,7 @@
 #include "module_base.h"
 #include "module_math.h"
 #include "module_assert.h"
-#include "raise.h"
+#include "exceptions.h"
 #include "exceptions.h"
 
 // make env reachable by readline commands

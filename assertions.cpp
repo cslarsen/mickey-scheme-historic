@@ -14,7 +14,7 @@
 #include "primops.h"
 #include "print.h"
 #include "util.h"
-#include "raise.h"
+#include "exceptions.h"
 
 void assert_length(const cons_t* p, const size_t e)
 {

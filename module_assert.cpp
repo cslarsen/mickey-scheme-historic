@@ -14,7 +14,7 @@
 #include "module_assert.h"
 #include "primops.h"
 #include "assertions.h"
-#include "raise.h"
+#include "exceptions.h"
 #include "types.h"
 #include "print.h"
 

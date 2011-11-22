@@ -15,7 +15,7 @@
 #include <ctype.h>
 #include "types.h"
 #include "util.h"
-#include "raise.h"
+#include "exceptions.h"
 
 static int count(const char *s, int (*check)(int))
 {

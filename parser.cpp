@@ -14,7 +14,7 @@
 #include "types.h"
 #include "util.h"
 #include "print.h"
-#include "raise.h"
+#include "exceptions.h"
 
 cons_t* type_convert(const char* token, environment_t* env)
 {

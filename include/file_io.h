@@ -11,7 +11,7 @@
 
 #include <stdio.h>
 #include <stdexcept>
-#include "raise.h"
+#include "exceptions.h"
 #include "util.h"
 
 class open_file {

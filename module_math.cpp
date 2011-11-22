@@ -14,7 +14,7 @@
 #include "module_math.h"
 #include "primops.h"
 #include "assertions.h"
-#include "raise.h"
+#include "exceptions.h"
 
 #define MAKE_PROC(name, math_fun)                       \
   cons_t* name(cons_t* p, environment_t*)               \

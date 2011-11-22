@@ -16,7 +16,7 @@
 #include "util.h"
 #include "assertions.h"
 #include "print.h"
-#include "raise.h"
+#include "exceptions.h"
 
 cons_t* cons(const cons_t* head, const cons_t* tail)
 {

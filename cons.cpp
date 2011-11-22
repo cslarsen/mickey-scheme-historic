@@ -14,7 +14,7 @@
 #include "util.h"
 #include "primops.h"
 #include "print.h"
-#include "raise.h"
+#include "exceptions.h"
 
 static std::map<std::string, symbol_t> symbols;
 

@@ -17,7 +17,7 @@
 #include "print.h"
 #include "backtrace.h"
 #include "module_base.h"
-#include "raise.h"
+#include "exceptions.h"
 
 /*
  * Magic variables to hold lambda arguments
