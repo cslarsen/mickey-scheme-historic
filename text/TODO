@@ -1,11 +1,14 @@
+RANDOM STUFF
 - Add memoization to lazy evaluation form
+  - This is easier after we've got macros, though, since coding scheme
+    using C++ is painful.
 - Add letrec*, let-values, let*-values
 - Fix expt for fractional exponents
 - Look into exact->inexact stuff
 
 NEXT STEPS, SHOULD BE ORDERED BY INCREASING DIFFICULTY
-- Add character table
-- Add our own stop-the-world, mark-and-sweep GC (is very simple for a language like scheme!)
+- Add simple mark-and-sweep GC (simple; currently not needed)
+- Add named let: (let foo (begin (display "hey\n") (foo)))
 - Add missing LET forms
   - Named let:
       (let foo
@@ -16,42 +19,41 @@ NEXT STEPS, SHOULD BE ORDERED BY INCREASING DIFFICULTY
     - letrec*
     - let-values
     - let*-values
-- Add nested comments, #| .... |# .. also find out how nesting works, i.e., can we do #| .. #| .. |# .. |#
-   (it says "properly nested #| and |# pairs", so I guess the count needs to be equal for each corresponding #| |#?)
+- Add comment blocks #| .... |#
+- Find out if comments can be nested, i.e. #| .. #| .. |# .. |#
+   (r7rs says "properly nested #| and |# pairs", so I guess the count needs to
+    be equal for each corresponding #| |# ?)
+- Add tail call elimination (possibly using CPS)
 - Add continuation passing style (CPS) transform for all code
-  - Add tail call elimination via CPS
 - Refactor the code, it's A MESS at the moment...
+- Add support for continuations
+- Add call/cc
+- Add support for first class continuations
+- Add a macro system
+- Add UTF8 support for strings
+- Add UTF8 support for define names (if allowed by r7rs)
 
-HARDER
+LATER / HARDER
 - Add library functions
 - Add libffi support
 - Add llvm primitives in scheme
 - Craft llvm compiler (in scheme?)
 - Add (fast) vector/SSE support through #(1 2 3)
 - Add parallelization support (through some lib; see comp benchmarks game)
-- Check up Hewitt's actor model, how it was solved in scheme
-- Add support for continuations
-- Add support for first class continuations
 
-NEXT STEPS
-- Make all llvm primitives callable by interpreter
-  => implement functions as llvm primitives, e.g.:
+LLVM
+Make all llvm primitives callable by interpreter, i.e.
+implement functions as llvm primitives, e.g.:
 
-    (define display
-      (lambda (p)
-        (while (not (null? p))
-          (begin
-            (if (not (pair? p))
-              (ffi:printf "%s" (->c_string p))
-              (display (eval (car p))))
-            (set! p (cdr p))))))
+  (define display
+    (lambda (p)
+      (while (not (null? p))
+        (begin
+          (if (not (pair? p))
+            (ffi:printf "%s" (->c_string p))
+            (display (eval (car p))))
+          (set! p (cdr p))))))
 
-  Some functions must be built-in, I guess, like "no", "null?", "->c_string" and so on.
-  But perhaps later on, these can as well become something that can be implemented (?).
-  (At least many of them).
-
-DOWN THE LINE
-- Add utf-8 support for strings, consider making it default (also in variable-names? check the standard)
-- Tail-call optimization
-- continuations: call/cc
-- Macros
+Some functions must be built-in, I guess, like "no", "null?", "->c_string"
+and so on.  But perhaps later on, these can as well become something that
+can be implemented (?).  (At least many of them).
