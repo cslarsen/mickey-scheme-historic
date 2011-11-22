@@ -32,11 +32,11 @@ void set_default(struct options_t* p)
   reset_for_programs(p);
 }
 
-void reset_for_programs(struct options_t* p)
+void reset_for_programs(struct options_t* p, const char* file)
 {
   p->current_output_device = stdout;
   p->current_input_device = stdin;
-  p->current_filename = NULL;
+  p->current_filename = file;
 }
 
 // return true if rest of parameters are files

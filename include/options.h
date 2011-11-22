@@ -24,7 +24,7 @@ struct options_t
 extern options_t global_opts;
 
 void set_default(struct options_t*);
-void reset_for_programs(struct options_t*);
+void reset_for_programs(struct options_t*, const char* file = NULL);
 bool parse_option(const char* arg, struct options_t*);
 void help();
 void version();

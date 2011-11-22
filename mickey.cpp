@@ -22,20 +22,19 @@
 
 void execute(const char* file)
 {
-#ifndef NO_EXCEPTIONS
+  #ifndef NO_EXCEPTIONS
   try {
-#endif
+  #endif
     environment_t *env = new environment_t();
 
     import(env, exports_base);
     import(env, exports_math);
     import(env, exports_assert);
 
-    reset_for_programs(&global_opts);
-    global_opts.current_filename = file;
-
+    reset_for_programs(&global_opts, file);
     proc_load(cons(string(file)), env);
-#ifndef NO_EXCEPTIONS
+
+  #ifndef NO_EXCEPTIONS
   } catch (const std::exception& e) {
     const char* file = global_opts.current_filename;
     bool    has_file = file && strcmp(file, "-");
@@ -49,7 +48,7 @@ void execute(const char* file)
     backtrace_clear();
     exit(1);
   }
-#endif
+  #endif
 }
 
 int main(int argc, char** argv)
@@ -62,9 +61,6 @@ int main(int argc, char** argv)
   #ifdef BOEHM_GC
   GC_INIT();
   #endif
-
-  if ( argc == 1 )
-    return repl();
 
   for ( int n=1; n<argc; ++n ) {
     if ( !rest_is_files && argv[n][0] == '-' ) {
