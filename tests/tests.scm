@@ -412,9 +412,41 @@
 (test-eq '(assert-length-min 2 (list 1 2)) #t)
 
 ;; Characters
-;; TODO: FIX THIS.  Here we get a CHAR from #\x28 and compare with a STRING "(",
-;;                  so Mickey will not implicitly compare chars and strings!
-(test-eq #\x28 "(")
+(test-eq '(string-length (make-string 0)) 0)
+(test-eq '(string-length (make-string 1)) 1)
+(test-eq '(string-length (make-string 2)) 2)
+(test-eq '(string-length (make-string 42)) 42)
+(test-eq '(string-length (make-string 42 #\a)) 42)
+(test-eq '(string-length (make-string 42 #\0)) 42)
+(test-eq '(make-string 1 #\x28) "(")
+(test-eq '(make-string 2 #\x28) "((")
+(test-eq '(make-string 3 #\x28) "(((")
+(test-eq '(make-string 3 #\x29) ")))")
+(test-eq '(make-string 5 #\a) "aaaaa")
+(test-eq '(make-string 5 #\A) "AAAAA")
+(test-eq '(make-string 7 #\space) "       ")
+
+;; TODO/BUG: Here's another one.  When parsing "#\newline", it is converted
+;; to char and then displayed by sprint() / print() as a newline, instead of
+;; the literal "#\newline". Fix that.
+(newline)
+(display "The following test shows that sprint() doesn't escape chars");
+(newline)
+(newline)
+(test-eq '(string-length (make-string 9 #\newline)) 9)
+(test-eq '(string-length (make-string 7 #\tab)) 7)
+(test-eq '(string-length (make-string 3 #\x1)) 3)
+
+;; The following two tests are BUGs in our implementation, because we use zero
+;; terminated strings internally for the STRING type, and therefore
+;; cannot count using strlen().  Either switch to std::string or reimplement
+;; STRING.
+(newline)
+(display "The following two tests show a bug in the string implementation:")
+(newline)
+(newline)
+(test-eq '(string-length (make-string 3 #\x0)) 3) ; <- TODO/BUG: Fix code!
+(test-eq '(string-length (make-string 3 #\null)) 3) ; <- TODO/BUG: Fix code!
 
 (display "\nResults\n")
 (results)

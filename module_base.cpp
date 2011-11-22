@@ -89,6 +89,17 @@ cons_t* proc_strcat(cons_t *p, environment_t* env)
   return string(s.c_str());
 }
 
+cons_t* proc_make_string(cons_t *p, environment_t* env)
+{
+  assert_length(p, 1, 2);
+  assert_type(INTEGER, car(p));
+
+  size_t len = car(p)->integer;
+  char   ch  = length(p)==1? ' ' : cadr(p)->character;
+
+  return string(std::string(len, ch).c_str());
+}
+
 cons_t* proc_addf(cons_t *p, environment_t* env)
 {
   decimal_t sum = 0.0;
@@ -1682,6 +1693,7 @@ named_function_t exports_base[] = {
   {"list-tail", proc_list_tail},
   {"list?", proc_listp},
   {"load", proc_load},
+  {"make-string", proc_make_string},
   {"max", proc_max},
   {"member", proc_member},
   {"memq", proc_memq},

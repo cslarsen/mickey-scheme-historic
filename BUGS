@@ -20,3 +20,5 @@ Should be an error, because `1´ is not a function that takes arguments.
 --- (run-tests) does not work
 
 When did it stop working?
+
+--- Running "./mickey tests/tests.scm" does not find complex.scm and CHOKES
