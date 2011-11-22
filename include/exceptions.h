@@ -39,7 +39,7 @@
  * If NO_EXCEPTIONS has not been defined, an exception
  * will be raised.
  */
-void raise(const std::exception& e);
+void raise(const std::exception&);
 
 #ifdef NO_EXCEPTIONS
 # include <setjmp.h>

@@ -31,7 +31,6 @@
 #include "module_math.h"
 #include "module_assert.h"
 #include "exceptions.h"
-#include "exceptions.h"
 
 // make env reachable by readline commands
 static environment_t *global_env = NULL;

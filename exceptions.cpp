@@ -19,9 +19,12 @@ jmp_buf catch_point;
 void raise(const std::exception& e)
 {
 #ifdef NO_EXCEPTIONS
-  printf("Exception: %s\n", e.what());
+  printf("%s\n", e.what());
   longjmp(catch_point, 1);
 #else
-  throw e;
+  // we cannot simply throw e, because then
+  // stack unrolling will cause the original e to
+  // be popped -- therefore we rethrow by copying
+  throw std::runtime_error(e.what());
 #endif
 }
