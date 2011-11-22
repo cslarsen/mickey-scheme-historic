@@ -31,6 +31,7 @@
 #include "module_math.h"
 #include "module_assert.h"
 #include "raise.h"
+#include "exceptions.h"
 
 // make env reachable by readline commands
 static environment_t *global_env = NULL;
@@ -248,17 +249,15 @@ int repl()
     add_history(input);
     #endif
 
-#ifdef NO_EXCEPTIONS
+    #ifdef NO_EXCEPTIONS
     if ( exception_raised() ) {
       backtrace();
       backtrace_clear();
       continue;
     }
-#endif
+    #endif
 
-#ifndef NO_EXCEPTIONS
-    try {
-#endif
+    TRY {
       program_t *p = parse(input, env);
 
       #ifdef USE_READLINE
@@ -271,17 +270,12 @@ int repl()
         if ( !s.empty() )
          printf("%s\n", s.c_str());
       }
-#ifndef NO_EXCEPTIONS
     }
-#endif
-
-#ifndef NO_EXCEPTIONS
-    catch(const std::exception& e) {
+    CATCH (const std::exception& e) {
       fprintf(stderr, "%s\n", e.what());
       backtrace();
       backtrace_clear();
     }
-#endif
   }
 
   return 0;

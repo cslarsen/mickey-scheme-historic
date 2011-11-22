@@ -19,12 +19,11 @@
 #include "module_base.h"
 #include "module_math.h"
 #include "module_assert.h"
+#include "exceptions.h"
 
 void execute(const char* file)
 {
-  #ifndef NO_EXCEPTIONS
-  try {
-  #endif
+  TRY {
     environment_t *env = new environment_t();
 
     import(env, exports_base);
@@ -33,11 +32,10 @@ void execute(const char* file)
 
     reset_for_programs(&global_opts, file);
     proc_load(cons(string(file)), env);
-
-  #ifndef NO_EXCEPTIONS
-  } catch (const std::exception& e) {
+  }
+  CATCH (const std::exception& e) {
     const char* file = global_opts.current_filename;
-    bool    has_file = file && strcmp(file, "-");
+    bool has_file = file && strcmp(file, "-");
 
     fprintf(stderr, "Error%s%s: %s\n",
       has_file? " in " : "",
@@ -48,7 +46,6 @@ void execute(const char* file)
     backtrace_clear();
     exit(1);
   }
-  #endif
 }
 
 int main(int argc, char** argv)

@@ -6,7 +6,7 @@ CXX      = llvm-g++
 CXXFLAGS = -Wall -Iinclude -DUSE_LLVM -DUSE_READLINE -DNO_EXCEPTIONS ${LLVM_CXXFLAGS}
 LDFLAGS  = -lreadline ${LLVM_LDFLAGS}
 
-TARGETS_O = raise.o \
+TARGETS_O = exceptions.o \
             heap.o \
             test.o \
             apply.o \

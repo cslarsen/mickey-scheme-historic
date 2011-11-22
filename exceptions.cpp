@@ -10,7 +10,7 @@
  */
 
 #include "repl.h"
-#include "raise.h"
+#include "exceptions.h"
 
 #ifdef NO_EXCEPTIONS
 jmp_buf catch_point;
