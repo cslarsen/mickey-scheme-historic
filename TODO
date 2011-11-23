@@ -1,7 +1,6 @@
 RANDOM STUFF
 
 NEXT STEPS, SHOULD BE ORDERED BY INCREASING DIFFICULTY
-- Add #; to ignore datum, e.g. (+ 1 #;2 3) or (+ 1 #; 2 3) should give 7
 - Add letrec*
 - Add let-values
 - Add let*-values

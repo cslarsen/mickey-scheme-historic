@@ -76,7 +76,19 @@ const char* get_token()
     else
       // other tokens
       source = copy_while(token, source, string_or_non_delimiter);
-  
+ 
+    // commented datums "#;"
+    if ( token[0]=='#' && token[1]==';' ) {
+
+      // token begins with "#;", so skip it
+      if ( token[2] != '\0' )
+        continue;
+
+      // skip current token AND next, then continue
+      get_token();
+      continue;
+    }
+ 
     // emit NULL when finished
     return !empty(token) ? token : NULL;
   }

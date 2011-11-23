@@ -448,6 +448,10 @@
 (test-eq '(string-length (make-string 3 #\x0)) 3) ; <- TODO/BUG: Fix code!
 (test-eq '(string-length (make-string 3 #\null)) 3) ; <- TODO/BUG: Fix code!
 
+;; Comment-out datum
+(test-eq '(+ 1 #; 2 3) 4)
+(test-eq '(+ 1 #;2 3) 4)
+
 (display "\nResults\n")
 (results)
 
