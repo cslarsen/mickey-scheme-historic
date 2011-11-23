@@ -58,6 +58,17 @@ const char* get_token()
       while ( *source != '\n' ) ++source;
       continue;
     }
+
+    // block-comments?
+    if ( source[0]=='#' && source[1]=='|' ) {
+      // match nested pairs
+      source += 2;
+      for ( int n=1; n && *source; ++source ) {
+             if ( source[0]=='#' && source[1]=='|' ) { ++source; ++n; }
+        else if ( source[0]=='|' && source[1]=='#' ) { ++source; --n; }
+      }
+      continue;
+    }
   
     if ( char_in(*source, "()") )
       // tokens ( and )

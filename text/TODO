@@ -1,27 +1,21 @@
 RANDOM STUFF
-- Add memoization to lazy evaluation form
-  - This is easier after we've got macros, though, since coding scheme
-    using C++ is painful.
-- Add letrec*, let-values, let*-values
-- Fix expt for fractional exponents
-- Look into exact->inexact stuff
 
 NEXT STEPS, SHOULD BE ORDERED BY INCREASING DIFFICULTY
+- Add #; to ignore datum, e.g. (+ 1 #;2 3) or (+ 1 #; 2 3) should give 7
+- Add letrec*
+- Add let-values
+- Add let*-values
+- Fix native string type; using C-string doesn't work with make-string 10 #\nul
 - Add simple mark-and-sweep GC (simple; currently not needed)
-- Add missing LET forms (are they all in r7rs?):
-    - letrec*
-    - let-values
-    - let*-values
-- Add comment blocks #| .... |#
-- Find out if comments can be nested, i.e. #| .. #| .. |# .. |#
-   (r7rs says "properly nested #| and |# pairs", so I guess the count needs to
-    be equal for each corresponding #| |# ?)
 - Add tail call elimination (possibly using CPS)
+- Look into exact->inexact stuff
 - Add continuation passing style (CPS) transform for all code
 - Refactor the code, it's A MESS at the moment...
+- Fix expt for fractional exponents
 - Add support for continuations
 - Add call/cc
 - Add support for first class continuations
+- Add memoization to lazy evaluation form
 - Add a macro system
 - Add UTF8 support for strings
 - Add UTF8 support for define names (if allowed by r7rs)
