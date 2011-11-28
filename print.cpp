@@ -25,6 +25,7 @@ std::string sprint(const cons_t* p, std::string& s, bool escape)
   case STRING:       return s + (escape? "\"" + encode_str(p->string) + "\"" : p->string);
   case VECTOR:       return s + (escape? to_s(p->vector) : "");
   case CONTINUATION: return s + (escape? to_s(p->continuation) : "");
+  case SYNTAX:       return s + (escape? to_s(p->syntax) : "");
   case PAIR: {
     std::string head = sprint(car(p), s, escape);
     std::string tail = (atomp(cdr(p)) && !nullp(cdr(p)) ?

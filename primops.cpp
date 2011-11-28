@@ -35,7 +35,7 @@ cons_t* list(const cons_t* head, const cons_t* tail)
     return cons(head, cons(tail, NULL));
 }
 
-cons_t* symbol(const char* s, environment_t *env)
+cons_t* symbol(const char* s, environment_t*)
 {
   cons_t *p = new cons_t();
   p->type = SYMBOL;
@@ -260,6 +260,8 @@ bool eqp(const cons_t* l, const cons_t* r)
                          && l->closure->environment == r->closure->environment);
   case PAIR:    raise(std::runtime_error("eq? is not implemented for pairs yet"));
   case SYMBOL:  return l->symbol->name() == r->symbol->name();
+  case SYNTAX:  return (l->syntax->transformer == r->syntax->transformer
+                         && l->syntax->environment == r->syntax->environment);
   case STRING:  return !strcmp(l->string, r->string);
   case VECTOR:  raise(std::runtime_error("Unimplemented eq? for vector")); break;
   case CONTINUATION: raise(std::runtime_error("Unimplemented eq? for continuation")); break;
@@ -285,6 +287,7 @@ bool eqvp(const cons_t* l, const cons_t* r)
   case PAIR:    return nullp(l) && nullp(r)? true : l == r;
   case VECTOR:  return l == r;
   case STRING:  return l == r;
+  case SYNTAX:  return l == r; // TODO: Check against names?
   case CLOSURE: // double-check with section 6.1 and 4.1.4 (TODO)
                 return l->closure == r->closure;
   case CONTINUATION:

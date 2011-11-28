@@ -33,7 +33,8 @@ enum type_t {
   SYMBOL,
   STRING,
   VECTOR,
-  CONTINUATION
+  CONTINUATION,
+  SYNTAX
 };
 
 typedef struct cons_t* (*lambda_t)(struct cons_t*, struct environment_t*);
@@ -71,6 +72,15 @@ struct closure_t
  #endif
 {
   lambda_t function;
+  environment_t* environment;
+};
+
+struct syntax_t
+ #ifdef BOEHM_GC
+  : public gc
+ #endif
+{
+  cons_t* transformer;
   environment_t* environment;
 };
 
@@ -122,6 +132,7 @@ struct cons_t
     decimal_t decimal;
     struct { cons_t *car, *cdr; }; // pair
     closure_t* closure;
+    syntax_t* syntax;
     const symbol_t* symbol;
     const char* string;
     vector_t* vector;

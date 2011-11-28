@@ -37,16 +37,17 @@ const symbol_t* create_symbol(const std::string& s)
 std::string to_s(enum type_t type)
 {
   switch ( type ) {
-  case NIL:          return "nil";      break;
-  case BOOLEAN:      return "boolean";  break;
-  case CHAR:         return "char";     break;
-  case DECIMAL:      return "decimal";  break;
-  case INTEGER:      return "integer";  break;
-  case CLOSURE:      return "closure";  break;
-  case PAIR:         return "pair";     break;
-  case SYMBOL:       return "symbol";   break;
-  case STRING:       return "string";   break;
-  case VECTOR:       return "vector"; break;
+  case NIL:          return "nil";          break;
+  case BOOLEAN:      return "boolean";      break;
+  case CHAR:         return "char";         break;
+  case DECIMAL:      return "decimal";      break;
+  case INTEGER:      return "integer";      break;
+  case CLOSURE:      return "closure";      break;
+  case PAIR:         return "pair";         break;
+  case SYMBOL:       return "symbol";       break;
+  case SYNTAX:       return "syntax";       break;
+  case STRING:       return "string";       break;
+  case VECTOR:       return "vector";       break;
   case CONTINUATION: return "continuation"; break;
   }
 

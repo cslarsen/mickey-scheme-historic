@@ -75,7 +75,7 @@ bool isprefix(const char* prefix, const char* fullstr)
 }
 
 #ifdef USE_READLINE
-char** auto_complete(const char *s, int start, int end)
+char** auto_complete(const char *s, int, int)
 {
   /*
    * Note that readline will free up stuff for us, so we
@@ -187,7 +187,7 @@ char* readline(const char* prompt)
 }
 #endif // USE_READLINE
 
-void print_banner(environment_t* env)
+void print_banner(environment_t*)
 {
   std::string readline_version =
   #ifdef USE_READLINE
