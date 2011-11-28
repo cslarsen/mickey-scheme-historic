@@ -56,7 +56,7 @@ cons_t* proc_abs(cons_t* p, environment_t*)
   return integer(n<0? -n : n);
 }
 
-cons_t* proc_display(cons_t *p, environment_t* env)
+cons_t* proc_display(cons_t *p, environment_t*)
 {
   for ( ; !nullp(p); p = cdr(p) ) {
     printf("%s", print(car(p)).c_str());
@@ -65,7 +65,7 @@ cons_t* proc_display(cons_t *p, environment_t* env)
   return nil();
 }
 
-cons_t* proc_write(cons_t *p, environment_t* env)
+cons_t* proc_write(cons_t *p, environment_t*)
 {
   for ( ; !nullp(p); p = cdr(p) )
     printf("%s", sprint(car(p)).c_str());
@@ -79,7 +79,7 @@ cons_t* proc_newline(cons_t*, environment_t*)
   return nil();
 }
 
-cons_t* proc_strcat(cons_t *p, environment_t* env)
+cons_t* proc_strcat(cons_t *p, environment_t*)
 {
   std::string s;
 
@@ -89,7 +89,7 @@ cons_t* proc_strcat(cons_t *p, environment_t* env)
   return string(s.c_str());
 }
 
-cons_t* proc_make_string(cons_t *p, environment_t* env)
+cons_t* proc_make_string(cons_t *p, environment_t*)
 {
   assert_length(p, 1, 2);
   assert_type(INTEGER, car(p));
@@ -100,7 +100,7 @@ cons_t* proc_make_string(cons_t *p, environment_t* env)
   return string(std::string(len, ch).c_str());
 }
 
-cons_t* proc_addf(cons_t *p, environment_t* env)
+cons_t* proc_addf(cons_t *p, environment_t*)
 {
   decimal_t sum = 0.0;
 
@@ -143,7 +143,7 @@ cons_t* proc_add(cons_t *p, environment_t* env)
   return integer(sum);
 }
 
-cons_t* proc_sub(cons_t *p, environment_t* env)
+cons_t* proc_sub(cons_t *p, environment_t*)
 {
   if ( length(p) == 0 )
     raise(std::runtime_error("No arguments to -"));
@@ -160,7 +160,7 @@ cons_t* proc_sub(cons_t *p, environment_t* env)
   return iswhole(d) ? integer((int)d) : decimal(d);
 }
 
-cons_t* proc_divf(cons_t *p, environment_t *e)
+cons_t* proc_divf(cons_t *p, environment_t*)
 {
   assert_length(p, 2);
 
@@ -193,7 +193,7 @@ cons_t* proc_div(cons_t *p, environment_t *e)
     return proc_divf(p, e);
 }
 
-cons_t* proc_mulf(cons_t *p, environment_t *env)
+cons_t* proc_mulf(cons_t *p, environment_t*)
 {
   decimal_t product = 1.0;
 
@@ -231,7 +231,7 @@ cons_t* proc_mul(cons_t *p, environment_t *env)
   return integer(product);
 }
 
-cons_t* proc_to_string(cons_t* p, environment_t *env)
+cons_t* proc_to_string(cons_t* p, environment_t*)
 {
   std::string s;
 
@@ -245,7 +245,7 @@ cons_t* proc_to_string(cons_t* p, environment_t *env)
   return string(s.c_str());
 }
 
-cons_t* proc_list(cons_t* p, environment_t *env)
+cons_t* proc_list(cons_t* p, environment_t*)
 {
   return nil_coalesce(p);
 }
@@ -313,6 +313,11 @@ cons_t* proc_debug(cons_t *p, environment_t *env)
   case INTEGER:
     s += format(" value=%d", p->integer);
     break;
+  case SYNTAX:
+    s += format(" syntax_transformer=%p environment=%p",
+           p->syntax->transformer,
+           p->syntax->environment);
+    break;
   case CLOSURE:
     s += format(" function=%p environment=%p",
            p->closure->function,
@@ -349,19 +354,19 @@ cons_t* proc_exit(cons_t* p, environment_t*)
   return NULL;
 }
 
-cons_t* proc_cons(cons_t* p, environment_t* e)
+cons_t* proc_cons(cons_t* p, environment_t*)
 {
   return cons(car(p), cadr(p));
 }
 
-cons_t* proc_car(cons_t* p, environment_t* env)
+cons_t* proc_car(cons_t* p, environment_t*)
 {
   assert_length(p, 1);
   assert_type(PAIR, p);
   return car(car(p));
 }
 
-cons_t* proc_cdr(cons_t* p, environment_t* env)
+cons_t* proc_cdr(cons_t* p, environment_t*)
 {
   /*
    * NOTE:  We have a special (and potentially UGLY) case
@@ -395,7 +400,7 @@ cons_t* proc_caadr(cons_t* p, environment_t* e)
   return caar(proc_cdr(p,e));
 }
 
-cons_t* proc_cdar(cons_t* p, environment_t* e)
+cons_t* proc_cdar(cons_t* p, environment_t*)
 {
   assert_length(p, 1);
   assert_type(PAIR, p);
@@ -403,7 +408,7 @@ cons_t* proc_cdar(cons_t* p, environment_t* e)
   return nil_coalesce(r);
 }
 
-cons_t* proc_cddr(cons_t* p, environment_t* e)
+cons_t* proc_cddr(cons_t* p, environment_t*)
 {
   assert_length(p, 1);
   assert_type(PAIR, p);
@@ -423,22 +428,22 @@ cons_t* proc_append(cons_t* p, environment_t*)
   return r;
 }
 
-cons_t* proc_symbolp(cons_t* p, environment_t* env)
+cons_t* proc_symbolp(cons_t* p, environment_t*)
 {
   return boolean(symbolp(car(p)));
 }
 
-cons_t* proc_integerp(cons_t* p, environment_t* env)
+cons_t* proc_integerp(cons_t* p, environment_t*)
 {
   return boolean(integerp(car(p)));
 }
 
-cons_t* proc_decimalp(cons_t* p, environment_t* env)
+cons_t* proc_decimalp(cons_t* p, environment_t*)
 {
   return boolean(decimalp(car(p)));
 }
 
-cons_t* proc_nullp(cons_t* p, environment_t* env)
+cons_t* proc_nullp(cons_t* p, environment_t*)
 {
   return boolean(nullp(car(p)));
 }
@@ -454,13 +459,13 @@ cons_t* proc_zerop(cons_t* p, environment_t*)
   return boolean(false);
 }
 
-cons_t* proc_pairp(cons_t* p, environment_t* env)
+cons_t* proc_pairp(cons_t* p, environment_t*)
 {
   assert_length(p, 1);
   return boolean(pairp(car(p)));
 }
 
-cons_t* proc_listp(cons_t* p, environment_t* env)
+cons_t* proc_listp(cons_t* p, environment_t*)
 {
   assert_length(p, 1);
   return boolean(listp(car(p)));
@@ -478,25 +483,25 @@ cons_t* proc_stringp(cons_t* p, environment_t*)
   return boolean(stringp(car(p)));
 }
 
-cons_t* proc_procedurep(cons_t* p, environment_t* e)
+cons_t* proc_procedurep(cons_t* p, environment_t*)
 {
   assert_length(p, 1);
   return boolean(closurep(car(p)));
 }
 
-cons_t* proc_vectorp(cons_t* p, environment_t* e)
+cons_t* proc_vectorp(cons_t* p, environment_t*)
 {
   assert_length(p, 1);
   return boolean(vectorp(car(p)));
 }
 
-cons_t* proc_charp(cons_t* p, environment_t* e)
+cons_t* proc_charp(cons_t* p, environment_t*)
 {
   assert_length(p, 1);
   return boolean(charp(car(p)));
 }
 
-cons_t* proc_booleanp(cons_t* p, environment_t* e)
+cons_t* proc_booleanp(cons_t* p, environment_t*)
 {
   assert_length(p, 1);
   return boolean(booleanp(car(p)));
@@ -1277,7 +1282,7 @@ cons_t* proc_memq(cons_t* p, environment_t* e)
   return proc_member_fptr(p, e, eqp);
 }
 
-cons_t* proc_gcd(cons_t* p, environment_t* e)
+cons_t* proc_gcd(cons_t* p, environment_t*)
 {
   assert_length(p, 2);
   assert_type(INTEGER, car(p));
@@ -1315,7 +1320,7 @@ cons_t* proc_string_to_symbol(cons_t* p, environment_t* e)
   return symbol(car(p)->string, e);
 }
 
-cons_t* proc_string_to_number(cons_t* p, environment_t* e)
+cons_t* proc_string_to_number(cons_t* p, environment_t*)
 {
   assert_length(p, 1);
   assert_type(STRING, car(p));
@@ -1514,7 +1519,7 @@ llvm::Module* makeLLVMModule()
 /*
  * LLVM, JIT-compiled gcd!
  */
-cons_t* proc_llvm_gcd(cons_t* p, environment_t* e)
+cons_t* proc_llvm_gcd(cons_t* p, environment_t*)
 {
   using namespace llvm;
 
