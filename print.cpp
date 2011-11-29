@@ -64,7 +64,7 @@ std::string print(const program_t* p)
   return print(p->root);
 }
 
-std::string sprint(const vector_t* v, std::string& r, bool escape)
+std::string sprint(const vector_t* v, std::string& r, bool)
 {
   const std::vector<cons_t*>& p = v->vector;
   std::string s;
