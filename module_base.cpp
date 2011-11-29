@@ -96,9 +96,7 @@ cons_t* proc_make_string(cons_t *p, environment_t*)
   size_t len = car(p)->integer;
   char   ch  = length(p)==1? ' ' : cadr(p)->character;
 
-  char *str = (char*) malloc(len+1);
-  strcpy(str, std::string(len, ch).c_str());
-  return string(str);
+  return string(std::string(len, ch).c_str());
 }
 
 cons_t* proc_addf(cons_t *p, environment_t*)
