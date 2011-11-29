@@ -25,8 +25,14 @@
  *
  */
 #ifdef NO_EXCEPTIONS
-# define TRY
-# define CATCH(args) extern args; if (0)
+# define TRY bool got_exception = false; \
+             if ( exception_raised() ) { \
+              got_exception = true;      \
+              goto CATCH_POINT;        }
+
+# define CATCH(args) CATCH_POINT:                   \
+                     args = std::runtime_error(""); \
+                     if (got_exception)
 #else
 # define TRY try
 # define CATCH(args) catch(args)
