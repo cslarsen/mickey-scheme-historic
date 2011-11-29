@@ -558,8 +558,5 @@ cons_t* eval(cons_t* p, environment_t* e)
       return eval(list(cadr(p)), e);
   }
 
-  // skip `begin`-form; we've got that covered elsewhere (or?)
-  // skip `set!` for now; we can implement it in primitives.cpp
-  // skip `lambda` for now
   return invoke_with_trace(car(p), cdr(p), e);
 }
