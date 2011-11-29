@@ -1,6 +1,10 @@
 RANDOM STUFF
 
 NEXT STEPS, SHOULD BE ORDERED BY INCREASING DIFFICULTY
+- Add module system (module, export, import, etc)
+- Put as many functions as possible into the base module
+- Add let-syntax
+- Add more recognized patterns in syntax-rules
 - Add letrec*
 - Add let-values
 - Add let*-values
@@ -15,7 +19,6 @@ NEXT STEPS, SHOULD BE ORDERED BY INCREASING DIFFICULTY
 - Add call/cc
 - Add support for first class continuations
 - Add memoization to lazy evaluation form
-- Add a macro system
 - Add UTF8 support for strings
 - Add UTF8 support for define names (if allowed by r7rs)
 
