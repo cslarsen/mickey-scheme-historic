@@ -60,10 +60,8 @@ static cons_t* cadddr(cons_t* p)
 
 static cons_t* invoke(cons_t* fun, cons_t* args)
 {
-  if ( !closurep(fun) ) {
-    printf("not a closure...maybe sumthin else?\n"); // TODO
+  if ( !closurep(fun) )
     return fun;
-  }
 
   environment_t *env = fun->closure->environment;
   lambda_t lambda    = fun->closure->function;
