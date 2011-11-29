@@ -27,6 +27,7 @@ cons_t* boolean(bool);
 cons_t* character(char);
 cons_t* decimal(decimal_t);
 cons_t* string(const char*);
+cons_t* vector(cons_t*, size_t size=0, cons_t* fill=NULL);
 cons_t* closure(lambda_t, environment_t*);
 cons_t* nil();
 

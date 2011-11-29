@@ -510,6 +510,165 @@ cons_t* proc_vectorp(cons_t* p, environment_t*)
   return boolean(vectorp(car(p)));
 }
 
+cons_t* proc_vector(cons_t* p, environment_t*)
+{
+  return vector(p);
+}
+
+cons_t* proc_make_vector(cons_t* p, environment_t*)
+{
+  assert_length(p, 1, 2);
+  assert_type(INTEGER, car(p));
+
+  size_t k = car(p)->integer;
+  cons_t *fill = length(p)>1? cadr(p) : NULL;
+
+  return !fill? vector(p, k) : vector(p, k, fill);
+}
+
+cons_t* proc_vector_length(cons_t* p, environment_t*)
+{
+  assert_length(p, 1);
+  assert_type(VECTOR, car(p));
+  return integer(car(p)->vector->vector.size());
+}
+
+cons_t* proc_vector_ref(cons_t* p, environment_t*)
+{
+  assert_length(p, 2);
+  assert_type(VECTOR, car(p));
+  assert_type(INTEGER, cadr(p));
+
+  vector_t *v = car(p)->vector;
+  int ref = cadr(p)->integer;
+
+  if ( ref<0 || static_cast<size_t>(ref) >= v->vector.size() )
+    raise(std::runtime_error("Vector index out of range: " + to_s(ref)));
+
+  return v->vector[ref];
+}
+
+cons_t* proc_vector_set(cons_t* p, environment_t*)
+{
+  assert_length(p, 3);
+  assert_type(VECTOR, car(p));
+  assert_type(INTEGER, cadr(p));
+
+  vector_t *v = car(p)->vector;
+  int ref = cadr(p)->integer;
+  cons_t *set = caddr(p);
+
+  if ( ref<0 || static_cast<size_t>(ref) >= v->vector.size() )
+    raise(std::runtime_error("Vector index out of range: " + to_s(ref)));
+
+  v->vector[ref] = set;
+  return nil();
+}
+
+cons_t* proc_vector_to_list(cons_t* p, environment_t*)
+{
+  assert_length(p, 1);
+  assert_type(VECTOR, car(p));
+
+  vector_t *v = car(p)->vector;
+  const std::vector<cons_t*>& vec = v->vector;
+  cons_t *ret = list();
+  cons_t *r = ret;
+
+  for ( std::vector<cons_t*>::const_iterator i = vec.begin();
+        i != vec.end(); ++i )
+  {
+    r = r->cdr = cons(*i);
+  }
+
+  return cdr(ret);
+}
+
+cons_t* proc_vector_to_string(cons_t* p, environment_t*)
+{
+  assert_length(p, 1);
+  assert_type(VECTOR, car(p));
+
+  const std::vector<cons_t*>& vec = car(p)->vector->vector;
+  std::string s(vec.size(), '\0');
+
+  size_t n=0;
+  for ( std::vector<cons_t*>::const_iterator i = vec.begin();
+        i != vec.end(); ++i )
+  {
+    if ( type_of(*i) != CHAR )
+      raise(std::runtime_error(
+        "vector->string requires character elements only"));
+
+    s[n++] = (*i)->character;
+  }
+
+  return string(s.c_str());
+}
+
+cons_t* proc_list_to_vector(cons_t* p, environment_t*)
+{
+  assert_length(p, 1);
+  assert_type(PAIR, car(p));
+
+  cons_t *r = new cons_t();
+  r->type = VECTOR;
+  r->vector = new vector_t(length(car(p)));
+
+  size_t n=0;
+
+  for ( p = car(p); !nullp(p); p = cdr(p) )
+    r->vector->vector[n++] = car(p);
+
+  return r;
+}
+
+cons_t* proc_vector_copy(cons_t* p, environment_t*)
+{
+  assert_length(p, 1);
+  assert_type(VECTOR, car(p));
+
+  cons_t *r = new cons_t();
+  r->type = VECTOR;
+  r->vector = new vector_t(*car(p)->vector);
+  return r;
+}
+
+cons_t* proc_vector_fill(cons_t* p, environment_t*)
+{
+  assert_length(p, 2);
+  assert_type(VECTOR, car(p));
+
+  cons_t *fill = cadr(p);
+  vector_t *v = car(p)->vector;
+
+  for ( std::vector<cons_t*>::iterator i = v->vector.begin();
+        i != v->vector.end();
+        ++i )
+  {
+    (*i) = fill;
+  }
+
+  return nil();
+}
+
+cons_t* proc_string_to_vector(cons_t* p, environment_t*)
+{
+  assert_length(p, 1);
+  assert_type(STRING, car(p));
+
+  cons_t *r = new cons_t();
+  r->type = VECTOR;
+  r->vector = new vector_t(strlen(car(p)->string));
+
+  size_t n=0;
+  const char* s = car(p)->string;
+  while ( *s )
+    r->vector->vector[n++] = character(*s++);
+
+  return r;
+}
+
 cons_t* proc_charp(cons_t* p, environment_t*)
 {
   assert_length(p, 1);
@@ -1709,11 +1868,13 @@ named_function_t exports_base[] = {
   {"length", proc_length},
   {"list", proc_list},
   {"list->string", proc_list_to_string},
+  {"list->vector", proc_list_to_vector},
   {"list-ref", proc_list_ref},
   {"list-tail", proc_list_tail},
   {"list?", proc_listp},
   {"load", proc_load},
   {"make-string", proc_make_string},
+  {"make-vector", proc_make_vector},
   {"max", proc_max},
   {"member", proc_member},
   {"memq", proc_memq},
@@ -1739,6 +1900,7 @@ named_function_t exports_base[] = {
   {"string->list", proc_string_to_list},
   {"string->number", proc_string_to_number},
   {"string->symbol", proc_string_to_symbol},
+  {"string->vector", proc_string_to_vector},
   {"string-append", proc_strcat},
   {"string-length", proc_string_length},
   {"string-ref", proc_string_ref},
@@ -1752,6 +1914,14 @@ named_function_t exports_base[] = {
   {"symbol->string", proc_symbol_to_string},
   {"symbol?", proc_symbolp},
   {"truncate", proc_truncate},
+  {"vector", proc_vector},
+  {"vector->list", proc_vector_to_list},
+  {"vector->string", proc_vector_to_string},
+  {"vector-copy", proc_vector_copy},
+  {"vector-fill!", proc_vector_fill},
+  {"vector-length", proc_vector_length},
+  {"vector-ref", proc_vector_ref},
+  {"vector-set!", proc_vector_set},
   {"vector?", proc_vectorp},
   {"write", proc_write},
   {"xor", proc_xor},

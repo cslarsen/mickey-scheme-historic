@@ -1,3 +1,8 @@
+BUGS
+- Run "(4 5)" and "(vector 1 2 (3 4))" works fine.  Fix in invoke().
+- Fix TRY-CATCH jump implementation (TRY=excepation_raised()+goto)
+- Update append() in primops to be same as idiom in proc_vector_to_list.
+
 RANDOM STUFF
 
 NEXT STEPS, SHOULD BE ORDERED BY INCREASING DIFFICULTY

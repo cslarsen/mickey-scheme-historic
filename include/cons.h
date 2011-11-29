@@ -17,6 +17,7 @@ typedef double decimal_t;
 #include <stdexcept>
 #include <string>
 #include <map>
+#include <vector>
 #include "util.h"
 #include "heap.h"
 
@@ -89,6 +90,25 @@ struct vector_t
   : public gc
  #endif
 {
+  std::vector<cons_t*> vector;
+
+  vector_t()
+  {
+  }
+
+  vector_t(const vector_t& v)
+  {
+    if ( this != &v )
+      vector = v.vector;
+  }
+
+  vector_t(size_t size) : vector(size)
+  {
+  }
+
+  vector_t(size_t size, cons_t* fill) : vector(size, fill)
+  {
+  }
 };
 
 class symbol_t

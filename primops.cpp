@@ -90,6 +90,27 @@ cons_t* string(const char* s)
   return p;
 }
 
+cons_t* vector(cons_t* p, size_t size, cons_t* fill)
+{
+  vector_t *v;
+
+  if ( size )
+    v = fill? new vector_t(size, fill) : new vector_t(size, nil());
+  else {
+    v = new vector_t();
+
+    while ( !nullp(p) ) {
+      v->vector.push_back(car(p));
+     p = cdr(p);
+    }
+  }
+
+  cons_t *r = new cons_t();
+  r->type = VECTOR;
+  r->vector = v;
+  return r;
+}
+
 cons_t* car(const cons_t* p)
 {
   return ( p != NULL && p->type == PAIR ) ? p->car : NULL;
