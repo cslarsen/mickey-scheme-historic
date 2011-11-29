@@ -60,8 +60,10 @@ static cons_t* cadddr(cons_t* p)
 
 static cons_t* invoke(cons_t* fun, cons_t* args)
 {
-  if ( !closurep(fun) )
+  if ( !closurep(fun) ) {
+    printf("not a closure...maybe sumthin else?\n"); // TODO
     return fun;
+  }
 
   environment_t *env = fun->closure->environment;
   lambda_t lambda    = fun->closure->function;
@@ -214,6 +216,18 @@ static cons_t* call_lambda(cons_t *p, environment_t* e)
   return eval(body, e);
 }
 
+cons_t* make_syntax(cons_t* body, environment_t* e)
+{
+  syntax_t *s = new syntax_t();
+  s->transformer = body;
+  s->environment = e;
+
+  cons_t *r = new cons_t();
+  r->type = SYNTAX;
+  r->syntax = s;
+  return r;
+}
+
 cons_t* make_closure(cons_t* args, cons_t* body, environment_t* e)
 {
   // Wrap body in begin-block (or else our poor evaluator will execute
@@ -258,10 +272,121 @@ static cons_t* eprogn(cons_t* exps, environment_t* env)
   return nil();
 }
 
+/*
+ * See R7RS 4.3.2 Pattern Language for examples on how to match
+ * a syntax-rules pattern with code.
+ *
+ * NOTE: We do NOT support the full pattern language yet.  We only
+ *       support simple patterns like (<pattern>) and (<pattern> ...)
+ *       and the same for templates.
+ *
+ *       There is also a small problem with the environments.  We should
+ *       capture free variables from the environment where the macro was
+ *       DEFINED, and reuse that... Currently, we don't do that.
+ *
+ */
+static bool syntax_match(cons_t *pat, cons_t *c, dict_t& map)
+{
+  for ( ; !nullp(pat); pat = cdr(pat) ) {
+    cons_t *l = car(pat);
+    cons_t *r = car(c);
+
+    // Match REST of symbols (TODO: Fix this, it's not very correct)
+    if ( l->symbol->name() == "..." ) {
+      map["..."] = c;
+      return true;
+    }
+
+    // Pattern is too long; no match
+    if ( nullp(c) )
+      return false;
+
+    map[l->symbol->name()] = r;
+    c = cdr(c);
+  }
+
+  // Check that pattern was fully matched
+  return nullp(pat);
+}
+
+static cons_t* deep_copy(const cons_t *p)
+{
+  if ( nullp(p) )
+    return nil();
+
+  cons_t *r = new cons_t();
+  memcpy(r, p, sizeof(cons_t));
+
+  if ( listp(r) ) {
+    r->car = deep_copy(r->car);
+    r->cdr = deep_copy(r->cdr);
+  } else if ( syntaxp(r) ) {
+    r->syntax->transformer = deep_copy(r->syntax->transformer);
+  } else if ( stringp(r) ) {
+    const char *old = r->string;
+    r->string = (const char*) malloc(strlen(old));
+    strcpy(const_cast<char*>(r->string), old);
+  }
+
+  return r;
+}
+
+static cons_t* syntax_replace(dict_t &map, cons_t* p)
+{
+  cons_t *start = p;
+
+  for ( ; !nullp(p); p = cdr(p) ) {
+    if ( listp(car(p)) )
+      p->car = syntax_replace(map, car(p));
+    else if ( symbolp(car(p)) && map.count(car(p)->symbol->name()) )
+      p->car = map[car(p)->symbol->name()];
+  }
+
+  return start;
+}
+
+static cons_t* syntax_expand(cons_t *macro, cons_t *code, environment_t*)
+{
+  //cons_t *name = car(code);
+  cons_t *rules = macro->syntax->transformer;
+  //environment_t* macro_env = macro->syntax->environment;
+
+  //printf("  --> got name   = '%s'\n", sprint(name).c_str());
+  //printf("  --> got rules  = '%s'\n", sprint(car(rules)).c_str());
+  //printf("  --> got code   = '%s'\n", sprint(code).c_str());
+
+  // Go through all rules and find a match
+  for ( cons_t *p = cdar(rules); !nullp(p); p = cdr(p) ) {
+    cons_t *pattern = caar(p);
+    cons_t *expansion = cadar(p);
+
+    //printf("comparing rule:\n");
+    //printf("  pattern: '%s'\n", sprint(pattern).c_str());
+    //printf("  code: '%s'\n", sprint(code).c_str());
+    //printf("  expansion: '%s'\n", sprint(expansion).c_str());
+
+    dict_t map;
+
+    if ( syntax_match(pattern, code, map) )
+      return syntax_replace(map, deep_copy(expansion));
+  }
+
+  // What if there's no match?
+
+  return code;
+}
+
 static cons_t* invoke_with_trace(cons_t* op, cons_t* args, environment_t* e)
 {
   backtrace_push(cons(op, args));
-  cons_t *r = invoke(eval(op, e), evlis(args, e));
+
+  //printf("invoke op='%s' args='%s'\n", sprint(op).c_str(), sprint(args).c_str());
+
+  cons_t *fun = eval(op, e);
+  cons_t *r = syntaxp(fun)?
+    eval(syntax_expand(fun, cons(op, args), e), e) :
+    invoke(fun, evlis(args, e));
+
   backtrace_pop();
   return r;
 }
@@ -302,7 +427,7 @@ cons_t* eval(cons_t* p, environment_t* e)
 
     if ( numberp(p) || stringp(p) || charp(p) ||
          booleanp(p) || vectorp(p) || decimalp(p) ||
-         closurep(p) )
+         closurep(p) || syntaxp(p) )
     {
       return p;
     }
@@ -335,6 +460,13 @@ cons_t* eval(cons_t* p, environment_t* e)
     if ( name == "cond" ) {
       cons_t *cond = proc_cond(p, e);
       return eval(cond, e);
+    }
+
+    if ( name == "define-syntax" ) {
+      cons_t *name = cadr(p);
+      cons_t *body = cddr(p);
+      cons_t *syntax = make_syntax(body, e->extend());
+      return proc_define_syntax(cons(name, cons(syntax)), e);
     }
 
     /*
@@ -448,12 +580,10 @@ cons_t* eval(cons_t* p, environment_t* e)
 
     if ( name == "force" )
       return eval(list(cadr(p)), e);
-
   }
 
   // skip `begin`-form; we've got that covered elsewhere (or?)
   // skip `set!` for now; we can implement it in primitives.cpp
   // skip `lambda` for now
-
   return invoke_with_trace(car(p), cdr(p), e);
 }

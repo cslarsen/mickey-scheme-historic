@@ -238,6 +238,11 @@ bool closurep(const cons_t* p)
   return type_of(p) == CLOSURE;
 }
 
+bool syntaxp(const cons_t* p)
+{
+  return type_of(p) == SYNTAX;
+}
+
 bool equalp(const cons_t* l, const cons_t* r)
 {
   // SLOW, but sure.

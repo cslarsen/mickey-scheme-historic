@@ -58,9 +58,8 @@ cons_t* proc_abs(cons_t* p, environment_t*)
 
 cons_t* proc_display(cons_t *p, environment_t*)
 {
-  for ( ; !nullp(p); p = cdr(p) ) {
+  for ( ; !nullp(p); p = cdr(p) )
     printf("%s", print(car(p)).c_str());
-  }
 
   return nil();
 }
@@ -97,7 +96,9 @@ cons_t* proc_make_string(cons_t *p, environment_t*)
   size_t len = car(p)->integer;
   char   ch  = length(p)==1? ' ' : cadr(p)->character;
 
-  return string(std::string(len, ch).c_str());
+  char *str = (char*) malloc(len+1);
+  strcpy(str, std::string(len, ch).c_str());
+  return string(str);
 }
 
 cons_t* proc_addf(cons_t *p, environment_t*)
@@ -261,6 +262,20 @@ cons_t* proc_define(cons_t *p, environment_t *env)
     raise(std::runtime_error("Cannot define with empty variable name")); // TODO: Even possible?
 
   env->define(name->symbol->name(), body);
+  return nil();
+}
+
+cons_t* proc_define_syntax(cons_t *p, environment_t *env)
+{
+  // (define <name> <body>)
+  assert_type(SYMBOL, car(p));
+  cons_t *name = car(p);
+  cons_t *syntax = cadr(p);
+
+  if ( name->symbol->name().empty() )
+    raise(std::runtime_error("Cannot define-syntax with empty name"));
+
+  env->define(name->symbol->name(), syntax);
   return nil();
 }
 

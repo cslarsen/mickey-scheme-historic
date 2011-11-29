@@ -65,6 +65,7 @@ std::string to_s(cons_t *p)
   case CLOSURE:  return format("#<closure %p>", p->closure);
   case PAIR:     return to_s(car(p)) + " . " + to_s(cdr(p));
   case SYMBOL:   return p->symbol->name();
+  case SYNTAX:   return format("#<syntax_transformer %p>", p->syntax);
   case STRING:   return p->string;
   case VECTOR:   return format("#<vector %p>", p->vector);
   case CONTINUATION: return format("#<continuation %p>", p->continuation);
