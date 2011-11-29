@@ -149,5 +149,6 @@ std::string to_s(continuation_t*);
 std::string to_s(vector_t*);
 std::string to_s(char, bool);
 std::string to_s(struct cons_t *p);;
+cons_t* deep_copy(const cons_t*);
 
 #endif

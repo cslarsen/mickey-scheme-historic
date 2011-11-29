@@ -307,28 +307,6 @@ static bool syntax_match(cons_t *pat, cons_t *c, dict_t& map)
   return nullp(pat);
 }
 
-static cons_t* deep_copy(const cons_t *p)
-{
-  if ( nullp(p) )
-    return nil();
-
-  cons_t *r = new cons_t();
-  memcpy(r, p, sizeof(cons_t));
-
-  if ( listp(r) ) {
-    r->car = deep_copy(r->car);
-    r->cdr = deep_copy(r->cdr);
-  } else if ( syntaxp(r) ) {
-    r->syntax->transformer = deep_copy(r->syntax->transformer);
-  } else if ( stringp(r) ) {
-    const char *old = r->string;
-    r->string = (const char*) malloc(strlen(old));
-    strcpy(const_cast<char*>(r->string), old);
-  }
-
-  return r;
-}
-
 static cons_t* syntax_replace(dict_t &map, cons_t* p)
 {
   cons_t *start = p;

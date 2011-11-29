@@ -137,3 +137,26 @@ struct environment_t* environment_t::extend()
   r->outer = this;
   return r;
 }
+
+cons_t* deep_copy(const cons_t *p)
+{
+  if ( !p )
+    return NULL;
+
+  cons_t *r = new cons_t();
+  memcpy(r, p, sizeof(cons_t));
+
+  if ( listp(r) ) {
+    r->car = deep_copy(r->car);
+    r->cdr = deep_copy(r->cdr);
+  } else if ( syntaxp(r) )
+    r->syntax->transformer = deep_copy(r->syntax->transformer);
+  else if ( stringp(r) ) {
+    const char *old = r->string;
+    r->string = (const char*) malloc(strlen(old));
+    strcpy(const_cast<char*>(r->string), old);
+  }
+
+  return r;
+}
+
