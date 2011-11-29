@@ -1,6 +1,4 @@
 BUGS
-- Big bugs in "make check".  Don't know what's going on, but could be
-  heap corruption.
 - Run "(4 5)" and "(vector 1 2 (3 4))" works fine.  Fix in invoke().
 - Fix TRY-CATCH jump implementation (TRY=excepation_raised()+goto)
 - Update append() in primops to be same as idiom in proc_vector_to_list.
