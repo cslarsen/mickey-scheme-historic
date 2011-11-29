@@ -4,6 +4,7 @@ NEXT STEPS, SHOULD BE ORDERED BY INCREASING DIFFICULTY
 - Add module system (module, export, import, etc)
 - Put as many functions as possible into the base module
 - Add let-syntax
+- Fix define-syntax / syntax rules: LOTS of bugs in the macro system
 - Add more recognized patterns in syntax-rules
 - Add letrec*
 - Add let-values
