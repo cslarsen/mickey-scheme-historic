@@ -151,11 +151,8 @@ cons_t* deep_copy(const cons_t *p)
     r->cdr = deep_copy(r->cdr);
   } else if ( syntaxp(r) )
     r->syntax->transformer = deep_copy(r->syntax->transformer);
-  else if ( stringp(r) ) {
-    const char *old = r->string;
-    r->string = (const char*) malloc(strlen(old));
-    strcpy(const_cast<char*>(r->string), old);
-  }
+  else if ( stringp(r) )
+    r->string = copy_str(r->string);
 
   return r;
 }
