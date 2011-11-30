@@ -13,6 +13,7 @@
 #include "util.h"
 
 std::string sprint(const vector_t* v, std::string& s, bool escape);
+std::string sprint(const bytevector_t* v, std::string& s, bool escape);
 
 std::string sprint(const cons_t* p, std::string& s, bool escape)
 {
@@ -26,6 +27,7 @@ std::string sprint(const cons_t* p, std::string& s, bool escape)
   case SYMBOL:       return s + p->symbol->name();
   case STRING:       return s + (escape? "\"" + encode_str(p->string) + "\"" : p->string);
   case VECTOR:       return s + sprint(p->vector, s, escape);
+  case BYTEVECTOR:   return s + sprint(p->bytevector, s, escape);
   case CONTINUATION: return s + (escape? to_s(p->continuation) : "");
   case SYNTAX:       return s + sprint(p->syntax->transformer, s, escape);
   case PAIR: {
@@ -82,6 +84,25 @@ std::string sprint(const vector_t* v, std::string& r, bool)
       s += sprint(*i, r, true);
 
     if ( listp(*i) ) s += ")";
+  }
+
+  s += ")";
+  return s;
+}
+
+std::string sprint(const bytevector_t* v, std::string&, bool)
+{
+  const std::vector<uint8_t>& p = v->bytevector;
+  std::string s;
+  s += "#u8(";
+
+  std::string space = "";
+
+  for ( std::vector<uint8_t>::const_iterator i = p.begin();
+        i != p.end(); ++i )
+  {
+    s += space + to_s(*i);
+    space = " ";
   }
 
   s += ")";

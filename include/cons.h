@@ -35,6 +35,7 @@ enum type_t {
   STRING,
   VECTOR,
   CONTINUATION,
+  BYTEVECTOR,
   SYNTAX
 };
 
@@ -111,6 +112,34 @@ struct vector_t
   }
 };
 
+struct bytevector_t
+ #ifdef BOEHM_GC
+  : public gc
+ #endif
+{
+  std::vector<uint8_t> bytevector;
+
+  bytevector_t()
+  {
+  }
+
+  bytevector_t(const bytevector_t& v) : bytevector(v.bytevector)
+  {
+  }
+
+  bytevector_t(size_t size) : bytevector(size)
+  {
+  }
+
+  bytevector_t(size_t size, const uint8_t fill) : bytevector(size, fill)
+  {
+  }
+
+  bytevector_t(const std::vector<uint8_t>& v) : bytevector(v)
+  {
+  }
+};
+
 class symbol_t
  #ifdef BOEHM_GC
   : public gc
@@ -156,6 +185,7 @@ struct cons_t
     const symbol_t* symbol;
     const char* string;
     vector_t* vector;
+    bytevector_t* bytevector;
     continuation_t* continuation;
   };
 };
@@ -167,6 +197,7 @@ std::string to_s(enum type_t);
 std::string to_s(closure_t*);
 std::string to_s(continuation_t*);
 std::string to_s(vector_t*);
+std::string to_s(bytevector_t*);
 std::string to_s(char, bool);
 std::string to_s(struct cons_t *p);;
 cons_t* deep_copy(const cons_t*);

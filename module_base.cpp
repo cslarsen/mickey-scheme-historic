@@ -346,6 +346,10 @@ cons_t* proc_debug(cons_t *p, environment_t *env)
     s += format(" value='%s'", p->string);
     break;
   case VECTOR:
+    s += format(" vector=%p", p->vector);
+    break;
+  case BYTEVECTOR:
+    s += format(" bytevector=%p", p->bytevector);
     break;
   case CONTINUATION:
     break;
@@ -508,6 +512,12 @@ cons_t* proc_vectorp(cons_t* p, environment_t*)
   return boolean(vectorp(car(p)));
 }
 
+cons_t* proc_bytevectorp(cons_t* p, environment_t*)
+{
+  assert_length(p, 1);
+  return boolean(bytevectorp(car(p)));
+}
+
 cons_t* proc_vector(cons_t* p, environment_t*)
 {
   return vector(p);
@@ -522,6 +532,39 @@ cons_t* proc_make_vector(cons_t* p, environment_t*)
   cons_t *fill = length(p)>1? cadr(p) : NULL;
 
   return !fill? vector(p, k) : vector(p, k, fill);
+}
+
+cons_t* proc_make_bytevector(cons_t* p, environment_t*)
+{
+  assert_length(p, 1, 2);
+  assert_type(INTEGER, car(p));
+
+  size_t k = car(p)->integer;
+  cons_t *fill = length(p)>1? cadr(p) : NULL;
+
+  if ( !fill ) {
+    return bytevector(k);
+  } else {
+    uint8_t u8fill = 0;
+    switch ( type_of(fill) ) {
+    case BOOLEAN: u8fill = fill->boolean; break;
+    case CHAR:    u8fill = fill->character; break;
+    case INTEGER: {
+      if ( fill->integer < 0 || fill->integer > 255 )
+        raise(std::runtime_error(
+          "make-vector only accepts unsigned 8-bit bytes"));
+      u8fill = static_cast<uint8_t>(fill->integer);
+      break;
+    }
+
+    default:
+      raise(std::runtime_error(
+        "make-vector only accepts unsigned 8-bit bytes"));
+      break;
+    }
+
+    return bytevector(k, &u8fill);
+  }
 }
 
 cons_t* proc_vector_length(cons_t* p, environment_t*)
@@ -541,7 +584,7 @@ cons_t* proc_vector_ref(cons_t* p, environment_t*)
   int ref = cadr(p)->integer;
 
   if ( ref<0 || static_cast<size_t>(ref) >= v->vector.size() )
-    raise(std::runtime_error("Vector index out of range: " + to_s(ref)));
+    raise(std::runtime_error("vector-ref index out of range: " + to_s(ref)));
 
   return v->vector[ref];
 }
@@ -630,6 +673,138 @@ cons_t* proc_vector_copy(cons_t* p, environment_t*)
   r->type = VECTOR;
   r->vector = new vector_t(*car(p)->vector);
   return r;
+}
+
+cons_t* proc_bytevector_copy(cons_t* p, environment_t*)
+{
+  assert_length(p, 1);
+  assert_type(BYTEVECTOR, car(p));
+
+  cons_t *r = new cons_t();
+  r->type = BYTEVECTOR;
+  r->bytevector = new bytevector_t(*car(p)->bytevector);
+  return r;
+}
+
+cons_t* proc_bytevector_u8_ref(cons_t* p, environment_t*)
+{
+  assert_length(p, 2);
+  assert_type(BYTEVECTOR, car(p));
+  assert_type(INTEGER, cadr(p));
+
+  bytevector_t *v = car(p)->bytevector;
+  int k = cadr(p)->integer;
+
+  if ( k<0 || static_cast<size_t>(k) >= v->bytevector.size() )
+    raise(std::runtime_error("bytevector-u8-ref out of range"));
+
+  return integer(v->bytevector[k]);
+}
+
+cons_t* proc_bytevector_length(cons_t* p, environment_t*)
+{
+  assert_length(p, 1);
+  assert_type(BYTEVECTOR, car(p));
+  return integer(car(p)->bytevector->bytevector.size());
+}
+
+cons_t* proc_bytevector_copy_partial(cons_t* p, environment_t*)
+{
+  assert_length(p, 3);
+  assert_type(BYTEVECTOR, car(p));
+  assert_type(INTEGER, cadr(p));
+  assert_type(INTEGER, caddr(p));
+
+  int start = cadr(p)->integer;
+  int end = caddr(p)->integer;
+
+  bytevector_t *v = car(p)->bytevector;
+
+  if ( start<0 || static_cast<size_t>(start)>=v->bytevector.size() )
+    raise(std::runtime_error("bytevector-copy-partial `start´ out of range"));
+
+  if ( end<=start || static_cast<size_t>(end)>v->bytevector.size() )
+    raise(std::runtime_error("bytevector-copy-partial `end´ out of range"));
+
+  return bytevector(
+    std::vector<uint8_t>(
+      v->bytevector.begin()+start,
+      v->bytevector.begin()+end));
+}
+
+cons_t* proc_bytevector_copy_partial_bang(cons_t* p, environment_t*)
+{
+  assert_length(p, 5);
+  assert_type(BYTEVECTOR, car(p));
+  assert_type(INTEGER, cadr(p));
+  assert_type(INTEGER, caddr(p));
+  assert_type(BYTEVECTOR, car(cdddr(p)));
+  assert_type(INTEGER, car(cdr(cdddr(p))));
+
+  int start = cadr(p)->integer;
+  int end   = caddr(p)->integer;
+  int at    = car(cdr(cdddr(p)))->integer;
+
+  bytevector_t *from = car(p)->bytevector;
+  bytevector_t *to = car(cdddr(p))->bytevector;
+
+  if ( start<0 || static_cast<size_t>(start) >= from->bytevector.size() )
+    raise(std::runtime_error("bytevector-copy-partial `start´ out of range"));
+
+  if ( end<=start || static_cast<size_t>(end) > from->bytevector.size() )
+    raise(std::runtime_error("bytevector-copy-partial `end´ out of range"));
+
+  if ( !(static_cast<int>((to->bytevector.size()) - at) >= (end - start)) )
+    raise(std::runtime_error(
+      "bytevector-copy-partial! invalid start-end-at combo"));
+
+  std::copy(
+    from->bytevector.begin()+start,
+    from->bytevector.begin()+end,
+    to->bytevector.begin()+at);
+
+  return nil();
+}
+
+cons_t* proc_bytevector_u8_set_bang(cons_t* p, environment_t*)
+{
+  assert_length(p, 3);
+  assert_type(BYTEVECTOR, car(p));
+  assert_type(INTEGER, cadr(p));
+  assert_type(INTEGER, caddr(p));
+
+  bytevector_t *v = car(p)->bytevector;
+  int k = cadr(p)->integer;
+  int val = caddr(p)->integer;
+
+  if ( k<0 || static_cast<size_t>(k) >= v->bytevector.size() )
+    raise(std::runtime_error("bytevector-u8-set! index out of range"));
+
+  if ( val<0 || val>255 )
+    raise(std::runtime_error("bytevector-u8-set! byte value out of range"));
+
+  v->bytevector[k] = static_cast<uint8_t>(val);
+  return nil();
+}
+
+cons_t* proc_bytevector_copy_bang(cons_t* p, environment_t*)
+{
+  assert_length(p, 2);
+  assert_type(BYTEVECTOR, car(p));
+  assert_type(BYTEVECTOR, cadr(p));
+
+  bytevector_t *from = car(p)->bytevector;
+  bytevector_t *to   = cadr(p)->bytevector;
+
+  if ( to->bytevector.size() < from->bytevector.size() )
+    raise(std::runtime_error(
+      "bytevector-copy! destination bytevector shorter than source"));
+
+  if ( to->bytevector.size() > from->bytevector.size() )
+    to->bytevector.resize(from->bytevector.size());
+
+  to->bytevector = from->bytevector;
+  return nil();
 }
 
 cons_t* proc_vector_fill(cons_t* p, environment_t*)
@@ -1829,6 +2004,14 @@ named_function_t exports_base[] = {
   {"backtrace", proc_backtrace},
   {"boolean->string", proc_boolean_to_string},
   {"boolean?", proc_booleanp},
+  {"bytevector-copy!", proc_bytevector_copy_bang},
+  {"bytevector-copy", proc_bytevector_copy},
+  {"bytevector-copy-partial!", proc_bytevector_copy_partial_bang},
+  {"bytevector-copy-partial", proc_bytevector_copy_partial},
+  {"bytevector-length", proc_bytevector_length},
+  {"bytevector-u8-ref", proc_bytevector_u8_ref},
+  {"bytevector-u8-set!", proc_bytevector_u8_set_bang},
+  {"bytevector?", proc_bytevectorp},
   {"caaar", proc_caaar},
   {"caadr", proc_caadr},
   {"caar", proc_caar},
@@ -1871,6 +2054,7 @@ named_function_t exports_base[] = {
   {"list-tail", proc_list_tail},
   {"list?", proc_listp},
   {"load", proc_load},
+  {"make-bytevector", proc_make_bytevector},
   {"make-string", proc_make_string},
   {"make-vector", proc_make_vector},
   {"max", proc_max},

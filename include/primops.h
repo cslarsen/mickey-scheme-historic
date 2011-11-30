@@ -28,6 +28,8 @@ cons_t* character(char);
 cons_t* decimal(decimal_t);
 cons_t* string(const char*);
 cons_t* vector(cons_t*, size_t size=0, cons_t* fill=NULL);
+cons_t* bytevector(size_t size=0, const uint8_t *fill=NULL);
+cons_t* bytevector(const std::vector<uint8_t>& p);
 cons_t* closure(lambda_t, environment_t*);
 cons_t* nil();
 
@@ -59,6 +61,7 @@ bool closurep(const cons_t*);
 bool syntaxp(const cons_t*);
 bool booleanp(const cons_t*);
 bool vectorp(const cons_t*);
+bool bytevectorp(const cons_t*);
 bool charp(const cons_t*);
 bool numberp(const cons_t*);
 bool eqp(const cons_t*, const cons_t*);

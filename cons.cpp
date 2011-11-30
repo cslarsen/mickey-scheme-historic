@@ -49,6 +49,7 @@ std::string to_s(enum type_t type)
   case STRING:       return "string";       break;
   case VECTOR:       return "vector";       break;
   case CONTINUATION: return "continuation"; break;
+  case BYTEVECTOR:   return "bytevector";   break;
   }
 
   return "#<unknown type>";
@@ -69,6 +70,7 @@ std::string to_s(cons_t *p)
   case STRING:   return p->string;
   case VECTOR:   return format("#<vector %p>", p->vector);
   case CONTINUATION: return format("#<continuation %p>", p->continuation);
+  case BYTEVECTOR:   return format("#<bytevector %p>", p->bytevector);
   }
 
   return "#<unknown type>";

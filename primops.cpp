@@ -111,6 +111,29 @@ cons_t* vector(cons_t* p, size_t size, cons_t* fill)
   return r;
 }
 
+cons_t* bytevector(size_t size, const uint8_t* fill)
+{
+  bytevector_t *v;
+
+  if ( size )
+    if ( fill ) v = new bytevector_t(size, *fill);
+    else        v = new bytevector_t(size);
+  else          v = new bytevector_t();
+
+  cons_t *r = new cons_t();
+  r->type = BYTEVECTOR;
+  r->bytevector = v;
+  return r;
+}
+
+cons_t* bytevector(const std::vector<uint8_t>& p)
+{
+  cons_t *r = new cons_t();
+  r->type = BYTEVECTOR;
+  r->bytevector = new bytevector_t(p);
+  return r;
+}
+
 cons_t* car(const cons_t* p)
 {
   return ( p != NULL && p->type == PAIR ) ? p->car : NULL;
@@ -216,6 +239,11 @@ bool vectorp(const cons_t* p)
   return type_of(p) == VECTOR;
 }
 
+bool bytevectorp(const cons_t* p)
+{
+  return type_of(p) == BYTEVECTOR;
+}
+
 bool charp(const cons_t* p)
 {
   return type_of(p) == CHAR;
@@ -266,58 +294,45 @@ bool syntaxp(const cons_t* p)
 
 bool equalp(const cons_t* l, const cons_t* r)
 {
-  // SLOW, but sure.
   return type_of(l) != type_of(r) ? false :
-          print(l) == print(r);
+          print(l) == print(r); // <- SLOW, but sure
 }
 
 bool eqp(const cons_t* l, const cons_t* r)
 {
-  if ( type_of(l) != type_of(r) )
-    return false;
-
-  switch ( type_of(l) ) {
-  case NIL:     return true;
-  case BOOLEAN: return l->boolean == r->boolean;
-  case CHAR:    return l->character == r->character;
-  case INTEGER: return l->integer == r->integer;
-  case DECIMAL: return l->decimal == r->decimal;
-  case CLOSURE: return (l->closure->function == r->closure->function
-                         && l->closure->environment == r->closure->environment);
-  case PAIR:    raise(std::runtime_error("eq? is not implemented for pairs yet"));
-  case SYMBOL:  return l->symbol->name() == r->symbol->name();
-  case SYNTAX:  return (l->syntax->transformer == r->syntax->transformer
-                         && l->syntax->environment == r->syntax->environment);
-  case STRING:  return !strcmp(l->string, r->string);
-  case VECTOR:  raise(std::runtime_error("Unimplemented eq? for vector")); break;
-  case CONTINUATION: raise(std::runtime_error("Unimplemented eq? for continuation")); break;
-  }
-
-  return false;
+  return eqvp(l, r);
 }
 
+/*
+ * See R7RS chapters 6 and 6.3.3.
+ *
+ * For pairs, vectors, bytevectors, records or
+ * strings, eqv? denotes they shrae the same
+ * locations in the store (section 3.4).
+ *
+ */
 bool eqvp(const cons_t* l, const cons_t* r)
 {
   if ( type_of(l) != type_of(r) )
     return false;
 
   switch ( type_of(l) ) {
-  case NIL:     return true;
-  case BOOLEAN: return l == r;
-  case SYMBOL:  return l->symbol->name() == r->symbol->name();
-  case INTEGER: // Also make sure both are exact/both inexact (TODO)
-                return l->integer == r->integer; 
-  case DECIMAL: // Check both exact/both inexact
-                return l->decimal == r->decimal;
-  case CHAR:    return l->character == r->character;
-  case PAIR:    return nullp(l) && nullp(r)? true : l == r;
-  case VECTOR:  return l == r;
-  case STRING:  return l == r;
-  case SYNTAX:  return l == r; // TODO: Check against names?
-  case CLOSURE: // double-check with section 6.1 and 4.1.4 (TODO)
-                return l->closure == r->closure;
-  case CONTINUATION:
-                return l->continuation == r->continuation;
+  case NIL:           return true;
+  case BOOLEAN:       return l->boolean == r->boolean;
+  case SYMBOL:        return l->symbol->name() == r->symbol->name();
+  case INTEGER:       // Also make sure both are exact/both inexact (TODO)
+                      return l->integer == r->integer; 
+  case DECIMAL:       // Check both exact/both inexact
+                      return l->decimal == r->decimal;
+  case CHAR:          return l->character == r->character;
+  case PAIR:          return nullp(l) && nullp(r)? true : l == r;
+  case VECTOR:        return l == r;
+  case BYTEVECTOR:    return l == r;
+  case STRING:        return !strcmp(l->string, r->string);
+  case SYNTAX:        return l == r;
+  case CLOSURE:       // double-check with section 6.1 and 4.1.4 (TODO)
+                      return l->closure == r->closure;
+  case CONTINUATION:  return l->continuation == r->continuation;
   }
 
   return false;
