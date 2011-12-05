@@ -571,7 +571,7 @@ cons_t* proc_vector_length(cons_t* p, environment_t*)
 {
   assert_length(p, 1);
   assert_type(VECTOR, car(p));
-  return integer(car(p)->vector->vector.size());
+  return integer(static_cast<int>(car(p)->vector->vector.size()));
 }
 
 cons_t* proc_vector_ref(cons_t* p, environment_t*)
@@ -705,7 +705,7 @@ cons_t* proc_bytevector_length(cons_t* p, environment_t*)
 {
   assert_length(p, 1);
   assert_type(BYTEVECTOR, car(p));
-  return integer(car(p)->bytevector->bytevector.size());
+  return integer(static_cast<int>(car(p)->bytevector->bytevector.size()));
 }
 
 cons_t* proc_bytevector_copy_partial(cons_t* p, environment_t*)
@@ -873,7 +873,7 @@ cons_t* proc_version(cons_t*, environment_t*)
 
 cons_t* proc_length(cons_t* p, environment_t*)
 {
-  return integer(length(car(p)));
+  return integer(static_cast<int>(length(car(p))));
 }
 
 cons_t* proc_eqp(cons_t* p, environment_t*)
@@ -1686,7 +1686,7 @@ cons_t* proc_string_length(cons_t* p, environment_t*)
 {
   assert_length(p, 1);
   assert_type(STRING, car(p));
-  return integer(strlen(car(p)->string));
+  return integer(static_cast<int>(strlen(car(p)->string)));
 }
 
 cons_t* proc_string(cons_t* p, environment_t*)
