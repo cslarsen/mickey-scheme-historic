@@ -1,4 +1,7 @@
 BUGS
+- Add for-each
+- Add vector-map
+- Add vector-for-each
 - Add support for case-folding and other hash-bang stuff
 - REPL: If expression hasn't been closed, wait for more lines.
 - Add support for '#(1 2 3)
