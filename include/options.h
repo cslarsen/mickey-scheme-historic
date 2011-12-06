@@ -15,6 +15,7 @@ struct options_t
 {
   bool verbose;
   bool read_stdin;
+  bool eval_next;
   FILE* current_output_device;
   FILE* current_input_device;
   const char* current_filename;

@@ -58,6 +58,8 @@ bool parse_option(const char* s, struct options_t* p)
   } else if ( ARGHIT("-h", "--help") ) {
     help(); 
     exit(0);
+  } else if ( ARGHIT("-e", "--eval") ) {
+    p->eval_next = true;
   } else {
     fprintf(stderr, "Unknown option: %s\n\n", s);
     help();

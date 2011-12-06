@@ -48,6 +48,29 @@ void execute(const char* file)
   }
 }
 
+void execute_string(const char* s)
+{
+  TRY {
+    environment_t *env = new environment_t();
+
+    import(env, exports_base);
+    import(env, exports_math);
+    import(env, exports_assert);
+
+    reset_for_programs(&global_opts, NULL);
+
+    program_t *p = parse(s, env);
+    p->root = proc_begin(p->root, env);
+    printf("%s\n", sprint(eval(p->root, env)).c_str());
+  }
+  CATCH (const std::exception& e) {
+    fprintf(stderr, "Error: %s\n", e.what());
+    backtrace();
+    backtrace_clear();
+    exit(1);
+  }
+}
+
 int main(int argc, char** argv)
 {
   bool rest_is_files = false; // used with option `--`
@@ -60,7 +83,11 @@ int main(int argc, char** argv)
   #endif
 
   for ( int n=1; n<argc; ++n ) {
-    if ( !rest_is_files && argv[n][0] == '-' ) {
+    if ( global_opts.eval_next ) {
+      execute_string(argv[n]);
+      global_opts.eval_next = false;
+      run_repl = false;
+    } else if ( !rest_is_files && argv[n][0] == '-' ) {
       if ( argv[n][1] == '\0' )
         execute("-"); // stdin
       else
