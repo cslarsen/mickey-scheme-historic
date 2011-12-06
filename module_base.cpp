@@ -307,7 +307,7 @@ cons_t* proc_load(cons_t *filename, environment_t *env)
   return nil();
 }
 
-cons_t* proc_map(cons_t *p, environment_t* env)
+cons_t* proc_map(cons_t *p, environment_t*)
 {
   /*
    * (map <procedure> <list1> <list2> ... <listN>)
