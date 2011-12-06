@@ -306,6 +306,53 @@ cons_t* proc_load(cons_t *filename, environment_t *env)
   return nil();
 }
 
+cons_t* proc_map(cons_t *p, environment_t* env)
+{
+  /*
+   * (map <procedure> <list1> <list2> ... <listN>)
+   *
+   * For each element in each list, do this:
+   *
+   * (<procedure>
+   *    <elem1 from list1>
+   *    <elem1 from list2> ... <elem1 from listN>)
+   */
+
+  assert_type(CLOSURE, car(p));
+
+  // rest of args must be lists
+  for ( cons_t* l = cdr(p); !nullp(l); l = cdr(l) )
+    assert_type(PAIR, car(l));
+
+  // Pointer-copy lists, since we'll mutate them
+  cons_t *lists = list();
+  for ( cons_t *l = cdr(p); !nullp(l); l = cdr(l) )
+    lists = append(lists, list(car(l)));
+
+  // perform <proc> on head of each list
+  cons_t *result = list();
+  cons_t *proc = car(p);
+
+  for(;;) {
+    cons_t *args = list();
+    for ( cons_t *l = lists; !nullp(l); l = cdr(l) ) {
+      args = append(args, cons(caar(l)));
+
+      // terminate when shortest list is done
+      if ( nullp(car(l)) || nullp(caar(l)) )
+        return result;
+
+      // make head point to next element
+      l->car = cdar(l);
+    }
+
+    // eval (<proc> <head of list1> <head of list 2> ...)
+    result = append(result, cons(eval(cons(proc, args), env)));
+  }
+
+  return result;
+}
+
 cons_t* proc_debug(cons_t *p, environment_t *env)
 {
   std::string s;
@@ -2054,6 +2101,7 @@ named_function_t exports_base[] = {
   {"list-tail", proc_list_tail},
   {"list?", proc_listp},
   {"load", proc_load},
+  {"map", proc_map},
   {"make-bytevector", proc_make_bytevector},
   {"make-string", proc_make_string},
   {"make-vector", proc_make_vector},
