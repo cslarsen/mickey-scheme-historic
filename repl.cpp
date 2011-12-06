@@ -259,8 +259,29 @@ int repl()
     TRY {
       program_t *p = parse(input, env);
 
+      if ( p->parens < 0 )
+        raise(std::runtime_error("parser: unbalanced parenthesis"));
+
+      // Read until we have balanced parenthesis
+      std::string s(input);
+      while ( p->parens != 0 ) {
+        if ( (input = readline("")) == NULL ) break;
+        if ( *trimr(input) == '\0' ) continue;
+
+        s += " ";
+        s += input;
+        delete p;
+
+        #ifdef USE_READLINE
+        free(input);
+        input = NULL;
+        #endif
+
+        p = parse(s.c_str(), env);
+      }
+
       #ifdef USE_READLINE
-      free(input);
+      if ( input ) free(input);
       #endif
 
       for ( cons_t *i = p->root; !nullp(i); i = cdr(i) ) {

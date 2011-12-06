@@ -47,6 +47,8 @@ static cons_t* parse_quote(const char* t, environment_t* env);
 static cons_t* parse_quasiquote(const char* t, environment_t* env);
 static cons_t* parse_unquote(const char* t, environment_t* env);
 
+static long int parens = 0;
+
 cons_t* parse_list(environment_t *env, bool quoting = false)
 {
   cons_t *p = NULL;
@@ -54,6 +56,10 @@ cons_t* parse_list(environment_t *env, bool quoting = false)
 
   while ( (t = get_token()) != NULL && *t != ')' ) {
     bool paren = (*t == '(');
+
+    // Track matching of parens
+    if ( paren )
+      ++parens;
 
     cons_t *add;
 
@@ -79,6 +85,9 @@ cons_t* parse_list(environment_t *env, bool quoting = false)
     if ( quoting )
       break;
   }
+
+  if ( t && *t==')' )
+    --parens;
 
   return p;
 }
@@ -130,6 +139,9 @@ program_t* parse(const char *program, environment_t *env)
 
   program_t *p = new program_t();
   p->globals = env;
+  p->parens = parens = 0;
   p->root = parse_list(p->globals);
+  p->parens = parens;
+
   return p;
 }

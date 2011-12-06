@@ -18,6 +18,7 @@
 struct program_t {
   environment_t *globals;
   cons_t *root;
+  long int parens;
 };
 
 program_t* parse(const char *program, environment_t *env);
