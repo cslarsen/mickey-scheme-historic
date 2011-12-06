@@ -1197,7 +1197,7 @@ cons_t* proc_cond(cons_t* p, environment_t* e)
                 cons(otherwise)))));
 }
 
-cons_t* proc_number_to_string(cons_t* p, environment_t* e)(
+cons_t* proc_number_to_string(cons_t* p, environment_t* e)
 {
   assert_length(p, 1, 2);
   assert_number(car(p));
