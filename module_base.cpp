@@ -1197,15 +1197,15 @@ cons_t* proc_cond(cons_t* p, environment_t* e)
                 cons(otherwise)))));
 }
 
-cons_t* proc_number_to_string(cons_t* p, environment_t* e)
+cons_t* proc_number_to_string(cons_t* p, environment_t* e)(
 {
   assert_length(p, 1, 2);
   assert_number(car(p));
 
-  int radix = 10;
+//  int radix = 10;
   if ( !nullp(cadr(p)) ) {
     assert_type(INTEGER, cadr(p));
-    radix = cadr(p)->integer;
+    //radix = cadr(p)->integer;
   }
 
   // TODO: Implement use of radix
