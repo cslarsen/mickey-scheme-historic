@@ -22,6 +22,7 @@
 #include "backtrace.h"
 #include "eval.h"
 #include "types.h"
+#include "apply.h"
 
 #ifdef USE_LLVM
 # include "llvm/Module.h"
@@ -333,7 +334,7 @@ cons_t* proc_map(cons_t *p, environment_t* env)
   cons_t *result = list();
   cons_t *proc = car(p);
 
-  for(;;) {
+  while ( !nullp(lists) ) {
     cons_t *args = list();
     for ( cons_t *l = lists; !nullp(l); l = cdr(l) ) {
       args = append(args, cons(caar(l)));
@@ -347,7 +348,8 @@ cons_t* proc_map(cons_t *p, environment_t* env)
     }
 
     // eval (<proc> <head of list1> <head of list 2> ...)
-    result = append(result, cons(eval(cons(proc, args), env)));
+    result = append(result, cons(
+               apply(proc->closure->function, args, proc->closure->environment)));
   }
 
   return result;
