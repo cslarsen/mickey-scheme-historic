@@ -1,4 +1,3 @@
-; show version and exit
+; show version
 (display (:version))
 (newline)
-(:exit 0)

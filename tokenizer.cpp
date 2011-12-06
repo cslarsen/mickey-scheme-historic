@@ -59,6 +59,13 @@ const char* get_token()
       continue;
     }
 
+    // hash-bang or similar? skip to end of line
+    // TODO: Properly handle hash-bangs like case-folding, etc.
+    if ( source[0]=='#' && source[1]=='!' ) {
+      while ( *source != '\n' ) ++source;
+      continue;
+    }
+
     // block-comments?
     if ( source[0]=='#' && source[1]=='|' ) {
       // match nested pairs
