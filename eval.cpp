@@ -366,6 +366,7 @@ static cons_t* eval_quasiquote(cons_t* p, environment_t* e)
  */
 cons_t* eval(cons_t* p, environment_t* e)
 {
+for(;;) {
   if ( atomp(p) ) {
     if ( symbolp(p) )
       return e->lookup_or_throw(p->symbol->name());
@@ -393,13 +394,19 @@ cons_t* eval(cons_t* p, environment_t* e)
       /*
        * Handle both (if <test> <true-action> <false-action>) [1]
        * and (if <test> <true-action>)                        [2]
+       *
+       * Note: Previously we did `return eval(caddr(p), e)´ here,
+       *       but now we're taking cues form http://norvig.com/lispy2.html
+       *
        */
-      if ( bool_true(eval(cadr(p), e)) ) // cases [1, 2]
-        return eval(caddr(p), e);
-      else if ( !nullp(cadddr(p)) )      // case [1]
-        return eval(cadddr(p), e);
-      else
-        return nil();                    // case [2]
+      if ( bool_true(eval(cadr(p), e)) ) { // cases [1, 2]
+        p = caddr(p);
+        continue;
+      } else if ( !nullp(cadddr(p)) ) {    // case [1]
+        p = cadddr(p);
+        continue;
+      } else
+        return nil();                      // case [2]
     }
 
     if ( name == "cond" ) {
@@ -528,6 +535,7 @@ cons_t* eval(cons_t* p, environment_t* e)
   }
 
   return invoke_with_trace(car(p), cdr(p), e);
+}
 }
 
 } // extern "C"
