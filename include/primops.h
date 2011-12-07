@@ -46,6 +46,9 @@ cons_t* car(const cons_t*);
 cons_t* cdaddr(const cons_t*);
 cons_t* cdar(const cons_t*);
 cons_t* cdddr(const cons_t*);
+cons_t* cddddr(const cons_t*);
+cons_t* caddddr(const cons_t*);
+cons_t* cadddr(const cons_t*);
 cons_t* cddr(const cons_t*);
 cons_t* cdr(const cons_t*);
 

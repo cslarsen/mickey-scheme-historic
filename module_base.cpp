@@ -787,15 +787,15 @@ cons_t* proc_bytevector_copy_partial_bang(cons_t* p, environment_t*)
   assert_type(BYTEVECTOR, car(p));
   assert_type(INTEGER, cadr(p));
   assert_type(INTEGER, caddr(p));
-  assert_type(BYTEVECTOR, car(cdddr(p)));
-  assert_type(INTEGER, car(cdr(cdddr(p))));
+  assert_type(BYTEVECTOR, cadddr(p));
+  assert_type(INTEGER, caddddr(p));
 
   int start = cadr(p)->integer;
   int end   = caddr(p)->integer;
-  int at    = car(cdr(cdddr(p)))->integer;
+  int at    = caddddr(p)->integer;
 
   bytevector_t *from = car(p)->bytevector;
-  bytevector_t *to = car(cdddr(p))->bytevector;
+  bytevector_t *to = cadddr(p)->bytevector;
 
   if ( start<0 || static_cast<size_t>(start) >= from->bytevector.size() )
     raise(std::runtime_error("bytevector-copy-partial `start´ out of range"));

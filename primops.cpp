@@ -179,6 +179,16 @@ cons_t* cdddr(const cons_t* p)
   return cdr(cdr(cdr(p)));
 }
 
+cons_t* cadddr(const cons_t* p)
+{
+  return car(cdr(cdr(cdr(p))));
+}
+
+cons_t* caddddr(const cons_t* p)
+{
+  return car(cdr(cdr(cdr(cdr(p)))));
+}
+
 cons_t* cdaddr(const cons_t* p)
 {
   return cdr(car(cdr(cdr(p))));
