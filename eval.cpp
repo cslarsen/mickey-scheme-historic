@@ -19,6 +19,15 @@
 #include "module_base.h"
 #include "exceptions.h"
 
+extern cons_t* proc_do(cons_t*, environment_t*);
+
+cons_t* eval(program_t *p)
+{
+  return eval(p->root, p->globals);
+}
+
+extern "C" { // because I don't like name-mangling
+
 /*
  * Magic variables to hold lambda arguments
  * and code body.  Quite the hack, and should
@@ -28,13 +37,7 @@
 static const char ARGS[] = "__args__";
 static const char BODY[] = "__body__";
 
-cons_t* make_closure(cons_t* args, cons_t* body, environment_t* e);
-extern cons_t* proc_do(cons_t*, environment_t*);
-
-cons_t* eval(program_t *p)
-{
-  return eval(p->root, p->globals);
-}
+static cons_t* make_closure(cons_t* args, cons_t* body, environment_t* e);
 
 static bool bool_true(cons_t* p)
 {
@@ -68,25 +71,6 @@ static cons_t* invoke(cons_t* fun, cons_t* args)
 
   return lambda(args, env);
 }
-
-/*
-static cons_t* make_curried_function(cons_t *names, cons_t *values, cons_t *body, environment_t *e)
-{
-    // While we have (name value) pairs, set `name` => `value`
-    cons_t *n = names,
-           *v = values;
-
-    // Curry; set <name> => <value>
-    while ( !nullp(n) ) {
-      e->define(car(n)->symbol->name(), car(v));
-      n = cdr(n);
-      v = cdr(v);
-    }
-
-    // The rest of any parameters is in `n`.
-    return make_closure(n, body, e);
-}
-*/
 
 /*
  * Return number of required arguments, excluding
@@ -214,7 +198,7 @@ static cons_t* call_lambda(cons_t *p, environment_t* e)
   return eval(body, e);
 }
 
-cons_t* make_syntax(cons_t* body, environment_t* e)
+static cons_t* make_syntax(cons_t* body, environment_t* e)
 {
   syntax_t *s = new syntax_t();
   s->transformer = body;
@@ -226,7 +210,7 @@ cons_t* make_syntax(cons_t* body, environment_t* e)
   return r;
 }
 
-cons_t* make_closure(cons_t* args, cons_t* body, environment_t* e)
+static cons_t* make_closure(cons_t* args, cons_t* body, environment_t* e)
 {
   // Wrap body in begin-block (or else our poor evaluator will execute
   // expressions backwards!)... this is of course an indication that
@@ -323,32 +307,19 @@ static cons_t* syntax_replace(dict_t &map, cons_t* p)
 
 static cons_t* syntax_expand(cons_t *macro, cons_t *code, environment_t*)
 {
-  //cons_t *name = car(code);
   cons_t *rules = macro->syntax->transformer;
-  //environment_t* macro_env = macro->syntax->environment;
-
-  //printf("  --> got name   = '%s'\n", sprint(name).c_str());
-  //printf("  --> got rules  = '%s'\n", sprint(car(rules)).c_str());
-  //printf("  --> got code   = '%s'\n", sprint(code).c_str());
 
   // Go through all rules and find a match
   for ( cons_t *p = cdar(rules); !nullp(p); p = cdr(p) ) {
     cons_t *pattern = caar(p);
     cons_t *expansion = cadar(p);
 
-    //printf("comparing rule:\n");
-    //printf("  pattern: '%s'\n", sprint(pattern).c_str());
-    //printf("  code: '%s'\n", sprint(code).c_str());
-    //printf("  expansion: '%s'\n", sprint(expansion).c_str());
-
     dict_t map;
-
     if ( syntax_match(pattern, code, map) )
       return syntax_replace(map, deep_copy(expansion));
   }
 
-  // What if there's no match?
-
+  // TODO: What if there's no match?
   return code;
 }
 
@@ -560,3 +531,5 @@ cons_t* eval(cons_t* p, environment_t* e)
 
   return invoke_with_trace(car(p), cdr(p), e);
 }
+
+} // extern "C"
