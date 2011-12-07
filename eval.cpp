@@ -327,8 +327,6 @@ static cons_t* invoke_with_trace(cons_t* op, cons_t* args, environment_t* e)
 {
   backtrace_push(cons(op, args));
 
-  //printf("invoke op='%s' args='%s'\n", sprint(op).c_str(), sprint(args).c_str());
-
   cons_t *fun = eval(op, e);
   cons_t *r = syntaxp(fun)?
     eval(syntax_expand(fun, cons(op, args), e), e) :
