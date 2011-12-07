@@ -232,29 +232,6 @@ static cons_t* make_closure(cons_t* args, cons_t* body, environment_t* e)
 }
 
 /*
- * Based on Queinnec, p. 9
- *
- * A problem, though, is that we wrap lots of code inside
- * (begin <body>) blocks, which is handled here.  The problem
- * is that for code like (begin (< 1 2)) it's a bit difficult
- * to reason about where in the code to return.
- *
- * So, I've tried my best below. (TODO: Make LOTS of tests for this!)
- *
- */
-static cons_t* eprogn(cons_t* exps, environment_t* env)
-{
-  if ( pairp(exps) )
-    if ( pairp(cdr(exps)) ) {
-      eval(car(exps), env);
-      return eprogn(cdr(exps), env); // originally had no return
-    } else
-      return eval(car(exps), env); // originally had no return
-
-  return nil();
-}
-
-/*
  * See R7RS 4.3.2 Pattern Language for examples on how to match
  * a syntax-rules pattern with code.
  *
@@ -494,8 +471,25 @@ for(;;) {
       return make_closure(args, body, e->extend());
     }
 
-    if ( name == "begin" )
-      return eprogn(cdr(p), e);
+    /*
+     * Again, we steal some ideas from Norvig's lispy2
+     * http://norvig.com/lispy2.html
+     */
+    if ( name == "begin" ) {
+      p = cdr(p);
+EPROGN:
+      if ( pairp(p) )
+        if ( pairp(cdr(p)) ) {
+          eval(car(p), e);
+          p = cdr(p);
+          goto EPROGN;
+        } else {
+          p = car(p);
+          continue;
+        }
+
+      return nil();
+    }
 
     if ( name == "let" )
       return eval(proc_let(cdr(p), e), e);
