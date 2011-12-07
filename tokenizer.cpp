@@ -17,16 +17,16 @@
 #include "util.h"
 
 static const char* source = NULL;
+static bool inside_string = false;
 
 void set_source(const char* program)
 {
   source = program;
+  inside_string = false;
 }
 
 static bool string_or_non_delimiter(char ch)
 {
-  static bool inside_string = false;
-
   if ( ch == '\"' )
     inside_string = !inside_string;
 

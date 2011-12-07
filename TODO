@@ -1,8 +1,4 @@
 BUGS
-- REPL can now parse expressions over several lines, but not with quotes:
-mickey> (display "hello
-world!")
-  --> Need to look into this as well
 - Add for-each
 - Add vector-map
 - Add vector-for-each

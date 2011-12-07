@@ -290,6 +290,8 @@ int repl()
         if ( !s.empty() )
          printf("%s\n", s.c_str());
       }
+
+      delete p;
     }
     CATCH (const std::exception& e) {
       fprintf(stderr, "%s\n", e.what());
