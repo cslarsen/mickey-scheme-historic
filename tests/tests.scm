@@ -330,8 +330,8 @@
 (test-eq (quote (string-ref "hey" 2)) #\y)
 
 ;; append tests
-(test-eq (quote (append (list) 1)) (1))
-(test-eq (quote (append (list) 1)) (1))
+(test-eq (quote (append (list) 1)) '(1))
+(test-eq (quote (append (list) 1)) '(1))
 (test-eq (quote (append (list) (list 1 2))) (list 1 2))
 (test-eq (quote (append (list) (list 1 2))) (list 1 2))
 (test-eq (quote (append (list 1))) (list 1))
@@ -357,6 +357,7 @@
 (test-eq (quote (apply + '(1 2 3))) 6)
 (test-eq '(apply + '(1 2 3)) 6) ; is double-quote ok?
 ;
+(display "err1\n")
 (test-eq (quote (quasiquote (1 2 (unquote (+ 3 4))))) '(1 2 7))
 (test-eq (quote `(1 2 ,(+ 3 4) 3 y)) '(1 2 7 3 y))
 

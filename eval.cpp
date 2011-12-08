@@ -18,6 +18,7 @@
 #include "backtrace.h"
 #include "module_base.h"
 #include "exceptions.h"
+#include "assertions.h"
 
 extern cons_t* proc_do(cons_t*, environment_t*);
 
@@ -36,6 +37,7 @@ extern "C" { // because I don't like name-mangling
  */
 static const char ARGS[] = "__args__";
 static const char BODY[] = "__body__";
+static std::string func_name;
 
 static cons_t* make_closure(cons_t* args, cons_t* body, environment_t* e);
 
@@ -143,7 +145,7 @@ static cons_t* call_lambda(cons_t *p, environment_t* e)
   if ( params_recv > params_reqd && !has_rest ) {
     raise(std::runtime_error(
       format("Function '%s' only accepts %d parameters, "
-             "but got %d", sprint(body).c_str(),
+             "but got %d", func_name.c_str(),
              params_reqd, params_recv)));
   }
 
@@ -238,7 +240,7 @@ static body_env_t expand_lambda(cons_t *p, environment_t* e)
   if ( params_recv > params_reqd && !has_rest ) {
     raise(std::runtime_error(
       format("Function '%s' only accepts %d parameters, "
-             "but got %d", sprint(body).c_str(),
+             "but got %d", func_name.c_str(),
              params_reqd, params_recv)));
   }
 
@@ -405,20 +407,21 @@ static cons_t* syntax_expand(cons_t *macro, cons_t *code, environment_t*)
 static cons_t* invoke_with_trace(cons_t* op, cons_t* args, environment_t* e)
 {
   backtrace_push(cons(op, args));
-
   cons_t *fun = eval(op, e);
+
+  if ( !closurep(fun) )
+    raise(std::runtime_error(format(
+      "Not a function: %s", sprint(op).c_str())));
+
+  if ( symbolp(op) )
+    func_name = op->symbol->name();
+  else func_name = "<?>";
+
   cons_t *ret = invoke(fun, evlis(args, e));
 
+  func_name = "";
   backtrace_pop();
   return ret;
-}
-
-static cons_t* eval_with_trace(cons_t* expr, environment_t* e)
-{
-  backtrace_push(expr);
-  cons_t *result = eval( evlis(expr, e), e);
-  backtrace_pop();
-  return result;
 }
 
 static cons_t* eval_quasiquote(cons_t* p, environment_t* e)
@@ -429,7 +432,7 @@ static cons_t* eval_quasiquote(cons_t* p, environment_t* e)
 
     // TODO: Only allow this if we're explicitly inside quasiquote
     if ( n == "unquote" || n == "," )
-      return eval(cdr(p), e);
+      return eval(cadr(p), e);
   }
 
   return !pairp(p) ? p :
@@ -603,8 +606,10 @@ cons_t* eval(cons_t* p, environment_t* e)
       if ( name == "do" )
         return eval(proc_do(p, e), e);
   
-      if ( name == "eval" )
-        return eval_with_trace(cdr(p), e);
+      if ( name == "eval" ) {
+        p = car(evlis(cdr(p), e));
+        continue;
+      }
   
       if ( name == "apply" ) {
         // Correct to use eval instead of evlis (or nothing) on parameter list?
@@ -660,7 +665,9 @@ cons_t* eval(cons_t* p, environment_t* e)
         cons_t *body = op->closure->environment->symbols[BODY];
   
         if ( !nullp(body) ) {
+          func_name = car(p)->symbol->name();
           body_env_t r = expand_lambda(evlis(cdr(p), e), op->closure->environment);
+          func_name = "";
           p = r.body;
           e = r.env;
           continue;
