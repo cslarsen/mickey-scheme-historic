@@ -55,12 +55,13 @@ and produces a new system state.
 
 (define elementwise
   (lambda (f)
-    (generate-vector
-      (vector-length (car vectors))
-      (lambda (i)
-        (apply f
-               (map (lambda (v) (vector-ref v i))
-                    vectors))))))
+    (lambda vectors
+      (generate-vector
+        (vector-length (car vectors))
+        (lambda (i)
+          (apply f
+                 (map (lambda (v) (vector-ref v i))
+                      vectors)))))))
 
 (define generate-vector
   (lambda (size proc)
