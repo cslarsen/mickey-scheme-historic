@@ -16,7 +16,7 @@
 
 (define (test-fact n)
   (display (string-append
-    (->string n) "! = " (->string (fact n)) "\n")))
+    (number->string n) "! = " (number->string (fact n)) "\n")))
 
 ;; All of these should return,
 ;; even if the answer is overflowed (i.e., "+Inf").
