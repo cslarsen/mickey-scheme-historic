@@ -36,7 +36,7 @@ and produces a new system state.
     (let ((*h (scale-vector h))
           (*2 (scale-vector 2))
           (*1/2 (scale-vector (/ 1 2)))
-          (*1/6 (scale-vector (/ 1 6)))
+          (*1/6 (scale-vector (/ 1 6))))
       (lambda (y)
         ;; y is a system state
         (let* ((k0 (*h (f y)))
@@ -47,7 +47,7 @@ and produces a new system state.
             (*1/6 (add-vectors k0
                                (*2 k1)
                                (*2 k2)
-                               k3)))))))))
+                               k3))))))))
 
 (define elementwise
   (lambda (f)
@@ -116,3 +116,7 @@ which models a damped oscillator.
     (damped-oscillator 10000 1000 .001)
     '#(1 0)
     .01))
+
+(display "the-states => ")
+(display the-states)
+(newline)
