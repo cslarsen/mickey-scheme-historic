@@ -558,8 +558,7 @@ cons_t* eval(cons_t* p, environment_t* e)
         cons_t *body = cddr(p);
   
         // capture no argument lambda `(lambda () do-something)`
-        if ( nullp(body) && !nullp(args) )
-        {
+        if ( nullp(body) && !nullp(args) ) {
           // We have a `(lambda () <body>)` form
           args = list(NULL);
           body = cons(cadr(p));
