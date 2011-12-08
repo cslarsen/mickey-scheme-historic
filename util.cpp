@@ -22,6 +22,14 @@ std::string toupper(const std::string& str)
   return r;
 }
 
+std::string tolower(const std::string& str)
+{
+  const char* s = str.c_str();
+  std::string r;
+  while ( *s ) r += tolower(*s++);
+  return r;
+}
+
 char* trimr(char* s)
 {
   size_t l = strlen(s);

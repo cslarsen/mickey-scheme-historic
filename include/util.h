@@ -19,6 +19,7 @@ std::string to_s(int n);
 std::string to_s(decimal_t n);
 std::string to_s(bool f);
 std::string format(const char *fmt, ...);
+std::string tolower(const std::string& s);
 std::string toupper(const std::string& s);
 
 char* copy_str(const char* s);

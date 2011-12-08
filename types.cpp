@@ -169,17 +169,19 @@ char to_char(const char* s)
   // Example: "#\space"
   // TODO: Make ONE giant table that we use for all character mappings
   s += 2;
-  if ( !strcmp(s, "space") )   return ' ';
-  if ( !strcmp(s, "tab") )     return '\t';
-  if ( !strcmp(s, "newline") ) return '\n';
-  if ( !strcmp(s, "return" ) ) return '\r';
-  if ( !strcmp(s, "null" ) )   return '\0';
-  if ( !strcmp(s, "alarm") )   return '\a';
-  if ( !strcmp(s, "backspace") ) return '\x8';
-  if ( !strcmp(s, "escape") )  return '\x1b';
-  if ( !strcmp(s, "delete") )   return '\x7f';
+  std::string lit = tolower(s);
 
-  raise(std::runtime_error("Unrecognized character literal"));
+  if ( lit == "space" )     return ' ';
+  if ( lit == "tab" )       return '\t';
+  if ( lit == "newline" )   return '\n';
+  if ( lit == "return"  )   return '\r';
+  if ( lit == "null"  )     return '\0';
+  if ( lit == "alarm" )     return '\a';
+  if ( lit == "backspace" ) return '\x8';
+  if ( lit == "escape" )    return '\x1b';
+  if ( lit == "delete" )    return '\x7f';
+
+  raise(std::runtime_error(format("Unrecognized character literal: #\\%s", s)));
   return '\0'; // make compiler happy
 }
 
