@@ -1,3 +1,13 @@
+This bugs:
+mickey> ''()
+
+Same with:
+mickey> ''2
+csi> ''2 ==> 2
+
+Also note that the way we detect '() is very hairy, so it might be wrong as
+well.
+
 --- Parsing of characters (section 6.3.4 in r7rs 3rd draft), doesn't work with #\) and #\(
 --- because of the way the parser is currently built.  E.g.:
 

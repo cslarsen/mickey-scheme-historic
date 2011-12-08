@@ -260,7 +260,8 @@ int repl()
       program_t *p = parse(input, env);
 
       if ( p->parens < 0 )
-        raise(std::runtime_error("parser: unbalanced parenthesis"));
+        raise(std::runtime_error(format(
+          "parser: unbalanced parenthesis -> %ld", p->parens)));
 
       // Read until we have balanced parenthesis
       std::string s(input);
