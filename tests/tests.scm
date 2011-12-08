@@ -330,8 +330,7 @@
 (test-eq (quote (string-ref "hey" 2)) #\y)
 
 ;; append tests
-(test-eq (quote (append (list) 1)) '(1))
-(test-eq (quote (append (list) 1)) '(1))
+(test-eq (quote (append (list) 1)) 1)
 (test-eq (quote (append (list) (list 1 2))) (list 1 2))
 (test-eq (quote (append (list) (list 1 2))) (list 1 2))
 (test-eq (quote (append (list 1))) (list 1))
@@ -452,6 +451,13 @@
 ;; Comment-out datum
 (test-eq '(+ 1 #; 2 3) 4)
 (test-eq '(+ 1 #;2 3) 4)
+
+;; Quasiquote
+(test-eq (quote `(1 2 ,(+ 3 4))) '(1 2 7))
+(test-eq (quote '()) (list)) ;; Note: We should rewrite test-eq as a macro!
+(test-eq (quote '()) '())
+(test-eq (quote (list)) '())
+(test-eq '(list) '())
 
 (display "\nResults\n")
 (results)
