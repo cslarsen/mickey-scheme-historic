@@ -1,4 +1,6 @@
 BUGS
+- (delay) doesn't work properly; can do (define foo (delay (+ 1 2 3))) and
+  then (foo) ==> 6, but that shouldn't evaluate.
 - Add parsing of quoted vectors, i.e.: '#(1 2 3)
 - Trampoline more stuff in eval()
 - Add support for '()
