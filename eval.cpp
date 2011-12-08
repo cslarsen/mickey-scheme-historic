@@ -141,8 +141,10 @@ static cons_t* call_lambda(cons_t *p, environment_t* e)
   }
 
   if ( params_recv > params_reqd && !has_rest ) {
-    raise(std::runtime_error(format("Function only accepts %d parameters, "
-                                    "but got %d", params_reqd, params_recv)));
+    raise(std::runtime_error(
+      format("Function '%s' only accepts %d parameters, "
+             "but got %d", sprint(body).c_str(),
+             params_reqd, params_recv)));
   }
 
   // Set up function arguments
@@ -234,8 +236,10 @@ static body_env_t expand_lambda(cons_t *p, environment_t* e)
   }
 
   if ( params_recv > params_reqd && !has_rest ) {
-    raise(std::runtime_error(format("Function only accepts %d parameters, "
-                                    "but got %d", params_reqd, params_recv)));
+    raise(std::runtime_error(
+      format("Function '%s' only accepts %d parameters, "
+             "but got %d", sprint(body).c_str(),
+             params_reqd, params_recv)));
   }
 
   // Set up function arguments

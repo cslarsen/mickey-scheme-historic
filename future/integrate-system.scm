@@ -1,5 +1,4 @@
 #|
-
 (The following code and text has been taken from R7RS).
 
 Integrate-system integrates the system
@@ -17,7 +16,6 @@ initial guess for the length of the integration step.
 
 The value returned by integrate-system is an infinite stream of system
 states.
-
 |#
 (define integrate-system
   (lambda (system-derivative initial-state h)
@@ -29,11 +27,9 @@ states.
        states))))
 
 #|
-
 Runge-kutta-4 takes a function, f, that produces a system derivative from a
 sytem state.  Runge-kutta-4 produces a function that takes a system state
 and produces a new system state.
-
 |#
 (define runge-kutta-4
   (lambda (f h)
@@ -81,10 +77,8 @@ and produces a new system state.
     (elementwise (lambda (x) (* x s)))))
 
 #|
-
 Map-streams is analogous to map: it applies its first argument (a procedure)
 to all the elements of its second argument (a stream).
-
 |#
 (define map-streams
   (lambda (f s)
@@ -92,18 +86,15 @@ to all the elements of its second argument (a stream).
           (delay (map-streams f (tail s))))))
 
 #|
-
 Infinite streams are implemented as pairs whose car holds the first element
 of the stream and whose cdr holds a promise to deliver the rest of the
 stream.
-
 |#
 (define head car)
 (define tail  
   (lambda (stream) (force (cdr stream))))
 
 #|
-
 The following illustrates the use of integrate-system in integrating the
 system
 
@@ -111,7 +102,6 @@ system
   $ L \frac{di_L}{dt} = v_C $
 
 which models a damped oscillator.
-
 |#
 (define damped-oscillator
   (lambda (R L C)
