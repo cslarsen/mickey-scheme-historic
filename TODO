@@ -1,4 +1,5 @@
 BUGS
+- Add parsing of quoted vectors, i.e.: '#(1 2 3)
 - Trampoline more stuff in eval()
 - Add support for '()
 - Add for-each

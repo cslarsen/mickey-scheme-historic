@@ -1,3 +1,7 @@
+THis bugs:
+mickey> '#(0 1)
+--> parser can't parse that...
+
 This bugs:
 mickey> ''()
 
