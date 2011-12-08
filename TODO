@@ -1,4 +1,5 @@
 BUGS
+- Add support for '()
 - Add for-each
 - Add vector-map
 - Add vector-for-each
@@ -26,7 +27,6 @@ NEXT STEPS, SHOULD BE ORDERED BY INCREASING DIFFICULTY
 - Add let*-values
 - Fix native string type; using C-string doesn't work with make-string 10 #\nul
 - Add simple mark-and-sweep GC (simple; currently not needed)
-- Add tail call elimination (possibly using CPS)
 - Look into exact->inexact stuff
 - Add continuation passing style (CPS) transform for all code
 - Refactor the code, it's A MESS at the moment...
