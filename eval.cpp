@@ -403,12 +403,10 @@ static cons_t* invoke_with_trace(cons_t* op, cons_t* args, environment_t* e)
   backtrace_push(cons(op, args));
 
   cons_t *fun = eval(op, e);
-  cons_t *r = syntaxp(fun)?
-    eval(syntax_expand(fun, cons(op, args), e), e) :
-    invoke(fun, evlis(args, e));
+  cons_t *ret = invoke(fun, evlis(args, e));
 
   backtrace_pop();
-  return r;
+  return ret;
 }
 
 static cons_t* eval_with_trace(cons_t* expr, environment_t* e)
@@ -664,12 +662,14 @@ cons_t* eval(cons_t* p, environment_t* e)
           e = r.env;
           continue;
         }
+      } else if ( syntaxp(op) ) {
+        p = syntax_expand(op, p, e);
+        continue;
       }
     }
 
     /*
-     * TODO:  Can also expand macros in-place, as well as a special
-     *        version of cond.  See Lispy2 at Norvig.com.
+     * TODO:  Can also expand other functions in-plcae.
      */
   
     return invoke_with_trace(car(p), cdr(p), e);
