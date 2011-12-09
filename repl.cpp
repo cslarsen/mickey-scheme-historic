@@ -44,7 +44,7 @@ cons_t* proc_list_globals(cons_t*, environment_t *env)
 
     while ( i != env->symbols.end() ) {
       std::string n = (*i).first;
-      r = append(r, cons(string(n.c_str())));
+      r = append(r, cons(symbol(n.c_str(), env)));
       ++i;
     }
   }
@@ -90,7 +90,7 @@ char** auto_complete(const char *s, int, int)
 
   // Count number of hits
   for ( cons_t *p = all_commands; !nullp(p); p = cdr(p) )
-    count += (stringp(car(p)) && isprefix(s, car(p)->string));
+    count += (symbolp(car(p)) && isprefix(s, car(p)->symbol->name().c_str()));
 
   if ( count <= 1 ) {
     last_hit = 0;
@@ -103,10 +103,10 @@ char** auto_complete(const char *s, int, int)
 
   size_t hitno = 0;
   for ( cons_t *p = all_commands; !nullp(p); p = cdr(p) )
-    if ( stringp(car(p)) && isprefix(s, car(p)->string) ) {
+    if ( symbolp(car(p)) && isprefix(s, car(p)->symbol->name().c_str()) ) {
       ++hitno;
       if ( hitno >= last_hit )
-        *hit++ = strdup(car(p)->string);
+        *hit++ = strdup(car(p)->symbol->name().c_str());
     }
 
   last_hit = hitno % count;
@@ -132,7 +132,8 @@ char* readline_auto_completion(const char* s, int state)
 
     // count number of hits
     for ( cons_t *p = all_commands; !nullp(p); p = cdr(p) )
-      count += (stringp(car(p)) && isprefix(s, car(p)->string));
+      count += (symbolp(car(p)) &&
+                 isprefix(s, car(p)->symbol->name().c_str()));
   
     // build actual hits; readline will (hopefully!) free for us
     // (but TODO don't count on it)
@@ -140,8 +141,8 @@ char* readline_auto_completion(const char* s, int state)
     char** command = commands;
 
     for ( cons_t *p = all_commands; !nullp(p); p = cdr(p) ) {
-      if ( stringp(car(p)) && isprefix(s, car(p)->string) )
-          *command++ = strdup(car(p)->string);
+      if ( symbolp(car(p)) && isprefix(s, car(p)->symbol->name().c_str()) )
+          *command++ = strdup(car(p)->symbol->name().c_str());
     }
 
     *command = NULL;
