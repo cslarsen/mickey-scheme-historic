@@ -25,14 +25,16 @@
  *
  */
 #ifdef NO_EXCEPTIONS
-# define TRY bool got_exception = false; \
-             if ( exception_raised() ) { \
-              got_exception = true;      \
-              goto CATCH_POINT;        }
+# define TRY                     \
+    bool got_exception = false;  \
+    if ( exception_raised() ) {  \
+      got_exception = true;      \
+      goto CATCH_POINT;        }
 
-# define CATCH(args) CATCH_POINT:                   \
-                     args = std::runtime_error(__exception->what());           \
-                     if (got_exception)
+# define CATCH(args)                             \
+  CATCH_POINT:                                   \
+  args = std::runtime_error(__exception.what()); \
+  if (got_exception)
 #else
 # define TRY try
 # define CATCH(args) catch(args)
@@ -50,6 +52,6 @@ void raise(const std::exception&);
 #ifdef NO_EXCEPTIONS
 # include <setjmp.h>
 extern jmp_buf catch_point;
-extern std::exception *__exception;
+extern std::runtime_error __exception;
 # define exception_raised() setjmp(catch_point)
 #endif
