@@ -17,6 +17,7 @@
 #include "eval.h"
 #include "module_base.h"
 #include "module_math.h"
+#include "module_assert.h"
 #include "exceptions.h"
 
 #define TEST_REPL(expr, expect) TEST_STREQ(sprint(eval(parse(expr))), expect);
@@ -37,8 +38,11 @@ program_t* parse(const char *program)
 
 void run_tests()
 {
+  reset_tests();
+
   import(&globals, exports_base);
   import(&globals, exports_math);
+  import(&globals, exports_assert);
 
   { std::string format_abbc5d = format("a%sc%dd", "bb", 5); 
     TEST_STREQ(format_abbc5d, "abbc5d"); }

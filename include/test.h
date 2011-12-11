@@ -27,3 +27,4 @@
 void test_streq(const std::string& code, const std::string& actual, const std::string& expected);
 void test(bool result, const char *descr);
 void results();
+void reset_tests();
