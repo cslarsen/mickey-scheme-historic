@@ -297,7 +297,7 @@ int repl()
     }
     CATCH (const std::exception& e) {
       if ( *e.what() != '\0' )
-        fprintf(stderr, "%s", e.what());
+        fprintf(stderr, "%s\n", e.what());
       backtrace();
       backtrace_clear();
     }
