@@ -14,12 +14,13 @@
 
 #ifdef NO_EXCEPTIONS
 jmp_buf catch_point;
+std::exception *__exception = NULL;
 #endif
 
 void raise(const std::exception& e)
 {
 #ifdef NO_EXCEPTIONS
-  printf("%s\n", e.what());
+  __exception = new std::runtime_error(e.what());
   longjmp(catch_point, 1);
 #else
   // we cannot simply throw e, because then

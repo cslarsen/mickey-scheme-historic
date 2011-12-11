@@ -31,7 +31,7 @@
               goto CATCH_POINT;        }
 
 # define CATCH(args) CATCH_POINT:                   \
-                     args = std::runtime_error(""); \
+                     args = std::runtime_error(__exception->what());           \
                      if (got_exception)
 #else
 # define TRY try
@@ -50,5 +50,6 @@ void raise(const std::exception&);
 #ifdef NO_EXCEPTIONS
 # include <setjmp.h>
 extern jmp_buf catch_point;
+extern std::exception *__exception;
 # define exception_raised() setjmp(catch_point)
 #endif
