@@ -64,7 +64,7 @@ and produces a new system state.
     (let ((ans (make-vector size)))
       (letrec ((loop
                 (lambda (i)
-                  (cond ((= i size) and)
+                  (cond ((= i size) ans)
                         (else
                           (vector-set! ans i (proc i))
                           (loop (+ i 1)))))))
