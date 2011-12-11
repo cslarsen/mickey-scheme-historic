@@ -296,7 +296,8 @@ int repl()
       delete p;
     }
     CATCH (const std::exception& e) {
-      fprintf(stderr, "%s\n", e.what());
+      if ( *e.what() != '\0' )
+        fprintf(stderr, "%s", e.what());
       backtrace();
       backtrace_clear();
     }
