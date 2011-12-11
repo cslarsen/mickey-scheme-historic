@@ -14,6 +14,11 @@
 
 static int tests=0, good=0;
 
+void reset_tests()
+{
+  tests = good = 0;
+}
+
 static void ok(const char* s)
 {
   printf("%d/%d OK:   %s\n", ++good, ++tests, s);
