@@ -20,21 +20,40 @@
 #include "module_assert.h"
 #include "exceptions.h"
 
-#define TEST_REPL(expr, expect) TEST_STREQ(sprint(eval(parse(expr))), expect);
-#define TEST_EVAL(expr, expect) TEST_STREQ(print(eval(parse(expr))), expect);
-#define TEST_PARSE(expr, expect) TEST_STREQ(sprint(parse(expr)), expect);
-
 static environment_t globals;
 
-cons_t* symbol(const char* s)
+static cons_t* symbol(const char* s)
 {
   return symbol(s, &globals);
 }
 
-program_t* parse(const char *program)
+static program_t* parse(const char *program)
 {
   return parse(program, &globals);
 }
+
+static std::string parse_eval_print(const char* expr)
+{
+  program_t *p = parse(expr);
+  cons_t *r = eval(car(p->root), &globals);
+  return print(r);
+}
+
+static std::string parse_eval_sprint(const std::string& expr)
+{
+  program_t *p = parse(expr.c_str());
+  cons_t *r = eval(car(p->root), &globals);
+  return sprint(r);
+}
+
+static std::string parse_sprint(const std::string& expr)
+{
+  return sprint(parse(expr.c_str())->root);
+}
+
+#define TEST_REPL(expr, expect) TEST_STREQ(parse_eval_sprint(expr), expect);
+#define TEST_EVAL(expr, expect) TEST_STREQ(parse_eval_print(expr), expect);
+#define TEST_PARSE(expr, expect) TEST_STREQ(parse_sprint(expr), expect);
 
 void run_tests()
 {
@@ -156,9 +175,9 @@ void run_tests()
 
   // string operations
   TEST_EVAL("(number->string 123)", "123");
-  TEST_EVAL("(list->string (list 1 2 (list 3 4)))", "(1 2 (3 4))");
-  TEST_EVAL("(list->string (list 1 2 (list 3 (list 4 4 5) 4)))", "(1 2 (3 (4 4 5) 4))");
-  TEST_EVAL("(list->string (list 1 2 (list 3 4 (* 3 30))))", "(1 2 (3 4 90))");
+  TEST_EVAL("(list 1 2 (list 3 4))", "(1 2 (3 4))");
+  TEST_EVAL("(list 1 2 (list 3 (list 4 4 5) 4))", "(1 2 (3 (4 4 5) 4))");
+  TEST_EVAL("(list 1 2 (list 3 4 (* 3 30)))", "(1 2 (3 4 90))");
   TEST_EVAL("(string-append \"one\" \"two\" \"three\")", "onetwothree");
 
   // side-effects / printing to console
