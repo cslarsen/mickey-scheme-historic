@@ -1,38 +1,10 @@
-THis bugs:
-mickey> '#(0 1)
---> parser can't parse that...
+Bugs (so far) in Mickey Scheme
 
-This bugs:
-mickey> ''()
-
-Same with:
-mickey> ''2
-csi> ''2 ==> 2
-
-Also note that the way we detect '() is very hairy, so it might be wrong as
-well.
-
---- Parsing of characters (section 6.3.4 in r7rs 3rd draft), doesn't work with #\) and #\(
---- because of the way the parser is currently built.  E.g.:
-
-mickey> (display #\))
-Exception: Unbound variable: #\
-Backtrace:
- - (display #\)
-
-=> This can only be fixed by making #\ a known delimiter at the first parsing stage.
-
---- Space "#\ " can work with ANY non-printable character in last position, e.g. type
-    "#\<CTRL+V, TAB>" will give a space.  This is a bug, although a very subtle one.
-
---- Does not check operator:
-> (1 2 3)
-1
-
-Should be an error, because `1´ is not a function that takes arguments.
-
---- (run-tests) does not work
-
-Doesn't work because of CATCH_ALL macro is not defined for NO_EXCEPTIONS.
-
---- Running "./mickey tests/tests.scm" does not find complex.scm and CHOKES
+* Hangs: mickey> 'a
+* Unsupported: '#(1 2 3)
+* N quotes should equal one: mickey> ''''a ; should be same as 'a
+* Hairy implementation of mickey> '()
+* Cannot parse #\) or #\(, e.g.: mickey> (display #\))
+* Space "#\ " can work with ANY non-printable character in the last
+  position, e.g. "#\<CTRL+V+TAB>" will also give a space.  This is because
+  of the strange parser implementation
