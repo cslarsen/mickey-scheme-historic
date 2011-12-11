@@ -18,10 +18,10 @@
 # define TEST_FALSE(expr) { CATCH_ALL(test(expr == false, #expr);) }
 # define TEST_STREQ(expr, expected) { CATCH_ALL(test_streq(#expr, expr, expected);) }
 #else
-# define CATCH_ALL(expr) /***/
-# define TEST_TRUE(expr) /***/
-# define TEST_FALSE(expr) /***/
-# define TEST_STREQ(expr, expected) /***/
+# define CATCH_ALL(expr) { expr; } /***/
+# define TEST_TRUE(expr) { test(expr, #expr); } /***/
+# define TEST_FALSE(expr) { test(expr == false, #expr); } /***/
+# define TEST_STREQ(expr, expected) { test_streq(#expr, expr, expected); } /***/
 #endif
 
 void test_streq(const std::string& code, const std::string& actual, const std::string& expected);
