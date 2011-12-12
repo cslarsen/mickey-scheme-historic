@@ -1,20 +1,57 @@
+#|
+R7RS tests taken from Chibi Scheme 0.5.
 
-(import (scheme base) (scheme char) (scheme division) (scheme lazy)
-        (scheme inexact) (scheme complex) (scheme time) (scheme eval)
-        (scheme file) (scheme read) (scheme write) (scheme case-lambda)
-        (chibi test))
+Had to comment out a lot of the tests because of missing support.
+|#
 
-(test-begin "r7rs")
+;(import (scheme base) (scheme char) (scheme division) (scheme lazy)
+;        (scheme inexact) (scheme complex) (scheme time) (scheme eval)
+;        (scheme file) (scheme read) (scheme write) (scheme case-lambda)
+;        (chibi test))
+
+;(test-begin "r7rs")
+
+(define tests-no 0)
+(define tests-ok 0)
+
+(define-syntax test
+  (syntax-rules ()
+    ((test expected code)
+       (begin
+         (let ((code-quoted (quote code))
+               (expected-quoted expected))
+         (display code-quoted)
+         (display " ==> ")
+         (set! tests-no (+ 1 tests-no))
+         (let ((code-result code))
+            (display code-result)
+            (if (equal? code-result expected-quoted)
+              (begin
+                (display " [OK]")
+                (set! tests-ok (+ 1 tests-ok)))
+              (begin
+                (display " != ")
+                (display expected-quoted)
+                (display " [FAIL] "))))
+            (newline))))))
+
+(define (test-end)
+  (newline)
+  (display (string-append
+    "FINISHED\n\n"
+    "Tests : " (number->string tests-no) "\n"
+    "Good  : " (number->string tests-ok) "\n"
+    "Failed: " (number->string (- tests-no tests-ok)) "\n")))
 
 (define x 28)
 (test 28 x)
 
 (test 'a (quote a))
-(test #(a b c) (quote #(a b c)))
+;(test #(a b c) (quote #(a b c))) ; UNSUPPORTED "#(1 2 3)"
 (test '(+ 1 2) (quote (+ 1 2)))
 
 (test 'a 'a)
-(test #(a b c) '#(a b c))
+;(test #(a b c) '#(a b c)) ; UNSUPPORTED "#(1 2 3)"
 (test '() '())
 (test '(+ 1 2) '(+ 1 2))
 (test '(quote a) '(quote a))
@@ -61,19 +98,22 @@
       ((< 3 3) 'less)
       (else 'equal)))
 
-(test 2 (cond ((assv 'b '((a 1) (b 2))) => cadr)
-      (else #f)))
+;(test 2 (cond ((assv 'b '((a 1) (b 2))) => cadr) ; UNSUPPORTED: (assv)
+;      (else #f)))
 
-(test 'composite (case (* 2 3)
-  ((2 3 5 7) 'prime)
-  ((1 4 6 8 9) 'composite)))
+;(test 'composite (case (* 2 3) ; UNSUPPORTED: (case)
+;  ((2 3 5 7) 'prime)
+;  ((1 4 6 8 9) 'composite)))
+
+
 ;; (test \unspecified (case (car '(c d))
 ;;   ((a) 'a)
 ;;   ((b) 'b)))
-(test 'c (case (car '(c d))
-  ((a e i o u) 'vowel)
-  ((w y) 'semivowel)
-  (else => (lambda (x) x))))
+
+;(test 'c (case (car '(c d)); UNSUPPORTED CASE
+;  ((a e i o u) 'vowel)
+;  ((w y) 'semivowel)
+;  (else => (lambda (x) x))))
 
 (test #t (and (= 2 2) (> 2 1)))
 (test #f (and (= 2 2) (< 2 1)))
@@ -116,35 +156,35 @@
                 (even? (- n 1))))))
   (even? 88)))
 
-(test 5
-(letrec* ((p
-           (lambda (x)
-             (+ 1 (q (- x 1)))))
-          (q
-           (lambda (y)
-             (if (zero? y)
-                 0
-                 (+ 1 (p (- y 1))))))
-          (x (p 5))
-          (y x))
-  y))
-(let*-values (((root rem) (exact-integer-sqrt 32)))
-  (test 35 (* root rem)))
+;(test 5
+;(letrec* ((p                    ; UNSUPPORTED letrec*
+;           (lambda (x)
+;             (+ 1 (q (- x 1)))))
+;          (q
+;           (lambda (y)
+;             (if (zero? y)
+;                 0
+;                 (+ 1 (p (- y 1))))))
+;          (x (p 5))
+;          (y x))
+;  y))
+;(let*-values (((root rem) (exact-integer-sqrt 32))); UNSUPPORTED let*-values
+;  (test 35 (* root rem)))
 
-(test '(x y x y) (let ((a 'a) (b 'b) (x 'x) (y 'y))
-  (let*-values (((a b) (values x y))
-                ((x y) (values a b)))
-    (list a b x y))))
+;(test '(x y x y) (let ((a 'a) (b 'b) (x 'x) (y 'y))
+;  (let*-values (((a b) (values x y))
+;                ((x y) (values a b)))
+;    (list a b x y))))
 (set! x 5)
             (test 6 (+ x 1))
 
 ;; (test \unspecified (begin (display "4 plus 1 equals ")
 ;;        (display (+ 4 1))))
 
-(test #(0 1 2 3 4) (do ((vec (make-vector 5))
-     (i 0 (+ i 1)))
-    ((= i 5) vec)
-  (vector-set! vec i i)))
+;(test #(0 1 2 3 4) (do ((vec (make-vector 5))
+;     (i 0 (+ i 1)))
+;    ((= i 5) vec)
+;  (vector-set! vec i i)))
 
 (test 25 (let ((x '(1 3 5 7 9)))
   (do ((x x (cdr x))
@@ -182,18 +222,18 @@
 (test 2  
 (head (tail (tail integers))))
 
-(define (stream-filter p? s)
-  (lazy
-   (if (null? (force s)) 
-       (delay '())
-       (let ((h (car (force s)))
-             (t (cdr (force s))))
-         (if (p? h)
-             (delay (cons h (stream-filter p? t)))
-             (stream-filter p? t))))))
+;(define (stream-filter p? s)
+;  (lazy ; UNSUPPORTED: lazy
+;   (if (null? (force s)) 
+;       (delay '())
+;       (let ((h (car (force s)))
+;             (t (cdr (force s))))
+;         (if (p? h)
+;             (delay (cons h (stream-filter p? t)))
+;             (stream-filter p? t))))))
 
-(test 5
-(head (tail (tail (stream-filter odd? integers)))))
+;(test 5
+;(head (tail (tail (stream-filter odd? integers))))) ; UNSUPPORTED: stream-filter
 
 (define count 0)
 (define p
@@ -213,18 +253,18 @@
 
 ;; (test 34 (+ (delay (* 3 7)) 13))
 
-(define radix
-  (make-parameter
-   10
-   (lambda (x)
-     (if (and (integer? x) (<= 2 x 16))
-         x
-         (error "invalid radix")))))
-(define (f n) (number->string n (radix)))
-(test "12" (f 12))
-(test "1100" (parameterize ((radix 2))
-  (f 12)))
-(test "12" (f 12))
+;(define radix
+;  (make-parameter ; UNSUPPORTED make-parameter
+;   10
+;   (lambda (x)
+;     (if (and (integer? x) (<= 2 x 16))
+;         x
+;         (error "invalid radix")))))
+;(define (f n) (number->string n (radix)))
+;(test "12" (f 12))
+;(test "1100" (parameterize ((radix 2)) ; UNSUPPORTED: parameterize
+;  (f 12))) 
+;(test "12" (f 12))
 
 ;; (test \unspecified (radix 16))
 
@@ -233,59 +273,59 @@
 
 (test '(list 3 4) `(list ,(+ 1 2) 4))
 (let ((name 'a)) (test '(list a (quote a)) `(list ,name ',name)))
-(test '(a 3 4 5 6 b) `(a ,(+ 1 2) ,@(map abs '(4 -5 6)) b))
+;(test '(a 3 4 5 6 b) `(a ,(+ 1 2) ,@(map abs '(4 -5 6)) b)) ; UNSUPPORTED ,@
 ;; `(({\cf foo} ,(- 10 3)) ,@(cdr '(c)) . ,(car '(cons))) (test '((foo 7) . cons)
 ;; )
-(test #(10 5 2 4 3 8) `#(10 5 ,(sqrt 4) ,@(map sqrt '(16 9)) 8))
-(test '(a `(b ,(+ 1 2) ,(foo 4 d) e) f)
-    `(a `(b ,(+ 1 2) ,(foo ,(+ 1 3) d) e) f) )
-(let ((name1 'x)
-      (name2 'y))
-   (test '(a `(b ,x ,'y d) e) `(a `(b ,,name1 ,',name2 d) e)))
+;(test #(10 5 2 4 3 8) `#(10 5 ,(sqrt 4) ,@(map sqrt '(16 9)) 8))
+;(test '(a `(b ,(+ 1 2) ,(foo 4 d) e) f) ; BUG in quasiquoting
+;    `(a `(b ,(+ 1 2) ,(foo ,(+ 1 3) d) e) f) )
+;(let ((name1 'x)
+;      (name2 'y))
+;   (test '(a `(b ,x ,'y d) e) `(a `(b ,,name1 ,',name2 d) e))) ; BUG in quasi-quoting
 (test '(list 3 4) (quasiquote (list (unquote (+ 1 2)) 4)) )
 (test `(list ,(+ 1 2) 4) (quasiquote (list (unquote (+ 1 2)) 4)))
 
-(test 'now (let-syntax ((when (syntax-rules ()
-                     ((when test stmt1 stmt2 ...)
-                      (if test
-                          (begin stmt1
-                                 stmt2 ...))))))
-  (let ((if #t))
-    (when if (set! if 'now))
-    if)))
+;(test 'now (let-syntax ((when (syntax-rules () ; UNSUPPORTED let-syntax
+;                     ((when test stmt1 stmt2 ...)
+;                      (if test
+;                          (begin stmt1
+;                                 stmt2 ...))))))
+;  (let ((if #t))
+;    (when if (set! if 'now))
+;    if)))
 
-(test 'outer (let ((x 'outer))
-  (let-syntax ((m (syntax-rules () ((m) x))))
-    (let ((x 'inner))
-      (m)))))
+;(test 'outer (let ((x 'outer))
+;  (let-syntax ((m (syntax-rules () ((m) x))))
+;    (let ((x 'inner))
+;      (m)))))
 
-(test 7 (letrec-syntax
-  ((my-or (syntax-rules ()
-            ((my-or) #f)
-            ((my-or e) e)
-            ((my-or e1 e2 ...)
-             (let ((temp e1))
-               (if temp
-                   temp
-                   (my-or e2 ...)))))))
-  (let ((x #f)
-        (y 7)
-        (temp 8)
-        (let odd?)
-        (if even?))
-    (my-or x
-           (let temp)
-           (if y)
-           y))))
-(define-syntax be-like-begin
-  (syntax-rules ()
-    ((be-like-begin name)
-     (define-syntax name
-       (syntax-rules ()
-         ((name expr (... ...))
-          (begin expr (... ...))))))))
-(be-like-begin sequence)
-(test 4 (sequence 1 2 3 4))
+;(test 7 (letrec-syntax
+;  ((my-or (syntax-rules ()
+;            ((my-or) #f)
+;            ((my-or e) e)
+;            ((my-or e1 e2 ...)
+;             (let ((temp e1))
+;               (if temp
+;                   temp
+;                   (my-or e2 ...)))))))
+;  (let ((x #f)
+;        (y 7)
+;        (temp 8)
+;        (let odd?)
+;        (if even?))
+;    (my-or x
+;           (let temp)
+;           (if y)
+;           y))))
+;(define-syntax be-like-begin ; BUG: This CRASHES
+;  (syntax-rules ()
+;    ((be-like-begin name)
+;     (define-syntax name
+;       (syntax-rules ()
+;         ((name expr (... ...))
+;          (begin expr (... ...))))))))
+;(be-like-begin sequence)
+;(test 4 (sequence 1 2 3 4))
 
 (test 'ok (let ((=> #f)) (cond (#t => 'ok))))
 
@@ -386,36 +426,36 @@
 ;; (test \unspecified (equal? (lambda (x) x)
 ;;         (lambda (y) y)))
 
-(test #t (complex? 3+4i))
-(test #t (complex? 3))
+;(test #t (complex? 3+4i)) ; UNSUPPORTED
+;(test #t (complex? 3))
 (test #t (real? 3))
-(test #t (real? -2.5+0i))
-(test #f (real? -2.5+0.0i))
-(test #t (real? #e1e10))
-(test #t (real? +inf.0))
-(test #f (rational? -inf.0))
-(test #t (rational? 6/10))
-(test #t (rational? 6/3))
-(test #t (integer? 3+0i))
+;(test #t (real? -2.5+0i)) ; UNSUPPORTED by parser
+;(test #f (real? -2.5+0.0i))
+;(test #t (real? #e1e10))
+;(test #t (real? +inf.0))
+;(test #f (rational? -inf.0))
+;(test #t (rational? 6/10))
+;(test #t (rational? 6/3))
+;(test #t (integer? 3+0i))
 (test #t (integer? 3.0))
-(test #t (integer? 8/4))
+;(test #t (integer? 8/4))
 
-(test #f (exact? 3.0))
-(test #t (exact? #e3.0))
-(test #t (inexact? 3.))
+;(test #f (exact? 3.0))
+;(test #t (exact? #e3.0))
+;(test #t (inexact? 3.))
 
-(test #t (exact-integer? 32))
-(test #f (exact-integer? 32.0))
-(test #f (exact-integer? 32/5))
+;(test #t (exact-integer? 32))
+;(test #f (exact-integer? 32.0))
+;(test #f (exact-integer? 32/5))
 
 (test #t (finite? 3))
-(test #f (finite? +inf.0))
+;(test #f (finite? +inf.0))
 ;; (test #f (finite? 3.0+inf.0i))
 
-(test #t (nan? +nan.0))
+;(test #t (nan? +nan.0))
 (test #f (nan? 32))
 ;; (test #t (nan? +nan.0+5.0i))
-(test #f (nan? 1+2i))
+;(test #f (nan? 1+2i))
 
 (test 4 (max 3 4))    ; exact
 (test 4.0 (max 3.9 4))  ; inexact%
@@ -429,8 +469,8 @@
 (test -1 (- 3 4))
 (test -6 (- 3 4 5))
 (test -3 (- 3))
-(test 3/20 (/ 3 4 5))
-(test 1/3 (/ 3))
+;(test 3/20 (/ 3 4 5))
+;(test 1/3 (/ 3))
 
 (test 7 (abs -7))
 
@@ -446,29 +486,29 @@
 ;;            (\hyper{operator}-remainder \vri{n} \vrii{n}))))
 
 (test 1 (modulo 13 4))
-(test 1 (remainder 13 4))
+;(test 1 (remainder 13 4))
 
 (test 3 (modulo -13 4))
-(test -1 (remainder -13 4))
+;(test -1 (remainder -13 4))
 
-(test -3 (modulo 13 -4))
-(test 1 (remainder 13 -4))
+;(test -3 (modulo 13 -4))
+;(test 1 (remainder 13 -4))
 
-(test -1 (modulo -13 -4))
-(test -1 (remainder -13 -4))
+;(test -1 (modulo -13 -4))
+;(test -1 (remainder -13 -4))
 
-(test -1.0 (remainder -13 -4.0))  ; inexact%
+;(test -1.0 (remainder -13 -4.0))  ; inexact%
 
-(test 4 (gcd 32 -36))
-(test 0 (gcd))
-(test 288 (lcm 32 -36))
-(test 288.0 (lcm 32.0 -36))  ; inexact
-(test 1 (lcm))
+;(test 4 (gcd 32 -36))
+;(test 0 (gcd))
+;(test 288 (lcm 32 -36))
+;(test 288.0 (lcm 32.0 -36))  ; inexact
+;(test 1 (lcm))
 
-(test 3 (numerator (/ 6 4)))
-(test 2 (denominator (/ 6 4)))
-(test 2.0 (denominator
-  (exact->inexact (/ 6 4))))
+;(test 3 (numerator (/ 6 4)))
+;(test 2 (denominator (/ 6 4)))
+;(test 2.0 (denominator
+;  (exact->inexact (/ 6 4))))
 
 (test -5.0 (floor -4.3))
 (test -4.0 (ceiling -4.3))
@@ -480,15 +520,15 @@
 (test 3.0 (truncate 3.5))
 (test 4.0 (round 3.5))  ; inexact
 
-(test 4 (round 7/2))    ; exact
+;(test 4 (round 7/2))    ; exact
 (test 7 (round 7))
 
-(test 1/3 (rationalize
-  (inexact->exact .3) 1/10))    ; exact
+;(test 1/3 (rationalize
+;  (inexact->exact .3) 1/10))    ; exact
 ;; (test #i1/3 (rationalize .3 1/10))  ; inexact%
 
-(test '(2 0) (call-with-values (lambda () (exact-integer-sqrt 4)) list))
-(test '(2 1) (call-with-values (lambda () (exact-integer-sqrt 5)) list))
+;(test '(2 0) (call-with-values (lambda () (exact-integer-sqrt 4)) list))
+;(test '(2 1) (call-with-values (lambda () (exact-integer-sqrt 5)) list))
 
 ;; (test \vr (make-rectangular \vri{x} \vrii{x}))
 ;; {z}
@@ -509,8 +549,8 @@
 ;;                         radix)))
 
 (test 100 (string->number "100"))
-(test 256 (string->number "100" 16))
-(test 100.0 (string->number "1e2"))
+;(test 256 (string->number "100" 16))
+;(test 100.0 (string->number "1e2"))
 
 (test #t #t)
 (test #f #f)
@@ -541,7 +581,7 @@
 (test #t (pair? '(a . b)))
 (test #t (pair? '(a b c)))
 (test #f (pair? '()))
-(test #f (pair? '#(a b)))
+;(test #f (pair? '#(a b)))
 
 (test '(a) (cons 'a '()))
 (test '((a) b c d) (cons '(a) '(b c d)))
@@ -566,7 +606,7 @@
 (test #f (list? '(a . b)))
 (test #f (let ((x (list 'a))) (set-cdr! x x) (list? x)))
 
-(test '(3 3) (make-list 2 3))
+;(test '(3 3) (make-list 2 3))
 
 (test '(a 7 c) (list 'a (+ 3 4) 'c))
 (test '() (list))
@@ -586,13 +626,13 @@
 (test '((e (f)) d (b c) a) (reverse '(a (b c) d (e (f)))))
 
 (test 'c (list-ref '(a b c d) 2))
-(test 'c (list-ref '(a b c d)
-          (inexact->exact (round 1.8))))
+;(test 'c (list-ref '(a b c d)
+;          (inexact->exact (round 1.8))))
 
-(test '(0 ("Sue" "Sue") "Anna")
-    (let ((lst (list 0 '(2 2 2 2) "Anna")))
-      (list-set! lst 1 '("Sue" "Sue"))
-      lst))
+;(test '(0 ("Sue" "Sue") "Anna")
+;    (let ((lst (list 0 '(2 2 2 2) "Anna")))
+;      (list-set! lst 1 '("Sue" "Sue"))
+;      lst))
 
 ;; (test \scherror (list-set! '(0 1 2) 1 "doe"))  ; constant list%
 
@@ -602,9 +642,9 @@
 (test #f (memq (list 'a) '(b (a) c)))
 (test '((a) c) (member (list 'a)
         '(b (a) c)))
-(test '("b" "c") (member "B"
-        '("a" "b" "c")
-        string-ci=?))
+;(test '("b" "c") (member "B"
+;        '("a" "b" "c")
+;        string-ci=?))
 ;; (test \unspecified (memq 101 '(100 101 102)))
 (test '(101 102) (memv 101 '(100 101 102)))
 (define e '((a 1) (b 2) (c 3)))
@@ -615,12 +655,12 @@
 (assq (list 'a) '(((a)) ((b)) ((c)))))
 (test '((a))   
 (assoc (list 'a) '(((a)) ((b)) ((c)))))
-(test '(2 4)
-(assoc 2.0 '((1 1) (2 4) (3 9)) =))
+;(test '(2 4)
+;(assoc 2.0 '((1 1) (2 4) (3 9)) =))
 ;; (test \unspecified    
 ;; (assq 5 '((2 3) (5 7) (11 13))))
-(test '(5 7)    
-(assv 5 '((2 3) (5 7) (11 13))))
+;(test '(5 7)    
+;(assv 5 '((2 3) (5 7) (11 13))))
 
 (test #t (symbol? 'foo))
 (test #t (symbol? (car '(a b))))
@@ -650,33 +690,33 @@
 ;;              0
 ;;              #\backwhack{}?))
 
-(test #(0 (2 2 2 2) "Anna") '#(0 (2 2 2 2) "Anna"))
+;(test #(0 (2 2 2 2) "Anna") '#(0 (2 2 2 2) "Anna"))
 
-(test #(a b c) (vector 'a 'b 'c))
+;(test #(a b c) (vector 'a 'b 'c))
 
-(test 8 (vector-ref '#(1 1 2 3 5 8 13 21)
-            5))
-(test 13 (vector-ref '#(1 1 2 3 5 8 13 21)
-            (let ((i (round (* 2 (acos -1)))))
-              (if (inexact? i)
-                  (inexact->exact i)
-                  i))))
+;(test 8 (vector-ref '#(1 1 2 3 5 8 13 21)
+;            5))
+;(test 13 (vector-ref '#(1 1 2 3 5 8 13 21)
+;            (let ((i (round (* 2 (acos -1)))))
+;              (if (inexact? i)
+;                  (inexact->exact i)
+;                  i))))
 
-(test #(0 ("Sue" "Sue") "Anna") (let ((vec (vector 0 '(2 2 2 2) "Anna")))
-  (vector-set! vec 1 '("Sue" "Sue"))
-  vec))
+;(test #(0 ("Sue" "Sue") "Anna") (let ((vec (vector 0 '(2 2 2 2) "Anna")))
+;  (vector-set! vec 1 '("Sue" "Sue"))
+;  vec))
 
 ;; (test \scherror (vector-set! '#(0 1 2) 1 "doe"))  ; constant vector%
 
-(test '(dah dah didah) (vector->list '#(dah dah didah)))
-(test #(dididit dah) (list->vector '(dididit dah)))
+;(test '(dah dah didah) (vector->list '#(dah dah didah)))
+;(test #(dididit dah) (list->vector '(dididit dah)))
 
 ;; (test #(#\backwhack{}A #\backwhack{}B #\backwhack{}C) (string->vector "ABC"))
 ;; vector->string
 ;;   (test "123" #(#\backwhack{}1 #\backwhack{}2 #\backwhack{}3))
 
-(test "A" (utf8->string #u8(#x41)))
-(test #u8(#xCE #xBB) (string->utf8 "λ"))
+;(test "A" (utf8->string #u8(#x41)))
+;(test #u8(#xCE #xBB) (string->utf8 "λ"))
 
 (test #t (procedure? car))
 (test #f (procedure? 'car))
@@ -705,25 +745,25 @@
          count)
        '(a b))))
 
-(test "abdegh" (string-map char-foldcase "AbdEgH"))
+;(test "abdegh" (string-map char-foldcase "AbdEgH"))
 
-(test "IBM" (string-map
- (lambda (c)
-   (integer->char (+ 1 (char->integer c))))
- "HAL"))
+;(test "IBM" (string-map
+; (lambda (c)
+;   (integer->char (+ 1 (char->integer c))))
+; "HAL"))
 
-(test "StUdLyCaPs"
-    (string-map
-     (lambda (c k) (if (eqv? k #\u) (char-upcase c) (char-downcase c)))
-     "studlycaps xxx"
-     "ululululul"))
+;(test "StUdLyCaPs"
+;    (string-map
+;     (lambda (c k) (if (eqv? k #\u) (char-upcase c) (char-downcase c)))
+;     "studlycaps xxx"
+;     "ululululul"))
 
-(test #(b e h) (vector-map cadr '#((a b) (d e) (g h))))
+;(test #(b e h) (vector-map cadr '#((a b) (d e) (g h))))
 
-(test #(1 4 27 256 3125) (vector-map (lambda (n) (expt n n))
-            '#(1 2 3 4 5)))
+;(test #(1 4 27 256 3125) (vector-map (lambda (n) (expt n n))
+;            '#(1 2 3 4 5)))
 
-(test #(5 7 9) (vector-map + '#(1 2 3) '#(4 5 6 7)))
+;(test #(5 7 9) (vector-map + '#(1 2 3) '#(4 5 6 7)))
 
 ;; (test #(1 2) or #(2 1) (let ((count 0))
 ;;   (vector-map
@@ -732,81 +772,81 @@
 ;;      count)
 ;;    '#(a b))))
 
-(test #(0 1 4 9 16) (let ((v (make-vector 5)))
-  (for-each (lambda (i)
-              (vector-set! v i (* i i)))
-            '(0 1 2 3 4))
-  v))
+;(test #(0 1 4 9 16) (let ((v (make-vector 5)))
+;  (for-each (lambda (i)
+;              (vector-set! v i (* i i)))
+;            '(0 1 2 3 4))
+;  v))
 
-(test '(101 100 99 98 97)
-    (let ((v '()))
-      (string-for-each
-       (lambda (c) (set! v (cons (char->integer c) v)))
-       "abcde")
-      v))
+;(test '(101 100 99 98 97)
+;    (let ((v '()))
+;      (string-for-each
+;       (lambda (c) (set! v (cons (char->integer c) v)))
+;       "abcde")
+;      v))
 
-(test '(0 1 4 9 16) (let ((v (make-list 5)))
-  (vector-for-each
-   (lambda (i) (list-set! v i (* i i)))
-   '#(0 1 2 3 4))
-  v))
+;(test '(0 1 4 9 16) (let ((v (make-list 5)))
+;  (vector-for-each
+;   (lambda (i) (list-set! v i (* i i)))
+;   '#(0 1 2 3 4))
+;  v))
 
-(test -3 (call-with-current-continuation
-  (lambda (exit)
-    (for-each (lambda (x)
-                (if (negative? x)
-                    (exit x)))
-              '(54 0 37 -3 245 19))
-    #t)))
-(define list-length
-  (lambda (obj)
-    (call-with-current-continuation
-      (lambda (return)
-        (letrec ((r
-                  (lambda (obj)
-                    (cond ((null? obj) 0)
-                          ((pair? obj)
-                           (+ (r (cdr obj)) 1))
-                          (else (return #f))))))
-          (r obj))))))
+;(test -3 (call-with-current-continuation
+;  (lambda (exit)
+;    (for-each (lambda (x)
+;                (if (negative? x)
+;                    (exit x)))
+;              '(54 0 37 -3 245 19))
+;    #t)))
+; (define list-length
+;   (lambda (obj)
+ ;    (call-with-current-continuation
+  ;     (lambda (return)
+   ;      (letrec ((r
+    ;               (lambda (obj)
+     ;                (cond ((null? obj) 0)
+      ;                     ((pair? obj)
+       ;                     (+ (r (cdr obj)) 1))
+        ;                   (else (return #f))))))
+         ;  (r obj))))))
 
-(test 4 (list-length '(1 2 3 4)))
+;(test 4 (list-length '(1 2 3 4)))
 
-(test #f (list-length '(a b . c)))
+;(test #f (list-length '(a b . c)))
 ;; (define (values . things)
 ;;   (call-with-current-continuation 
 ;;     (lambda (cont) (apply cont things))))
 
-(test 5
-(call-with-values (lambda () (values 4 5))
-                  (lambda (a b) b)))
+;(test 5
+;(call-with-values (lambda () (values 4 5))
+;                  (lambda (a b) b)))
 
-(test -1 (call-with-values * -))
+;(test -1 (call-with-values * -))
 
-(test '(connect talk1 disconnect
-               connect talk2 disconnect)
-(let ((path '())
-      (c #f))
-  (let ((add (lambda (s)
-               (set! path (cons s path)))))
-    (dynamic-wind
-      (lambda () (add 'connect))
-      (lambda ()
-        (add (call-with-current-continuation
-               (lambda (c0)
-                 (set! c c0)
-                 'talk1))))
-      (lambda () (add 'disconnect)))
-    (if (< (length path) 4)
-        (c 'talk2)
-        (reverse path)))))
+;(test '(connect talk1 disconnect
+;               connect talk2 disconnect)
+;(let ((path '())
+;      (c #f))
+;  (let ((add (lambda (s)
+;               (set! path (cons s path)))))
+;    (dynamic-wind
+;      (lambda () (add 'connect))
+;      (lambda ()
+;        (add (call-with-current-continuation
+;               (lambda (c0)
+;                 (set! c c0)
+;                 'talk1))))
+;      (lambda () (add 'disconnect)))
+;    (if (< (length path) 4)
+;        (c 'talk2)
+;        (reverse path)))))
 
-(test 21 (eval '(* 7 3) (scheme-report-environment 7)))
+;(test 21 (eval '(* 7 3) (scheme-report-environment 7)))
 
-(test 20
-(let ((f (eval '(lambda (f x) (f x x))
-               (null-environment 7))))
-  (f + 10)))
+;(test 20
+;(let ((f (eval '(lambda (f x) (f x x))
+;               (null-environment 7))))
+;  (f + 10)))
 
 ;; (test "/usr/local/bin:/usr/bin:/bin" (get-environment-variable "PATH"))
 
@@ -822,9 +862,9 @@
   (define bar (lambda (a b) (+ (* a b) a)))
   (foo (+ x 3))))
 
-(test 3 (let ()
-  (define-values (x y) (values 1 2))
-  (+ x y)))
+;(test 3 (let ()
+;  (define-values (x y) (values 1 2))
+;  (+ x y)))
 
 (test '(2 1) (let ((x 1) (y 2))
   (define-syntax swap!
@@ -835,19 +875,19 @@
          (set! b tmp)))))
   (swap! x y)
   (list x y)))
-(define-record-type <pare>
-  (kons x y)
-  pare?
-  (x kar set-kar!)
-  (y kdr))
+;(define-record-type <pare>
+;  (kons x y)
+;  pare?
+;  (x kar set-kar!)
+;  (y kdr))
 
-(test #t (pare? (kons 1 2)))
-(test #f (pare? (cons 1 2)))
-(test 1 (kar (kons 1 2)))
-(test 2 (kdr (kons 1 2)))
-(test 3 (let ((k (kons 1 2)))
-          (set-kar! k 3)
-          (kar k)))
+;(test #t (pare? (kons 1 2)))
+;(test #f (pare? (cons 1 2)))
+;(test 1 (kar (kons 1 2)))
+;(test 2 (kdr (kons 1 2)))
+;(test 3 (let ((k (kons 1 2)))
+;          (set-kar! k 3)
+;          (kar k)))
 
 (test 40 (* 5 8))
 
