@@ -1,9 +1,36 @@
-BUGS
-- (delay) doesn't work properly; can do (define foo (delay (+ 1 2 3))) and
-  then (foo) ==> 6, but that shouldn't evaluate.
+TODO
+- Add (assv)
+- Add third param to assoc, being the equality operator: (assoc 2.0 '((2 two) (3 three)) =)
+- Add (string-ci=?)
+- Add (list-set!)
+- Add (inexact->exact)
+- Add (make-list)
+- Add (string->number <string> <opt2>), takes <opt2> option, (radix?)
+- Add (call-with-values)
+- Add (denominator)
+- Add (numerator)
+- Add (remainder)
+- Add (exact?)
+- Add (inexact?)
+- Add (exact-integer?)
+- Add (rational?)
+- Add (complex?)
+- Add (letrec-syntax)
+- Add (let-syntax) ; almost same as define-syntax, so should be asy
+- Add ,@(...) support.  Same as ,(...) BUT it does not cons(...) its result
+- Add (stream-filter)
+- Add (make-parameter)
+- Add (parameterize)
+- Add (lazy) (didn't know this was a function?)
+- Add (let*-values)
+- Add (letrec*)
+- Add (case)
+- Add (assv)
+- Add "#(1 2 3)" -> "(make-vector 1 2 3)"
+- Fix (delay) doesn't work properly; can do (define foo (delay (+ 1 2 3))) and then (foo) ==> 6, but that shouldn't evaluate.
 - Add parsing of quoted vectors, i.e.: '#(1 2 3)
 - Trampoline more stuff in eval()
-- Add support for '()
+- Add PROPER support for '()
 - Add for-each
 - Add vector-map
 - Add vector-for-each

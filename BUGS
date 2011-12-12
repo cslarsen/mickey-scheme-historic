@@ -1,5 +1,16 @@
-Bugs (so far) in Mickey Scheme
-
+BUGS
+* Should be false: (list? '(a . b)) but is true b/c "." is considered an atom
+* mickey> (lcm) ; ==> should return "1"
+* mickey> (gcd) ; ==> should return "0"
+* Crashes: (gcd 32 -36) -> because it's negative
+* Can't do negative modulus operations
+* Can't parse +nan.0
+* Should be true: mickey> (integer? 3.0)
+* Can't parse real number -2.5+0.0i
+* Can't parse real number #e1e10
+* Can't parse +inf.0
+* Can't parse infix integer expression 8/4
+* This must work: `(a `(b ,foo)) ==> (a (quasiquote (b (unquote * foo))))
 * Hangs: mickey> 'a
 * Unsupported: '#(1 2 3)
 * N quotes should equal one: mickey> ''''a ; should be same as 'a
