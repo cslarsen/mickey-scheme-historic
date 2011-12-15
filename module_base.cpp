@@ -1688,7 +1688,7 @@ cons_t* proc_gcd(cons_t* p, environment_t*)
 
   case 1:  
     assert_type(INTEGER, car(p));
-    return car(p);
+    return integer(abs(car(p)->integer));
 
   default: {
     assert_type(INTEGER, car(p));
@@ -1697,7 +1697,7 @@ cons_t* proc_gcd(cons_t* p, environment_t*)
     int a = car(p)->integer,
         b = cadr(p)->integer;
 
-    return integer(gcd(a, b));
+    return integer(abs(gcd(a, b)));
   } }
 }
 
@@ -1711,7 +1711,7 @@ cons_t* proc_lcm(cons_t* p, environment_t*)
 
   case 1:
     assert_type(INTEGER, car(p));
-    return integer(car(p)->integer);
+    return integer(abs(car(p)->integer));
 
   default: {
     assert_type(INTEGER, cadr(p));
@@ -1719,7 +1719,7 @@ cons_t* proc_lcm(cons_t* p, environment_t*)
     int a = car(p)->integer,
         b = cadr(p)->integer;
 
-    return integer(lcm(a, b));
+    return integer(abs(lcm(a, b)));
   } }
 }
 
