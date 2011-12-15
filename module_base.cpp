@@ -1692,28 +1692,31 @@ cons_t* proc_gcd(cons_t* p, environment_t* e)
     assert_type(INTEGER, car(p));
     assert_type(INTEGER, cadr(p));
 
-    int a = car(p)->integer,
-        b = cadr(p)->integer;
+    int a = abs(car(p)->integer),
+        b = abs(cadr(p)->integer);
 
-    return integer(abs(gcd(a, b)));
+    return integer(gcd(a, b));
   }
 
   default: {
     /*
-     * At least 3 numbers; handle recursively, since
+     * We have at least 3 numbers; handle recursively, since
      * gcd(a, b, c) = gcd(gcd(a, b), c)
      */
-    cons_t *a_b = list(car(p), cadr(p)),
-           *c   = caddr(p);
+    cons_t *r = car(p);
+    p = cdr(p);
 
-    return proc_gcd( list(proc_gcd(a_b,e), c), e);
+    while ( !nullp(p) ) {
+      r = proc_gcd(list(r, car(p)), e);
+      p = cdr(p);
+    }
+
+    return integer(r->integer);
   } }
 }
 
-cons_t* proc_lcm(cons_t* p, environment_t*)
+cons_t* proc_lcm(cons_t* p, environment_t* e)
 {
-  assert_length(p, 0, 2);
-
   switch ( length(p) ) {
   case 0:  
     return integer(1);
@@ -1722,13 +1725,29 @@ cons_t* proc_lcm(cons_t* p, environment_t*)
     assert_type(INTEGER, car(p));
     return integer(abs(car(p)->integer));
 
-  default: {
+  case 2: {
     assert_type(INTEGER, cadr(p));
 
-    int a = car(p)->integer,
-        b = cadr(p)->integer;
+    int a = abs(car(p)->integer),
+        b = abs(cadr(p)->integer);
 
-    return integer(abs(lcm(a, b)));
+    return integer(lcm(a, b));
+  }
+
+  default: {
+    /*
+     * We have at least 3 numbers; handle recursively, since
+     * lcm(a, b, c) = lcm(lcm(a, b), c)
+     */
+    cons_t *r = car(p);
+    p = cdr(p);
+
+    while ( !nullp(p) ) {
+      r = proc_lcm(list(r, car(p)), e);
+      p = cdr(p);
+    }
+
+    return integer(r->integer);
   } }
 }
 
