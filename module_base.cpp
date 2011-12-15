@@ -1678,10 +1678,8 @@ cons_t* proc_memq(cons_t* p, environment_t* e)
   return proc_member_fptr(p, e, eqp);
 }
 
-cons_t* proc_gcd(cons_t* p, environment_t*)
+cons_t* proc_gcd(cons_t* p, environment_t* e)
 {
-  assert_length(p, 0, 2);
-
   switch ( length(p) ) {
   case 0:
     return integer(0);
@@ -1690,7 +1688,7 @@ cons_t* proc_gcd(cons_t* p, environment_t*)
     assert_type(INTEGER, car(p));
     return integer(abs(car(p)->integer));
 
-  default: {
+  case 2: {
     assert_type(INTEGER, car(p));
     assert_type(INTEGER, cadr(p));
 
@@ -1698,6 +1696,17 @@ cons_t* proc_gcd(cons_t* p, environment_t*)
         b = cadr(p)->integer;
 
     return integer(abs(gcd(a, b)));
+  }
+
+  default: {
+    /*
+     * At least 3 numbers; handle recursively, since
+     * gcd(a, b, c) = gcd(gcd(a, b), c)
+     */
+    cons_t *a_b = list(car(p), cadr(p)),
+           *c   = caddr(p);
+
+    return proc_gcd( list(proc_gcd(a_b,e), c), e);
   } }
 }
 
