@@ -1,6 +1,5 @@
 BUGS
 * Should be false: (list? '(a . b)) but is true b/c "." is considered an atom
-* Crashes: (gcd 32 -36) -> because it's negative
 * Can't do negative modulus operations
 * Can't parse +nan.0
 * Should be true: mickey> (integer? 3.0)
