@@ -1680,20 +1680,47 @@ cons_t* proc_memq(cons_t* p, environment_t* e)
 
 cons_t* proc_gcd(cons_t* p, environment_t*)
 {
-  assert_length(p, 2);
-  assert_type(INTEGER, car(p));
-  assert_type(INTEGER, cadr(p));
-  int a = car(p)->integer, b = cadr(p)->integer;
-  return integer(gcd(a, b));
+  assert_length(p, 0, 2);
+
+  switch ( length(p) ) {
+  case 0:
+    return integer(0);
+
+  case 1:  
+    assert_type(INTEGER, car(p));
+    return car(p);
+
+  default: {
+    assert_type(INTEGER, car(p));
+    assert_type(INTEGER, cadr(p));
+
+    int a = car(p)->integer,
+        b = cadr(p)->integer;
+
+    return integer(gcd(a, b));
+  } }
 }
 
 cons_t* proc_lcm(cons_t* p, environment_t*)
 {
-  assert_length(p, 2);
-  assert_type(INTEGER, car(p));
-  assert_type(INTEGER, cadr(p));
-  int a = car(p)->integer, b = cadr(p)->integer;
-  return integer(lcm(a, b));
+  assert_length(p, 0, 2);
+
+  switch ( length(p) ) {
+  case 0:  
+    return integer(1);
+
+  case 1:
+    assert_type(INTEGER, car(p));
+    return integer(car(p)->integer);
+
+  default: {
+    assert_type(INTEGER, cadr(p));
+
+    int a = car(p)->integer,
+        b = cadr(p)->integer;
+
+    return integer(lcm(a, b));
+  } }
 }
 
 cons_t* proc_string_to_list(cons_t* p, environment_t*)
