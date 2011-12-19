@@ -353,6 +353,28 @@ cons_t* append(cons_t *h, cons_t *t)
   return nullp(h)? t : cons(car(h), append(cdr(h), t));
 }
 
+cons_t* splice(cons_t *r, cons_t* p)
+{
+  cons_t *e = r;
+
+  // skip `e´ to end of `p´
+  while ( !nullp(cdr(e)) )
+    e = cdr(e);
+
+  while ( !nullp(p) ) {
+    if ( nullp(car(e)) ) {
+      e->car = !pairp(p)? p : car(p);
+      e->cdr = cons(NULL);
+    } else
+      e->cdr = !pairp(p)? p : cons(car(p), cons(NULL));
+
+    e = cdr(e);
+    p = cdr(p);
+  }
+
+  return r;
+}
+
 cons_t* closure(lambda_t f, environment_t* e)
 {
   closure_t *c = new closure_t();

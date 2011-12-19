@@ -46,6 +46,7 @@ cons_t* type_convert(const char* token, environment_t* env)
 static cons_t* parse_quote(const char* t, environment_t* env);
 static cons_t* parse_quasiquote(const char* t, environment_t* env);
 static cons_t* parse_unquote(const char* t, environment_t* env);
+static cons_t* parse_unquote_splicing(const char* t, environment_t* env);
 
 static long int parens = 0;
 
@@ -69,6 +70,8 @@ cons_t* parse_list(environment_t *env, bool quoting = false)
       add = parse_quasiquote(t, env);
     else if ( isunquote(t) )
       add = parse_unquote(t, env);
+    else if ( isunquote_splicing(t) )
+      add = parse_unquote_splicing(t, env);
     else
       add = paren? parse_list(env) :
                    type_convert(t + paren, env);
@@ -133,6 +136,20 @@ cons_t* parse_unquote(const char* t, environment_t* env)
   cons_t *r = cons(symbol("unquote", env),
     quoted_symbol ?
       cons(type_convert(t+1, env)) :
+      parse_list(env, true));
+
+  return r;
+}
+
+cons_t* parse_unquote_splicing(const char* t, environment_t* env)
+{
+  bool quoted_symbol = (t[1]!='\0' && t[2]!='\0');
+  ++parens;
+
+  // replace ",@<exp>" with "(unquote-splicing <exp>)"
+  cons_t *r = cons(symbol("unquote-splicing", env),
+    quoted_symbol ?
+      cons(type_convert(t+2, env)) :
       parse_list(env, true));
 
   return r;

@@ -377,6 +377,10 @@
 ;
 (test-eq (quote (quasiquote (1 2 (unquote (+ 3 4))))) '(1 2 7))
 (test-eq (quote `(1 2 ,(+ 3 4) 3 y)) '(1 2 7 3 y))
+;
+; Quasiquoting with unquote-splicing ",@"
+;(test-eq (quote (define foo '(11 22 33)) `(1 2 3 foo ,foo ,@foo)) (quote (1 2 3 foo (11 22 33) 11 22 33)))
+(test-eq (quote `(1 2 ,@(list 3 4 5) 6 7)) (list 1 2 3 4 5 6 7))
 
 ;; Math module
 (test-eq '(ceiling 3.0) 3.0)

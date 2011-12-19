@@ -208,7 +208,12 @@ bool isquasiquote(const char* s)
 
 bool isunquote(const char* s)
 {
-  return *s == ',';
+  return *s == ',' && *(s+1) != '@';
+}
+
+bool isunquote_splicing(const char *s)
+{
+  return *s == ',' && *(s+1) == '@';
 }
 
 enum type_t to_type_t(const char* s)

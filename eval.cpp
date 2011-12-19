@@ -46,6 +46,7 @@ static bool bool_true(cons_t* p)
   return booleanp(p)? p->boolean : false;
 }
 
+// TODO: Make iterative evlis
 static cons_t* evlis(cons_t* p, environment_t* e)
 {
   return !pairp(p) ? nil() :
@@ -426,18 +427,23 @@ static cons_t* invoke_with_trace(cons_t* op, cons_t* args, environment_t* e)
 
 static cons_t* eval_quasiquote(cons_t* p, environment_t* e)
 {
-  // Find unquote
-  if ( symbolp(car(p)) ) {
-    std::string n = car(p)->symbol->name();
+  if ( nullp(p) )
+    return p;
 
-    // TODO: Only allow this if we're explicitly inside quasiquote
-    if ( n == "unquote" || n == "," )
-      return eval(cadr(p), e);
-  }
+  cons_t *r = list();
 
-  return !pairp(p) ? p :
-    cons(eval_quasiquote(car(p), e),
-         eval_quasiquote(cdr(p), e));
+  for ( ; !nullp(p); p = cdr(p) )
+    if ( pairp(car(p)) ) {
+      if ( symbolp(caar(p)) && caar(p)->symbol->name() == "unquote-splicing")
+        r = splice(r, eval(cadar(p), e));
+      else if ( symbolp(caar(p)) && caar(p)->symbol->name() == "unquote" )
+        r = append(r, cons(eval(cadar(p), e)));
+      else
+        r = append(r, eval_quasiquote(car(p), e));
+    } else
+      r = append(r, cons(car(p)));
+
+  return r;
 }
 
 /*
