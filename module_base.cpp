@@ -2084,6 +2084,52 @@ cons_t* proc_do(cons_t* p, environment_t* e)
   return letrec;
 }
 
+/*
+ * Create cons graph for given list that can be rendered by Graphviz.
+ *
+ * Example usage:
+ *
+ * /mickey -e '(display (:list->dot (quote (define (square x) (* x x * 123)))))' | dot -Tpng -o graph.png && open graph.png 
+ *
+ */
+cons_t* proc_list_to_dot_helper(cons_t *p, environment_t* e)
+{
+  static const char* line_style = "[\"ol\"=\"box\"]";
+  static const char* shape = "record";
+
+  if ( nullp(p) ) return string("");
+
+  std::string s;
+
+  if ( pairp(p) ) {
+    if ( !nullp(car(p)) ) {
+      const char* port = "";
+      if ( pairp(car(p)) ) port = ":head";
+      s += format("  \"%p\":head -> \"%p\"%s %s;\n", p, car(p), port, line_style);
+      s += proc_list_to_dot_helper(car(p), e)->string;
+    }
+    if ( !nullp(cdr(p)) ) {
+      const char* port = "";
+      if ( pairp(cdr(p)) ) port = ":head";
+      s += format("  \"%p\":tail -> \"%p\"%s %s;\n", p, cdr(p), port, line_style);
+      s += proc_list_to_dot_helper(cdr(p), e)->string;
+    }
+    s += format("  \"%p\" [label=\"<head>|<tail>\", shape=\"%s\"];\n", p, shape);
+  } else
+    s += format("  \"%p\" [label=\"%s\", shape=\"none\"];\n",
+                p, sprint(p).c_str());
+
+  return string(s.c_str());
+}
+
+cons_t* proc_list_to_dot(cons_t *p, environment_t* e)
+{
+  std::string s = "digraph Scheme {\n";
+  s += proc_list_to_dot_helper(p, e)->string;
+  s += "}\n";
+  return string(s.c_str());
+}
+
 named_function_t exports_base[] = {
   {"*", proc_mul},
   {"+", proc_add},
@@ -2094,6 +2140,7 @@ named_function_t exports_base[] = {
   {":exit", proc_exit},
   {":type-of", proc_type_of},
   {":version", proc_version},
+  {":list->dot", proc_list_to_dot},
   {"<", proc_less},
   {"<=", proc_lteq},
   {"=", proc_eqintp},
