@@ -16,3 +16,4 @@ BUGS
 * Space "#\ " can work with ANY non-printable character in the last
   position, e.g. "#\<CTRL+V+TAB>" will also give a space.  This is because
   of the strange parser implementation
+* Nested quasiquotation does not work (this works in guile): `(a `(b ,(+ 1 2) ,(foo ,(+ 1 3) d) e) f)
