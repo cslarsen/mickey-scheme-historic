@@ -37,8 +37,11 @@ Compiling
 Feature flags
 -------------
 
-  * -DBOEHM_GC and -lgc for Bohem-Demers-Weiser garbage collector
-  * -DUSE_READLINE and -lreadline for readline support
+  * `-DBOEHM_GC` and `-lgc` for Bohem-Demers-Weiser garbage collector
+     (doesn't currently work very well, though!)
+
+  * `-DUSE_READLINE` and `-lreadline` for readline support (including TAB
+     completion)
 
 License
 -------
@@ -49,4 +52,5 @@ Author
 ------
 
 Copyright (C) 2011-2012 Christian Stigen Larsen <csl@sublevel3.org>
+
 http://csl.sublevel3.org
