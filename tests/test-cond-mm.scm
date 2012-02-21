@@ -6,7 +6,7 @@
         ((equal? name "Michael") "an award winning photographer for the college newspaper")
         ((equal? name "Wendy")   "hoping to be a famour novelist and is waitin for a big break")
         ((equal? name "Bernard") "president of the physics club and winner of the college's Geek Award")
-        ((equal? name "Razor")   "lead singer for the pnuk band 'Razor and the Scummettes'")
+        ((equal? name "Razor")   "lead singer for the punk band 'Razor and the Scummettes'")
         ((equal? name "Jeff")    "usually hanging out on the beach, responds to the name Surfer Dude")
         (else "someone I don't know")))
 
