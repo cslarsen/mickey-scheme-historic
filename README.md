@@ -34,7 +34,15 @@ Current Shortcomings
 Compiling
 ---------
 
-  Run `make -j check` to perform a simple check, then `./mickey` to play with a REPL.
+Run `make -j check` to perform a simple check, then `./mickey` to play with a REPL.
+
+The project is not really release-ready, so there is no use of autotools.
+The Makefile assumes you have llvm-g++ installed.  If you want to compile
+using gcc, do something like:
+
+    CXX=g++ make -ej
+
+to compile using `g++` and in parallel.
 
 Feature flags
 -------------
