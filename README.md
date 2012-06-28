@@ -75,7 +75,7 @@ Here are a few example code snippets for Mickey Scheme.
 Besides demonstrating the basic capabilities of Mickey, it also serves as a
 kind of soft introduction to Scheme.
 
-First, let's start `mickey` and print the obligatory first words.
+First, let's start `mickey`.
 
     $ ./mickey 
                                                                       _
