@@ -101,8 +101,7 @@ number and execute it on the fly.
     mickey> ((lambda (x) (* x x)) 12)
     144
 
-We can bind this lambda to a variable as well.  
-Let's bind it to the variable `square`.
+We can bind this lambda to a variable as well.  Let's bind it to the variable `square`.
 
     mickey> (define square (lambda (x) (* x x)))
     mickey> (square 12)
