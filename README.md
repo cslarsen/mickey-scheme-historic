@@ -110,9 +110,39 @@ Let's bind it to the variable `square`.
     mickey> (square 3.1415)
     9.86902
 
-Of course, the define-lambda short form is also available.
+Let's have some fun with lambdas.  Let's create
+a function that creates other functions.
 
-    mickey> (define (cube x) (* x x x))
+We'll create a general function `make-adder` that
+creates a function that can add a static number to another
+number.
+
+    mickey> (define make-adder
+              (lambda (frozen-number)
+                (lambda (x)
+                  (+ x frozen-number))))
+
+As you can see, we give it a `frozen-number` and it returns
+a lambda that takes a number `x` and adds the two together.
+
+So to make a function that adds 5 to its argument, we simply
+do
+
+    mickey> (define add5 (make-adder 5))
+    mickey> (add5 10)
+    15
+
+Likewise
+
+    mickey> (define add17 (make-adder 17))
+    mickey> (add17 10)
+    27
+
+Writing `(define (lambda (x) ...))` is tedious, so a
+shorter variant is available:
+
+    mickey> (define (cube x)
+                      (* x x x))
     mickey> (cube 101)
     1030301
 
