@@ -65,6 +65,71 @@ Copyright (C) 2011-2012 Christian Stigen Larsen <csl@sublevel3.org>
 
 http://csl.sublevel3.org
 
+Example session
+---------------
+
+Do some printing:
+
+    mickey> (display "Hello, world!\n")
+    Hello, world!
+
+Using lambdas:
+
+mickey> ((lambda (x) (* x x)) 12)
+144
+
+Binding closures to definitions:
+
+    mickey> (define (square x) (* x x))
+    mickey> (square 1)
+    1
+    mickey> (square 12)
+    144
+    mickey> (square 3.1415)
+    9.86902
+
+Tab completion
+
+    mickey> (ca
+    caaar  caadr  caar   cadr   car  
+
+Car and cdr:
+
+    mickey> (car '(1 2 3))
+    1
+    mickey> (car '(1 2 3)))
+    (2 3)
+
+Simple arithmetic:
+
+    mickey> (+ 1 2 3 4)
+    10
+
+Let's create a macro `my-when` that only evaluates the body of the code if
+the first argument evaluates to true.
+
+    mickey> (define-syntax my-when
+              (syntax-rules ()
+                ((my-when test expr ...)
+                  (if test (begin expr ...)))))
+
+To demonstrate that the macro doesn't evaluate its parameters at invocation
+time, let's create a function with a side effect:
+
+    mickey> (define (say-hello) (display "Hello\n"))
+    mickey> (say-hello)
+    Hello
+
+Now, when we call `my-when` with a false argument, it shouldn't evaluate
+`say-hello`, and thus not print anything on the console:
+
+    mickey> (my-when #f (say-hello))
+
+But giving it a `#t`, should evaluate `say-hello`:
+
+    mickey> (my-when #t (say-hello))
+    Hello
+
 Output of `make check`
 ----------------------
 
