@@ -101,7 +101,8 @@ number and execute it on the fly.
     mickey> ((lambda (x) (* x x)) 12)
     144
 
-We can bind this lambda to a definition as well.
+We can bind this lambda to a variable as well.  
+Let's bind it to the variable `square`.
 
     mickey> (define square (lambda (x) (* x x)))
     mickey> (square 12)
@@ -109,7 +110,7 @@ We can bind this lambda to a definition as well.
     mickey> (square 3.1415)
     9.86902
 
-Of course, the short form is also available.
+Of course, the define-lambda short form is also available.
 
     mickey> (define (cube x) (* x x x))
     mickey> (cube 101)
