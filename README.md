@@ -81,8 +81,6 @@ Using lambdas:
 Binding closures to definitions:
 
     mickey> (define (square x) (* x x))
-    mickey> (square 1)
-    1
     mickey> (square 12)
     144
     mickey> (square 3.1415)
@@ -105,27 +103,27 @@ Simple arithmetic:
     mickey> (+ 1 2 3 4)
     10
 
-Let's create a macro `my-when` that only evaluates the body of the code if
-the first argument evaluates to true.
+Now, let's create a macro `my-when` that only evaluates the body of the code when
+its first argument evaluates to true.
 
     mickey> (define-syntax my-when
               (syntax-rules ()
                 ((my-when test expr ...)
                   (if test (begin expr ...)))))
 
-To demonstrate that the macro doesn't evaluate its parameters at invocation
-time, let's create a function with a side effect:
+To demonstrate that the macro really doesn't evaluate its parameters at invocation
+time we'll create a function with a side effect.
 
     mickey> (define (say-hello) (display "Hello\n"))
     mickey> (say-hello)
     Hello
 
-Now, when we call `my-when` with a false argument, it shouldn't evaluate
-`say-hello`, and thus not print anything on the console:
+Let's try calling `my-when` with a false (#f) argument.  It shouldn't
+execute `say-hello`.
 
     mickey> (my-when #f (say-hello))
 
-But giving it a `#t`, should evaluate `say-hello`:
+Looks good.  Let's try passing a `true` value.
 
     mickey> (my-when #t (say-hello))
     Hello
@@ -135,12 +133,13 @@ Here is an example use of quasi-quotation
     mickey> (define (sql-get-user name)
               `(select * from user where name = ,name))
 
-with example usage:
+with example usage
 
     mickey> (sql-get-user "foo")
     (select * from user where name = "foo")
 
-Here is unquote splice:
+Here is unquote splice, which embeds a list into the outer quasi-quotation
+list.
 
     mickey> (define date '(2012 05 17))
     mickey> date
@@ -148,8 +147,8 @@ Here is unquote splice:
     mickey> `(here is a date: ,@date)
     (here is a date: 2012 5 17)
 
-Here is an example of lazy (or _delayed_) evaluation.  Let's add some code
-to be executed in a list, but don't execute it yet:
+Here is an example of lazy (or _delayed_) evaluation.  Let's create a list
+`queue` with some code we want to execute at a later time.
 
     (define queue
       (list (delay (display "One! "))
