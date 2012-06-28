@@ -9,6 +9,7 @@ Current Features
 
   * Most core Scheme functions
   * Quotation and quasiquotation
+  * Most `let`-forms
   * Macros (while it does work, it's still incomplete)
   * Lazy evaluation (although _without_ memoization, currently)
   * Experimental LLVM JIT compilation (for _one_ function only, currently)
@@ -69,13 +70,27 @@ http://csl.sublevel3.org
 
 ## Examples
 
-Here are a few example code snippets for Mickey Scheme.
+Here are a few example code snippets for Mickey Scheme.  
 
-You should be able to run these examples yourself in the Mickey REPL (except
-for the quasi-quotation, because the REPL reader has a bug in it --- you can
-  run it from a file, though).
+Besides demonstrating the basic capabilities of Mickey, it also serves as a
+kind of soft introduction to Scheme.
 
-First, let's print the obligatory announcement.
+First, let's start `mickey` and print the obligatory first words.
+
+    $ ./mickey 
+                                                                      _
+    Mickey Scheme (C) 2011 Christian Stigen Larsen                     \
+    4.2.1 (Based on Apple Inc. build 5658) (LLVM build 2336.9.00)      /\
+    Readline 4.2                                                      /  \_
+                                                                            
+    Loaded 146 definitions
+    Execute (exit [ code ]) to quit
+    You can also (run-tests) and (list-globals)
+
+    mickey> 
+
+This is the REPL, or _read-evaluate-print loop_.  I'm sure you know what it
+is.  Now, let's type some code.
 
     mickey> (display "Hello, world!\n")
     Hello, world!
@@ -121,8 +136,7 @@ of the `cdr` like so:
     mickey> (cadr '(1 2 3))
     2
 
-(I'm kinda writing this as a soft tutorial of Scheme, so if you're an
-experienced Schemer, please excuse me).  Here is some simple arithmetic.
+Here is some simple arithmetic.
 
     mickey> (+ 1 2 3 4 5 6 7 8 9 10)
     55
@@ -140,6 +154,15 @@ which gives us
     5050
     mickey> (seq-sum 127)
     8128
+
+Here is an example of the "let star" form.
+
+    mickey> (let* ((x 2)
+                   (y 3)
+                   (z (* x y)))
+                   (display z))
+
+which, of course, prints `6`.
 
 Now, Scheme doesn't have a `when` function.  The `when` function checks
 whether the first argument is true.  If it is, then it will evaluate --- or
@@ -194,7 +217,11 @@ Here is an example of just that.
     mickey> (define (sql-get-user name)
               `(select * from user where name = ,name))
 
-Running it should be self-explanatory.
+*Note*: _There is currently a bug in the mickey REPL, so that
+quasiquotation requires an extra closing parenthesis to parse.  
+This bug is not present if you run this example from a file, though._
+
+Running the function should be self-explanatory.
 
     mickey> (sql-get-user "foo")
     (select * from user where name = "foo")
