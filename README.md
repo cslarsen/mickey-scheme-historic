@@ -118,7 +118,7 @@ time we'll create a function with a side effect.
     mickey> (say-hello)
     Hello
 
-Let's try calling `my-when` with a false (#f) argument.  It shouldn't
+Let's try calling `my-when` with a false (`#f`) argument.  It shouldn't
 execute `say-hello`.
 
     mickey> (my-when #f (say-hello))
