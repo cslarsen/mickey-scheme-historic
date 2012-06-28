@@ -68,7 +68,6 @@ Copyright (C) 2011-2012 Christian Stigen Larsen <csl@sublevel3.org>
 http://csl.sublevel3.org
 
 ## Examples
------------
 
 Here are a few example code snippets for Mickey Scheme.
 
