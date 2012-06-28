@@ -155,14 +155,57 @@ which gives us
     mickey> (seq-sum 127)
     8128
 
-Here is an example of the "let star" form.
+Here is an example of the "let star" form.  It creates a local variable
+scope, and evaluates them in the given order.
 
     mickey> (let* ((x 2)
                    (y 3)
                    (z (* x y)))
                    (display z))
 
-which, of course, prints `6`.
+This, of course, prints `6`.
+
+There is also a `letrec` form that allows for mutually recursive
+definitions.  Or in plain english, expressions that refer to each other.
+
+The typical example of this is to implement `even?` and `odd?` in terms of
+each other:
+
+* A number is _even_ if the preceding number is odd, and
+* A number is _odd_ if the preceding number is even
+
+Since our definition is going to be mutually recursive, we need to handle
+base cases of zero (negative values will make the code loop forever, though).
+
+Let's write that out, along with a `check-number` function.
+
+    (letrec
+      ((even? (lambda (n)
+                (if (zero? n) #t
+                    (odd? (- n 1)))))
+
+       (odd? (lambda (n)
+               (if (zero? n) #f
+                   (even? (- n 1)))))
+
+       (check-number
+         (lambda (n)
+           (display `(The number ,n is ,(if (even? n) 'even 'odd)))
+           (newline))))
+
+       (check-number 2)
+       (check-number 3)
+       (check-number 88)
+       (check-number 99))
+
+If you run the above code in `mickey`, you'll get this output:
+
+    (The number 2 is even)
+    (The number 3 is odd)
+    (The number 88 is even)
+    (The number 99 is odd)
+
+## Macros
 
 Now, Scheme doesn't have a `when` function.  The `when` function checks
 whether the first argument is true.  If it is, then it will evaluate --- or
