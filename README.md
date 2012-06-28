@@ -151,9 +151,14 @@ the code body.  As an example, let's say we have a boolean variable
 
     (when green-light (format-drive))
 
-If `when` is a simple function, it will always format the hard drive.  Now,
-macros allow us to _control evaluation_.  So we *only* want to evaluate the
-code body if `green-light` is true.  Let's create a macro that does that.
+If `when` was implemented as a function, it would always format the hard drive,
+because function parameters must be evaluated _before_ entering the function
+itself.
+
+Now, we are pretty careful with our hard drives, so we want a way to
+_control evaluation_.  Scheme's macros will let us do exactly that.
+
+So let's implement `when` as a hygienic macro.
 
     mickey> (define-syntax when
               (syntax-rules ()
