@@ -159,7 +159,7 @@ list.
     mickey> (cdr '(1 2 3)))
     (2 3)
 
-I like the old school "car" and "could-er" forms because because you can compose them, so that you can extract the `car`
+I like the old school "car" and "could-er" forms because you can compose them, so that you can extract the `car`
 of the `cdr` like so:
 
     mickey> (cadr '(1 2 3))
