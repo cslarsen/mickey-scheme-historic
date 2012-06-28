@@ -97,7 +97,7 @@ Car and cdr:
 
     mickey> (car '(1 2 3))
     1
-    mickey> (car '(1 2 3)))
+    mickey> (cdr '(1 2 3)))
     (2 3)
 
 Simple arithmetic:
