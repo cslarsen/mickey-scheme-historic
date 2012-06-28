@@ -75,8 +75,8 @@ Do some printing:
 
 Using lambdas:
 
-mickey> ((lambda (x) (* x x)) 12)
-144
+    mickey> ((lambda (x) (* x x)) 12)
+    144
 
 Binding closures to definitions:
 
