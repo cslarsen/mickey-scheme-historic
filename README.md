@@ -130,6 +130,24 @@ But giving it a `#t`, should evaluate `say-hello`:
     mickey> (my-when #t (say-hello))
     Hello
 
+Here is an example use of quasi-quotation
+
+    mickey> (define (sql-get-user name)
+              `(select * from user where name = ,name))
+
+with example usage:
+
+    mickey> (sql-get-user "foo")
+    (select * from user where name = "foo")
+
+Here is unquote splice:
+
+    mickey> (define date '(2012 05 17))
+    mickey> date
+    (2012 5 17)
+    mickey> `(here is a date: ,@date)
+    (here is a date: 2012 5 17)
+
 Output of `make check`
 ----------------------
 
