@@ -67,8 +67,8 @@ Copyright (C) 2011-2012 Christian Stigen Larsen <csl@sublevel3.org>
 
 http://csl.sublevel3.org
 
-Example session <a id="example">
---------------------------------
+Example session <a id="examples">
+---------------------------------
 
 Do some printing:
 
