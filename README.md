@@ -148,6 +148,28 @@ Here is unquote splice:
     mickey> `(here is a date: ,@date)
     (here is a date: 2012 5 17)
 
+Here is an example of lazy (or _delayed_) evaluation.  Let's add some code
+to be executed in a list, but don't execute it yet:
+
+    (define queue
+      (list (delay (display "One! "))
+            (delay (display "Three! "))
+            (delay (display "Two! "))))
+
+Now we want to execute the code in the list, but reordered so that it will
+print "One! Two! Three!":
+
+    (force (list-ref queue 0))
+    (force (list-ref queue 2))
+    (force (list-ref queue 1))
+
+This outputs:
+
+    One! Two! Three!
+
+Note that Mickey Scheme's `force` does not currently memoize its computations,
+as the standard requires (but that's easy to fix).
+
 Output of `make check`
 ----------------------
 
