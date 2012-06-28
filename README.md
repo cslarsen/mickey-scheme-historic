@@ -70,78 +70,133 @@ http://csl.sublevel3.org
 ## Examples
 -----------
 
-Do some printing:
+Here are a few example code snippets for Mickey Scheme.
+
+You should be able to run these examples yourself in the Mickey REPL (except
+for the quasi-quotation, because the REPL reader has a bug in it --- you can
+  run it from a file, though).
+
+First, let's print the obligatory announcement.
 
     mickey> (display "Hello, world!\n")
     Hello, world!
 
-Using lambdas:
+Now, let's play with lambdas.  First we'll create a lambda to square a
+number and execute it on the fly.
 
     mickey> ((lambda (x) (* x x)) 12)
     144
 
-Binding closures to definitions:
+We can bind this lambda to a definition as well.
 
-    mickey> (define (square x) (* x x))
+    mickey> (define square (lambda (x) (* x x)))
     mickey> (square 12)
     144
     mickey> (square 3.1415)
     9.86902
 
-Tab completion
+Of course, the short form is also available.
+
+    mickey> (define (cube x) (* x x x))
+    mickey> (cube 101)
+    1030301
+
+Mickey uses GNU readline, so it offers both tab completion and history.  And
+it actually works, too.  Here we write `(ca` and hit `TAB` two times to see
+available definitions.
 
     mickey> (ca
     caaar  caadr  caar   cadr   car  
 
-Car and cdr:
+Here are `car` and `cdr`.  They extract the first and remaining items in a
+list.
 
     mickey> (car '(1 2 3))
     1
     mickey> (cdr '(1 2 3)))
     (2 3)
 
-Simple arithmetic:
+I like the, because you can compose them, so that you can extract the `car`
+of the `cdr` like so:
 
-    mickey> (+ 1 2 3 4)
-    10
+    mickey> (cadr '(1 2 3))
+    2
 
-Now, let's create a macro `my-when` that only evaluates the body of the code when
-its first argument evaluates to true.
+(I'm kinda writing this as a soft tutorial of Scheme, so if you're an
+experienced Schemer, please excuse me).  Here is some simple arithmetic.
 
-    mickey> (define-syntax my-when
+    mickey> (+ 1 2 3 4 5 6 7 8 9 10)
+    55
+
+Summation of sequences can be calculated more quickly with
+
+    mickey> (define (seq-sum n)
+              (* n (/ (+ n 1) 2)))
+
+which gives us
+
+    mickey> (seq-sum 10)
+    55
+    mickey> (seq-sum 100)
+    5050
+    mickey> (seq-sum 127)
+    8128
+
+Now, Scheme doesn't have a `when` function.  The `when` function checks
+whether the first argument is true.  If it is, then it will evaluate --- or
+execute --- the code given in the remaining arguments.
+
+You can't do this with a simple function, because it would *always* evaluate
+the code body.  As an example, let's say we have a boolean variable
+`green-light`.  If it's `true`, we'll format the hard drive:
+
+    (when green-light (format-drive))
+
+If `when` is a simple function, it will always format the hard drive.  Now,
+macros allow us to _control evaluation_.  So we *only* want to evaluate the
+code body if `green-light` is true.  Let's create a macro that does that.
+
+    mickey> (define-syntax when
               (syntax-rules ()
-                ((my-when test expr ...)
+                ((when test expr ...)
                   (if test (begin expr ...)))))
 
-To demonstrate that the macro really doesn't evaluate its parameters at invocation
-time we'll create a function with a side effect.
+That's it.  To demonstrate that we control the evaluation, let's create a
+function with a side effect that prints to the console when it's evaluated.
 
     mickey> (define (say-hello) (display "Hello\n"))
     mickey> (say-hello)
     Hello
 
-Let's try calling `my-when` with a `false` argument (`#f`).  It shouldn't
-execute `say-hello`.
+Calling
 
-    mickey> (my-when #f (say-hello))
+    mickey> (when #f (say-hello))
 
-Looks good.  Let's try passing a `true` value.
+does not print anything, which is good.  In contrast,
 
-    mickey> (my-when #t (say-hello))
+    mickey> (when #t (say-hello))
     Hello
 
-Here is an example use of quasi-quotation
+does indeed print to the console.
+
+Now let's try some examples with quasi-quotation.  Since Scheme is a
+symbolic language, we can easily create syntax trees for languages like SQL
+by just using quotation.  But sometimes we'll want to embed actual
+computations into them, so therefore we can use the specual `unquote` prefix
+with a comma.
+
+Here is an example of just that.
 
     mickey> (define (sql-get-user name)
               `(select * from user where name = ,name))
 
-with example usage
+Running it should be self-explanatory.
 
     mickey> (sql-get-user "foo")
     (select * from user where name = "foo")
 
-Here is unquote splice, which embeds a list into the outer quasi-quotation
-list.
+Furthermore, sometimes we want to splice two lists together when we quote.
+We can do that by using unquote splice, or the `,@` prefix.
 
     mickey> (define date '(2012 05 17))
     mickey> date
@@ -149,8 +204,15 @@ list.
     mickey> `(here is a date: ,@date)
     (here is a date: 2012 5 17)
 
-Here is an example of lazy (or _delayed_) evaluation.  Let's create a list
-`queue` with some code we want to execute at a later time.
+Mickey Scheme also supports delayed -- or lazy -- evaluation.  That is,
+computations that are not executed right away.
+
+In fact, all languages that support evaluation control (for instance, via a
+macro facility) and first class closures should be able to *implement* lazy
+evaluation without any external library.
+
+Let's create a list `queue` that contains some code we want to execute at a
+later time.
 
     (define queue
       (list (delay (display "One! "))
