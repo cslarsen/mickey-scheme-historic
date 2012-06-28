@@ -15,6 +15,8 @@ Current Features
   * Tail call eliminiation (yeah, neither the JVM nor Python has that,
     so that's at least _something_ to be a little proud of!)
 
+Some of these are demonstrated in the [example code section](#examples).
+
 Current Shortcomings
 --------------------
 
@@ -65,8 +67,8 @@ Copyright (C) 2011-2012 Christian Stigen Larsen <csl@sublevel3.org>
 
 http://csl.sublevel3.org
 
-Example session
----------------
+Example session <a id="example">
+--------------------------------
 
 Do some printing:
 
@@ -118,7 +120,7 @@ time we'll create a function with a side effect.
     mickey> (say-hello)
     Hello
 
-Let's try calling `my-when` with a false (`#f`) argument.  It shouldn't
+Let's try calling `my-when` with a `false` argument (`#f`).  It shouldn't
 execute `say-hello`.
 
     mickey> (my-when #f (say-hello))
