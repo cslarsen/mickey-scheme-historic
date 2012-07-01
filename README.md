@@ -89,19 +89,20 @@ First, let's start `mickey`.
 
     mickey> 
 
-This is the REPL, or _read-evaluate-print loop_.  I'm sure you know what it
-is.  Now, let's type some code.
+This is the REPL, or _read-evaluate-print loop_.  Now, let's type some code.
 
     mickey> (display "Hello, world!\n")
     Hello, world!
 
-Now, let's play with lambdas.  First we'll create a lambda to square a
+## Lambda
+
+Let's play with lambdas.  First we'll create a lambda to square a
 number and execute it on the fly.
 
     mickey> ((lambda (x) (* x x)) 12)
     144
 
-We can bind this lambda to a variable as well.  Let's bind it to the variable `square`.
+We can it to a variable as well.  Let's bind it to the variable `square`.
 
     mickey> (define square (lambda (x) (* x x)))
     mickey> (square 12)
@@ -165,6 +166,11 @@ of the `cdr` like so:
     mickey> (cadr '(1 2 3))
     2
 
+They might not be very interesting for flat lists, but they shine for
+accessing trees.
+
+## Arithmetic
+
 Here is some simple arithmetic.
 
     mickey> (+ 1 2 3 4 5 6 7 8 9 10)
@@ -183,6 +189,8 @@ which gives us
     5050
     mickey> (seq-sum 127)
     8128
+
+## Let-forms
 
 Here is an example of the "let star" form.  It creates a local variable
 scope, and evaluates them in the given order.
@@ -250,8 +258,8 @@ If `when` was implemented as a function, it would always format the hard drive,
 because function parameters must be evaluated _before_ entering the function
 itself.
 
-Now, we are pretty careful with our hard drives, so we want a way to
-_control evaluation_.  Scheme's macros will let us do exactly that.
+It is clear that we need a way to _control evaluation_.  Scheme's macros
+will let ut do exactly that.
 
 So let's implement `when` as a hygienic macro.
 
@@ -277,6 +285,8 @@ does not print anything, which is good.  In contrast,
     Hello
 
 does indeed print to the console.
+
+## Quotation
 
 Now let's try some examples with quasi-quotation.  Since Scheme is a
 symbolic language, we can easily create syntax trees for languages like SQL
@@ -306,6 +316,8 @@ We can do that by using unquote splice, or the `,@` prefix.
     (2012 5 17)
     mickey> `(here is a date: ,@date)
     (here is a date: 2012 5 17)
+
+## Lazy evaluation
 
 Mickey Scheme also supports delayed -- or lazy -- evaluation.  That is,
 computations that are not executed right away.
