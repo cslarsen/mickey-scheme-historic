@@ -482,6 +482,11 @@ cons_t* proc_cddr(cons_t* p, environment_t*)
   return nil_coalesce(r);
 }
 
+cons_t* proc_caddr(cons_t* p, environment_t* e)
+{
+  return car(proc_cddr(p,e));
+}
+
 cons_t* proc_append(cons_t* p, environment_t*)
 {
   cons_t *r = append(car(p), cadr(p));
@@ -2167,6 +2172,7 @@ named_function_t exports_base[] = {
   {"caadr", proc_caadr},
   {"caar", proc_caar},
   {"cadr", proc_cadr},
+  {"caddr", proc_caddr},
   {"car", proc_car},
   {"cdar", proc_cdar},
   {"cddr", proc_cddr},

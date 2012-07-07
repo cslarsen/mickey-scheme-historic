@@ -65,6 +65,9 @@
 (test-eq (quote (abs 1.1)) 1.1)
 (test-eq (quote (abs 2.1)) 2.1)
 
+;; car and cdr
+(test-eq (quote (caddr '(1 2 3 4))) 3)
+
 ;; assq
 ; TODO: Have to make test-eq a macro
 ;(test-eq (quote (assq (quote two) (list (list (quote one) 1) (list (quote two) 2) (list (quote three) 3)))) (quote (list (quote two) 2)))
