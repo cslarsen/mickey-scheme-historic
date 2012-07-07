@@ -9,8 +9,9 @@ Current Features
 
   * Most core Scheme functions
   * Quotation and quasiquotation
-  * Most `let`-forms
-  * Macros (while it does work, it's still incomplete)
+  * Most `let`-forms, including named let
+  * Rest arguments (aka variadic functions)
+  * Macros (while it _does_ work, it's still incomplete)
   * Lazy evaluation (although _without_ memoization, currently)
   * Experimental LLVM JIT compilation (for _one_ function only, currently)
   * Tail call eliminiation (yeah, neither the JVM nor Python has that,
