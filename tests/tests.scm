@@ -67,6 +67,7 @@
 
 ;; car and cdr
 (test-eq (quote (caddr '(1 2 3 4))) 3)
+(test-eq (quote (cdddr '(1 2 3 4 5))) '(4 5))
 
 ;; assq
 ; TODO: Have to make test-eq a macro

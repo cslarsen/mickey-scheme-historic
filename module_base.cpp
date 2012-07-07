@@ -487,6 +487,13 @@ cons_t* proc_caddr(cons_t* p, environment_t* e)
   return car(proc_cddr(p,e));
 }
 
+cons_t* proc_cdddr(cons_t* p, environment_t*)
+{
+  assert_length(p, 1);
+  assert_type(PAIR, p);
+  return cdddr(car(p));
+}
+
 cons_t* proc_append(cons_t* p, environment_t*)
 {
   cons_t *r = append(car(p), cadr(p));
@@ -2176,6 +2183,7 @@ named_function_t exports_base[] = {
   {"car", proc_car},
   {"cdar", proc_cdar},
   {"cddr", proc_cddr},
+  {"cdddr", proc_cdddr},
   {"cdr", proc_cdr},
   {"char-<=?", proc_char_ltep},
   {"char-<?", proc_char_ltp},
