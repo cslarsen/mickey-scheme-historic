@@ -190,26 +190,23 @@ char* readline(const char* prompt)
 
 void print_banner(environment_t*)
 {
-  std::string readline_version =
+  std::string readline_version;
   #ifdef USE_READLINE
-    format("Readline %d.%d",
+    readline_version = format("Readline %d.%d",
       (rl_readline_version & 0xFF00) >> 8, rl_readline_version & 0x00FF);
-  #else
-    "";
-  #endif
-
-  std::string boehm_version =
-  #ifdef BOEHM_GC
-    format("Boehm-Demers-Weiser GC %d.%d", GC_VERSION_MAJOR, GC_VERSION_MINOR);
-  #else
-    "";
   #endif
 
   printf("%-63s _\n", "");
   printf("%-63s  \\\n", VERSION);
   printf("%-63s  /\\\n", __VERSION__);
   printf("%-63s /  \\_\n", readline_version.c_str());
-  printf("%-63s       \n", boehm_version.c_str());
+
+  #ifdef BOEHM_GC
+    std::string boehm_version =
+      format("Boehm-Demers-Weiser GC %d.%d",
+        GC_VERSION_MAJOR, GC_VERSION_MINOR);
+    printf("%-63s       \n", boehm_version.c_str());
+  #endif
 }
 
 int repl()
