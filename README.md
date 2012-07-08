@@ -349,6 +349,24 @@ This outputs:
 Note that Mickey Scheme's `force` does not currently memoize its computations,
 as the standard requires (but that's easy to fix).
 
+# Extensions
+
+For debugging purposes, I've added some extension functions only available
+to Mickey Scheme.
+
+## (:syntax-expand _code_)
+
+If you want to see how a macro is expanded, you can use `(:syntax-expand _code_)`:
+
+    mickey> (define-syntax my-when
+      (syntax-rules ()
+          ((my-when test expr ...)
+                (if test (begin expr ...)))))
+    mickey> (:syntax-expand '(my-when #t 123))
+    (if #t (begin 123))
+    mickey> (:syntax-expand '(my-when #f 123))
+    (if #f (begin 123))
+
 Output of `make check`
 ----------------------
 
