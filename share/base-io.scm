@@ -1,4 +1,4 @@
 ;; Mickey Scheme
 
-(define newline
+(define (newline)
   (display "\n"))
