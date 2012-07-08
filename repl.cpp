@@ -205,11 +205,11 @@ void print_banner(environment_t*)
     "";
   #endif
 
-  printf("%-65s _\n", "");
-  printf("%-65s  \\\n", VERSION);
-  printf("%-65s  /\\\n", __VERSION__);
-  printf("%-65s /  \\_\n", readline_version.c_str());
-  printf("%-65s       \n", boehm_version.c_str());
+  printf("%-63s _\n", "");
+  printf("%-63s  \\\n", VERSION);
+  printf("%-63s  /\\\n", __VERSION__);
+  printf("%-63s /  \\_\n", readline_version.c_str());
+  printf("%-63s       \n", boehm_version.c_str());
 }
 
 int repl()
