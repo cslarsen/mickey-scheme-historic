@@ -3,11 +3,12 @@
 #|
  | R7RS string-map
  |#
-(define (string-map proc . strings)
-  (let
+(define (string-map proc first-string . remaining-strings)
+  (let*
     ((output  '())
-     (args    (length strings))
-     (strings (map string->list strings)))
+     (input   (cons first-string remaining-strings))
+     (args    (length input))
+     (strings (map string->list input)))
     (let loop
       ((chars (map car strings))
        (rest  (map cdr strings)))
