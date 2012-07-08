@@ -424,6 +424,17 @@ If you write the output to a file, you can render it with `dot(1)`:
 
     $ dot -Tpng -ofoo.png foo.dot
 
+## (:version)
+
+Displays version number for Mickey and libraries.
+
+    mickey> (display (:version)) (newline)
+    (Mickey Scheme (C) 2011 Christian Stigen Larsen
+     Using Readline 4.2
+      Compiler version: 4.2.1 (Based on Apple Inc. build 5658) (LLVM build
+      2336.9.00)
+      )
+
 Output of `make check`
 ----------------------
 
