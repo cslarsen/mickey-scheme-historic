@@ -1,7 +1,10 @@
-;; Mickey Scheme
+;; This file is part of Mickey Scheme (R7RS)
+;; by Christian Stigen Larsen
 
 #|
  | R7RS string-map
+ |
+ | Explicitly require at least one string.
  |#
 (define (string-map proc first-string . remaining-strings)
   (let*
