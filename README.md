@@ -420,6 +420,10 @@ a graph of the cons cells.
       "0x7fefeaceaca0" [label="<head>|<tail>", shape="record"];
     }
 
+If you write the output to a file, you can render it with `dot(1)`:
+
+    $ dot -Tpng -ofoo.png foo.dot
+
 Output of `make check`
 ----------------------
 
