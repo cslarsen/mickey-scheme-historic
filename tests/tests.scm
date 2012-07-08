@@ -193,6 +193,22 @@
 (test-eq (quote (char-downcase #\a)) #\a)
 (test-eq (quote (char-downcase #\Z)) #\z)
 
+;; The following two string-map tests are from R7RS draft 6:
+;;
+(test-eq
+  '(string-map
+    (lambda (c)
+      (integer->char (+ 1 (char->integer c))))
+        "HAL") "IBM")
+;;
+(test-eq
+  '(string-map
+    (lambda (c k)
+      ((if (eqv? k #\u) char-upcase char-downcase)
+        c))
+    "studlycaps xxx"
+    "ululululul") "StUdLyCaPs")
+
 ;; modulo
 (test-eq (quote (modulo 10 6)) 4)
 (test-eq (quote (modulo 10 5)) 0)
