@@ -74,12 +74,6 @@ cons_t* proc_write(cons_t *p, environment_t*)
   return nil();
 }
 
-cons_t* proc_newline(cons_t*, environment_t*)
-{
-  printf("\n");
-  return nil();
-}
-
 cons_t* proc_strcat(cons_t *p, environment_t*)
 {
   std::string s;
@@ -2192,7 +2186,6 @@ named_function_t exports_base[] = {
   {"modulo", proc_modulo},
   {"nan?", proc_nanp},
   {"negative?", proc_negativep},
-  {"newline", proc_newline},
   {"not", proc_not},
   {"null?", proc_nullp},
   {"number->string", proc_number_to_string},

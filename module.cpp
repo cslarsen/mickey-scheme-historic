@@ -38,5 +38,6 @@ static void load(environment_t *e, const std::string& path, const std::string& f
 
 void import_defaults(environment_t *e, const char* lib_path)
 {
-  load(e, lib_path, "default-car-cdr.scm");
+  load(e, lib_path, "base-list.scm");
+  load(e, lib_path, "base-io.scm");
 }
