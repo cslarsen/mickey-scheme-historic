@@ -445,6 +445,10 @@ Displays version number for Mickey and libraries.
       2336.9.00)
       )
 
+## (:exit _code_)
+
+Exit Mickey, returning given code to the parent process.
+
 Output of `make check`
 ----------------------
 
