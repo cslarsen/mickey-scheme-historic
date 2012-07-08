@@ -368,6 +368,15 @@ If you want to see how a macro is expanded, you can use
     mickey> (:syntax-expand '(my-when #f 123))
     (if #f (begin 123))
 
+## (:debug ...)
+
+Returns string with printable debug information.
+
+    mickey> (display (:debug "foo"))
+    adr=0x7fe501536560 type=pair    car=0x7fe501536340 cdr=0x7fe501536540
+    adr=0x7fe501536340 type=string  value='foo'
+    adr=0x7fe501536540 type=nil   
+
 Output of `make check`
 ----------------------
 
