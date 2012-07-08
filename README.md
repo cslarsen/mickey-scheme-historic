@@ -388,6 +388,38 @@ Prints what type Mickey determines the expression to be.
     mickey> (:type-of "hey")
     string
 
+## (:list->dot ...)
+
+Convert the given expressions to Graphviz dot(1) format, which will display
+a graph of the cons cells.
+
+    mickey> (display (:list->dot '(root (left-child (left-grandchild) (right-child)))))
+    digraph Scheme {
+      "0x7fefeaceaca0":head -> "0x7fefeaceab40":head ["ol"="box"];
+      "0x7fefeaceab40":head -> "0x7fefeace9cf0" ["ol"="box"];
+      "0x7fefeace9cf0" [label="root", shape="none"];
+      "0x7fefeaceab40":tail -> "0x7fefeaceab20":head ["ol"="box"];
+      "0x7fefeaceab20":head -> "0x7fefeaceab00":head ["ol"="box"];
+      "0x7fefeaceab00":head -> "0x7fefeace9d50" ["ol"="box"];
+      "0x7fefeace9d50" [label="left-child", shape="none"];
+      "0x7fefeaceab00":tail -> "0x7fefeaceaae0":head ["ol"="box"];
+      "0x7fefeaceaae0":head -> "0x7fefeacea9c0":head ["ol"="box"];
+      "0x7fefeacea9c0":head -> "0x7fefeacea020" ["ol"="box"];
+      "0x7fefeacea020" [label="left-grandchild", shape="none"];
+      "0x7fefeacea9c0" [label="<head>|<tail>", shape="record"];
+      "0x7fefeaceaae0":tail -> "0x7fefeaceaac0":head ["ol"="box"];
+      "0x7fefeaceaac0":head -> "0x7fefeaceaaa0":head ["ol"="box"];
+      "0x7fefeaceaaa0":head -> "0x7fefeaceaa20" ["ol"="box"];
+      "0x7fefeaceaa20" [label="right-child", shape="none"];
+      "0x7fefeaceaaa0" [label="<head>|<tail>", shape="record"];
+      "0x7fefeaceaac0" [label="<head>|<tail>", shape="record"];
+      "0x7fefeaceaae0" [label="<head>|<tail>", shape="record"];
+      "0x7fefeaceab00" [label="<head>|<tail>", shape="record"];
+      "0x7fefeaceab20" [label="<head>|<tail>", shape="record"];
+      "0x7fefeaceab40" [label="<head>|<tail>", shape="record"];
+      "0x7fefeaceaca0" [label="<head>|<tail>", shape="record"];
+    }
+
 Output of `make check`
 ----------------------
 
