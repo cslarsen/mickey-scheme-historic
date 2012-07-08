@@ -424,6 +424,16 @@ If you write the output to a file, you can render it with `dot(1)`:
 
     $ dot -Tpng -ofoo.png foo.dot
 
+## (:closure-source ...)
+
+Returns the quoted source for a given closure.  Example:
+
+    mickey> (define (sq x) (* x x))
+    mickey> (:closure-source sq)
+    (lambda (x) (begin (* x x)))
+    mickey> ((eval (:closure-source sq)) 12)
+    144
+
 ## (:version)
 
 Displays version number for Mickey and libraries.

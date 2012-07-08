@@ -1045,8 +1045,7 @@ cons_t* proc_closure_source(cons_t* p, environment_t* e)
   cons_t *body = c->environment->symbols["__body__"]; // see eval.cpp
   cons_t *args = c->environment->symbols["__args__"];
 
-  cons_t *source = cons(symbol("lambda", e), cons(args, cons(car(body))));
-  return source;
+  return cons(symbol("lambda", e), list(args, body));
 }
 
 cons_t* proc_reverse(cons_t* p, environment_t*)
