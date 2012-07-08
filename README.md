@@ -449,8 +449,8 @@ Displays version number for Mickey and libraries.
 
 Exit Mickey, returning given code to the parent process.
 
-Output of `make check`
-----------------------
+Output of `make check-all`
+--------------------------
 
 Below is the output of the small test suite on my computer.  Since it's _my_
 computer, it's considered _canonical_ at the moment. :-)
