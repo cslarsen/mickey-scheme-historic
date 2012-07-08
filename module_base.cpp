@@ -23,6 +23,7 @@
 #include "eval.h"
 #include "types.h"
 #include "apply.h"
+#include "syntax-rules.h"
 
 #ifdef USE_LLVM
 # include "llvm/Module.h"
@@ -276,6 +277,22 @@ cons_t* proc_define_syntax(cons_t *p, environment_t *env)
 
   env->define(name->symbol->name(), syntax);
   return nil();
+}
+
+/*
+ * Usage: (define-syntax foo ...) ... (:syntax-expand '(foo arg0 arg1 ...))
+ */
+cons_t* proc_syntax_expand(cons_t* p, environment_t *e)
+{
+  cons_t *code = car(p);
+  assert_type(PAIR, code);
+
+  cons_t *syntax_name = car(code);
+  assert_type(SYMBOL, syntax_name);
+  cons_t *op = e->lookup_or_throw(syntax_name->symbol->name());
+
+  assert_type(SYNTAX, op);
+  return syntax_expand(op, code, e);
 }
 
 cons_t* proc_load(cons_t *filename, environment_t *env)
@@ -2155,9 +2172,10 @@ named_function_t exports_base[] = {
   {":closure-source", proc_closure_source},
   {":debug", proc_debug},
   {":exit", proc_exit},
+  {":list->dot", proc_list_to_dot},
+  {":syntax-expand", proc_syntax_expand},
   {":type-of", proc_type_of},
   {":version", proc_version},
-  {":list->dot", proc_list_to_dot},
   {"<", proc_less},
   {"<=", proc_lteq},
   {"=", proc_eqintp},
@@ -2183,13 +2201,13 @@ named_function_t exports_base[] = {
   {"caaar", proc_caaar},
   {"caadr", proc_caadr},
   {"caar", proc_caar},
-  {"cadr", proc_cadr},
+  {"cadddr", proc_cadddr},
   {"caddr", proc_caddr},
+  {"cadr", proc_cadr},
   {"car", proc_car},
   {"cdar", proc_cdar},
-  {"cddr", proc_cddr},
   {"cdddr", proc_cdddr},
-  {"cadddr", proc_cadddr},
+  {"cddr", proc_cddr},
   {"cdr", proc_cdr},
   {"char-<=?", proc_char_ltep},
   {"char-<?", proc_char_ltp},
@@ -2225,10 +2243,10 @@ named_function_t exports_base[] = {
   {"list-tail", proc_list_tail},
   {"list?", proc_listp},
   {"load", proc_load},
-  {"map", proc_map},
   {"make-bytevector", proc_make_bytevector},
   {"make-string", proc_make_string},
   {"make-vector", proc_make_vector},
+  {"map", proc_map},
   {"max", proc_max},
   {"member", proc_member},
   {"memq", proc_memq},
