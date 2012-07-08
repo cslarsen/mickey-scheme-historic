@@ -1654,6 +1654,10 @@ cons_t* proc_memq(cons_t* p, environment_t* e)
   return proc_member_fptr(p, e, eqp);
 }
 
+/*
+ * Normal, non-JITed gcd.
+ * See prov_llvm_gcd for JIT example.
+ */
 cons_t* proc_gcd(cons_t* p, environment_t* e)
 {
   switch ( length(p) ) {
