@@ -1531,6 +1531,20 @@ cons_t* proc_char_uppercasep(cons_t* p, environment_t*)
   return boolean(isupper(car(p)->character));
 }
 
+cons_t* proc_char_upcase(cons_t* p, environment_t*)
+{
+  assert_length(p, 1);
+  assert_type(CHAR, car(p));
+  return character(toupper(car(p)->character));
+}
+
+cons_t* proc_char_downcase(cons_t* p, environment_t*)
+{
+  assert_length(p, 1);
+  assert_type(CHAR, car(p));
+  return character(tolower(car(p)->character));
+}
+
 cons_t* proc_char_ltep(cons_t* p, environment_t*)
 {
   assert_length(p, 2);
@@ -2153,8 +2167,10 @@ named_function_t exports_base[] = {
   {"char->?", proc_char_gtp},
   {"char->integer", proc_char_to_integer},
   {"char-alphabetic?", proc_char_alphabeticp},
+  {"char-downcase", proc_char_downcase},
   {"char-lower-case?", proc_char_lowercasep},
   {"char-numeric?", proc_char_numericp},
+  {"char-upcase", proc_char_upcase},
   {"char-upper-case?", proc_char_uppercasep},
   {"char-whitespace?", proc_char_whitespacep},
   {"char?", proc_charp},

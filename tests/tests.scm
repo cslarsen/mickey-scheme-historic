@@ -183,6 +183,16 @@
 (test-eq (quote (char-whitespace? #\c)) #f)
 ; TODO: Test for #\tab and friends
 
+;; other char tests
+(test-eq (quote (char-upcase #\a)) #\A)
+(test-eq (quote (char-upcase #\A)) #\A)
+(test-eq (quote (char-upcase #\h)) #\H)
+(test-eq (quote (char-upcase #\z)) #\Z)
+
+(test-eq (quote (char-downcase #\A)) #\a)
+(test-eq (quote (char-downcase #\a)) #\a)
+(test-eq (quote (char-downcase #\Z)) #\z)
+
 ;; modulo
 (test-eq (quote (modulo 10 6)) 4)
 (test-eq (quote (modulo 10 5)) 0)
