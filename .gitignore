@@ -6,3 +6,4 @@ xcode/mickey.xcodeproj/project.xcworkspace/xcuserdata/
 call-cc-1.scm
 cc-test.scm
 cc.scm
+*.dSYM/
