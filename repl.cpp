@@ -231,33 +231,54 @@ int repl()
   init_readline();
   #endif
 
-  printf("Loaded %ld definitions\n", env->symbols.size());
-  printf("Execute (exit [ code ]) to quit\n");
-  printf("You can also (run-tests) and (list-globals)\n");
-  printf("\n");
-
   for(;;) {
-    char *input;
+    static char *input = reinterpret_cast<char*>(1);
 
-    if ( (input = readline("mickey> ")) == NULL )
-      break; // end of input stream
+    /*
+     * input == 1 is the ugliest hack ever to
+     * disoplay the imported_defaults message below,
+     * and also because of ANOTHER hack, the home-brewed
+     * exception system using longjumps.  I think I need to
+     * rewrite... :)
+     */
+    if ( input != reinterpret_cast<char*>(1) ) {
+      if ( (input = readline("mickey> ")) == NULL )
+        break; // end of input stream
 
-    if ( *trimr(input) == '\0' )
-      continue; // empty command
+      if ( *trimr(input) == '\0' )
+        continue; // empty command
 
-    #ifdef USE_READLINE
-    add_history(input);
-    #endif
+      #ifdef USE_READLINE
+      add_history(input);
+      #endif
 
-    #ifdef NO_EXCEPTIONS
-    if ( exception_raised() ) {
-      backtrace();
-      backtrace_clear();
-      continue;
+      #ifdef NO_EXCEPTIONS
+      if ( exception_raised() ) {
+        backtrace();
+        backtrace_clear();
+        continue;
+      }
+      #endif
+    } else {
+      input = strdup("");
     }
-    #endif
 
     TRY {
+      /*
+       * Must wrap import_defaults in try-catch
+       */
+      {
+        static bool imported_defaults = false;
+        if ( !imported_defaults ) {
+          import_defaults(env, global_opts.lib_path);
+          printf("Loaded %ld definitions\n", env->symbols.size());
+          printf("Execute (exit [ code ]) to quit\n");
+          printf("You can also (run-tests) and (list-globals)\n");
+          printf("\n");
+          imported_defaults = true;
+        }
+      }
+
       program_t *p = parse(input, env);
 
       if ( p->parens < 0 )

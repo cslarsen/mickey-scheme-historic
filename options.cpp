@@ -29,7 +29,13 @@ void set_default(struct options_t* p)
   p->verbose = false;
   p->read_stdin = false;
   p->include_path = ".";
+  p->lib_path = ".";
   reset_for_programs(p);
+}
+
+void set_lib_path(struct options_t* p, const char* lib_path)
+{
+  p->lib_path = strdup(lib_path);
 }
 
 void reset_for_programs(struct options_t* p, const char* file)

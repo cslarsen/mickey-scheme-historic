@@ -9,6 +9,7 @@
  *                                                          
  */
 
+#include <libgen.h> // dirname
 #include "options.h"
 #include "repl.h"
 #include "parser.h"
@@ -26,6 +27,7 @@ void execute(const char* file)
   TRY {
     environment_t *env = new environment_t();
 
+    import_defaults(env, global_opts.lib_path);
     import(env, exports_base);
     import(env, exports_math);
     import(env, exports_assert);
@@ -53,6 +55,7 @@ void execute_string(const char* s)
   TRY {
     environment_t *env = new environment_t();
 
+    import_defaults(env, global_opts.lib_path);
     import(env, exports_base);
     import(env, exports_math);
     import(env, exports_assert);
@@ -77,6 +80,11 @@ int main(int argc, char** argv)
   bool run_repl = true;
 
   set_default(&global_opts);
+
+  /*
+   * TODO: If MICKEY_LIB environment variable is set, use that instead.
+   */
+  set_lib_path(&global_opts, (std::string(dirname(argv[0])) + "/share/").c_str());
 
   #ifdef BOEHM_GC
   GC_INIT();

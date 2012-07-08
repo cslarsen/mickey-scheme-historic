@@ -463,59 +463,6 @@ cons_t* proc_cdr(cons_t* p, environment_t*)
   return nil_coalesce(r);
 }
 
-cons_t* proc_caar(cons_t* p, environment_t* e)
-{
-  return car(proc_car(p,e));
-}
-
-cons_t* proc_caaar(cons_t* p, environment_t* e)
-{
-  return caar(proc_car(p,e));
-}
-
-cons_t* proc_cadr(cons_t* p, environment_t* e)
-{
-  return car(proc_cdr(p,e));
-}
-
-cons_t* proc_caadr(cons_t* p, environment_t* e)
-{
-  return caar(proc_cdr(p,e));
-}
-
-cons_t* proc_cdar(cons_t* p, environment_t*)
-{
-  assert_length(p, 1);
-  assert_type(PAIR, p);
-  cons_t *r = cdar(car(p));
-  return nil_coalesce(r);
-}
-
-cons_t* proc_cddr(cons_t* p, environment_t*)
-{
-  assert_length(p, 1);
-  assert_type(PAIR, p);
-  cons_t *r = cddr(car(p));
-  return nil_coalesce(r);
-}
-
-cons_t* proc_caddr(cons_t* p, environment_t* e)
-{
-  return car(proc_cddr(p,e));
-}
-
-cons_t* proc_cdddr(cons_t* p, environment_t*)
-{
-  assert_length(p, 1);
-  assert_type(PAIR, p);
-  return cdddr(car(p));
-}
-
-cons_t* proc_cadddr(cons_t* p, environment_t* e)
-{
-  return car(proc_cdddr(p, e));
-}
-
 cons_t* proc_append(cons_t* p, environment_t*)
 {
   cons_t *r = append(car(p), cadr(p));
@@ -2197,16 +2144,7 @@ named_function_t exports_base[] = {
   {"bytevector-u8-ref", proc_bytevector_u8_ref},
   {"bytevector-u8-set!", proc_bytevector_u8_set_bang},
   {"bytevector?", proc_bytevectorp},
-  {"caaar", proc_caaar},
-  {"caadr", proc_caadr},
-  {"caar", proc_caar},
-  {"cadddr", proc_cadddr},
-  {"caddr", proc_caddr},
-  {"cadr", proc_cadr},
   {"car", proc_car},
-  {"cdar", proc_cdar},
-  {"cdddr", proc_cdddr},
-  {"cddr", proc_cddr},
   {"cdr", proc_cdr},
   {"char-<=?", proc_char_ltep},
   {"char-<?", proc_char_ltp},

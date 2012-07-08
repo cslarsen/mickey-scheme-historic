@@ -1,7 +1,7 @@
 /*
  * Mickey Scheme
  *
- * Copyright (C) 2011 Christian Stigen Larsen <csl@sublevel3.org>
+ * Copyright (C) 2011-2012 Christian Stigen Larsen <csl@sublevel3.org>
  * http://csl.sublevel3.org                              _
  *                                                        \
  * Distributed under the modified BSD license.            /\
@@ -9,7 +9,10 @@
  *                                                          
  */
 
+#include <string>
+#include "primops.h"
 #include "module.h"
+#include "module_base.h"
 #include "options.h"
 
 void import(environment_t *e, named_function_t *p)
@@ -26,4 +29,14 @@ void import(environment_t *e, named_function_t *p)
 
   if ( global_opts.verbose )
     printf("\n");
+}
+
+static void load(environment_t *e, const std::string& path, const std::string& file)
+{
+  proc_load(cons(string((path + "/" + file).c_str())), e);
+}
+
+void import_defaults(environment_t *e, const char* lib_path)
+{
+  load(e, lib_path, "default-car-cdr.scm");
 }
