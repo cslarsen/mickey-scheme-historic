@@ -377,6 +377,17 @@ Returns string with printable debug information.
     adr=0x7fe501536340 type=string  value='foo'
     adr=0x7fe501536540 type=nil   
 
+## (:type-of ...)
+
+Prints what type Mickey determines the expression to be.
+
+    mickey> (:type-of 123)
+    integer
+    mickey> (:type-of '())
+    pair
+    mickey> (:type-of "hey")
+    string
+
 Output of `make check`
 ----------------------
 
