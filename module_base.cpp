@@ -292,7 +292,6 @@ cons_t* proc_syntax_expand(cons_t* p, environment_t *e)
 cons_t* proc_load(cons_t *filename, environment_t *env)
 {
   assert_type(STRING, car(filename));
-  
   program_t *p;
 
   // read from stdin?
@@ -1619,6 +1618,9 @@ cons_t* proc_list_ref(cons_t* p, environment_t* e)
   return car(proc_list_tail(p, e));
 }
 
+/*
+ * Used by member, memq and memv
+ */
 static cons_t* proc_member_fptr(cons_t* p, environment_t*, bool (*compare)(const cons_t*, const cons_t*))
 {
   assert_length(p, 2);
