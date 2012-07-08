@@ -360,9 +360,9 @@ If you want to see how a macro is expanded, you can use
 `(:syntax-expand ...)`.  Below is an example.
 
     mickey> (define-syntax my-when
-      (syntax-rules ()
-          ((my-when test expr ...)
-                (if test (begin expr ...)))))
+              (syntax-rules ()
+                  ((my-when test expr ...)
+                        (if test (begin expr ...)))))
     mickey> (:syntax-expand '(my-when #t 123))
     (if #t (begin 123))
     mickey> (:syntax-expand '(my-when #f 123))
