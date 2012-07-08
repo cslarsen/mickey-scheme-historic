@@ -26,6 +26,7 @@ TARGETS_O = exceptions.o \
             backtrace.o \
             module_base.o \
             module_assert.o \
+						syntax-rules.o \
             cons.o \
             tests.o
 
