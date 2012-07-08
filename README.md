@@ -357,7 +357,7 @@ to Mickey Scheme.
 ## (:syntax-expand _code_)
 
 If you want to see how a macro is expanded, you can use
-`(:syntax-expand _code_)`.  Below is an example.
+`(:syntax-expand ...)`.  Below is an example.
 
     mickey> (define-syntax my-when
       (syntax-rules ()
