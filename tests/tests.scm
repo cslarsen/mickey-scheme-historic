@@ -195,6 +195,8 @@
 
 ;; The following two string-map tests are from R7RS draft 6:
 ;;
+(test-eq '(string-map char-foldcase "AbdEgH") "abdegh")
+;;
 (test-eq
   '(string-map
     (lambda (c)

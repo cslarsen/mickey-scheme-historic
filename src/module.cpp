@@ -36,9 +36,13 @@ static void load(environment_t *e, const std::string& path, const std::string& f
   proc_load(cons(string((path + "/" + file).c_str())), e);
 }
 
+/*
+ * Add default libraries here.
+ */
 void import_defaults(environment_t *e, const char* lib_path)
 {
   load(e, lib_path, "base-list.scm");
   load(e, lib_path, "base-io.scm");
   load(e, lib_path, "base-string.scm");
+  load(e, lib_path, "base-char.scm");
 }
