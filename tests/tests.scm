@@ -209,6 +209,23 @@
     "studlycaps xxx"
     "ululululul") "StUdLyCaPs")
 
+;; Taken from R7RS draft 6
+;;
+(test-eq (quote
+  (let ((v '()))
+    (string-for-each
+      (lambda (c) (set! v (cons (char->integer c) v)))
+        "abcde")
+        v)) '(101 100 99 98 97))
+
+;; Check multiple input
+(test-eq (quote
+  (let ((v '()))
+    (string-for-each
+      (lambda (c) (set! v (cons c v)))
+      "ab" "cd" "efg") v))
+  '(f d b e c a))
+
 ;; modulo
 (test-eq (quote (modulo 10 6)) 4)
 (test-eq (quote (modulo 10 5)) 0)
