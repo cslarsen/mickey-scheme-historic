@@ -22,6 +22,8 @@
 #include "module_assert.h"
 #include "exceptions.h"
 
+#define MICKEY_LIB "MICKEY_LIB"
+
 void execute(const char* file)
 {
   TRY {
@@ -82,9 +84,13 @@ int main(int argc, char** argv)
   set_default(&global_opts);
 
   /*
-   * TODO: If MICKEY_LIB environment variable is set, use that instead.
+   * Set library path using either environment variable or current working
+   * directory.
    */
-  set_lib_path(&global_opts, (std::string(dirname(argv[0])) + "/share/").c_str());
+  if ( getenv(MICKEY_LIB) )
+    set_lib_path(&global_opts, getenv(MICKEY_LIB));
+  else
+    set_lib_path(&global_opts, (std::string(dirname(argv[0])) + "/share/").c_str());
 
   #ifdef BOEHM_GC
   GC_INIT();
