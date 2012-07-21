@@ -218,13 +218,14 @@
         "abcde")
         v)) '(101 100 99 98 97))
 
-;; Check multiple input
+;; N input strings requires N parameters to the lambda:
 (test-eq (quote
   (let ((v '()))
     (string-for-each
-      (lambda (c) (set! v (cons c v)))
+      (lambda (one two three)
+        (set! v (cons three (cons one v))))
       "ab" "cd" "efg") v))
-  '(f d b e c a))
+  '(f b e a))
 
 ;; modulo
 (test-eq (quote (modulo 10 6)) 4)

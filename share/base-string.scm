@@ -27,12 +27,10 @@
 #|
  | R7RS string-for-each
  |
- | Explicitly require at least one string.
+ | If n strings are given as input, then `proc` must take n parameters.
+ |
+ | Explicitly requires at least one string.
  |#
-;; TODO: What should the below display?
-;; (string-for-each (lambda (c) (display c)) "abc" "def" "ghij")
-;; Either: "abcdefghi" or "adgbehcfi" ?
-;;
 (define (string-for-each proc first-string . remaining-strings)
   (let*
     ((input   (cons first-string remaining-strings))
@@ -45,7 +43,7 @@
         (begin
           (if (> (apply * (map length rest)) 0)
             (begin
-              (map proc chars)
+              (apply proc chars)
               (loop 
                 (map car rest)
                 (map cdr rest)))))))))
