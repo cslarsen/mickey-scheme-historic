@@ -2163,7 +2163,7 @@ named_function_t exports_base[] = {
   {"append", proc_append},
   {"assoc", proc_assoc},
   {"assq", proc_assq},
-  {"assq", proc_assv},
+  {"assv", proc_assv},
   {"backtrace", proc_backtrace},
   {"boolean->string", proc_boolean_to_string},
   {"boolean?", proc_booleanp},
