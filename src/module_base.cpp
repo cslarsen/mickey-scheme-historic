@@ -473,6 +473,13 @@ cons_t* proc_symbolp(cons_t* p, environment_t*)
   return boolean(symbolp(car(p)));
 }
 
+cons_t* proc_boundp(cons_t* p, environment_t* e)
+{
+  assert_length(p, 1);
+  assert_type(SYMBOL, car(p));
+  return boolean(e->lookup(car(p)->symbol->name()) != NULL);
+}
+
 cons_t* proc_integerp(cons_t* p, environment_t*)
 {
   return boolean(integerp(car(p)));
@@ -2124,11 +2131,16 @@ cons_t* proc_list_to_dot(cons_t *p, environment_t* e)
   return string(s.c_str());
 }
 
+/*
+ * We typically name Mickey-specific function with
+ * a colon prefix, as in ":bound?".
+ */
 named_function_t exports_base[] = {
   {"*", proc_mul},
   {"+", proc_add},
   {"-", proc_sub},
   {"/", proc_divf},
+  {":bound?", proc_boundp},
   {":closure-source", proc_closure_source},
   {":debug", proc_debug},
   {":exit", proc_exit},
