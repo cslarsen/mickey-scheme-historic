@@ -2131,6 +2131,11 @@ cons_t* proc_list_to_dot(cons_t *p, environment_t* e)
   return string(s.c_str());
 }
 
+cons_t* proc_dummy_placeholder(cons_t*, environment_t*)
+{
+  return nil();
+}
+
 /*
  * We typically name Mickey-specific function with
  * a colon prefix, as in ":bound?".
@@ -2265,5 +2270,30 @@ named_function_t exports_base[] = {
 #ifdef USE_LLVM
   {"llvm:gcd", proc_llvm_gcd},
 #endif
-  {NULL, NULL}
+  /*
+   * Following is the list of definitions recognized
+   * by eval.  Since these are hardcoded into eval(),
+   * we list them here to make them available to :bound?
+   * and the auto-completion system.
+   */
+  {"apply", proc_dummy_placeholder},
+  {"begin", proc_dummy_placeholder},
+  {"cond", proc_dummy_placeholder},
+  {"define", proc_dummy_placeholder},
+  {"define-syntax", proc_dummy_placeholder},
+  {"delay", proc_dummy_placeholder},
+  {"do", proc_dummy_placeholder},
+  {"eval", proc_dummy_placeholder},
+  {"force", proc_dummy_placeholder},
+  {"if", proc_dummy_placeholder},
+  {"lambda", proc_dummy_placeholder},
+  {"let", proc_dummy_placeholder},
+  {"let*", proc_dummy_placeholder},
+  {"letrec", proc_dummy_placeholder},
+  {"quasiquote", proc_dummy_placeholder},
+  {"quote", proc_dummy_placeholder},
+  {"set!", proc_dummy_placeholder},
+  {"set-car!", proc_dummy_placeholder},
+  {"set-cdr!", proc_dummy_placeholder},
+  {NULL, NULL} /* terminate with null */
 };
