@@ -41,6 +41,7 @@ static void load(environment_t *e, const std::string& path, const std::string& f
  */
 void import_defaults(environment_t *e, const char* lib_path)
 {
+  load(e, lib_path, "base.scm");
   load(e, lib_path, "base-list.scm");
   load(e, lib_path, "base-io.scm");
   load(e, lib_path, "base-string.scm");
