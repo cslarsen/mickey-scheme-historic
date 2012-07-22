@@ -61,7 +61,8 @@ cons_t* proc_abs(cons_t* p, environment_t*)
 cons_t* proc_display(cons_t *p, environment_t*)
 {
   for ( ; !nullp(p); p = cdr(p) )
-    printf("%s", print(car(p)).c_str());
+    fprintf(global_opts.current_output_device,
+      "%s", print(car(p)).c_str());
 
   return nil();
 }
@@ -69,7 +70,8 @@ cons_t* proc_display(cons_t *p, environment_t*)
 cons_t* proc_write(cons_t *p, environment_t*)
 {
   for ( ; !nullp(p); p = cdr(p) )
-    printf("%s", sprint(car(p)).c_str());
+    fprintf(global_opts.current_output_device,
+      "%s", sprint(car(p)).c_str());
 
   return nil();
 }
