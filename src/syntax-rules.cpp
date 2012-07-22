@@ -12,6 +12,8 @@
 #include "cons.h"
 #include "primops.h"
 #include "syntax-rules.h"
+#include "print.h"
+#include "exceptions.h"
 
 extern "C" { // because I don't like name-mangling
 
@@ -56,11 +58,41 @@ static cons_t* syntax_replace(dict_t &map, cons_t* p)
 {
   cons_t *start = p;
 
-  for ( ; !nullp(p); p = cdr(p) ) {
+  while ( !nullp(p) ) {
     if ( listp(car(p)) )
       p->car = syntax_replace(map, car(p));
-    else if ( symbolp(car(p)) && map.count(car(p)->symbol->name()) )
-      p->car = map[car(p)->symbol->name()];
+    else if ( symbolp(car(p)) && map.count(car(p)->symbol->name()) ) {
+      const std::string name = car(p)->symbol->name();
+      cons_t *repl = map[name];
+
+      /*
+       * If "...", then splice into p, so that
+       * "a b c" does not expand into "(a b c)".
+       */
+      if ( name != "..." )
+        p->car = repl;
+      else {
+        if ( repl == NULL ) {
+          p->car = nil();
+          continue;
+        }
+        else {
+          p->car = repl->car;
+          p->cdr = repl->cdr;
+        }
+
+        /*
+         * We can't do `p = cdr(p)` after we've
+         * replaced p->cdr, so we just stop here
+         * after expanding "...".  This is not an
+         * entirely correct implementation of
+         * macros, but good enough for now.
+         */
+        break;
+      }
+    }
+
+    p = cdr(p);
   }
 
   return start;
@@ -76,12 +108,21 @@ cons_t* syntax_expand(cons_t *macro, cons_t *code, environment_t*)
     cons_t *expansion = cadar(p);
 
     dict_t map;
+
+    // mark "..." as '() for cases where it's empty, like `(when #t)`
+    map["..."] = NULL;
+
     if ( syntax_match(pattern, code, map) )
       return syntax_replace(map, deep_copy(expansion));
   }
 
-  // TODO: What if there's no match?
-  return code;
+  /*
+   * No match.  This is an error.
+   */
+  raise(std::runtime_error(
+    "Macro invocation did not match any patterns: "
+      + sprint(code)));
+  return nil();
 }
 
 cons_t* make_syntax(cons_t* body, environment_t* e)
