@@ -7,6 +7,7 @@ PORTABLE_TESTS = tests/hello.scm \
 
 all:
 	cd src ; make all
+	cp src/mickey .
 
 mickey:
 	cd src ; make mickey
