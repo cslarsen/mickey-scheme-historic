@@ -1,5 +1,5 @@
 #|
- | Mickey Scheme (scheme base) library
+ | Mickey Scheme R7RS base library
  |
  | Copyright (C) 2012 Christian Stigen Larsen <csl@sublevel3.org>
  | http://csl.sublevel3.org                              _

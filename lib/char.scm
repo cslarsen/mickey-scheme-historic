@@ -1,5 +1,5 @@
 #|
- | Mickey Scheme (scheme char) library
+ | Mickey Scheme R7RS character library
  |
  | Copyright (C) 2012 Christian Stigen Larsen <csl@sublevel3.org>
  | http://csl.sublevel3.org                              _
