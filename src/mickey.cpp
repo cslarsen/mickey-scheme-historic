@@ -90,7 +90,7 @@ int main(int argc, char** argv)
   if ( getenv(MICKEY_LIB) )
     set_lib_path(&global_opts, getenv(MICKEY_LIB));
   else
-    set_lib_path(&global_opts, (std::string(dirname(argv[0])) + "/share/").c_str());
+    set_lib_path(&global_opts, (std::string(dirname(argv[0])) + "/lib/").c_str());
 
   #ifdef BOEHM_GC
   GC_INIT();
