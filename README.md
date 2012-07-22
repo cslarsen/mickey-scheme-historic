@@ -8,6 +8,7 @@ Current Features
 ----------------
 
   * Most core Scheme functions
+  * Supports 151 of 240 R7RS base library definitions
   * Quotation and quasiquotation
   * Most `let`-forms, including named let
   * Rest arguments (aka variadic functions)
@@ -26,7 +27,8 @@ Current Shortcomings
     optimizations.  I have plans to change this.
 
   * It's __incomplete__: Some key Scheme features are still missing, and
-    quite some R7RS library functions.
+    quite some R7RS library functions (currently it supports 176 of 335
+    R7RS definitinos).
 
   * It's __buggy__: There are inherent bugs in the engine as well as
     erronous implementations of library functions.
