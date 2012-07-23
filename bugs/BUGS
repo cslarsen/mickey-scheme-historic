@@ -18,3 +18,4 @@ BUGS
   of the strange parser implementation
 * Nested quasiquotation does not work (this works in guile): `(a `(b ,(+ 1 2) ,(foo ,(+ 1 3) d) e) f)
 * Should be true: (real? 3) ==> #t but returns #f
+* Macro system does not pattern match correctly -> see macro4.scm
