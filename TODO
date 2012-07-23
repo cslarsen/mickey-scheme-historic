@@ -1,4 +1,6 @@
 TODO
+- Allow |foo bar| identifiers, e.g. (define (|hello world| message) (display message))
+- Enforce rules for names of definitions. E.g., this is not ok: (define (1+ num) (+ 1 num))
 - Reader notation for vectors: repl> #(1 2 3)
 - Should this work (does in chibi-scheme): repl> #(1 2 foo)
 - Reader notation for: repl> '#(1 2 foo)
