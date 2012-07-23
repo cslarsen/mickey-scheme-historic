@@ -9,7 +9,6 @@ TODO
 - Reader notation for: repl> '#(1 2 foo)
 - Regarding vectors passed to functions expecting lists, find out the
   exact differences... i.e., read up on vectors
-- Rename assert-type and friends to :assert-type etc
 - Add third param to assoc, being the equality operator: (assoc 2.0 '((2 two) (3 three)) =)
 - Add (string-ci=?)
 - Add (list-set!)

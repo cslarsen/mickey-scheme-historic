@@ -29,7 +29,6 @@
 #include "options.h"
 #include "module_base.h"
 #include "module_math.h"
-#include "module_assert.h"
 #include "exceptions.h"
 
 // make env reachable by readline commands
@@ -218,7 +217,6 @@ int repl()
 
   import(env, exports_base);
   import(env, exports_math);
-  import(env, exports_assert);
   import(env, exports_repl);
 
   if ( global_opts.verbose )

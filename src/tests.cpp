@@ -17,7 +17,6 @@
 #include "eval.h"
 #include "module_base.h"
 #include "module_math.h"
-#include "module_assert.h"
 #include "exceptions.h"
 #include "options.h"
 
@@ -63,7 +62,6 @@ void run_tests()
   import_defaults(&globals, global_opts.lib_path);
   import(&globals, exports_base);
   import(&globals, exports_math);
-  import(&globals, exports_assert);
 
   { std::string format_abbc5d = format("a%sc%dd", "bb", 5); 
     TEST_STREQ(format_abbc5d, "abbc5d"); }

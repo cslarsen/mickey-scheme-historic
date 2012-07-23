@@ -19,7 +19,6 @@
 #include "backtrace.h"
 #include "module_base.h"
 #include "module_math.h"
-#include "module_assert.h"
 #include "exceptions.h"
 
 #define MICKEY_LIB "MICKEY_LIB"
@@ -32,7 +31,6 @@ void execute(const char* file)
     import_defaults(env, global_opts.lib_path);
     import(env, exports_base);
     import(env, exports_math);
-    import(env, exports_assert);
 
     reset_for_programs(&global_opts, file);
     proc_load(cons(string(file)), env);
@@ -60,7 +58,6 @@ void execute_string(const char* s)
     import_defaults(env, global_opts.lib_path);
     import(env, exports_base);
     import(env, exports_math);
-    import(env, exports_assert);
 
     reset_for_programs(&global_opts, NULL);
 
