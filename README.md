@@ -37,6 +37,10 @@ Current Shortcomings
     collector.  Adding a simple mark-and-sweep GC is trivial, though, so
     I'll get to it once I think it's important enough.
 
+  * It doesn't support __continuations__ (yet):  I think I'll have to
+    convert to continuation passing style for a proper implementation of
+    this.
+
 Compiling
 ---------
 
