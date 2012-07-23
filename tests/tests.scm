@@ -103,13 +103,26 @@
   (quote
     (begin
       (set-cdr! (list 1 2) 3)
-      123)) 123) ;; just check that this does not raise error
+      123)) 123) ;; just check that set-cdr! will accept
+                 ;; a non-symbol
 (test-eq
   (quote
     (let ((v (list 1 2)))
       (set-cdr! v 3)
       v))
   '(1 . 3))
+(test-eq
+  (quote
+    (begin
+      (set-car! (list 1 2) 3)
+      123)) 123) ;; just check that set-car! will accept
+                 ;; a non-symbol
+(test-eq
+  (quote
+    (let ((v (list 1 2)))
+      (set-car! v 3)
+      v))
+  '(3 2))
 
 ;; assq
 ; TODO: Have to make test-eq a macro
