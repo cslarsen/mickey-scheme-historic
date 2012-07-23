@@ -35,6 +35,10 @@
 (test-eq (quote (- 2)) -2)
 (test-eq (quote (- -2)) 2)
 
+;; dot notation
+(test-eq (quote (pair? '(1 . 3))) #t)
+(test-eq (quote (list? '(1 . 3))) #f)
+
 ;; (if t a1 a2)
 (test-eq (quote (if (> 4 2) 11 22)) 11)
 (test-eq (quote (if (> 3 2) 11 22)) 11)
