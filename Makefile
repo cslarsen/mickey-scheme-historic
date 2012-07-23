@@ -13,7 +13,7 @@ mickey:
 	cd src ; make mickey
 	cp src/mickey .
 
-run: mickey
+run: all
 	./mickey
 
 check: all
