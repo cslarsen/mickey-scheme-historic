@@ -1316,15 +1316,20 @@ cons_t* proc_set_car(cons_t* p, environment_t* e)
 {
   assert_type(SYMBOL, car(p));
   std::string name = car(p)->symbol->name();
-  e->lookup(name)->car = cadr(p);
+  e->lookup_or_throw(name)->car = cadr(p);
   return nil();
 }
 
 cons_t* proc_set_cdr(cons_t* p, environment_t* e)
 {
-  assert_type(SYMBOL, car(p));
-  std::string name = car(p)->symbol->name();
-  e->lookup(name)->cdr = cadr(p);
+  if ( type_of(car(p)) == SYMBOL ) {
+    std::string name = car(p)->symbol->name();
+    e->lookup_or_throw(name)->cdr = cadr(p);
+  } else if ( type_of(car(p)) == PAIR ) {
+    car(p)->cdr = cadr(p);
+  } else
+    // generate error
+    assert_type(PAIR, car(p));
   return nil();
 }
 

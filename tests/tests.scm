@@ -98,6 +98,19 @@
 (test-eq (quote (cdddr '(1 2 3 4 5))) '(4 5))
 (test-eq (quote (cadddr '(1 2 3 4 5))) 4)
 
+;; set! and friends
+(test-eq
+  (quote
+    (begin
+      (set-cdr! (list 1 2) 3)
+      123)) 123) ;; just check that this does not raise error
+(test-eq
+  (quote
+    (let ((v (list 1 2)))
+      (set-cdr! v 3)
+      v))
+  '(1 . 3))
+
 ;; assq
 ; TODO: Have to make test-eq a macro
 ;(test-eq (quote (assq (quote two) (list (list (quote one) 1) (list (quote two) 2) (list (quote three) 3)))) (quote (list (quote two) 2)))
