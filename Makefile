@@ -16,14 +16,14 @@ mickey:
 run: mickey
 	./mickey
 
-check: mickey
+check: all
 	./mickey -Itests tests/tests.scm
 
-check-all: mickey
+check-all: all
 	echo "(run-tests)" | ./mickey
 	./mickey -Itests tests/*.scm
 
-check-diff: mickey
+check-diff: all
 	# mickey and chicken should have same output
 	@echo "=== Chicken Scheme ==="
 	@csi -bq $(PORTABLE_TESTS)
