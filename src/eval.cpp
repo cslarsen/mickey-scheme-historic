@@ -480,12 +480,6 @@ cons_t* eval(cons_t* p, environment_t* e)
         return nil();
       }
   
-      if ( name == "set-car!" )
-        return proc_set_car(cons(cadr(p), evlis(cddr(p), e)), e);
-  
-      if ( name == "set-cdr!" )
-        return proc_set_cdr(cons(cadr(p), evlis(cddr(p), e)), e);
-  
       if ( name == "lambda" ) {
         cons_t *args = cadr(p);
         cons_t *body = cddr(p);

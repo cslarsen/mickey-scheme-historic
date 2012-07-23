@@ -2320,6 +2320,8 @@ named_function_t exports_base[] = {
   {"real?", proc_realp},
   {"reverse", proc_reverse},
   {"round", proc_round},
+  {"set-car!", proc_set_car},
+  {"set-cdr!", proc_set_cdr},
   {"string", proc_string},
   {"string->list", proc_string_to_list},
   {"string->number", proc_string_to_number},
@@ -2376,7 +2378,5 @@ named_function_t exports_base[] = {
   {"quasiquote", proc_dummy_placeholder},
   {"quote", proc_dummy_placeholder},
   {"set!", proc_dummy_placeholder},
-  {"set-car!", proc_dummy_placeholder},
-  {"set-cdr!", proc_dummy_placeholder},
   {NULL, NULL} /* terminate with null */
 };
