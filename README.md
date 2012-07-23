@@ -92,7 +92,7 @@ First, let's start `mickey`.
                                                                           
     Loaded 150 definitions
     Execute (exit [ code ]) to quit
-    You can also (run-tests) and (list-globals)
+    You can also (:run-tests) and (list-globals)
 
     mickey> 
 
@@ -461,7 +461,7 @@ Output of `make check-all`
 Below is the output of the small test suite on my computer.  Since it's _my_
 computer, it's considered _canonical_ at the moment. :-)
 
-    echo "(run-tests)" | ./mickey
+    echo "(:run-tests)" | ./mickey
                                                                       _
     Mickey Scheme (C) 2011 Christian Stigen Larsen                     \
     4.2.1 (Based on Apple Inc. build 5658) (LLVM build 2336.9.00)      /\
@@ -469,7 +469,7 @@ computer, it's considered _canonical_ at the moment. :-)
                                                                             
     Loaded 146 definitions
     Execute (exit [ code ]) to quit
-    You can also (run-tests) and (list-globals)
+    You can also (:run-tests) and (list-globals)
     
     1/1 OK:   format_abbc5d == "abbc5d"
     2/2 OK:   decode_literal_string("\"1 \\\"quo\\\" 2\"") == "1 "quo" 2"

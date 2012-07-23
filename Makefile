@@ -20,7 +20,7 @@ check: all
 	./mickey -Itests tests/tests.scm
 
 check-all: all
-	echo "(run-tests)" | ./mickey
+	echo "(:run-tests)" | ./mickey
 	./mickey -Itests tests/*.scm
 
 check-diff: all

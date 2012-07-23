@@ -19,6 +19,7 @@
 #include "module_math.h"
 #include "module_assert.h"
 #include "exceptions.h"
+#include "options.h"
 
 static environment_t globals;
 
@@ -59,6 +60,7 @@ void run_tests()
 {
   reset_tests();
 
+  import_defaults(&globals, global_opts.lib_path);
   import(&globals, exports_base);
   import(&globals, exports_math);
   import(&globals, exports_assert);
@@ -229,7 +231,7 @@ void run_tests()
   TEST_EVAL("(integer? -1)", "#t");
   TEST_EVAL("(integer? -0)", "#t"); // works with mit-scheme, chicken scheme
   TEST_EVAL("(integer? -123)", "#t");
-  TEST_EVAL("(integer? -123.0)", "#f");
+  TEST_EVAL("(integer? -123.0)", "#t");
   TEST_EVAL("(integer? ())", "#f");
   TEST_EVAL("(integer? \"hey\")", "#f");
 
