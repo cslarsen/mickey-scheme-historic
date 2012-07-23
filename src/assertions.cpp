@@ -48,7 +48,22 @@ void assert_length_min(const cons_t* p, const size_t min)
 
 void assert_type(const enum type_t type, cons_t* p)
 {
-  if ( type_of(p) != type )
+  type_t p_type = type_of(p);
+  bool error = false;
+
+  if ( type != PAIR )
+    /*
+     * If expected type is NOT a pair, then types must match.
+     */
+    error = (p_type != type);
+  else
+    /*
+     * If expected type IS a pair, then we can submit either
+     * a LIST or a VECTOR to a function.
+     */
+    error = !(p_type == VECTOR || p_type == PAIR);
+
+  if ( error )
     raise(std::runtime_error(format("Function expected %s but got %s: `%s´",
       indef_art(to_s(type)).c_str(),
       indef_art(to_s(type_of(p))).c_str(),

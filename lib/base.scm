@@ -103,3 +103,34 @@
               (loop 
                 (map car rest)
                 (map cdr rest)))))))))
+
+#|
+ | This is a naive, straight-forward implementation.
+ |
+ | TODO: for-each is supposed to handle circular lists,
+ |       as long as not all of them are circular.
+ |
+ |       This implementation will NOT handle that situation,
+ |       as it will go into an infinite loop, instead of
+ |       raising an error.
+ |
+ |       I think it basically means that we have to check
+ |       for circularity on each input.
+ |#
+(define (for-each procedure list1 . etc)
+  (let*
+    ((lists (cons list1 etc))
+     (count (length lists)))
+    (let loop
+      ((arguments (map car lists))
+       (remaining (map cdr lists)))
+      ;;
+      ;; terminate when the shortest list is finished
+      (if (= (length arguments) count)
+        (begin
+          ;; call procedure with input parameters
+          (apply procedure arguments)
+
+          ;; ... and keep going
+          (loop (map car remaining)
+                (map cdr remaining)))))))
