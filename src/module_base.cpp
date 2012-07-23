@@ -1960,7 +1960,7 @@ cons_t* proc_finitep(cons_t* p, environment_t*)
   assert_number(car(p));
 
   if ( type_of(car(p)) == INTEGER )
-    return boolean(false);
+    return boolean(true);
 
   return boolean(std::isfinite(car(p)->decimal));
 }
@@ -2261,7 +2261,7 @@ named_function_t exports_base[] = {
   {"even?", proc_evenp},
   {"expt", proc_expt},
   {"file-exists?", proc_file_existsp},
-  {"finite?", proc_infinitep},
+  {"finite?", proc_finitep},
   {"gcd", proc_gcd},
   {"infinite?", proc_infinitep},
   {"integer->char", proc_integer_to_char},
