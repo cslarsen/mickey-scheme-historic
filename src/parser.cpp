@@ -43,6 +43,7 @@ cons_t* type_convert(const char* token, environment_t* env)
   return symbol(token, env);
 }
 
+static cons_t* parse_vector(const char* t, environment_t* env);
 static cons_t* parse_quote(const char* t, environment_t* env);
 static cons_t* parse_quasiquote(const char* t, environment_t* env);
 static cons_t* parse_unquote(const char* t, environment_t* env);
@@ -64,7 +65,9 @@ cons_t* parse_list(environment_t *env, bool quoting = false)
 
     cons_t *add;
 
-    if ( isquote(t) )
+    if ( isvector(t) )
+      add = parse_vector(t, env);
+    else if ( isquote(t) )
       add = parse_quote(t, env);
     else if ( isquasiquote(t) )
       add = parse_quasiquote(t, env);
@@ -109,6 +112,19 @@ cons_t* parse_quote(const char* t, environment_t* env)
   //       way of handling '()
   if ( sprint(r) == "(quote)" )
     return cons(symbol("list", env));
+
+  return r;
+}
+
+cons_t* parse_vector(const char* t, environment_t* env)
+{
+  bool is_symbol = (t[2] != '\0');
+  ++parens;
+
+  // replace "#(<exp1> <exp2> ...)" with "(vector <exp1> <exp2> ...)"
+  cons_t *r = cons(symbol("vector", env), is_symbol ?
+    cons(type_convert(t+2, env)) :
+    parse_list(env, false));
 
   return r;
 }

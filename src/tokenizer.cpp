@@ -46,13 +46,15 @@ static const char* copy_while(char *dest, const char* src, bool (*while_expr)(ch
 
 const char* get_token()
 {
+  // mutatable return buffer
   static char token[256];
 
   for ( ;; ) {
     token[0] = token[1] = '\0';
-  
+
+    // source code
     source = skip_space(source);
-  
+
     // comment? skip to end of line
     if ( *source == ';' ) {
       while ( *source != '\n' ) ++source;
@@ -76,14 +78,21 @@ const char* get_token()
       }
       continue;
     }
-  
+
+    // vector form "#( ... )"
+    if ( source[0]=='#' && source[1]=='(' ) {
+      strcpy(token, "#(");
+      source += 2;
+      return token;
+    }
+
     if ( char_in(*source, "()") )
       // tokens ( and )
       token[0] = *source++;
     else
       // other tokens
       source = copy_while(token, source, string_or_non_delimiter);
- 
+
     // commented datums "#;"
     if ( token[0]=='#' && token[1]==';' ) {
 
@@ -95,7 +104,7 @@ const char* get_token()
       get_token();
       continue;
     }
- 
+
     // emit NULL when finished
     return !empty(token) ? token : NULL;
   }

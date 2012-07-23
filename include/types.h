@@ -22,6 +22,7 @@ bool isunquote_splicing(const char*);
 bool isbool(const char*);
 bool ischar(const char*);
 bool ishex(const char*);
+bool isvector(const char*);
 
 decimal_t to_f(const char*);
 int to_i(const char*);

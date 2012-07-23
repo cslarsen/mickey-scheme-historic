@@ -123,6 +123,11 @@ bool isatom(const char* s)
   return isalpha(s[0]) && (empty(s+1) ? true : all(s+1, isalnum));
 }
 
+bool isvector(const char* s)
+{
+  return s[0]=='#' && s[1]=='(';
+}
+
 decimal_t to_f(const char* s)
 {
   return static_cast<decimal_t>(atof(s));
