@@ -45,6 +45,17 @@
 (test-eq (quote (if (> 3 2) 11)) 11)
 (test-eq (quote (if (< 1 2) 11)) 11)
 
+;; (and)
+(test-eq '(and (= 2 2) (> 2 1)) #t) ; from r7rs draft
+(test-eq '(and (= 2 2) (< 2 1)) #f) ; from r7rs draft
+(test-eq '(and 1 2 'c '(f g)) '(f g)) ; from r7rs draft
+(test-eq '(and) #t) ; from r7rs draft
+(test-eq '(and 1) 1)
+(test-eq '(and 0) 0)
+(test-eq '(and 0 #f) #f)
+(test-eq '(and 1 #f 2) #f)
+(test-eq '(and 1 2 (quote c) (quote (f g))) '(f g)) ; from chibi-scheme0
+
 ;; (reverse ...)
 (test-eq (quote (reverse (list 1 2 3 4))) (list 4 3 2 1))
 (test-eq (quote (reverse (list 1 2 3))) (list 3 2 1))
@@ -532,7 +543,15 @@
 (test-eq (quote (list)) '())
 (test-eq '(list) '())
 
+;; Some bugs
+(newline)
+(display "Following are some known bugs")
+(newline)
+(newline)
+(test-eq '(real? 3) #t) ; form r7rs draft
+
 (display "\nResults\n")
+(newline)
 (results)
 
 (display "\n")

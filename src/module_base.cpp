@@ -946,9 +946,31 @@ cons_t* proc_not(cons_t* p, environment_t*)
   return boolean(not_p(p));
 }
 
+/*
+ * If any expression evaluates to #f,
+ * stop and return #f.  If not, return
+ * value of last expression.
+ */
 cons_t* proc_and(cons_t* p, environment_t*)
 {
-  return boolean(and_p(p));
+  /*
+   * (and) should return #t.
+   */
+  cons_t* last = boolean(true);
+
+  for(;;) {
+    if ( nullp(p) )
+      return last;
+
+    last = car(p);
+
+    if ( not_p(p) )
+      return boolean(false);
+
+    p = cdr(p);
+  }
+
+  return last;
 }
 
 cons_t* proc_or(cons_t* p, environment_t*)
