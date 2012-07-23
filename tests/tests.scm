@@ -266,6 +266,12 @@
 (test-eq (quote (modulo 10 1)) 0)
 ; TODO: Test negative modulo, (modulo 10 -3)
 
+;; integer?
+(test-eq '(integer? 1) #t)
+(test-eq '(integer? 1.0) #t)
+(test-eq '(integer? 1.1) #f)
+(test-eq '(integer? (quote b)) #f)
+
 ;; char functions
 (test-eq (quote (char->integer #\a)) 97)
 (test-eq (quote (char->integer #\b)) 98)

@@ -484,6 +484,15 @@ cons_t* proc_boundp(cons_t* p, environment_t* e)
 
 cons_t* proc_integerp(cons_t* p, environment_t*)
 {
+  /*
+   * Note that decimals like 3.0 should be considered
+   * integers.
+   */
+  if ( decimalp(car(p)) ) {
+    decimal_t n = car(p)->decimal;
+    return boolean((decimal_t)((int)n) == n);
+  }
+
   return boolean(integerp(car(p)));
 }
 
