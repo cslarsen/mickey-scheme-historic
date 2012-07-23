@@ -1345,6 +1345,19 @@ cons_t* proc_evenp(cons_t* p, environment_t*)
   return boolean(!(car(p)->integer & 1));
 }
 
+cons_t* proc_error(cons_t* p, environment_t*)
+{
+  /*
+   * Note: This is an incomplete implementation of
+   * (error).  TODO: Fix this.
+   */
+  assert_length_min(p, 1);
+  assert_type(STRING, car(p));
+  const char *message = car(p)->string;
+  raise(std::runtime_error(message));
+  return nil();
+}
+
 cons_t* proc_oddp(cons_t* p, environment_t*)
 {
   assert_length(p, 1);
@@ -2198,6 +2211,7 @@ named_function_t exports_base[] = {
   {"eq?", proc_eqp},
   {"equal?", proc_equalp},
   {"eqv?", proc_eqvp},
+  {"error", proc_error},
   {"even?", proc_evenp},
   {"expt", proc_expt},
   {"file-exists?", proc_file_existsp},
