@@ -498,6 +498,9 @@
 (test-eq '(/ (log 256) (log 2)) 8)
 (test-eq '(/ (log 1024) (log 2)) 10)
 
+;; Number system
+(test-eq '(real? 3) #t) ; from r7rs draft
+
 ;; LLVM JIT
 (test-eq '(llvm:gcd (* 11 123) (* 2 11)) 11)
 (test-eq '(llvm:gcd (* 12 123) (* 2 12)) 12)
@@ -566,12 +569,12 @@
 (test-eq (quote (list)) '())
 (test-eq '(list) '())
 
-;; Some bugs
-(newline)
-(display "Following are some known bugs")
-(newline)
-(newline)
-(test-eq '(real? 3) #t) ; form r7rs draft
+;; Enter known bugs here:
+;;
+;(newline)
+;(display "Following are some known bugs")
+;(newline)
+;(newline)
 
 (display "\nResults\n")
 (newline)
