@@ -69,6 +69,10 @@
 (test-eq '(or 10 (/ 1 0)) 10)
 (test-eq '(or (quote (a b c)) (/ 1 0)) '(a b c))
 
+;; (lambda)
+(test-eq '((lambda x x) 3 4 5 6) '(3 4 5 6))
+(test-eq '((lambda (x y . z) z) 3 4 5 6) '(5 6))
+
 ;; (reverse ...)
 (test-eq (quote (reverse (list 1 2 3 4))) (list 4 3 2 1))
 (test-eq (quote (reverse (list 1 2 3))) (list 3 2 1))
