@@ -487,9 +487,14 @@ cons_t* proc_integerp(cons_t* p, environment_t*)
   return boolean(integerp(car(p)));
 }
 
-cons_t* proc_decimalp(cons_t* p, environment_t*)
+cons_t* proc_realp(cons_t* p, environment_t*)
 {
-  return boolean(decimalp(car(p)));
+  /*
+   * All integers can also be considered reals.
+   */
+  return boolean(
+    decimalp(car(p)) ||
+    integerp(car(p)));
 }
 
 cons_t* proc_nullp(cons_t* p, environment_t*)
@@ -2291,7 +2296,7 @@ named_function_t exports_base[] = {
   {"pair?", proc_pairp},
   {"positive?", proc_positivep},
   {"procedure?", proc_procedurep},
-  {"real?", proc_decimalp},
+  {"real?", proc_realp},
   {"reverse", proc_reverse},
   {"round", proc_round},
   {"string", proc_string},
