@@ -1,4 +1,6 @@
 TODO
+- Allow #true and #false as #t and #f, but currently we can to #tfoo and
+  #ffoo, so fix that
 - Apparently, this is not allowed in r7rs: "1.2f" to donate floats, or "2f"
 - Allow |foo bar| identifiers, e.g. (define (|hello world| message) (display message))
 - Enforce rules for names of definitions. E.g., this is not ok: (define (1+ num) (+ 1 num))
