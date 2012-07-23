@@ -377,26 +377,26 @@ cons_t* eval(cons_t* p, environment_t* e)
     if ( atomp(p) ) {
       if ( symbolp(p) )
         return e->lookup_or_throw(p->symbol->name());
-  
+
       if ( numberp(p) || stringp(p) || charp(p) ||
            booleanp(p) || vectorp(p) || decimalp(p) ||
            closurep(p) || syntaxp(p) )
       {
         return p;
       }
-  
+
       raise(std::runtime_error("Cannot evaluate: " + sprint(p)));
     }
-  
+
     if ( symbolp(car(p)) ) {
       std::string name = car(p)->symbol->name();
-  
+
       if ( name == "quote" )
         return cadr(p);
-  
+
       if ( name == "quasiquote" )
         return eval_quasiquote(cadr(p), e);
-  
+
       if ( name == "if" ) {
         /*
          * Handle both (if <test> <true-action> <false-action>) [1]
@@ -415,19 +415,19 @@ cons_t* eval(cons_t* p, environment_t* e)
         } else
           return nil();                      // case [2]
       }
-  
+
       if ( name == "cond" ) {
         cons_t *cond = proc_cond(p, e);
         return eval(cond, e);
       }
-  
+
       if ( name == "define-syntax" ) {
         cons_t *name = cadr(p);
         cons_t *body = cddr(p);
         cons_t *syntax = make_syntax(body, e->extend());
         return proc_define_syntax(cons(name, cons(syntax)), e);
       }
-  
+
       /*
        * Define requires one not to look up
        * the variable name, so we need to take
@@ -436,7 +436,7 @@ cons_t* eval(cons_t* p, environment_t* e)
       if ( name == "define" ) {
         cons_t *def_name = cadr(p);
         cons_t *def_body = cddr(p);
-  
+
         /*
          * Handle implicit lambda/short form, that is, a
          * `(define (foo <arg1 arg2 ...>) <body>)`-style
@@ -445,11 +445,11 @@ cons_t* eval(cons_t* p, environment_t* e)
         if ( listp(def_name) ) {
           cons_t *def_args = cdr(def_name);
           def_name = car(def_name);
-  
+
           cons_t *closure = make_closure(def_args, def_body, e->extend());
           return proc_define(cons(def_name, cons(closure)), e);
         }
-  
+
         /*
          * Ordinary `(define <name> <body>)`, where <body> can typically
          * be `(lambda (<arg1 arg2 ...>) <body>)`.
@@ -457,14 +457,14 @@ cons_t* eval(cons_t* p, environment_t* e)
         return proc_define(
                 cons(def_name, evlis(def_body, e)), e);
       }
-  
+
       if ( name == "set!" ) {
         cons_t *def_name = cadr(p);
         cons_t *def_body = cddr(p);
-  
+
         std::string name = def_name->symbol->name();
         environment_t *i = e;
-  
+
         // search for definition and set if found
         for ( ; i != NULL; i = i->outer ) {
           if ( i->symbols.find(name) != i->symbols.end() ) {
@@ -472,28 +472,28 @@ cons_t* eval(cons_t* p, environment_t* e)
             return nil();
           }
         }
-  
-         // only set if NOT found
+
+        // only set if NOT found
         if ( i == NULL )
           return proc_define(cons(def_name, evlis(def_body, e)), e);
-  
+
         return nil();
       }
-  
+
       if ( name == "lambda" ) {
         cons_t *args = cadr(p);
         cons_t *body = cddr(p);
-  
+
         // capture no argument lambda `(lambda () do-something)`
         if ( nullp(body) && !nullp(args) ) {
           // We have a `(lambda () <body>)` form
           args = list(NULL);
           body = cons(cadr(p));
         }
-  
+
         return make_closure(args, body, e->extend());
       }
-  
+
       /*
        * Again, we steal some ideas from Norvig's lispy2
        * http://norvig.com/lispy2.html
@@ -510,32 +510,32 @@ cons_t* eval(cons_t* p, environment_t* e)
             p = car(p);
             continue;
           }
-  
+
         return nil();
       }
-  
+
       if ( name == "let" )
         return eval(proc_let(cdr(p), e), e);
-  
+
       if ( name == "let*" )
         return eval(proc_letstar(cdr(p), e), e);
-  
+
       if ( name == "letrec" )
         return eval(proc_letrec(cdr(p), e), e);
-  
+
       if ( name == "do" )
         return eval(proc_do(p, e), e);
-  
+
       if ( name == "eval" ) {
         p = car(evlis(cdr(p), e));
         continue;
       }
-  
+
       if ( name == "apply" ) {
         // Correct to use eval instead of evlis (or nothing) on parameter list?
         return invoke_with_trace(cadr(p), eval(caddr(p), e), e);
       }
-  
+
       if ( name == "delay" ) {
         /*
          * Convert to (lambda () <body>)
@@ -548,11 +548,11 @@ cons_t* eval(cons_t* p, environment_t* e)
                       cons(list(NULL),
                         cons(cadr(p)))), e);
       }
-  
+
       if ( name == "force" )
         return eval(list(cadr(p)), e);
     }
-  
+
     /*
      * Again, per JScheme authors Norvig et al -- who may or may not
      * have gotten this from Queinnec -- we'll eliminate proper tail
@@ -580,10 +580,10 @@ cons_t* eval(cons_t* p, environment_t* e)
      */
     if ( symbolp(car(p)) ) {
       cons_t *op = e->lookup_or_throw(car(p)->symbol->name());
-  
+
       if ( closurep(op) ) {
         cons_t *body = op->closure->environment->symbols[BODY];
-  
+
         if ( !nullp(body) ) {
           func_name = car(p)->symbol->name();
           body_env_t r = expand_lambda(evlis(cdr(p), e), op->closure->environment);
@@ -601,7 +601,7 @@ cons_t* eval(cons_t* p, environment_t* e)
     /*
      * TODO:  Can also expand other functions in-plcae.
      */
-  
+
     return invoke_with_trace(car(p), cdr(p), e);
   } // for (;;) ...
 } // eval()
