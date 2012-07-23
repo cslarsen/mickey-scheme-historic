@@ -590,6 +590,14 @@
 (test-eq (quote (list)) '())
 (test-eq '(list) '())
 
+;; Vectors
+(test-eq '(vector-length (vector 1 2 3)) 3)
+(test-eq '(vector-length (vector)) 0)
+(test-eq '(vector-length (vector 1 2 foo)) 3) ; self-evaluating elements
+(test-eq
+  '(vector-length
+    (vector 1 2 (define (v foo) (* foo foo)) 100)) 4)
+
 ;; Enter known bugs here:
 ;;
 ;(newline)

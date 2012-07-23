@@ -514,6 +514,9 @@ cons_t* eval(cons_t* p, environment_t* e)
         return nil();
       }
 
+      if ( name == "vector" )
+        return eval(proc_vector(cdr(p), e), e);
+
       if ( name == "let" )
         return eval(proc_let(cdr(p), e), e);
 
