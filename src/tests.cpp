@@ -218,9 +218,11 @@ void run_tests()
   TEST_EVAL("(integer? 1)", "#t");
   TEST_EVAL("(integer? 0)", "#t");
   TEST_EVAL("(integer? (quote a))", "#f");
-  TEST_EVAL("(integer? 1.0)", "#f");
-  TEST_EVAL("(integer? 1.0f)", "#f");
-  TEST_EVAL("(integer? 10f)", "#f");
+  TEST_EVAL("(integer? 1.0)", "#t");
+  TEST_EVAL("(integer? 1.0f)", "#t");
+  TEST_EVAL("(integer? 10f)", "#t");
+  TEST_EVAL("(integer? 1.1)", "#f");
+  TEST_EVAL("(integer? 1.2f)", "#f");
   TEST_EVAL("(integer? 10)", "#t");
   TEST_EVAL("(integer? 100)", "#t");
   TEST_EVAL("(integer? 00)", "#t");
