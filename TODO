@@ -1,4 +1,7 @@
 TODO
+- Reader notation for vectors: repl> #(1 2 3)
+- Should this work (does in chibi-scheme): repl> #(1 2 foo)
+- Reader notation for: repl> '#(1 2 foo)
 - Regarding vectors passed to functions expecting lists, find out the
   exact differences... i.e., read up on vectors
 - Rename assert-type and friends to :assert-type etc
