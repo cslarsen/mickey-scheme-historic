@@ -973,9 +973,28 @@ cons_t* proc_and(cons_t* p, environment_t*)
   return last;
 }
 
+/*
+ * Evaluate from left to right, and return
+ * first expression that returns true, disregarding
+ * the rest.
+ */
 cons_t* proc_or(cons_t* p, environment_t*)
 {
-  return boolean(or_p(p));
+  /*
+   * (or) should return #t.
+   */
+  for(;;) {
+    if ( nullp(p) )
+      break;
+
+    // true? then stop and return it
+    if ( !not_p(p) )
+      return car(p);
+
+    p = cdr(p);
+  }
+
+  return boolean(false);
 }
 
 cons_t* proc_xor(cons_t* p, environment_t*)

@@ -46,15 +46,28 @@
 (test-eq (quote (if (< 1 2) 11)) 11)
 
 ;; (and)
-(test-eq '(and (= 2 2) (> 2 1)) #t) ; from r7rs draft
-(test-eq '(and (= 2 2) (< 2 1)) #f) ; from r7rs draft
-(test-eq '(and 1 2 'c '(f g)) '(f g)) ; from r7rs draft
-(test-eq '(and) #t) ; from r7rs draft
+(test-eq '(and (= 2 2) (> 2 1)) #t)
+(test-eq '(and (= 2 2) (< 2 1)) #f)
+(test-eq '(and 1 2 'c '(f g)) '(f g))
+(test-eq '(and) #t)
 (test-eq '(and 1) 1)
 (test-eq '(and 0) 0)
 (test-eq '(and 0 #f) #f)
 (test-eq '(and 1 #f 2) #f)
-(test-eq '(and 1 2 (quote c) (quote (f g))) '(f g)) ; from chibi-scheme0
+(test-eq '(and 1 2 (quote c) (quote (f g))) '(f g))
+
+;; (or)
+(test-eq '(or (= 2 2) (> 2 1)) #t)
+(test-eq '(or (= 2 2) (< 2 1)) #t)
+(test-eq '(or #f #f #f) #f)
+(test-eq '(or #t #f #f) #t)
+(test-eq '(or #f #t #f) #t)
+(test-eq '(or #f #f #t) #t)
+(test-eq '(or (memq 'b '(a b c)) (/ 3 0)) '(b c))
+(test-eq '(or) #f)
+(test-eq '(or #t (/ 1 0)) #t)
+(test-eq '(or 10 (/ 1 0)) 10)
+(test-eq '(or (quote (a b c)) (/ 1 0)) '(a b c))
 
 ;; (reverse ...)
 (test-eq (quote (reverse (list 1 2 3 4))) (list 4 3 2 1))
