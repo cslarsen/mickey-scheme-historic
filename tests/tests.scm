@@ -604,6 +604,10 @@
 ;(display "Following are some known bugs")
 ;(newline)
 ;(newline)
+(test-eq '(list? (cons 1 2)) #f)
+(test-eq '(list? (quote (a . b))) #f)
+(test-eq '(pair? (cons 1 2)) #t)
+(test-eq '(pair? (quote (a . b))) #t)
 
 (display "\nResults\n")
 (newline)
