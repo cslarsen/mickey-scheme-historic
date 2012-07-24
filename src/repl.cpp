@@ -268,7 +268,7 @@ int repl()
           import_defaults(env, global_opts.lib_path);
           printf("Loaded %ld definitions\n", env->symbols.size());
           printf("Execute (exit [ code ]) to quit\n");
-          printf("You can also (:run-tests) and (list-globals)\n");
+          printf("You can also (:run-tests) and (:list-globals)\n");
           printf("\n");
           imported_defaults = true;
         }
