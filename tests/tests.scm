@@ -36,8 +36,11 @@
 (test-eq (quote (- -2)) 2)
 
 ;; pair?, list? and dot notation
+(test-eq (quote '(1 . 2)) (cons 1 2))
 (test-eq (quote (pair? '(1 . 3))) #t)
+(test-eq (quote (pair? (cons 1 3))) #t)
 (test-eq (quote (list? '(1 . 3))) #f)
+(test-eq (quote (list? (cons 1 3))) #f)
 (test-eq (quote (pair? (list 1 2))) #t)
 (test-eq (quote (list? (list 1 2))) #t)
 (test-eq (quote (pair? '())) #f)
@@ -120,7 +123,7 @@
     (let ((v (list 1 2)))
       (set-cdr! v 3)
       v))
-  '(1 . 3))
+  (cons 1 3))
 (test-eq
   (quote
     (begin

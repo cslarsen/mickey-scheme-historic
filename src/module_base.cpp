@@ -434,6 +434,7 @@ cons_t* proc_exit(cons_t* p, environment_t*)
 
 cons_t* proc_cons(cons_t* p, environment_t*)
 {
+  assert_length(p, 2);
   return cons(car(p), cadr(p));
 }
 

@@ -283,13 +283,21 @@ bool nullp(const cons_t* p)
 bool pairp(const cons_t* p)
 {
   // (1) A pair is a list, (2) except for the empty list '()
-  return listp(p) &&                   // (1)
+  return type_of(p) == PAIR &&         // (1)
     !(nullp(car(p)) && nullp(cdr(p))); // (2)
 }
 
 bool listp(const cons_t* p)
 {
-  return type_of(p) == PAIR;
+  /*
+   * A _proper_ list is a pair whose cdr is a list.
+   *
+   * Note that this implementation is slow, because
+   * it traverses the entire list.  Unfortunately,
+   * I think this is needed. (TODO: Prove me wrong).
+   */
+  return type_of(p) == PAIR &&
+      (nullp(cdr(p)) || listp(p->cdr));
 }
 
 bool closurep(const cons_t* p)
