@@ -371,7 +371,7 @@ cons_t* proc_debug(cons_t *p, environment_t *env)
 {
   std::string s;
 
-  s = format("adr=%-11p type=%-7s", p, to_s(type_of(p)).c_str());
+  s = format("%-11p type=%-7s", p, to_s(type_of(p)).c_str());
 
   switch ( type_of(p) ) {
   case NIL: break;
@@ -388,17 +388,17 @@ cons_t* proc_debug(cons_t *p, environment_t *env)
     s += format(" value=%d", p->integer);
     break;
   case SYNTAX:
-    s += format(" syntax_transformer=%p environment=%p",
+    s += format(" syntax_transformer->%p environment->%p",
            p->syntax->transformer,
            p->syntax->environment);
     break;
   case CLOSURE:
-    s += format(" function=%p environment=%p",
+    s += format(" function->%p environment->%p",
            p->closure->function,
            p->closure->environment);
     break;
   case PAIR:
-    s += format(" car=%p cdr=%p", p->car, p->cdr);
+    s += format(" car->%p cdr->%p", p->car, p->cdr);
     break;
   case SYMBOL:
     s += format(" name='%s'", p->symbol->name().c_str());
@@ -407,10 +407,10 @@ cons_t* proc_debug(cons_t *p, environment_t *env)
     s += format(" value='%s'", p->string);
     break;
   case VECTOR:
-    s += format(" vector=%p", p->vector);
+    s += format(" vector->%p", p->vector);
     break;
   case BYTEVECTOR:
-    s += format(" bytevector=%p", p->bytevector);
+    s += format(" bytevector->%p", p->bytevector);
     break;
   case CONTINUATION:
     break;
