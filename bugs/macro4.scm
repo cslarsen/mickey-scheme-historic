@@ -19,5 +19,6 @@
 ; returns unspecified value
 
 ; Mickey bugs and returns
+; (mickey doesn't correctly pattern match)
 ; (i = 1)
 ; (j = 1)
