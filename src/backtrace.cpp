@@ -40,6 +40,9 @@ void backtrace_clear()
     is.pop();
 }
 
+/*
+ * Print backtrace
+ */
 void backtrace()
 {
   if ( !trace_stack || is.empty() )
