@@ -65,9 +65,7 @@ cons_t* parse_list(environment_t *env, bool quoting = false)
 
     cons_t *add;
 
-    if ( isvector(t) )
-      add = parse_vector(t, env);
-    else if ( isquote(t) )
+    if ( isquote(t) )
       add = parse_quote(t, env);
     else if ( isquasiquote(t) )
       add = parse_quasiquote(t, env);
@@ -75,6 +73,8 @@ cons_t* parse_list(environment_t *env, bool quoting = false)
       add = parse_unquote(t, env);
     else if ( isunquote_splicing(t) )
       add = parse_unquote_splicing(t, env);
+    else if ( isvector(t) )
+      add = parse_vector(t, env);
     else
       add = paren? parse_list(env) :
                    type_convert(t + paren, env);

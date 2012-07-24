@@ -25,19 +25,24 @@ void set_source(const char* program)
   inside_string = false;
 }
 
-static bool string_or_non_delimiter(char ch)
+static bool string_or_non_delimiter(const char* s)
 {
+  char ch = *s;
+  bool open_paren = (ch=='(' /* normal paren, or ... */
+      || (s[0]=='#' && s[1]=='(')); /* vector form #( ... ) */
+
   if ( ch == '\"' )
     inside_string = !inside_string;
 
   return ch!='\0'
     && (inside_string? true :
-          ch!='(' && ch!=')' && !isspace(ch));
+          !open_paren && ch!=')' && !isspace(ch));
 }
 
-static const char* copy_while(char *dest, const char* src, bool (*while_expr)(char))
+static const char* copy_while(
+    char *dest, const char* src, bool (*while_expr)(const char*))
 {
-  while ( while_expr(*src) )
+  while ( while_expr(src) )
     *dest++ = *src++;
 
   *dest = '\0';
