@@ -15,7 +15,8 @@
   (fail+1 (quote _))
   (display tests) (display " FAIL: ")
   (display code) (display " != ") (display expected)
-  (display "  Actual result: '") (display actual) (display "'") (newline))
+  ; show actual result
+  (display " ==> ") (display actual) (newline))
 
 (define (success code expected)
   (test+1 (quote _))
