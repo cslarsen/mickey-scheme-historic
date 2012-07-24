@@ -1,7 +1,4 @@
 TODO
-- BUG: This works "repl> 'a" but not this "repl> `a"
-  - Actually, this does not work: "(quasiquote a)" but this does
-    "(quasiquote (1 2 3))", so check out quasiquote.
 - UTF8 support
 - Think about constancy, like a quoted list like '(1 2 3). Should we mark it
   as constant?  What does the draft say about this?
