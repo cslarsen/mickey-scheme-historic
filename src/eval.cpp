@@ -538,22 +538,6 @@ cons_t* eval(cons_t* p, environment_t* e)
         // Correct to use eval instead of evlis (or nothing) on parameter list?
         return invoke_with_trace(cadr(p), eval(caddr(p), e), e);
       }
-
-      if ( name == "delay" ) {
-        /*
-         * Convert to (lambda () <body>)
-         *
-         * TODO: Lazy evaluation should MEMOIZE, per the
-         *       standard.  Add this. (OR, make a macro-system,
-         *       and implement delay via that.)
-         */
-        return eval(cons(symbol("lambda", e),
-                      cons(list(NULL),
-                        cons(cadr(p)))), e);
-      }
-
-      if ( name == "force" )
-        return eval(list(cadr(p)), e);
     }
 
     /*

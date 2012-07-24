@@ -43,4 +43,5 @@ void import_defaults(environment_t *e, const char* lib_path)
 {
   load(e, lib_path, "base.scm");
   load(e, lib_path, "char.scm");
+  load(e, lib_path, "lazy.scm");
 }
