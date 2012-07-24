@@ -47,12 +47,35 @@ static bool bool_true(cons_t* p)
   return booleanp(p)? p->boolean : false;
 }
 
-// TODO: Make iterative evlis
 static cons_t* evlis(cons_t* p, environment_t* e)
 {
-  return !pairp(p) ? nil() :
-    cons(eval(car(p), e),
-         evlis(cdr(p), e));
+  /*
+   * Recursive version:
+   *
+   * return !pairp(p) ? nil() :
+   *   cons(eval(car(p), e),
+   *        evlis(cdr(p), e));
+   */
+
+  /*
+   * Iterative version
+   */
+  cons_t *r = list(), *end = r;
+
+  while ( pairp(p) ) {
+    /*
+     * Instead of
+     *   r = append(r, cons(eval(car(p), e)));
+     * we keep track of the end and do the below
+     * procedure.  This avoids the costly append().
+     */
+    end->car = eval(car(p), e);
+    end->cdr = cons(nil());
+    end = cdr(end);
+    p = cdr(p);
+  }
+
+  return r;
 }
 
 static cons_t* caddr(cons_t* p)
