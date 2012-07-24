@@ -22,10 +22,11 @@ TARGETS_O = exceptions.o \
             print.o \
             repl.o \
             primops.o \
+            evlis.o \
             eval.o \
             backtrace.o \
             module_base.o \
-						syntax-rules.o \
+            syntax-rules.o \
             cons.o \
             tests.o
 

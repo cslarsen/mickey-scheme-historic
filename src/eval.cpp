@@ -20,6 +20,7 @@
 #include "syntax-rules.h"
 #include "exceptions.h"
 #include "assertions.h"
+#include "evlis.h"
 
 extern cons_t* proc_do(cons_t*, environment_t*);
 
@@ -47,47 +48,6 @@ static bool bool_true(cons_t* p)
   return booleanp(p)? p->boolean : false;
 }
 
-static cons_t* evlis(cons_t* p, environment_t* e)
-{
-  /*
-   * Recursive version:
-   *
-   * return !pairp(p) ? nil() :
-   *   cons(eval(car(p), e),
-   *        evlis(cdr(p), e));
-   */
-
-  /*
-   * Iterative version
-   */
-  cons_t *r = list(), *end = r;
-
-  while ( pairp(p) ) {
-    /*
-     * Instead of
-     *   r = append(r, cons(eval(car(p), e)));
-     * we keep track of the end and do the below
-     * procedure.  This avoids the costly append().
-     */
-    end->car = eval(car(p), e);
-    end->cdr = cons(nil());
-    end = cdr(end);
-    p = cdr(p);
-  }
-
-  return r;
-}
-
-static cons_t* caddr(cons_t* p)
-{
-  return car(cddr(p));
-}
-
-static cons_t* cadddr(cons_t* p)
-{
-  return car(cddr(cdr(p)));
-}
-
 static cons_t* invoke(cons_t* fun, cons_t* args)
 {
   if ( !closurep(fun) )
@@ -104,7 +64,7 @@ static cons_t* invoke(cons_t* fun, cons_t* args)
  * "rest" arguments, e.g. "(x y z . rest)" or "rest".
  */
 static size_t arg_length(cons_t* args)
-{ 
+{
   size_t count  = 0;
   bool prev_dot = false;
 
