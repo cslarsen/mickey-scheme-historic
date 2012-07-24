@@ -2233,6 +2233,9 @@ named_function_t exports_base[] = {
   {":debug", proc_debug},
   {":exit", proc_exit},
   {":list->dot", proc_list_to_dot},
+#ifdef USE_LLVM
+  {":llvm:gcd", proc_llvm_gcd},
+#endif
   {":syntax-expand", proc_syntax_expand},
   {":type-of", proc_type_of},
   {":version", proc_version},
@@ -2352,9 +2355,6 @@ named_function_t exports_base[] = {
   {"write", proc_write},
   {"xor", proc_xor},
   {"zero?", proc_zerop},
-#ifdef USE_LLVM
-  {"llvm:gcd", proc_llvm_gcd},
-#endif
   /*
    * Following is the list of definitions recognized
    * by eval.  Since these are hardcoded into eval(),
