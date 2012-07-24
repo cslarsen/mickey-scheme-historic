@@ -13,7 +13,7 @@ Current Features
   * Most `let`-forms, including named let
   * Rest arguments (aka variadic functions)
   * Macros (while it _does_ work, it's still incomplete)
-  * Lazy evaluation (although _without_ memoization, currently)
+  * Lazy evaluation with memoization
   * Experimental LLVM JIT compilation (for _one_ function only, currently)
   * Tail call eliminiation (yeah, neither the JVM nor Python has that,
     so that's at least _something_ to be a little proud of!)
@@ -351,9 +351,6 @@ print "One! Two! Three!":
 This outputs:
 
     One! Two! Three!
-
-Note that Mickey Scheme's `force` does not currently memoize its computations,
-as the standard requires (but that's easy to fix).
 
 # Extensions
 
