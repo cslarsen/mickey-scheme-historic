@@ -237,7 +237,7 @@ int repl()
      * rewrite... :)
      */
     if ( input != reinterpret_cast<char*>(1) ) {
-      if ( (input = readline("#;mickey> ")) == NULL )
+      if ( (input = readline("#; mickey> ")) == NULL )
         break; // end of input stream
 
       if ( *trimr(input) == '\0' )
