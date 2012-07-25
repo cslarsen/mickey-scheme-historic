@@ -19,6 +19,7 @@ TARGETS_O = exceptions.o \
             types.o \
             module_math.o \
             assertions.o \
+            circular.o \
             print.o \
             repl.o \
             primops.o \

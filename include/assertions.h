@@ -16,3 +16,4 @@ void assert_length(const cons_t*, const size_t min, const size_t max);
 void assert_length_min(const cons_t*, const size_t min);
 void assert_type(const enum type_t, cons_t*);
 void assert_number(const cons_t*);
+void assert_noncyclic(const cons_t*);

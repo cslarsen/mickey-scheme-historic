@@ -14,6 +14,7 @@
 #include "primops.h"
 #include "print.h"
 #include "util.h"
+#include "circular.h"
 #include "exceptions.h"
 
 void assert_length(const cons_t* p, const size_t e)
@@ -76,4 +77,10 @@ void assert_number(const cons_t* p)
     raise(std::runtime_error(format("Function expected a number but got a %s: `%s´",
       to_s(type_of(p)).c_str(),
       sprint(p).c_str())));
+}
+
+void assert_noncyclic(const cons_t* p)
+{
+  if ( circularp(p) )
+    raise(std::runtime_error("List contains cycles"));
 }

@@ -24,6 +24,7 @@
 #include "types.h"
 #include "apply.h"
 #include "syntax-rules.h"
+#include "circular.h"
 
 #ifdef USE_LLVM
 # include "llvm/Module.h"
@@ -920,6 +921,9 @@ cons_t* proc_version(cons_t*, environment_t*)
 
 cons_t* proc_length(cons_t* p, environment_t*)
 {
+  assert_length(p, 1);
+  assert_type(PAIR, car(p));
+  assert_noncyclic(car(p));
   return integer(static_cast<int>(length(car(p))));
 }
 
