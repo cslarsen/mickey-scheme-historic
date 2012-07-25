@@ -47,7 +47,7 @@ void assert_length_min(const cons_t* p, const size_t min)
         min, l, sprint(p).c_str())));
 }
 
-void assert_type(const enum type_t type, cons_t* p)
+void assert_type(const enum type_t type, const cons_t* p)
 {
   type_t p_type = type_of(p);
   bool error = false;
@@ -83,4 +83,11 @@ void assert_noncyclic(const cons_t* p)
 {
   if ( circularp(p) )
     raise(std::runtime_error("List contains cycles"));
+}
+
+void assert_proper_list(const cons_t* p)
+{
+  if ( !properlistp(p) )
+    raise(std::runtime_error(
+      format("Not a proper list: %s", sprint(p).c_str())));
 }

@@ -60,6 +60,7 @@ bool decimalp(const cons_t*);
 bool nullp(const cons_t*);
 bool pairp(const cons_t*);
 bool listp(const cons_t*);
+bool properlistp(const cons_t*);
 bool stringp(const cons_t*);
 bool closurep(const cons_t*);
 bool syntaxp(const cons_t*);

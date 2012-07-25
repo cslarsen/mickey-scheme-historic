@@ -25,6 +25,7 @@
 #include "apply.h"
 #include "syntax-rules.h"
 #include "circular.h"
+#include "evlis.h"
 
 #ifdef USE_LLVM
 # include "llvm/Module.h"
@@ -533,7 +534,7 @@ cons_t* proc_pairp(cons_t* p, environment_t*)
 cons_t* proc_listp(cons_t* p, environment_t*)
 {
   assert_length(p, 1);
-  return boolean(listp(car(p)));
+  return boolean(properlistp(car(p)));
 }
 
 cons_t* proc_numberp(cons_t* p, environment_t*)
@@ -927,6 +928,13 @@ cons_t* proc_length(cons_t* p, environment_t*)
   return integer(static_cast<int>(length(car(p))));
 }
 
+cons_t* proc_circularp(cons_t* p, environment_t*)
+{
+  assert_length(p, 1);
+  assert_type(PAIR, car(p));
+  return boolean(circularp(car(p)));
+}
+
 cons_t* proc_eqp(cons_t* p, environment_t*)
 {
   assert_length(p, 2);
@@ -1317,31 +1325,52 @@ cons_t* proc_boolean_to_string(cons_t* p, environment_t* e)
   return proc_to_string(p, e);
 }
 
+/*
+ * See comments in proc_set_cdr.
+ */
 cons_t* proc_set_car(cons_t* p, environment_t* e)
 {
-  if ( type_of(car(p)) == SYMBOL ) {
-    std::string name = car(p)->symbol->name();
-    e->lookup_or_throw(name)->car = cadr(p);
-  } else if ( type_of(car(p)) == PAIR ) {
-    car(p)->car = cadr(p);
-  } else
-    // generate error
-    assert_type(PAIR, car(p));
+  cons_t *target = car(p);
+  cons_t *source = cadr(p);
 
+  if ( type_of(target) == SYMBOL )
+    target = e->lookup_or_throw(target->symbol->name());
+
+  if ( type_of(target) != PAIR )
+    assert_type(PAIR, target); // raise error
+
+  if ( type_of(source) == SYMBOL )
+    source = e->lookup_or_throw(source->symbol->name());
+  else // constant, or whatever
+    source = eval(source, e);
+
+  target->car = source;
   return nil();
 }
 
+/*
+ * set-cdr! is intercepted by eval, so we can look up
+ * addresses ourselves.
+ *
+ * We do it this way so we can create circular cells.
+ */
 cons_t* proc_set_cdr(cons_t* p, environment_t* e)
 {
-  if ( type_of(car(p)) == SYMBOL ) {
-    std::string name = car(p)->symbol->name();
-    e->lookup_or_throw(name)->cdr = cadr(p);
-  } else if ( type_of(car(p)) == PAIR ) {
-    car(p)->cdr = cadr(p);
-  } else
-    // generate error
-    assert_type(PAIR, car(p));
+  cons_t *target = car(p);
+  cons_t *source = cadr(p);
 
+  if ( type_of(target) == SYMBOL )
+    target = e->lookup_or_throw(target->symbol->name());
+
+  if ( type_of(target) != PAIR )
+    assert_type(PAIR, target); // raise error
+
+  if ( type_of(source) == SYMBOL )
+    source = e->lookup_or_throw(source->symbol->name());
+  else // constant, or whatever
+    source = eval(source, e);
+
+  target->cdr = source;
   return nil();
 }
 
@@ -2234,6 +2263,7 @@ named_function_t exports_base[] = {
   {"/", proc_divf},
   {":backtrace", proc_backtrace},
   {":bound?", proc_boundp},
+  {":circular?", proc_circularp},
   {":closure-source", proc_closure_source},
   {":debug", proc_debug},
   {":exit", proc_exit},
@@ -2328,8 +2358,6 @@ named_function_t exports_base[] = {
   {"real?", proc_realp},
   {"reverse", proc_reverse},
   {"round", proc_round},
-  {"set-car!", proc_set_car},
-  {"set-cdr!", proc_set_cdr},
   {"string", proc_string},
   {"string->list", proc_string_to_list},
   {"string->number", proc_string_to_number},
@@ -2381,5 +2409,7 @@ named_function_t exports_base[] = {
   {"quasiquote", proc_dummy_placeholder},
   {"quote", proc_dummy_placeholder},
   {"set!", proc_dummy_placeholder},
+  {"set-car!", proc_dummy_placeholder},
+  {"set-cdr!", proc_dummy_placeholder},
   {NULL, NULL} /* terminate with null */
 };

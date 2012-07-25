@@ -518,6 +518,12 @@ cons_t* eval(cons_t* p, environment_t* e)
       if ( name == "do" )
         return eval(proc_do(p, e), e);
 
+      if ( name == "set-car!" )
+        return proc_set_car(cdr(p), e);
+
+      if ( name == "set-cdr!" )
+        return proc_set_cdr(cdr(p), e);
+
       if ( name == "eval" ) {
         p = car(evlis(cdr(p), e));
         continue;

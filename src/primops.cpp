@@ -16,6 +16,7 @@
 #include "util.h"
 #include "assertions.h"
 #include "print.h"
+#include "circular.h"
 #include "exceptions.h"
 
 cons_t* cons(const cons_t* head, const cons_t* tail)
@@ -295,9 +296,17 @@ bool listp(const cons_t* p)
    * Note that this implementation is slow, because
    * it traverses the entire list.  Unfortunately,
    * I think this is needed. (TODO: Prove me wrong).
+   *
+   * Also note that we don't check for cycles here!
    */
   return type_of(p) == PAIR &&
       (nullp(cdr(p)) || listp(p->cdr));
+}
+
+bool properlistp(const cons_t* p)
+{
+  return type_of(p) == PAIR
+    && !circularp(p) && listp(p);
 }
 
 bool closurep(const cons_t* p)
