@@ -12,33 +12,36 @@
 #include "evlis.h"
 #include "primops.h"
 #include "eval.h"
+#include "print.h"
+
+static bool isdot(cons_t* p)
+{
+  return symbolp(p) && p->symbol->name() == ".";
+}
 
 cons_t* evlis(cons_t* p, environment_t* e)
 {
-  /*
-   * Recursive version:
-   *
-   * return !pairp(p) ? nil() :
-   *   cons(eval(car(p), e),
-   *        evlis(cdr(p), e));
-   */
+  cons_t *r = list();
 
-  /*
-   * Iterative version
-   */
-  cons_t *r = list(), *end = r;
-
-  while ( pairp(p) ) {
+  for ( cons_t *end = r; pairp(p); p = cdr(p) ) {
     /*
-     * Instead of
-     *   r = append(r, cons(eval(car(p), e)));
-     * we keep track of the end and do the below
-     * procedure.  This avoids the costly append().
+     * We use *end so we don't have to use append()
      */
     end->car = eval(car(p), e);
+
+    /*
+     * If next symbol is a dot, skip it and continue
+     * evaluating.  This makes it possible to use
+     * dot notation as in (+ 1 . (2 . ()))
+     */
+    if ( isdot(cadr(p)) ) {
+      p = cddr(p);
+      end->cdr = evlis(car(p), e);
+      break;
+    }
+
     end->cdr = cons(nil());
     end = cdr(end);
-    p = cdr(p);
   }
 
   return r;

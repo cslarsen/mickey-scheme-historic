@@ -47,6 +47,7 @@
 (test-eq (quote (list? '())) #t)
 (test-eq (quote (list? 123)) #f)
 (test-eq (quote (pair? 123)) #f)
+(test-eq (quote (+ 1 . (2 . (3 . ())))) 6)
 
 ;; (if t a1 a2)
 (test-eq (quote (if (> 4 2) 11 22)) 11)

@@ -358,8 +358,14 @@ cons_t* eval(cons_t* p, environment_t* e)
 {
   for(;;) {
     if ( atomp(p) ) {
-      if ( symbolp(p) )
+      if ( symbolp(p) ) {
+
+        // dot used in dot-notation
+        if ( p->symbol->name() == "." )
+          return p;
+
         return e->lookup_or_throw(p->symbol->name());
+      }
 
       if ( numberp(p) || stringp(p) || charp(p) ||
            booleanp(p) || vectorp(p) || decimalp(p) ||
