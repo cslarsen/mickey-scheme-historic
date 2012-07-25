@@ -1,4 +1,6 @@
 TODO
+- BUG: Circular lists -> (define x (list 'a)) (set-cdr! x x) (list? x)
+       crashes mickey.
 - UTF8 support
 - Think about constancy, like a quoted list like '(1 2 3). Should we mark it
   as constant?  What does the draft say about this?
