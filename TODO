@@ -1,4 +1,11 @@
 TODO
+- BUG, VARIADIC FUNCTIONS: Now I'm looking for the dot in the input
+  arguments, but the CORRECT way of doing that is to let the reader
+  translate a "first . rest" into "(cons first rest)" so we get an
+  improper list.  This alleviates the need to handle dots, and will
+  also make it easier system-wide to handle variadic functions (e.g.,
+  in double macro invocation, variadic functions arguments will
+  "expand" correctly).
 - (cdr '(a . b)) should return (b) and not (. b)
 - Support for non-syntax rules() define-syntax (if allowed in r7rs)
 - Support for let-syntax
