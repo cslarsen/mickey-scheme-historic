@@ -14,6 +14,7 @@
 #include "syntax-rules.h"
 #include "print.h"
 #include "exceptions.h"
+#include "arguments.h"
 
 extern "C" { // because I don't like name-mangling
 
@@ -32,22 +33,69 @@ extern "C" { // because I don't like name-mangling
  */
 static bool syntax_match(cons_t *pat, cons_t *c, dict_t& map)
 {
-  for ( ; !nullp(pat); pat = cdr(pat) ) {
-    cons_t *l = car(pat);
-    cons_t *r = car(c);
+  bool variadic = has_rest_args(pat);
+  bool prev_dot = false;
+
+  while ( !nullp(pat) ) {
+    cons_t *l = car(pat); // left; pattern
+    cons_t *r = car(c); // right; code
 
     // Match REST of symbols (TODO: Fix this, it's not very correct)
-    if ( l->symbol->name() == "..." ) {
-      map["..."] = c;
+    if ( symbol_name(l) == "..." ) {
+      map["..."] = nullp(r) ? nil() : r;
       return true;
+    }
+
+    // Variadic function; collect rest of arguments
+    if ( variadic && prev_dot ) {
+      map[symbol_name(l)] = nullp(r) ? nil() : r;
+      return true;
+    }
+
+    // detect dot in (arg1 arg2 . argN)
+    prev_dot = (symbol_name(l) == ".") ? true : false;
+
+    if ( prev_dot ) {
+      /*
+       * Skip dot symbol in pattern.
+       *
+       * This is a special case, which I don't think I'm
+       * handling correctly (elsewhere in the system).
+       *
+       * If we have to variadic macros with one calling
+       * the other with the variadic function, we get
+       * the extra dot in the input arguments, so normally
+       * input args would be "(a b c)" but here it will be
+       * "(a b . c)".
+       *
+       * TODO: I guess the CORRECT way of handling this is
+       *       to expand a function call "(foo arg1 arg2 . etc)"
+       *       into a dot-free argument list.  Find out.
+       *
+       * For now, just skip ahead on c as well.
+       */
+      if ( symbol_name(r) == "." )
+        c = cdr(c);
+
+      pat = cdr(pat);
+      continue;
+    }
+
+    if ( symbol_name(l) == "_" ) {
+      // "_" = match anything, so skip both pattern and args
+      c = cdr(c);
+      pat = cdr(pat);
+      continue;
     }
 
     // Pattern is too long; no match
     if ( nullp(c) )
       return false;
 
-    map[l->symbol->name()] = r;
+    // store in match symbol table
+    map[symbol_name(l)] = r;
     c = cdr(c);
+    pat = cdr(pat);
   }
 
   // Check that pattern was fully matched
@@ -62,7 +110,7 @@ static cons_t* syntax_replace(dict_t &map, cons_t* p)
     if ( listp(car(p)) )
       p->car = syntax_replace(map, car(p));
     else if ( symbolp(car(p)) && map.count(car(p)->symbol->name()) ) {
-      const std::string name = car(p)->symbol->name();
+      const std::string& name = car(p)->symbol->name();
       cons_t *repl = map[name];
 
       /*
