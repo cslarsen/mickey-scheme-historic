@@ -21,6 +21,7 @@ TARGETS_O = exceptions.o \
             assertions.o \
             circular.o \
             print.o \
+            arguments.o \
             repl.o \
             primops.o \
             evlis.o \
