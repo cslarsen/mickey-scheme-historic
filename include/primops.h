@@ -86,4 +86,10 @@ int gcd(int a, int b);
 int lcm(int a, int b);
 cons_t* nil_coalesce(cons_t* p);
 
+/*
+ * If argument is a symbol, return its name.
+ * If not, return empty string.
+ */
+const std::string& symbol_name(const cons_t*);
+
 #endif

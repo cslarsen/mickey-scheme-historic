@@ -492,3 +492,9 @@ cons_t* nil_coalesce(cons_t* p)
   // Always return list; empty list if null
   return !nullp(p)? p : list(NULL);
 }
+
+const std::string& symbol_name(const cons_t* p)
+{
+  static const std::string empty("");
+  return !symbolp(p)? empty : p->symbol->name();
+}
