@@ -1,4 +1,10 @@
 TODO
+- (cdr '(a . b)) should return (b) and not (. b)
+- Support for non-syntax rules() define-syntax (if allowed in r7rs)
+- Support for let-syntax
+- Support for variadic functions / patterns in syntax-rules
+- BUG: Detection of proper list/circular lists must be done in many
+  lisp functions
 - BUG: Circular lists -> (define x (list 'a)) (set-cdr! x x) (list? x)
        crashes mickey.
 - UTF8 support
