@@ -14,16 +14,16 @@
 #include "print.h"
 
 /*
- * Detecting cycles using Floyd's algorithm,
+ * Detect cycles using Floyd's algorithm:
  * http://en.wikipedia.org/wiki/Cycle_detection
  */
-bool circularp(const cons_t* p)
+bool circularp(const cons_t* t)
 {
-  const cons_t *t = p, *h = p;
+  const cons_t *h = t;
 
   do {
-    t = cdr(t);
-    h = cddr(h);
+    t = cdr(t);  // slow tortoise
+    h = cddr(h); // fast hare
   } while ( t != h );
 
   return !nullp(t);
