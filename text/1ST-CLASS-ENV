@@ -1,0 +1,10 @@
+It should be possible to interact with the scheme environment either
+through (:internal) functions or through a library.
+
+Having first class environments makes it possible to write even more
+functions in libraries.
+
+For ideas, look at e.g.
+http://groups.csail.mit.edu/mac/ftpdir/6.001-fall91/ps9/ps9-ports.scm
+
+or see how they do it in the T programming language.
