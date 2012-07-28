@@ -37,7 +37,7 @@ static int all(const char* s, int (*check)(int))
   return true;
 }
 
-static int isquote(int s)
+static int isdoublequote(int s)
 {
   return s == '\"';
 }
@@ -115,7 +115,7 @@ bool isstring(const char* s)
   // TODO: Correct code to allow for escaping quotes, etc
   return !empty(s) && !empty(s+1) // at least `""`
     && s[0]=='"' && s[strlen(s)-1]=='"'
-    && isodd(count(s+1, isquote));
+    && isodd(count(s+1, isdoublequote));
 }
 
 bool isatom(const char* s)
