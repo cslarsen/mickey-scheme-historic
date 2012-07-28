@@ -42,13 +42,14 @@ static bool syntax_match(cons_t *pat, cons_t *c, dict_t& map)
 
     // Match REST of symbols (TODO: Fix this, it's not very correct)
     if ( symbol_name(l) == "..." ) {
-      map["..."] = nullp(r) ? nil() : r;
+      map["..."] = nullp(c) ? nil() : c;
       return true;
     }
 
     // Variadic function; collect rest of arguments
     if ( variadic && prev_dot ) {
-      map[symbol_name(l)] = nullp(r) ? nil() : r;
+      // give it a default value if not set
+      map[symbol_name(l)] = nullp(c) ? list(NULL) : c;
       return true;
     }
 
