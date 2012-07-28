@@ -12,8 +12,6 @@ TODO
 - Support for non-syntax rules() define-syntax (if allowed in r7rs)
   (it just says "it SHOULD be syntax-rules")
 - BUG: Detection of proper list/circular lists must be done in many lisp functions
-- BUG: Circular lists -> (define x (list 'a)) (set-cdr! x x) (list? x)
-       crashes mickey.
 - UTF8 support
 - Think about constancy, like a quoted list like '(1 2 3). Should we mark it
   as constant?  What does the draft say about this?

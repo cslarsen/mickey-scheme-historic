@@ -30,6 +30,12 @@
 #include "module_base.h"
 #include "module_math.h"
 #include "exceptions.h"
+#include "circular.h"
+
+/*
+ * Max items to display in REPL for circular lists.
+ */
+#define MAX_CIRCULAR_DISPLAY_ITEMS 33
 
 // make env reachable by readline commands
 static environment_t *global_env = NULL;
@@ -303,10 +309,29 @@ int repl()
       #endif
 
       for ( cons_t *i = p->root; !nullp(i); i = cdr(i) ) {
-        std::string s = sprint(eval(car(i), p->globals));
+        cons_t *result = eval(car(i), p->globals);
 
-        if ( !s.empty() )
-         printf("%s\n", s.c_str());
+        if ( circularp(result) ) {
+          fflush(stdout);
+          fprintf(stderr, "Warning: List is circular\n");
+          cons_t *l = list(), *end = l;
+
+          for ( int n=0; n < MAX_CIRCULAR_DISPLAY_ITEMS; ++n ) {
+            end->car = car(result);
+            end->cdr = cons(nil());
+            end = cdr(end);
+            result = cdr(result);
+          }
+
+          end->car = symbol("... ad infinitum", new environment_t());
+          end->cdr = cons(nil());
+          printf("%s\n", sprint(l).c_str());
+        } else {
+          std::string s = sprint(result);
+
+          if ( !s.empty() )
+            printf("%s\n", s.c_str());
+        }
       }
 
       delete p;
