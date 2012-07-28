@@ -39,6 +39,12 @@ void execute(const char* file)
     const char* file = global_opts.current_filename;
     bool has_file = file && strcmp(file, "-");
 
+    /*
+     * Finish any unfinished printing before
+     * writing errors.
+     */
+    fflush(stdout);
+
     fprintf(stderr, "Error%s%s: %s\n",
       has_file? " in " : "",
       has_file? file : "",
