@@ -271,6 +271,9 @@ static cons_t* make_closure(cons_t* args, cons_t* body, environment_t* e)
   return r;
 }
 
+/*
+ * Invoke function while making a stack trace
+ */
 static cons_t* invoke_with_trace(cons_t* op, cons_t* args, environment_t* e)
 {
   backtrace_push(cons(op, args));
@@ -493,15 +496,32 @@ cons_t* eval(cons_t* p, environment_t* e)
       }
 
       if ( name == "apply" ) {
-        // Correct to use eval instead of evlis (or nothing) on parameter list?
-        return invoke_with_trace(cadr(p), eval(caddr(p), e), e);
+        cons_t *proc = cadr(p);
+        cons_t *args = caddr(p);
+
+        assert_length(cddr(p), 1);
+        assert_proper_list(cddr(p));
+
+        /*
+         * TODO: Either of the following bugs, depending
+         *       on which snippet to return below:
+         *
+         *       - (apply display (list (list "foo")))
+         *       - (apply + (list 1 2 3))
+         */
+
+        // Alternative 1:
+        // return eval(cons(proc, cons(args)), e);
+
+        // Alternative 2:
+        return invoke_with_trace(proc, eval(args, e), e);
       }
     }
 
     /*
      * Again, per JScheme authors Norvig et al -- who may or may not
-     * have gotten this from Queinnec -- we'll eliminate proper tail
-     * calls!
+     * have gotten this from Queinnec/SICP/AI-memos -- we'll eliminate
+     * proper tail calls!
      *
      * Tactic:  For user-defined function, we'll evaluate all the
      * function arguments (using evlis) and pass the results to
