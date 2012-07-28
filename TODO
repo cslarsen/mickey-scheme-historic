@@ -1,4 +1,9 @@
 TODO
+- Quotation-parser is broken, e.g. can't do "Just say \"Yes!\" please"
+- BUG igjen.. boils down to this not working:
+    repl> (apply display (list (list "One argument")))
+  This works fine in chicken and chibi, but not in mickey because it tries
+  to EVAL the argument as a function.
 - BUG, VARIADIC FUNCTIONS: Now I'm looking for the dot in the input
   arguments, but the CORRECT way of doing that is to let the reader
   translate a "first . rest" into "(cons first rest)" so we get an
