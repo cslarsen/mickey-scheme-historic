@@ -272,9 +272,13 @@ static cons_t* make_closure(cons_t* args, cons_t* body, environment_t* e)
 }
 
 /*
- * Invoke function while making a stack trace
+ * Invoke function while making a stack trace.
+ *
+ * Added evlis_args option to disable evlis'ing arguments.
+ * This is needed by e.g. (apply), which needs to EVAL its
+ * arguments.
  */
-static cons_t* invoke_with_trace(cons_t* op, cons_t* args, environment_t* e)
+static cons_t* invoke_with_trace(cons_t* op, cons_t* args, environment_t* e, bool evlis_args = true)
 {
   backtrace_push(cons(op, args));
   cons_t *fun = eval(op, e);
@@ -285,9 +289,10 @@ static cons_t* invoke_with_trace(cons_t* op, cons_t* args, environment_t* e)
 
   if ( symbolp(op) )
     func_name = op->symbol->name();
-  else func_name = "<?>";
+  else
+    func_name = "<?>";
 
-  cons_t *ret = invoke(fun, evlis(args, e));
+  cons_t *ret = invoke(fun, evlis_args? evlis(args, e) : args);
 
   func_name = "";
   backtrace_pop();
@@ -496,25 +501,25 @@ cons_t* eval(cons_t* p, environment_t* e)
       }
 
       if ( name == "apply" ) {
-        cons_t *proc = cadr(p);
-        cons_t *args = caddr(p);
+        /*
+         * Difference between apply and normal
+         * function evaluation is that (1) we
+         * run eval on the parameters instead of
+         * evlis, and (2) that apply takes a
+         * single list of procedure arguments
+         * that are "spliced in", so that
+         * (apply proc (list a b c ...)) is
+         * effectively expanded to * (proc a b c ...)
+         */
 
         assert_length(cddr(p), 1);
         assert_proper_list(cddr(p));
 
-        /*
-         * TODO: Either of the following bugs, depending
-         *       on which snippet to return below:
-         *
-         *       - (apply display (list (list "foo")))
-         *       - (apply + (list 1 2 3))
-         */
+        cons_t *proc = cadr(p);
+        cons_t *args = eval(caddr(p), e);
+        bool use_evlis = false;
 
-        // Alternative 1:
-        // return eval(cons(proc, cons(args)), e);
-
-        // Alternative 2:
-        return invoke_with_trace(proc, eval(args, e), e);
+        return invoke_with_trace(proc, args, e, use_evlis);
       }
     }
 
