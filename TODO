@@ -1,4 +1,16 @@
-TODO
+Fix 1:
+#; mickey> (cons 1 2)
+1 . 2
+
+but should display (1 . 2).  See listp() and pairp(), and/or sprint.
+
+Fix 2:
+
+#; mickey> '(1. 2)
+(1 2)
+
+Should return (1 . 2) or the same as (cons 1 2).
+
 - BUG: (cdr '(a . b)) should return (b) and not (. b)
 - FEATURE: Support for let-syntax
 - Quotation-parser is broken, e.g. can't do "Just say \"Yes!\" please"
