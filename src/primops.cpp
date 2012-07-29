@@ -1,12 +1,12 @@
 /*
  * Mickey Scheme
  *
- * Copyright (C) 2011 Christian Stigen Larsen <csl@sublevel3.org>
+ * Copyright (C) 2011-2012 Christian Stigen Larsen <csl@sublevel3.org>
  * http://csl.sublevel3.org                              _
  *                                                        \
  * Distributed under the modified BSD license.            /\
  * Please post bugfixes and suggestions to the author.   /  \_
- *                                                          
+ *
  */
 
 #include <stdint.h> // limits
@@ -19,21 +19,18 @@
 #include "circular.h"
 #include "exceptions.h"
 
-cons_t* cons(const cons_t* head, const cons_t* tail)
+cons_t* cons(const cons_t* h, const cons_t* t)
 {
   cons_t *p = new cons_t();
   p->type = PAIR;
-  p->car = const_cast<cons_t*>(head);
-  p->cdr = const_cast<cons_t*>(tail);
+  p->car = const_cast<cons_t*>(h);
+  p->cdr = const_cast<cons_t*>(t);
   return p;
 }
 
-cons_t* list(const cons_t* head, const cons_t* tail)
+cons_t* list(const cons_t* h, const cons_t* t)
 {
-  if ( tail == NULL )
-    return cons(head, tail);
-  else
-    return cons(head, cons(tail, NULL));
+  return cons(h, t? cons(t) : NULL);
 }
 
 cons_t* symbol(const char* s, environment_t*)
