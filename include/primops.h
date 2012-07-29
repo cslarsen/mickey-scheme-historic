@@ -22,6 +22,13 @@ cons_t* cons(const cons_t* head, const cons_t* tail = NULL);
 cons_t* list(const cons_t* head = NULL, const cons_t* tail = NULL);
 cons_t* append(cons_t*, cons_t*);
 cons_t* splice(cons_t*, cons_t*);
+
+/*
+ * Splice one list directly into the other and
+ * return the end of the target list afterwards.
+ */
+cons_t* splice_into(cons_t *from, cons_t *to);
+
 cons_t* symbol(const char*, environment_t*);
 cons_t* integer(int);
 cons_t* boolean(bool);

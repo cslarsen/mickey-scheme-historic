@@ -302,20 +302,19 @@ static cons_t* eval_quasiquote(cons_t* p, environment_t* e)
    * append().
    */
   for ( cons_t *t = r; !nullp(p); p = cdr(p) ) {
-    if ( listp(car(p)) ) {
-      if ( symbolp(caar(p)) && caar(p)->symbol->name() == "unquote-splicing") {
-        // splice ev into t
-        for ( cons_t *ev = eval(cadar(p), e); !nullp(ev); ev = cdr(ev) ) {
-          t->car = !pairp(ev)? ev : car(ev);
-          t = t->cdr = cons(NULL);
-        }
+    if ( !listp(car(p)) )
+      t->car = car(p);
+    else {
+      const std::string name = symbol_name(caar(p));
+
+      if ( name == "unquote-splicing" ) {
+        t = splice_into(eval(cadar(p), e), t);
         continue;
-      } else if ( symbolp(caar(p)) && caar(p)->symbol->name() == "unquote" )
+      } else if ( name == "unquote" )
         t->car = eval(cadar(p), e);
       else
         t->car = eval_quasiquote(car(p), e);
-    } else
-      t->car = car(p);
+    }
 
     t = t->cdr = cons(NULL);
   }

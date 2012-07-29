@@ -389,6 +389,18 @@ cons_t* splice(cons_t *r, cons_t* p)
   return r;
 }
 
+cons_t* splice_into(cons_t *src, cons_t *dst)
+{
+  while ( !nullp(src) ) {
+    dst->car = pairp(src)? car(src) : src;
+    dst = dst->cdr = cons(NULL);
+    src = cdr(src);
+  }
+
+  return dst;
+}
+
+
 cons_t* closure(lambda_t f, environment_t* e)
 {
   closure_t *c = new closure_t();
