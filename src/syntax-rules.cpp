@@ -6,7 +6,7 @@
  *                                                        \
  * Distributed under the modified BSD license.            /\
  * Please post bugfixes and suggestions to the author.   /  \_
- *                                                          
+ *
  */
 
 #include "cons.h"
@@ -33,12 +33,9 @@ extern "C" { // because I don't like name-mangling
  */
 static bool syntax_match(cons_t *pat, cons_t *c, dict_t& map)
 {
-  bool variadic = has_rest_args(pat);
-  bool prev_dot = false;
-
   while ( !nullp(pat) ) {
     cons_t *l = car(pat); // left; pattern
-    cons_t *r = car(c); // right; code
+    cons_t *r = car(c); // right; input to be matched
 
     // Match REST of symbols (TODO: Fix this, it's not very correct)
     if ( symbol_name(l) == "..." ) {
@@ -46,40 +43,12 @@ static bool syntax_match(cons_t *pat, cons_t *c, dict_t& map)
       return true;
     }
 
-    // Variadic function; collect rest of arguments
-    if ( variadic && prev_dot ) {
-      // give it a default value if not set
-      map[symbol_name(l)] = nullp(c) ? list(NULL) : c;
+    /*
+     * Variadic function; collect rest of arguments or give default value
+     */
+    if ( !nullp(cdr(pat)) && !pairp(cdr(pat)) ) {
+      map[symbol_name(cdr(pat))] = nullp(c) ? list(NULL) : c;
       return true;
-    }
-
-    // detect dot in (arg1 arg2 . argN)
-    prev_dot = (symbol_name(l) == ".") ? true : false;
-
-    if ( prev_dot ) {
-      /*
-       * Skip dot symbol in pattern.
-       *
-       * This is a special case, which I don't think I'm
-       * handling correctly (elsewhere in the system).
-       *
-       * If we have to variadic macros with one calling
-       * the other with the variadic function, we get
-       * the extra dot in the input arguments, so normally
-       * input args would be "(a b c)" but here it will be
-       * "(a b . c)".
-       *
-       * TODO: I guess the CORRECT way of handling this is
-       *       to expand a function call "(foo arg1 arg2 . etc)"
-       *       into a dot-free argument list.  Find out.
-       *
-       * For now, just skip ahead on c as well.
-       */
-      if ( symbol_name(r) == "." )
-        c = cdr(c);
-
-      pat = cdr(pat);
-      continue;
     }
 
     if ( symbol_name(l) == "_" ) {

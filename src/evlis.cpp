@@ -14,34 +14,17 @@
 #include "eval.h"
 #include "print.h"
 
-static bool isdot(cons_t* p)
-{
-  return symbolp(p) && p->symbol->name() == ".";
-}
-
 cons_t* evlis(cons_t* p, environment_t* e)
 {
   cons_t *r = list();
 
-  for ( cons_t *end = r; pairp(p); p = cdr(p) ) {
-    /*
-     * We use *end so we don't have to use append()
-     */
-    end->car = eval(car(p), e);
-
-    /*
-     * If next symbol is a dot, skip it and continue
-     * evaluating.  This makes it possible to use
-     * dot notation as in (+ 1 . (2 . ()))
-     */
-    if ( isdot(cadr(p)) ) {
-      p = cddr(p);
-      end->cdr = evlis(car(p), e);
-      break;
-    }
-
-    end->cdr = cons(nil());
-    end = cdr(end);
+  /*
+   * We use a tail pointer `t´ to avoid using the slow append()
+   */
+  for ( cons_t *t = r; pairp(p); p = cdr(p) ) {
+    t->car = eval(car(p), e);
+    t->cdr = cons(nil());
+    t = cdr(t);
   }
 
   return r;

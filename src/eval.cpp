@@ -123,8 +123,9 @@ static cons_t* call_lambda(cons_t *p, environment_t* e)
     /*
      * Non-pure variadic, i.e. has some set arguments and one
      * trailing "rest"-argument.  E.g.:  (lambda (x y z . rest) <body>)
+     *
      */
-    if ( car(name)->symbol->name() == "." ) {
+    if ( !pairp(name) ) {
 
       if ( nullp(value) ) {
         /*
@@ -177,13 +178,9 @@ static body_env_t expand_lambda(cons_t *p, environment_t* e)
   size_t params_reqd = arg_length(args);
   size_t params_recv = length(p);
 
-  if ( params_recv < params_reqd ) {
+  if ( params_recv < params_reqd )
     raise(std::runtime_error(format("Function requires %d parameters, but got %d",
       params_reqd, params_recv)));
-
-    // try currying (TODO: Do we need to check for any conditions?)
-    //return make_curried_function(args, p, body, e->extend());
-  }
 
   if ( params_recv > params_reqd && !has_rest ) {
     raise(std::runtime_error(
@@ -199,11 +196,13 @@ static body_env_t expand_lambda(cons_t *p, environment_t* e)
   {
     if ( !symbolp(car(name)) ) {
       if ( has_rest ) {
-        // Pure variadic function, e.g. (lambda x (display x)) will have
-        // all args in `x`.
+        /*
+         * Pure variadic function, e.g. (lambda x (display x)) will have
+         * all args in `x`.
+         */
 
         /*
-         * If noe value has been set, give it a default something.
+         * If no value has been set, give it a default something.
          */
         if ( nullp(value) )
           value = list(NULL);
@@ -219,8 +218,7 @@ static body_env_t expand_lambda(cons_t *p, environment_t* e)
      * Non-pure variadic, i.e. has some set arguments and one
      * trailing "rest"-argument.  E.g.:  (lambda (x y z . rest) <body>)
      */
-    if ( car(name)->symbol->name() == "." ) {
-
+    if ( !pairp(name) ) {
       if ( nullp(value) ) {
         /*
          * We have a function with named argument and a rest
@@ -241,9 +239,6 @@ static body_env_t expand_lambda(cons_t *p, environment_t* e)
     e->define(car(name)->symbol->name(), car(value));
   }
 
-  // now EXECUTE body with given definition
-//  return eval(body, e);
-//  return
   body_env_t r;
   r.body = body;
   r.env = e;
@@ -329,14 +324,8 @@ cons_t* eval(cons_t* p, environment_t* e)
 {
   for(;;) {
     if ( atomp(p) ) {
-      if ( symbolp(p) ) {
-
-        // dot used in dot-notation
-        if ( p->symbol->name() == "." )
-          return p;
-
+      if ( symbolp(p) )
         return e->lookup_or_throw(p->symbol->name());
-      }
 
       if ( numberp(p) || stringp(p) || charp(p) ||
            booleanp(p) || vectorp(p) || decimalp(p) ||
@@ -402,7 +391,7 @@ cons_t* eval(cons_t* p, environment_t* e)
          * `(define (foo <arg1 arg2 ...>) <body>)`-style
          * definition.
          */
-        if ( listp(def_name) ) {
+        if ( pairp(def_name) ) {
           cons_t *def_args = cdr(def_name);
           def_name = car(def_name);
 
@@ -567,10 +556,6 @@ cons_t* eval(cons_t* p, environment_t* e)
         continue;
       }
     }
-
-    /*
-     * TODO:  Can also expand other functions in-plcae.
-     */
 
     return invoke_with_trace(car(p), cdr(p), e);
   } // for (;;) ...

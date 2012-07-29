@@ -14,36 +14,38 @@
 #include "exceptions.h"
 #include "print.h"
 
-size_t arg_length(cons_t* args)
+size_t arg_length(cons_t* p)
 {
-  size_t count  = 0;
-  bool prev_dot = false;
-
-  cons_t *p = args;
-
-  // pure variadic function
-  if ( !nullp(args) && length(args)==1 && !symbolp(car(args)) )
+  /*
+   * Pure variadic function, e.g. (lambda x (length x)) with
+   * x not enclosed in parens.
+   */
+  if ( !nullp(p) && length(p)==1 && !symbolp(car(p)) )
+    // TODO: Check if this really works, esp. the !symbolp part
     return 0;
 
-  for ( ; !nullp(p); p = cdr(p) ) {
-    if ( symbolp(car(p)) && car(p)->symbol->name() == "." )
-      prev_dot = true;
-    else {
-      if ( prev_dot ) {
-        p = cdr(p); // so as not to break test below
-        break;
-      }
-      ++count;
-    }
-  }
+  size_t count  = 0;
 
-  if ( length(p) != 0 )
-    raise(std::runtime_error("Invalid lambda signature: " + sprint(args)));
+  while ( pairp(p) ) {
+    p = cdr(p);
+    ++count;
+  }
 
   return count;
 }
 
 bool has_rest_args(cons_t* p)
 {
-  return !listp(p) || (arg_length(p) < length(p));
+  /*
+   * We now use proper dot notation so that
+   * function signatures are parsed either
+   * as a pure list, e.g. (arg1 arg2 arg3)
+   * or as a non-proper list that is not
+   * terminated with a nil, e.g.
+   * (arg1 arg2 . rest-args)
+   */
+  while ( pairp(p) )
+    p = cdr(p);
+
+  return !nullp(p);
 }

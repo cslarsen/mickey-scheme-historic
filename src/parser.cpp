@@ -51,8 +51,20 @@ static cons_t* parse_unquote_splicing(const char* t, environment_t* env);
 
 static long int parens = 0;
 
+static bool isdot(const char* s)
+{
+  return s[0] == '.' && s[1] == '\0';
+}
+
+/*
+ * TODO: Get rid of append() here.  It's extremely slow.
+ *       See evlis() for hints.
+ */
 cons_t* parse_list(environment_t *env, bool quoting = false)
 {
+  bool prev_dot = false;
+  bool performed_cdr_dot = false;
+
   cons_t *p = NULL;
   const char *t;
 
@@ -65,6 +77,11 @@ cons_t* parse_list(environment_t *env, bool quoting = false)
 
     cons_t *add;
 
+    if ( isdot(t) ) {
+      prev_dot = true;
+      continue;
+    }
+
     if ( isquote(t) )
       add = parse_quote(t, env);
     else if ( isquasiquote(t) )
@@ -75,11 +92,30 @@ cons_t* parse_list(environment_t *env, bool quoting = false)
       add = parse_unquote_splicing(t, env);
     else if ( isvector(t) )
       add = parse_vector(t, env);
-    else
+    else {
       add = paren? parse_list(env) :
                    type_convert(t + paren, env);
+    }
 
-    p = nullp(p)? cons(add) : append(p, cons(add));
+    if ( !prev_dot )
+      p = nullp(p)? cons(add) : append(p, cons(add));
+    else {
+      if ( performed_cdr_dot )
+        raise(std::runtime_error(format(
+          "Parser error: Invalid use of dot on '%s'", t)));
+
+      { /*
+         * Find end of p and set its cdr.
+         */
+        cons_t *e = p;
+        while ( !nullp(cdr(e)) ) e = cdr(e);
+        e->cdr = add;
+      }
+
+      performed_cdr_dot = true;
+    }
+
+    prev_dot = false;
 
     /* Added this to prevent the rest of the program to be
      * treated as being quoted. I.e., the following happened
