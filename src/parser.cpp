@@ -43,11 +43,11 @@ cons_t* type_convert(const char* token, environment_t* env)
   return symbol(token, env);
 }
 
-static cons_t* parse_vector(const char* t, environment_t* env);
-static cons_t* parse_quote(const char* t, environment_t* env);
-static cons_t* parse_quasiquote(const char* t, environment_t* env);
-static cons_t* parse_unquote(const char* t, environment_t* env);
-static cons_t* parse_unquote_splicing(const char* t, environment_t* env);
+static cons_t* parse_quote(environment_t* e);
+static cons_t* parse_quasiquote(environment_t* e);
+static cons_t* parse_unquote(environment_t* e);
+static cons_t* parse_unquote_splicing(environment_t* e);
+static cons_t* parse_vector(environment_t* e);
 
 static long int parens = 0;
 
@@ -60,7 +60,7 @@ static bool isdot(const char* s)
  * TODO: Get rid of append() here.  It's extremely slow.
  *       See evlis() for hints.
  */
-cons_t* parse_list(environment_t *env, bool quoting = false)
+static cons_t* parse_list(environment_t *env, bool quoting = false)
 {
   bool prev_dot = false;
   bool performed_cdr_dot = false;
@@ -75,23 +75,21 @@ cons_t* parse_list(environment_t *env, bool quoting = false)
     if ( paren )
       ++parens;
 
-    cons_t *add;
+    cons_t *add = list();
 
     if ( isdot(t) ) {
       prev_dot = true;
       continue;
-    }
-
-    if ( isquote(t) )
-      add = parse_quote(t, env);
+    } else if ( isquote(t) )
+      add = parse_quote(env);
     else if ( isquasiquote(t) )
-      add = parse_quasiquote(t, env);
+      add = parse_quasiquote(env);
     else if ( isunquote(t) )
-      add = parse_unquote(t, env);
+      add = parse_unquote(env);
     else if ( isunquote_splicing(t) )
-      add = parse_unquote_splicing(t, env);
+      add = parse_unquote_splicing(env);
     else if ( isvector(t) )
-      add = parse_vector(t, env);
+      add = parse_vector(env);
     else {
       add = paren? parse_list(env) :
                    type_convert(t + paren, env);
@@ -125,7 +123,7 @@ cons_t* parse_list(environment_t *env, bool quoting = false)
      * translated to "(quote (1 2 3) 4)", which is wrong
      */
     if ( quoting )
-      break;
+      return p;//break;
   }
 
   if ( t && *t==')' )
@@ -134,84 +132,69 @@ cons_t* parse_list(environment_t *env, bool quoting = false)
   return p;
 }
 
-cons_t* parse_quote(const char* t, environment_t* env)
+static cons_t* parse_quote(environment_t* e)
 {
-  bool is_symbol = (t[1] != '\0');
+  /*
+   * Replace '<expr> with (quote <expr>)
+   */
+  cons_t *expr = parse_list(e, true);
 
   /*
-   * We have either typicall '(...) or '<symbol>,
-   * so only increase parens if we don't have a symbol
-   * (basically, we're GUESSING here that we have a list,
-   * so TODO: check that).
+   * Special handling of the empty list, or '().
    */
-  if ( !is_symbol ) ++parens;
+  if ( nullp(expr) )
+    return cons(symbol("list", e));
 
-  // replace "'<exp>" with "(quote <exp>)"
-  cons_t *r = cons(symbol("quote", env), is_symbol ?
-    cons(type_convert(t+1, env)) :
-    parse_list(env, true));
-
-  // TODO: This is beyond cheating, and most likely the WRONG
-  //       way of handling '()
-  if ( sprint(r) == "(quote)" )
-    return cons(symbol("list", env));
-
-  return r;
+  return cons(symbol("quote", e), expr);
 }
 
-cons_t* parse_vector(const char* t, environment_t* env)
+static cons_t* parse_vector(environment_t* e)
 {
-  bool is_symbol = (t[2] != '\0');
-  if ( !is_symbol ) ++parens;
-
-  // replace "#(<exp1> <exp2> ...)" with "(vector <exp1> <exp2> ...)"
-  cons_t *r = cons(symbol("vector", env), is_symbol ?
-    cons(type_convert(t+2, env)) :
-    parse_list(env, false));
-
-  return r;
+  /*
+   * Replace #(<expr>) with (vector <expr>)
+   */
+  return cons(symbol("vector", e),
+              parse_list(e, false));
 }
 
-cons_t* parse_quasiquote(const char* t, environment_t* env)
+static cons_t* parse_quasiquote(environment_t* e)
 {
-  bool quoted_symbol = (t[1] != '\0');
-  if ( !quoted_symbol ) ++parens;
+  /*
+   * Replace `<expr> with (quasiquote <expr>)
+   */
+  cons_t *expr = parse_list(e, true);
 
-  // replace "`<exp>" with "(quasiquote <exp>)"
-  cons_t *r = cons(symbol("quasiquote", env),
-    quoted_symbol ?
-      cons(type_convert(t+1, env)) :
-      parse_list(env, true));
+  /*
+   * Special handling of the empty list, or `()
+   */
+  if ( nullp(expr) )
+    return cons(symbol("list", e));
 
-  return r;
+  return cons(symbol("quasiquote", e), expr);
 }
 
-cons_t* parse_unquote(const char* t, environment_t* env)
+static cons_t* parse_unquote(environment_t* e)
 {
-  bool quoted_symbol = (t[1] != '\0');
-  if ( !quoted_symbol ) ++parens;
-
-  // replace ",<exp>" with "(unquote <exp>)"
-  cons_t *r = cons(symbol("unquote", env),
-    quoted_symbol ?
-      cons(type_convert(t+1, env)) :
-      parse_list(env, true));
-
-  return r;
+  /*
+   * Replace ,<expr> with (unquote <expr>)
+   *
+   * TODO: It is an error to perform this outside of
+   *       quasiquotation.
+   */
+  return cons(symbol("unquote", e),
+              parse_list(e, true));
 }
 
-cons_t* parse_unquote_splicing(const char* t, environment_t* env)
+static cons_t* parse_unquote_splicing(environment_t* e)
 {
-  bool quoted_symbol = (t[1]!='\0' && t[2]!='\0');
-  if ( !quoted_symbol ) ++parens;
-
-  // replace ",@<exp>" with "(unquote-splicing <exp>)"
-  cons_t *r = cons(symbol("unquote-splicing", env),
-    quoted_symbol ?
-      cons(type_convert(t+2, env)) :
-      parse_list(env, true));
-
-  return r;
+  /*
+   * Replace ,@<expr> with (unquote-splicing <expr>)
+   *
+   * TODO: It is an error to perform this outside of
+   *       quasiquotation.
+   */
+  return cons(symbol("unquote-splicing", e),
+              parse_list(e, true));
 }
 
 program_t* parse(const char *program, environment_t *env)

@@ -56,8 +56,6 @@ const char* get_token()
 
   for ( ;; ) {
     token[0] = token[1] = '\0';
-
-    // source code
     source = skip_space(source);
 
     // comment? skip to end of line
@@ -67,7 +65,7 @@ const char* get_token()
     }
 
     // hash-bang or similar? skip to end of line
-    // TODO: Properly handle hash-bangs like case-folding, etc.
+    // TODO: Properly handle reader directives like case-folding, etc.
     if ( source[0]=='#' && source[1]=='!' ) {
       while ( *source != '\n' ) ++source;
       continue;
@@ -91,7 +89,7 @@ const char* get_token()
       return token;
     }
 
-    if ( char_in(*source, "()") )
+    if ( char_in(*source, "()'") )
       // tokens ( and )
       token[0] = *source++;
     else

@@ -325,7 +325,7 @@ cons_t* eval(cons_t* p, environment_t* e)
 
       if ( numberp(p) || stringp(p) || charp(p) ||
            booleanp(p) || vectorp(p) || decimalp(p) ||
-           closurep(p) || syntaxp(p) )
+           closurep(p) || syntaxp(p) || emptylistp(p) )
       {
         return p;
       }
@@ -334,13 +334,17 @@ cons_t* eval(cons_t* p, environment_t* e)
     }
 
     if ( symbolp(car(p)) ) {
-      std::string name = car(p)->symbol->name();
+      const std::string name = car(p)->symbol->name();
 
-      if ( name == "quote" )
+      if ( name == "quote" ) {
+        assert_length(cdr(p), 1);
         return cadr(p);
+      }
 
-      if ( name == "quasiquote" )
+      if ( name == "quasiquote" ) {
+        assert_length(cdr(p), 1);
         return car(eval_quasiquote(cdr(p), e));
+      }
 
       if ( name == "if" ) {
         /*
