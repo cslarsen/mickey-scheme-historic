@@ -75,7 +75,7 @@ static cons_t* parse_list(environment_t *env, bool quoting = false)
     if ( paren )
       ++parens;
 
-    cons_t *add = list();
+    cons_t *add = NULL;
 
     if ( isdot(t) ) {
       prev_dot = true;
