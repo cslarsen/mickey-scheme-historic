@@ -1,3 +1,4 @@
+- BUG: (length (cons 1 2)) ==> 2 but should be an error
 - Add primops.cpp unspecified_value() or something that we use everywhere where
   values are unspecified.  (Sometimes it makes sense in implementations to return
   actually diverse set of values for unspecifieds, but it's not a bad idea to mark
