@@ -297,16 +297,28 @@ static cons_t* eval_quasiquote(cons_t* p, environment_t* e)
 
   cons_t *r = list();
 
-  for ( ; !nullp(p); p = cdr(p) )
+  /*
+   * We use a tail-pointer t to avoid using the slow function
+   * append().
+   */
+  for ( cons_t *t = r; !nullp(p); p = cdr(p) ) {
     if ( listp(car(p)) ) {
-      if ( symbolp(caar(p)) && caar(p)->symbol->name() == "unquote-splicing")
-        r = splice(r, eval(cadar(p), e));
-      else if ( symbolp(caar(p)) && caar(p)->symbol->name() == "unquote" )
-        r = append(r, cons(eval(cadar(p), e)));
+      if ( symbolp(caar(p)) && caar(p)->symbol->name() == "unquote-splicing") {
+        // splice ev into t
+        for ( cons_t *ev = eval(cadar(p), e); !nullp(ev); ev = cdr(ev) ) {
+          t->car = !pairp(ev)? ev : car(ev);
+          t = t->cdr = cons(NULL);
+        }
+        continue;
+      } else if ( symbolp(caar(p)) && caar(p)->symbol->name() == "unquote" )
+        t->car = eval(cadar(p), e);
       else
-        r = append(r, cons(eval_quasiquote(car(p), e)));
+        t->car = eval_quasiquote(car(p), e);
     } else
-      r = append(r, cons(car(p)));
+      t->car = car(p);
+
+    t = t->cdr = cons(NULL);
+  }
 
   return r;
 }
