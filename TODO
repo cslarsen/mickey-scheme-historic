@@ -1,3 +1,15 @@
+-- Fiks at REPL viser '()
+-- Fiks syntax match på bugs/macro4.scm
+-- Fjern append() overalt det finnes
+-- Lag SYMBOL-TABLE slik at ALLE symboler som har samme navn peker
+   til samme globale symbol.
+-- Lag enkel PRE-PARSER av kodesnutter som OVERSETTER (dvs enkel
+   kompilering) feks alle slike symboler slik de peker på samme
+   symbol, og at visse variabel-referanser ikke bruker lookup()
+   men peker direkte med peker til variabelen som refereres osv.
+   Dette er ganske safe optimaliseringer, men gjør at interpretation
+   går mye raskere.
+
 Now:
 - repl> '() does not print anything, so fix that
 - try to simplify print.cpp
