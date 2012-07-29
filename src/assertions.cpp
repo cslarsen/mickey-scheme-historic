@@ -33,7 +33,7 @@ void assert_length(const cons_t* p, const size_t min, const size_t max)
 
   if ( l<min || l>max )
     raise(std::runtime_error(format(
-      "Function expects from %lu to %lu parameters got %lu: `%s´",
+      "Function expects from %lu to %lu parameters but got %lu: `%s´",
         min, max, l, sprint(p).c_str())));
 }
 
