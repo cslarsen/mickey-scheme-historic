@@ -1,3 +1,10 @@
+Now:
+- repl> '() does not print anything, so fix that
+- try to simplify print.cpp
+- refactor the parser, extract methods into files (parse-string.cpp,
+  parse-quotation.cpp etc) and add a table of tokens ("(", ")", "'", "#(",
+  "#|", ...) etc and generally clean up
+
 - BUG: (length (cons 1 2)) ==> 2 but should be an error
 - Add primops.cpp unspecified_value() or something that we use everywhere where
   values are unspecified.  (Sometimes it makes sense in implementations to return
