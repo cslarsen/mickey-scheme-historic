@@ -16,22 +16,14 @@
 
 size_t arg_length(cons_t* p)
 {
-  /*
-   * Pure variadic function, e.g. (lambda x (length x)) with
-   * x not enclosed in parens.
-   */
-  if ( !nullp(p) && length(p)==1 && !symbolp(car(p)) )
-    // TODO: Check if this really works, esp. the !symbolp part
-    return 0;
-
-  size_t count  = 0;
+  size_t n = 0;
 
   while ( pairp(p) ) {
     p = cdr(p);
-    ++count;
+    ++n;
   }
 
-  return count;
+  return n;
 }
 
 bool has_rest_args(cons_t* p)
