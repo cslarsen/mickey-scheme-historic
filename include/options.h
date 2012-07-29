@@ -18,6 +18,7 @@ struct options_t
   bool eval_next;
   FILE* current_output_device;
   FILE* current_input_device;
+  FILE* current_error_device;
   const char* current_filename;
   const char* include_path;
   const char* lib_path;

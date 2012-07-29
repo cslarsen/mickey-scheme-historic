@@ -42,6 +42,7 @@ void reset_for_programs(struct options_t* p, const char* file)
 {
   p->current_output_device = stdout;
   p->current_input_device = stdin;
+  p->current_error_device = stderr;
   p->current_filename = file;
 }
 
