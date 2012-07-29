@@ -62,11 +62,48 @@ cons_t* proc_abs(cons_t* p, environment_t*)
 
 cons_t* proc_display(cons_t *p, environment_t*)
 {
-  for ( ; !nullp(p); p = cdr(p) )
-    fprintf(global_opts.current_output_device,
-      "%s", print(car(p)).c_str());
+  assert_length(p, 1, 2);
+
+  int port = -1;
+
+  if ( length(p) == 2 ) {
+    assert_type(INTEGER, cadr(p));
+    port = cadr(p)->integer;
+    // TODO: Should we check if filedes is open?
+  }
+
+  /*
+   * TODO: Implement display in terms of (write) and
+   *       use tail call elimination to be able to
+   *       endlessly print circular lists.
+   */
+  std::string s = print(car(p));
+
+  if ( port == -1 )
+    fwrite(s.c_str(), s.length(), 1,
+        global_opts.current_output_device);
+  else
+    write(port, s.c_str(), s.length());
 
   return nil();
+}
+
+cons_t* proc_current_output_port(cons_t *p, environment_t*)
+{
+  assert_length(p, 0);
+  return integer(fileno(global_opts.current_output_device));
+}
+
+cons_t* proc_current_input_port(cons_t *p, environment_t*)
+{
+  assert_length(p, 0);
+  return integer(fileno(global_opts.current_input_device));
+}
+
+cons_t* proc_current_error_port(cons_t *p, environment_t*)
+{
+  assert_length(p, 0);
+  return integer(fileno(global_opts.current_error_device));
 }
 
 cons_t* proc_write(cons_t *p, environment_t*)
@@ -2312,6 +2349,9 @@ named_function_t exports_base[] = {
   {"char>?", proc_char_gtp},
   {"char?", proc_charp},
   {"cons", proc_cons},
+  {"current-error-port", proc_current_error_port},
+  {"current-input-port", proc_current_input_port},
+  {"current-output-port", proc_current_output_port},
   {"display", proc_display},
   {"eq?", proc_eqp},
   {"equal?", proc_equalp},
