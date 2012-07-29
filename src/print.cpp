@@ -35,9 +35,9 @@ std::string sprint(const cons_t* p, std::string& s, bool escape)
     std::string tail = (atomp(cdr(p)) && !nullp(cdr(p)) ?
                         ". " : "") + sprint(cdr(p), s, escape);
     return s
-      + (listp(car(p)) ? "(" : "")
+      + (pairp(car(p)) ? "(" : "")
       + head
-      + (listp(car(p)) ? ")" : "")
+      + (pairp(car(p)) ? ")" : "")
       + (!tail.empty() ? " " : "") + tail;
   }}
 
@@ -47,7 +47,7 @@ std::string sprint(const cons_t* p, std::string& s, bool escape)
 std::string sprint(const cons_t* p)
 {
   std::string s;
-  return sprint(listp(p) ? cons(p) : p, s, true);
+  return sprint(pairp(p) ? cons(p) : p, s, true);
 }
 
 std::string sprint(const program_t* p)
