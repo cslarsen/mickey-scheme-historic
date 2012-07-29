@@ -498,3 +498,9 @@ const std::string& symbol_name(const cons_t* p)
   static const std::string empty("");
   return !symbolp(p)? empty : p->symbol->name();
 }
+
+bool emptylistp(const cons_t* p)
+{
+  return type_of(p) == PAIR &&
+    p->car == NULL && p->cdr == NULL;
+}
