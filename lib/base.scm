@@ -134,3 +134,9 @@
           ;; ... and keep going
           (loop (map car remaining)
                 (map cdr remaining)))))))
+
+;; Code taken from R7RS draft
+(define (values . things)
+  (call-with-current-continuation
+    (lambda (cont) (apply cont things))))
+
