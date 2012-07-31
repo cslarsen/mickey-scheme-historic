@@ -344,5 +344,6 @@ int repl()
     }
   }
 
+  printf("\n");
   return 0;
 }
