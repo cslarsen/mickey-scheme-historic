@@ -64,12 +64,17 @@ cons_t* proc_display(cons_t *p, environment_t*)
 {
   assert_length(p, 1, 2);
 
+  /*
+   * Get port to write to.
+   *
+   * TODO: Should we check if the file descriptor
+   *       is open?
+   */
   int port = -1;
 
   if ( length(p) == 2 ) {
     assert_type(INTEGER, cadr(p));
     port = cadr(p)->integer;
-    // TODO: Should we check if filedes is open?
   }
 
   /*
