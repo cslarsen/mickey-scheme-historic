@@ -613,6 +613,7 @@
 (test-eq '(list? (quote (a . b))) #f)
 (test-eq '(pair? (cons 1 2)) #t)
 (test-eq '(pair? (quote (a . b))) #t)
+(test-eq (length (list '() '())) 2)
 
 (display "\nResults\n")
 (newline)
