@@ -408,8 +408,10 @@ cons_t* proc_map(cons_t *p, environment_t*)
 
 cons_t* proc_debug(cons_t *p, environment_t *env)
 {
-  std::string s;
+  assert_length(p, 1);
 
+  p = car(p);
+  std::string s;
   s = format("%-11p type=%-7s", p, to_s(type_of(p)).c_str());
 
   switch ( type_of(p) ) {
