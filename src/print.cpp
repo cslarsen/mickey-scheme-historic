@@ -35,9 +35,9 @@ std::string sprint(const cons_t* p, std::string& s, bool escape)
     std::string tail = (atomp(cdr(p)) && !nullp(cdr(p)) ?
                         ". " : "") + sprint(cdr(p), s, escape);
     return s
-      + (pairp(car(p)) ? "(" : "")
+      + (type_of(car(p))==PAIR ? "(" : "")
       + head
-      + (pairp(car(p)) ? ")" : "")
+      + (type_of(car(p))==PAIR ? ")" : "")
       + (!tail.empty() ? " " : "") + tail;
   }}
 
