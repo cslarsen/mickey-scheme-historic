@@ -17,6 +17,10 @@ std::string sprint(const bytevector_t* v, std::string& s, bool escape);
 
 std::string sprint(const cons_t* p, std::string& s, bool escape)
 {
+  // special handling of the empty list
+  //if ( emptylistp(p) )
+  //  return s + "()";
+
   switch ( type_of(p) ) {
   case NIL:          return s;
   case BOOLEAN:      return s + to_s(p->boolean);
