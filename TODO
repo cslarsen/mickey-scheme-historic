@@ -1,3 +1,10 @@
+List of what is most important to get a full r7rs system:
+- call/cc, because lots of lib stuff depends on it
+- proper syntax-rules with correct ... and :::, because
+  many lib forms can use this for implementation
+- correct module system, so that libs can be formalized
+
+Other stuff:
 -- Fiks at REPL viser '()
 -- Fiks syntax match på bugs/macro4.scm
 -- Fjern append() overalt det finnes
