@@ -29,3 +29,4 @@ cons_t* proc_load(cons_t*, environment_t*);
 cons_t* proc_display(cons_t*, environment_t*);
 cons_t* proc_map(cons_t*, environment_t*);
 cons_t* proc_vector(cons_t*, environment_t*);
+cons_t* proc_case(cons_t*, environment_t*);

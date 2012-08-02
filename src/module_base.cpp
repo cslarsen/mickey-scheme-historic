@@ -1300,21 +1300,21 @@ cons_t* proc_cond(cons_t* p, environment_t* e)
   /*
    * Transform:
    *
-   * (cond ((case-1) action-1)
-   *        ((case-2) action-2)
-   *        ((case-n) action-n)
+   * (cond ((case-1) action-1 ...)
+   *        ((case-2) action-2 ...)
+   *        ((case-n) action-n ...)
    *        (else <else action>))
    *
    * to
    *
-   *  (if (case-1) action-1
-   *  (if (case-2) action-2
-   *  (if (case-n) action-n
+   *  (if (case-1) (begin action-1 ...)
+   *  (if (case-2) (begin action-2 ...)
+   *  (if (case-n) (begin action-n ...)
    *    <else action>)))
    *
    */
 
-  // The code below is quite messy (FIXME)
+  // TODO: Support => literal
 
   cons_t *r = list(NULL);
   p = cdr(p);
@@ -1329,12 +1329,13 @@ cons_t* proc_cond(cons_t* p, environment_t* e)
 
   if ( symbolp(test) && test->symbol->name() == "else" )
     return append(r, action);
-  else 
+  else
     return append(r,
           cons(symbol("if", e),
             cons(test,
-              cons(action,
-                cons(otherwise)))));
+              cons(cons(symbol("begin", e),
+                cons(action)),
+                  cons(otherwise)))));
 }
 
 cons_t* proc_number_to_string(cons_t* p, environment_t* e)
@@ -2288,7 +2289,70 @@ cons_t* proc_list_to_dot(cons_t *p, environment_t* e)
   return string(s.c_str());
 }
 
-cons_t* proc_dummy_placeholder(cons_t*, environment_t*)
+cons_t* proc_case(cons_t *p, environment_t* e)
+{
+  /*
+   * Transforms
+   *
+   *  (case <key>
+   *    ((<datum> ...) <expression> ...)
+   *    ((<datum> ...) => <expression>)
+   *    (else <expression> ...) ; OR
+   *    (else => <expression>))
+   *
+   * to the code
+   *
+   *  (let
+   *    ((value <key>))
+   *    (cond
+   *      ((memv value (quote (<datum> ...))) <expression> ...)
+   *      ((memv value (quote (<datum> ...))) => <expression>)
+   *      (else <expression>) ; OR
+   *      (else => <expression>)))
+   *
+   */
+
+  cons_t *key = cadr(p);
+  cons_t *clauses = cons(NULL);
+
+  for ( cons_t *c = cddr(p); !nullp(c); c = cdr(c) ) {
+    cons_t *datum = caar(c);
+    cons_t *exprs = cdar(c);
+
+    if ( symbol_name(datum) == "else" ) {
+      if ( symbol_name(cadar(c)) == "=>" ) {
+        // produces: (else (<expression / procedure> <key>))
+        clauses = append(clauses,
+                      cons(cons(symbol("else", e),
+                        cons(cons(cadr(cdar(c)),
+                          cons(symbol("value", e)))))));
+      } else
+        clauses = append(clauses, c);
+      break;
+    }
+
+    if ( symbol_name(cadar(c)) == "=>" )
+      // produces: (<expression / procedure> <key>)
+      exprs = list(cons(car(cdr(cdar(c))), cons(symbol("value", e))));
+
+    cons_t *clause =
+      cons(symbol("memv", e),
+        cons(symbol("value", e),
+          cons(cons(symbol("quote", e), cons(datum)))));
+
+    clause = splice(cons(clause), exprs);
+    clauses = append(clauses, cons(clause));
+  }
+
+  cons_t *let = append(
+    cons(symbol("let", e),
+      cons(cons(cons(symbol("value", e), cons(key))))),
+    cons(cons(symbol("cond", e), clauses)));
+
+  return let;
+}
+
+static cons_t* proc_dummy_placeholder(cons_t*, environment_t*)
 {
   return nil();
 }
@@ -2337,6 +2401,7 @@ named_function_t exports_base[] = {
   {"bytevector-u8-set!", proc_bytevector_u8_set_bang},
   {"bytevector?", proc_bytevectorp},
   {"car", proc_car},
+  {"case", proc_case},
   {"cdr", proc_cdr},
   {"char->integer", proc_char_to_integer},
   {"char-alphabetic?", proc_char_alphabeticp},

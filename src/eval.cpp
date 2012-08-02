@@ -44,9 +44,9 @@ static std::string func_name;
 
 static cons_t* make_closure(cons_t* args, cons_t* body, environment_t* e);
 
-static bool bool_true(cons_t* p)
+static bool bool_false(cons_t* p)
 {
-  return booleanp(p)? p->boolean : false;
+  return booleanp(p) && p->boolean == false;
 }
 
 static cons_t* invoke(cons_t* fun, cons_t* args)
@@ -365,8 +365,11 @@ cons_t* eval(cons_t* p, environment_t* e)
          * Note: Previously we did `return eval(caddr(p), e)´ here,
          *       but now we're taking cues form http://norvig.com/lispy2.html
          *
+         * Also note that ANY test is considered true unless it is
+         * explicitly #f.  So (if 123 'ok) returns ok.
+         *
          */
-        if ( bool_true(eval(cadr(p), e)) ) { // cases [1, 2]
+        if ( !bool_false(eval(cadr(p), e)) ) { // cases [1, 2]
           p = caddr(p);
           continue;
         } else if ( !nullp(cadddr(p)) ) {    // case [1]
@@ -376,10 +379,11 @@ cons_t* eval(cons_t* p, environment_t* e)
           return nil();                      // case [2]
       }
 
-      if ( name == "cond" ) {
-        cons_t *cond = proc_cond(p, e);
-        return eval(cond, e);
-      }
+      if ( name == "cond" )
+        return eval(proc_cond(p, e), e);
+
+      if ( name == "case" ) 
+        return eval(proc_case(p, e), e);
 
       if ( name == "define-syntax" ) {
         cons_t *name = cadr(p);
