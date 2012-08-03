@@ -111,9 +111,13 @@ bool isstring(const char* s)
 
   // a string must start and end with quote: "..."
   if ( s==NULL || l<=1 || s[0]!='"' || s[l-1]!='"' ) {
-    // we've got a malformed string
+
+    /*
+     * If token begins with a doublequote, then we've
+     * got a malformed string.
+     */
     if ( s[0]=='"' )
-      raise(std::runtime_error("Not a proper string: " + std::string(s)));
+      raise(compiler_exception("Not a valid string: " + std::string(s)));
 
     return false;
   }
@@ -125,7 +129,6 @@ bool isstring(const char* s)
     switch ( *p ) {
       case '\\':
         // skip escaped character
-        // TODO: check validity of escaped character
         ++p;
         continue;
       case '"':
