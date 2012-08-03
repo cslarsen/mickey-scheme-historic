@@ -1,7 +1,10 @@
 Random stuff:
 - BUG: Cannot parse consecutive strings like "a""b""c"; the tokenizer should
        emit three tokens in that situation: "a", "b" and "c" to remedy the
-       situation.
+       situation.  A good test that this is supported is to perform
+       these tests:
+       (length '(#;"a""b""c")) should return 2
+       (length '("a"#;"b""c""d""e")) should return 4
 
 List of what is most important to get a full r7rs system:
 - call/cc, because lots of lib stuff depends on it

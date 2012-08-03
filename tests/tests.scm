@@ -615,6 +615,14 @@
 (test-eq '(pair? (quote (a . b))) #t)
 (test-eq (length (list '() '())) 2)
 
+; to fix below bugs, tokenizer should must return 3 tokens for "a""b""c"
+(test-eq (quote (length '(#;"a""b""c"))) 2)
+(test-eq (quote (length '("a"#;"b""c""d""e"))) 4)
+
+; to fix, enable support for \x<hex-number> escapes in string parser
+(test-eq '(string-length "a\x42c") 3)
+(test-eq "a\x42c" "aBc")
+
 (display "\nResults\n")
 (newline)
 (results)
