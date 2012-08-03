@@ -2328,6 +2328,7 @@ cons_t* proc_case(cons_t *p, environment_t* e)
    *
    */
 
+  bool has_else = false;
   cons_t *key = cadr(p);
   cons_t *clauses = cons(NULL);
 
@@ -2344,6 +2345,8 @@ cons_t* proc_case(cons_t *p, environment_t* e)
                           cons(symbol("value", e)))))));
       } else
         clauses = append(clauses, c);
+
+      has_else = true;
       break;
     }
 
@@ -2359,6 +2362,14 @@ cons_t* proc_case(cons_t *p, environment_t* e)
     clause = splice(cons(clause), exprs);
     clauses = append(clauses, cons(clause));
   }
+
+  /*
+  if ( !has_else ) {
+    // insert unspecified return value
+    clauses = append(clauses,
+        cons(cons(symbol("else", e), cons(unspecified()))));
+  }
+  */
 
   cons_t *let = append(
     cons(symbol("let", e),
