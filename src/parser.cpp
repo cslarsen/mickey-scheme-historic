@@ -1,12 +1,12 @@
 /*
  * Mickey Scheme
  *
- * Copyright (C) 2011 Christian Stigen Larsen <csl@sublevel3.org>
+ * Copyright (C) 2011-2012 Christian Stigen Larsen <csl@sublevel3.org>
  * http://csl.sublevel3.org                              _
  *                                                        \
  * Distributed under the modified BSD license.            /\
  * Please post bugfixes and suggestions to the author.   /  \_
- *                                                          
+ *
  */
 
 #include <stdexcept>
@@ -94,10 +94,8 @@ static cons_t* parse_list(environment_t *env, bool quoting = false)
       add = parse_unquote_splicing(env);
     else if ( isvector(t) )
       add = parse_vector(env);
-    else {
-      add = paren? parse_list(env) :
-                   type_convert(t + paren, env);
-    }
+    else
+      add = paren? parse_list(env) : type_convert(t, env);
 
     if ( !prev_dot )
       p = nullp(p)? cons(add) : append(p, cons(add));

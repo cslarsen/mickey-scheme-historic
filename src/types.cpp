@@ -37,11 +37,6 @@ static int all(const char* s, int (*check)(int))
   return true;
 }
 
-static int isdoublequote(int s)
-{
-  return s == '\"';
-}
-
 static int isdot(int s)
 {
   return s == '.';
@@ -112,10 +107,44 @@ bool isodd(int n)
 
 bool isstring(const char* s)
 {
-  // TODO: Correct code to allow for escaping quotes, etc
-  return !empty(s) && !empty(s+1) // at least `""`
-    && s[0]=='"' && s[strlen(s)-1]=='"'
-    && isodd(count(s+1, isdoublequote));
+  size_t l = strlen(s);
+
+  // a string must start and end with quote: "..."
+  if ( s==NULL || l<=1 || s[0]!='"' || s[l-1]!='"' ) {
+    // we've got a malformed string
+    if ( s[0]=='"' )
+      raise(std::runtime_error("Not a proper string: " + std::string(s)));
+
+    return false;
+  }
+
+  // count quotes
+  size_t quotes = 0;
+
+  for ( const char *p=s; p < s+l; ++p ) {
+    switch ( *p ) {
+      case '\\':
+        // skip escaped character
+        // TODO: check validity of escaped character
+        ++p;
+        continue;
+      case '"':
+        ++quotes;
+
+        // when we've hit ending quote, check that
+        // we're at the end-position
+        if ( quotes == 2 )
+          return strlen(p+1) == 0;
+
+        break;
+      default:
+        continue;
+        break;
+    }
+  }
+
+  // should've finished at second quote over, so must be error
+  return false;
 }
 
 bool isatom(const char* s)
