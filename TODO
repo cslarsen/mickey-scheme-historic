@@ -5,6 +5,9 @@ List of what is most important to get a full r7rs system:
 - correct module system, so that libs can be formalized
 
 Other stuff:
+-- This should be legal: (let ((=> #f)) (cond (#t => 'ok))) because of
+   hygiene (see r7rs example on this, it should recognize => as a local
+   variable and then allow its use)
 -- Fiks at REPL viser '()
 -- Fiks syntax match på bugs/macro4.scm
 -- Fjern append() overalt det finnes
