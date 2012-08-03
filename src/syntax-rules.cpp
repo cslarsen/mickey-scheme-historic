@@ -37,6 +37,11 @@ static bool syntax_match(cons_t *pat, cons_t *c, dict_t& map)
     cons_t *l = car(pat); // left; pattern
     cons_t *r = car(c); // right; input to be matched
 
+    /*
+     * TODO: See syn_repl(), and if we've got pair, then syn_match
+     *       on pair (recurse and follow both in pat and code)
+     */
+
     // Match REST of symbols (TODO: Fix this, it's not very correct)
     if ( symbol_name(l) == "..." ) {
       map["..."] = nullp(c) ? nil() : c;
@@ -68,8 +73,9 @@ static bool syntax_match(cons_t *pat, cons_t *c, dict_t& map)
     pat = cdr(pat);
   }
 
-  // Check that pattern was fully matched
-  return nullp(pat);
+  // Check that pattern was fully matched: Both pattern and input must be
+  // exhausted
+  return nullp(pat) && nullp(c);
 }
 
 static cons_t* syntax_replace(dict_t &map, cons_t* p)
