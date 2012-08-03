@@ -135,8 +135,11 @@
           (loop (map car remaining)
                 (map cdr remaining)))))))
 
+#|
+Enable this when we have call/cc support
+
 ;; Code taken from R7RS draft
 (define (values . things)
   (call-with-current-continuation
     (lambda (cont) (apply cont things))))
-
+|#
