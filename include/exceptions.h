@@ -55,3 +55,39 @@ extern jmp_buf catch_point;
 extern std::runtime_error __exception;
 # define exception_raised() setjmp(catch_point)
 #endif
+
+/*
+ * Exceptions types we should use
+ */
+class general_exception : public std::exception
+{
+  std::string _what;
+public:
+  general_exception(const std::string& message) : _what(message)
+  {
+  }
+
+  virtual ~general_exception() throw()
+  {
+  }
+
+  const char* what() const throw() {
+    return _what.c_str();
+  }
+};
+
+/*
+ * Specific exceptions
+ */
+
+struct parser_exception : general_exception {
+  parser_exception(const std::string& s) : general_exception("<parser> " + s) { }
+};
+
+struct compiler_exception : general_exception {
+  compiler_exception(const std::string& s) : general_exception("<compiler> " + s) { }
+};
+
+struct runtime_exception : general_exception {
+  runtime_exception(const std::string& s) : general_exception("<runtime> " + s) { }
+};
