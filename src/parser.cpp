@@ -69,7 +69,11 @@ static cons_t* parse_list(environment_t *env, bool quoting = false)
   const char *t;
 
   while ( (t = get_token()) != NULL && *t != ')' ) {
-    bool paren = (*t == '(');
+    /*
+     * Detect all tokens that require a matching closing
+     * parenthesis, such as "(" and "#(", etc.
+     */
+    bool paren = (*t == '(' || isvector(t) );
 
     // Track matching of parens
     if ( paren )
