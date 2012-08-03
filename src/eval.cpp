@@ -382,7 +382,7 @@ cons_t* eval(cons_t* p, environment_t* e)
       if ( name == "cond" )
         return eval(proc_cond(p, e), e);
 
-      if ( name == "case" ) 
+      if ( name == "case" )
         return eval(proc_case(p, e), e);
 
       if ( name == "define-syntax" ) {
