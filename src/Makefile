@@ -15,6 +15,7 @@ TARGETS_O = exceptions.o \
             tokenizer.o \
             file_io.o \
             util.o \
+            parse-string.o \
             parser.o \
             types.o \
             module_math.o \

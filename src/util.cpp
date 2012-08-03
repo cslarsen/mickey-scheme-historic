@@ -13,6 +13,8 @@
 #include <stdarg.h>
 #include "util.h"
 #include "types.h"
+#include "platform-limits.h"
+#include <iostream>
 
 std::string toupper(const std::string& str)
 {
@@ -99,35 +101,6 @@ char* copy_str(const char* s)
 #endif
 }
 
-char* decode_literal_string(const char* s)
-{
-  char *p = copy_str(s+1); // chop /^"/
-  p[strlen(p)-1] = '\0'; // chop /"$/
-
-  // translate "\n" and such
-  for ( char *t = p; *t; ++t ) {
-    if ( t[0]!='\\' )
-      continue;
-
-    // TODO: do this in a cleaner, nicer way (use tables)
-    switch ( t[1] ) {
-    default:
-      //fprintf(stderr, "Warning: Unknown string escape sequence: \\%c\n", t[1]);
-      continue;
-    case '\0': return p; break;
-    case '\\': *t = '\\'; break;
-    case 'n': *t = '\n'; break;
-    case 'r': *t = '\r'; break;
-    case 't': *t = '\t'; break;
-    case '"': *t = '\"'; break;
-    }
-
-    strcpy(t+1, t+2); // shift left
-  }
-
-  return p;
-}
-
 std::string encode_str(const char* s)
 {
   // TODO: Make this table-based or something
@@ -135,7 +108,14 @@ std::string encode_str(const char* s)
 
   for ( ; *s; ++s ) {
     switch ( *s ) {
-    default:   r += *s; break;
+    default:
+      if ( isprint(*s) )
+        r += *s; // printable, add as-is
+      else {
+        unsigned char v = static_cast<unsigned char>(*s);
+        r += format("\\x%.*x;", sizeof(v)*8/4, v);
+      }
+      break;
     case '\n': r += "\\n"; break;
     case '\r': r += "\\r"; break;
     case '\t': r += "\\t"; break;
@@ -146,6 +126,7 @@ std::string encode_str(const char* s)
   return r;
 }
 
+// indefinite article
 std::string indef_art(const std::string& s)
 {
   return (isvowel(s[0])? "an " : "a ") + s;

@@ -620,8 +620,8 @@
 (test-eq (quote (length '("a"#;"b""c""d""e"))) 4)
 
 ; to fix, enable support for \x<hex-number> escapes in string parser
-(test-eq '(string-length "a\x42c") 3)
-(test-eq "a\x42c" "aBc")
+(test-eq '(string-length "a\x42;c") 3)
+(test-eq "a\x42;c" "aBc")
 
 (display "\nResults\n")
 (newline)

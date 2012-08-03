@@ -1,4 +1,7 @@
 Random stuff:
+- Add support for wide chars (wprintf, std::wstring, etc)
+- Count linenumbers in parser and use that in exceptions (add filename and
+  linenumber to exceptions as own fiels?)
 - BUG: Cannot parse consecutive strings like "a""b""c"; the tokenizer should
        emit three tokens in that situation: "a", "b" and "c" to remedy the
        situation.  A good test that this is supported is to perform

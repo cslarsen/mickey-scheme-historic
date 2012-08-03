@@ -25,7 +25,7 @@ cons_t* type_convert(const char* token, environment_t* env)
     return integer(to_i(token));
 
   if ( isstring(token) )
-    return string(decode_literal_string(token));
+    return parse_string(token);
 
   if ( isatom(token) )
     return symbol(token, env);
