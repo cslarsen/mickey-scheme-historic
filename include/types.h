@@ -15,7 +15,7 @@ bool isfloat(const char*);
 bool isinteger(const char*);
 bool isstring(const char*);
 bool isatom(const char*);
-bool isquote(const char*);
+bool issinglequote(const char*);
 bool isquasiquote(const char*);
 bool isunquote(const char*);
 bool isunquote_splicing(const char*);

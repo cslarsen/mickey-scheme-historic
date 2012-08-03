@@ -201,7 +201,7 @@ bool isvowel(char c)
   }
 }
 
-bool isquote(const char* s)
+bool issinglequote(const char* s)
 {
   return *s=='\'';
 }

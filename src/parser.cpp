@@ -84,7 +84,7 @@ static cons_t* parse_list(environment_t *env, bool quoting = false)
     if ( isdot(t) ) {
       prev_dot = true;
       continue;
-    } else if ( isquote(t) )
+    } else if ( issinglequote(t) )
       add = parse_quote(env);
     else if ( isquasiquote(t) )
       add = parse_quasiquote(env);
