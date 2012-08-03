@@ -103,7 +103,7 @@ char* decode_literal_string(const char* s)
 {
   char *p = copy_str(s+1); // chop /^"/
   p[strlen(p)-1] = '\0'; // chop /"$/
-  
+
   // translate "\n" and such
   for ( char *t = p; *t; ++t ) {
     if ( t[0]!='\\' )
@@ -111,7 +111,9 @@ char* decode_literal_string(const char* s)
 
     // TODO: do this in a cleaner, nicer way (use tables)
     switch ( t[1] ) {
-    default: continue;
+    default:
+      //fprintf(stderr, "Warning: Unknown string escape sequence: \\%c\n", t[1]);
+      continue;
     case '\0': return p; break;
     case '\\': *t = '\\'; break;
     case 'n': *t = '\n'; break;
