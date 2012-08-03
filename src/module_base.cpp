@@ -1295,26 +1295,41 @@ cons_t* proc_type_of(cons_t* p, environment_t* e)
   return symbol(to_s(type_of(car(p))).c_str(), e);
 }
 
+static cons_t* let(cons_t *bindings, cons_t *body, environment_t *e)
+{
+  return cons(symbol("let", e), cons(bindings, cons(body)));
+}
+
 cons_t* proc_cond(cons_t* p, environment_t* e)
 {
   /*
    * Transform:
    *
    * (cond ((case-1) action-1 ...)
-   *        ((case-2) action-2 ...)
-   *        ((case-n) action-n ...)
-   *        (else <else action>))
+   *       ((case-2) action-2 ...)
+   *       ((case-n) action-n ...)
+   *       (else <else action>))
    *
    * to
    *
-   *  (if (case-1) (begin action-1 ...)
-   *  (if (case-2) (begin action-2 ...)
-   *  (if (case-n) (begin action-n ...)
-   *    <else action>)))
+   *  (let ((result <case-1>))
+   *    (if result (begin action-1 ...)
+   *      (let ((result <case-2>))
+   *        (if result (begin <action-2> ...)
+   *          (let ((result <case-n>))
+   *            (if result (begin <action-n>))
+   *              <else action>)))))
+   *
+   * Also, forms involving the literal `=>´ will be
+   * transformed like the following:
+   *
+   *  ((<case> => <action>))
+   *
+   * is transformed to
+   *
+   * (begin (<action> result))
    *
    */
-
-  // TODO: Support => literal
 
   cons_t *r = list(NULL);
   p = cdr(p);
@@ -1325,17 +1340,18 @@ cons_t* proc_cond(cons_t* p, environment_t* e)
   cons_t   *test = caar(p),
          *action = car(cdar(p));
 
+  if ( symbol_name(action) == "=>" )
+    action = cons(cadr(cdar(p)), cons(symbol("result", e)));
+
   cons_t *otherwise = proc_cond(p, e);
 
-  if ( symbolp(test) && test->symbol->name() == "else" )
-    return append(r, action);
-  else
-    return append(r,
-          cons(symbol("if", e),
-            cons(test,
-              cons(cons(symbol("begin", e),
-                cons(action)),
-                  cons(otherwise)))));
+  return (symbol_name(test) == "else")? action :
+    let(list(list(symbol("result", e), test)), // (let ((result <test>))
+      cons(symbol("if", e),                    //   (if result
+        cons(symbol("result", e),              //     (begin <action>)
+          cons(cons(symbol("begin", e),        //       <otherwise>))
+            cons(action)),
+              cons(otherwise)))), e);
 }
 
 cons_t* proc_number_to_string(cons_t* p, environment_t* e)
