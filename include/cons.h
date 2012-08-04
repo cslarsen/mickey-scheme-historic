@@ -271,6 +271,19 @@ public:
       memcpy(this, &r, sizeof(port_t));
     return *this;
   }
+
+  void close()
+  {
+    if ( f != NULL ) {
+      fclose(f);
+      readable = writable = false;
+    }
+
+    if ( s != NULL ) {
+      s = NULL;
+      readable = writable = false;
+    }
+  }
 };
 
 /*

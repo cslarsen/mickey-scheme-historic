@@ -571,6 +571,14 @@ cons_t* proc_pairp(cons_t* p, environment_t*)
   return boolean(pairp(car(p)));
 }
 
+cons_t* proc_close_port(cons_t* p, environment_t*)
+{
+  assert_length(p, 1);
+  assert_type(PORT, car(p));
+  car(p)->port->close();
+  return nil();
+}
+
 cons_t* proc_portp(cons_t* p, environment_t*)
 {
   assert_length(p, 1);
@@ -2485,6 +2493,7 @@ named_function_t exports_base[] = {
   {"char>=?", proc_char_gtep},
   {"char>?", proc_char_gtp},
   {"char?", proc_charp},
+  {"close-port", proc_close_port},
   {"cons", proc_cons},
   {"current-error-port", proc_current_error_port},
   {"current-input-port", proc_current_input_port},
