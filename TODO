@@ -1,4 +1,5 @@
 Random stuff:
+- Add PORT type
 - Add COMPLEX support
 - For numbers, add bool exact field, enable for exact ops
 - For all cons cells, add bool constant field, enable for constant lists
