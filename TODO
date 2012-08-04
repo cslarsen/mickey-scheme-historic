@@ -1,4 +1,9 @@
 Random stuff:
+- Add COMPLEX support
+- For numbers, add bool exact field, enable for exact ops
+- For all cons cells, add bool constant field, enable for constant lists
+  like '(foo bar
+- Add full number format support in parser
 - Add support for wide chars (wprintf, std::wstring, etc)
 - Count linenumbers in parser and use that in exceptions (add filename and
   linenumber to exceptions as own fiels?)
