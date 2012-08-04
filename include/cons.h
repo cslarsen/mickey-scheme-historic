@@ -36,7 +36,8 @@ enum type_t {
   VECTOR,
   CONTINUATION,
   BYTEVECTOR,
-  SYNTAX
+  SYNTAX,
+  PORT
 };
 
 typedef struct cons_t* (*lambda_t)(struct cons_t*, struct environment_t*);
@@ -164,6 +165,114 @@ public:
 
 const symbol_t* create_symbol(const std::string& s);
 
+enum porttype_t {
+  TEXTUAL_PORT,
+  BINARY_PORT
+};
+
+class port_t
+{
+  FILE *f;
+  char *s;
+public:
+  porttype_t port_type;
+  bool writable, readable;
+
+  port_t() :
+    f(NULL),
+    s(NULL),
+    port_type(TEXTUAL_PORT),
+    writable(false),
+    readable(false)
+  {
+  }
+
+  port_t(FILE* file) :
+    f(file),
+    s(NULL),
+    port_type(TEXTUAL_PORT),
+    writable(false),
+    readable(false)
+  {
+  }
+
+  port_t(const port_t& r)
+  {
+    if ( this != &r )
+      memcpy(this, &r, sizeof(port_t));
+  }
+
+  port_t& textual()
+  {
+    port_type = TEXTUAL_PORT;
+    return *this;
+  }
+
+  port_t& input()
+  {
+    readable = true;
+    return *this;
+  }
+
+  port_t& output()
+  {
+    writable = true;
+    return *this;
+  }
+
+  FILE* file() const
+  {
+    return f;
+  }
+
+  bool isopen() const
+  {
+    // file port
+    if ( f != NULL )
+      return ftell(f) != -1; // TODO: Is there a better way to check?
+
+    // string port
+    if ( s != NULL )
+      return writable || readable;
+
+    return false;
+  }
+
+  bool iswritable() const
+  {
+    return writable;
+  }
+
+  bool isreadable() const
+  {
+    return readable;
+  }
+
+  bool istextual() const
+  {
+    return port_type == TEXTUAL_PORT;
+  }
+
+  bool isbinary() const
+  {
+    return port_type == BINARY_PORT;
+  }
+
+  friend bool operator==(const port_t& l, const port_t& r)
+  {
+    return l.f == r.f && l.port_type == r.port_type &&
+      l.writable == r.writable && l.readable == r.readable &&
+      l.s == r.s;
+  }
+
+  port_t& operator=(const port_t& r)
+  {
+    if ( this != &r )
+      memcpy(this, &r, sizeof(port_t));
+    return *this;
+  }
+};
+
 /*
  * TODO: To cons_t, Add `marked` (for GC) and `mutable/immutable` (per spec)
  */
@@ -187,6 +296,7 @@ struct cons_t
     vector_t* vector;
     bytevector_t* bytevector;
     continuation_t* continuation;
+    port_t* port;
   };
 };
 
@@ -198,6 +308,7 @@ std::string to_s(closure_t*);
 std::string to_s(continuation_t*);
 std::string to_s(vector_t*);
 std::string to_s(bytevector_t*);
+std::string to_s(port_t*);
 std::string to_s(char, bool);
 std::string to_s(struct cons_t *p);;
 cons_t* deep_copy(const cons_t*);

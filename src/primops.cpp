@@ -56,6 +56,14 @@ cons_t* integer(int n)
   return p;
 }
 
+cons_t* port(port_t* p)
+{
+  cons_t *r = new cons_t();
+  r->type = PORT;
+  r->port = p;
+  return r;
+}
+
 cons_t* decimal(decimal_t n)
 {
   cons_t *p = new cons_t();
@@ -252,6 +260,11 @@ bool bytevectorp(const cons_t* p)
   return type_of(p) == BYTEVECTOR;
 }
 
+bool portp(const cons_t* p)
+{
+  return type_of(p) == PORT;
+}
+
 bool charp(const cons_t* p)
 {
   return type_of(p) == CHAR;
@@ -357,6 +370,7 @@ bool eqvp(const cons_t* l, const cons_t* r)
   case CLOSURE:       // double-check with section 6.1 and 4.1.4 (TODO)
                       return l->closure == r->closure;
   case CONTINUATION:  return l->continuation == r->continuation;
+  case PORT:          return *l->port == *r->port;
   }
 
   return false;

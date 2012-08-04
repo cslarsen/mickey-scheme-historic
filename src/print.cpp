@@ -14,6 +14,7 @@
 
 std::string sprint(const vector_t* v, std::string& s, bool escape);
 std::string sprint(const bytevector_t* v, std::string& s, bool escape);
+std::string sprint(const port_t* v, std::string& s, bool escape);
 
 std::string sprint(const cons_t* p, std::string& s, bool escape)
 {
@@ -34,6 +35,7 @@ std::string sprint(const cons_t* p, std::string& s, bool escape)
   case BYTEVECTOR:   return s + sprint(p->bytevector, s, escape);
   case CONTINUATION: return s + (escape? to_s(p->continuation) : "");
   case SYNTAX:       return s + sprint(p->syntax->transformer, s, escape);
+  case PORT:         return s + sprint(p->port, s, escape);
   case PAIR: {
     std::string head = sprint(car(p), s, escape);
     std::string tail = (atomp(cdr(p)) && !nullp(cdr(p)) ?
@@ -111,4 +113,10 @@ std::string sprint(const bytevector_t* v, std::string&, bool)
 
   s += ")";
   return s;
+}
+
+std::string sprint(const port_t* p, std::string&, bool)
+{
+  return format("#<port %p %s%s%s%s>", p, p->readable? "R" : "", p->writable? "W" : "",
+      p->istextual()? "T" : "", p->isbinary()? "B" : "");
 }

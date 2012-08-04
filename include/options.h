@@ -10,15 +10,16 @@
  */
 
 #include <stdio.h>
+#include "cons.h"
 
 struct options_t
 {
   bool verbose;
   bool read_stdin;
   bool eval_next;
-  FILE* current_output_device;
-  FILE* current_input_device;
-  FILE* current_error_device;
+  port_t current_output_device;
+  port_t current_input_device;
+  port_t current_error_device;
   const char* current_filename;
   const char* include_path;
   const char* lib_path;

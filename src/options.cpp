@@ -40,9 +40,9 @@ void set_lib_path(struct options_t* p, const char* lib_path)
 
 void reset_for_programs(struct options_t* p, const char* file)
 {
-  p->current_output_device = stdout;
-  p->current_input_device = stdin;
-  p->current_error_device = stderr;
+  p->current_output_device = port_t(stdout).output().textual();
+  p->current_input_device = port_t(stdin).input().textual();
+  p->current_error_device = port_t(stderr).output().textual();
   p->current_filename = file;
 }
 

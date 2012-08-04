@@ -70,11 +70,11 @@ cons_t* proc_display(cons_t *p, environment_t*)
    * TODO: Should we check if the file descriptor
    *       is open?
    */
-  int port = -1;
+  port_t* port = &global_opts.current_output_device;
 
   if ( length(p) == 2 ) {
-    assert_type(INTEGER, cadr(p));
-    port = cadr(p)->integer;
+    assert_type(PORT, cadr(p));
+    port = cadr(p)->port;
   }
 
   /*
@@ -83,12 +83,7 @@ cons_t* proc_display(cons_t *p, environment_t*)
    *       endlessly print circular lists.
    */
   std::string s = print(car(p));
-
-  if ( port == -1 )
-    fwrite(s.c_str(), s.length(), 1,
-        global_opts.current_output_device);
-  else
-    write(port, s.c_str(), s.length());
+  fwrite(s.c_str(), s.length(), 1, port->file());
 
   return nil();
 }
@@ -96,25 +91,26 @@ cons_t* proc_display(cons_t *p, environment_t*)
 cons_t* proc_current_output_port(cons_t *p, environment_t*)
 {
   assert_length(p, 0);
-  return integer(fileno(global_opts.current_output_device));
+  return port(&global_opts.current_output_device);
 }
 
 cons_t* proc_current_input_port(cons_t *p, environment_t*)
 {
   assert_length(p, 0);
-  return integer(fileno(global_opts.current_input_device));
+  return port(&global_opts.current_input_device);
 }
 
 cons_t* proc_current_error_port(cons_t *p, environment_t*)
 {
   assert_length(p, 0);
-  return integer(fileno(global_opts.current_error_device));
+  return port(&global_opts.current_error_device);
 }
 
 cons_t* proc_write(cons_t *p, environment_t*)
 {
+  // TODO: Check that current output device is a file pointer
   for ( ; !nullp(p); p = cdr(p) )
-    fprintf(global_opts.current_output_device,
+    fprintf(global_opts.current_output_device.file(),
       "%s", sprint(car(p)).c_str());
 
   return nil();
@@ -455,6 +451,9 @@ cons_t* proc_debug(cons_t *p, environment_t *env)
   case BYTEVECTOR:
     s += format(" bytevector->%p", p->bytevector);
     break;
+  case PORT:
+    s += format(" port->%p", p->port);
+    break;
   case CONTINUATION:
     break;
   }
@@ -570,6 +569,47 @@ cons_t* proc_pairp(cons_t* p, environment_t*)
 {
   assert_length(p, 1);
   return boolean(pairp(car(p)));
+}
+
+cons_t* proc_portp(cons_t* p, environment_t*)
+{
+  assert_length(p, 1);
+  return boolean(portp(car(p)));
+}
+
+cons_t* proc_port_openp(cons_t* p, environment_t*)
+{
+  assert_length(p, 1);
+  assert_type(PORT, car(p));
+  return boolean(car(p)->port->isopen());
+}
+
+cons_t* proc_input_portp(cons_t* p, environment_t*)
+{
+  assert_length(p, 1);
+  assert_type(PORT, car(p));
+  return boolean(car(p)->port->isreadable());
+}
+
+cons_t* proc_output_portp(cons_t* p, environment_t*)
+{
+  assert_length(p, 1);
+  assert_type(PORT, car(p));
+  return boolean(car(p)->port->iswritable());
+}
+
+cons_t* proc_textual_portp(cons_t* p, environment_t*)
+{
+  assert_length(p, 1);
+  assert_type(PORT, car(p));
+  return boolean(car(p)->port->istextual());
+}
+
+cons_t* proc_binary_portp(cons_t* p, environment_t*)
+{
+  assert_length(p, 1);
+  assert_type(PORT, car(p));
+  return boolean(car(p)->port->isbinary());
 }
 
 cons_t* proc_listp(cons_t* p, environment_t*)
@@ -2417,6 +2457,7 @@ named_function_t exports_base[] = {
   {"assoc", proc_assoc},
   {"assq", proc_assq},
   {"assv", proc_assv},
+  {"binary-port?", proc_binary_portp},
   {"boolean->string", proc_boolean_to_string},
   {"boolean?", proc_booleanp},
   {"bytevector-copy!", proc_bytevector_copy_bang},
@@ -2459,6 +2500,7 @@ named_function_t exports_base[] = {
   {"finite?", proc_finitep},
   {"gcd", proc_gcd},
   {"infinite?", proc_infinitep},
+  {"input-port?", proc_input_portp},
   {"integer->char", proc_integer_to_char},
   {"integer?", proc_integerp},
   {"lcm", proc_lcm},
@@ -2488,7 +2530,10 @@ named_function_t exports_base[] = {
   {"number?", proc_numberp},
   {"odd?", proc_oddp},
   {"or", proc_or},
+  {"output-port?", proc_output_portp},
   {"pair?", proc_pairp},
+  {"port-open?", proc_port_openp},
+  {"port?", proc_portp},
   {"positive?", proc_positivep},
   {"procedure?", proc_procedurep},
   {"real?", proc_realp},
@@ -2511,6 +2556,7 @@ named_function_t exports_base[] = {
   {"substring", proc_substring},
   {"symbol->string", proc_symbol_to_string},
   {"symbol?", proc_symbolp},
+  {"textual-port?", proc_textual_portp},
   {"truncate", proc_truncate},
   {"vector", proc_vector},
   {"vector->list", proc_vector_to_list},

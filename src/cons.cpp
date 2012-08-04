@@ -50,6 +50,7 @@ std::string to_s(enum type_t type)
   case VECTOR:       return "vector";       break;
   case CONTINUATION: return "continuation"; break;
   case BYTEVECTOR:   return "bytevector";   break;
+  case PORT:         return "port";         break;
   }
 
   return "#<unknown type>";
@@ -71,6 +72,7 @@ std::string to_s(cons_t *p)
   case VECTOR:   return format("#<vector %p>", p->vector);
   case CONTINUATION: return format("#<continuation %p>", p->continuation);
   case BYTEVECTOR:   return format("#<bytevector %p>", p->bytevector);
+  case PORT:     return format("#<port %p>", p->port);
   }
 
   return "#<unknown type>";
@@ -89,6 +91,11 @@ std::string to_s(continuation_t* p)
 std::string to_s(vector_t* p)
 {
   return format("#<vector %p>", p);
+}
+
+std::string to_s(port_t* p)
+{
+  return format("#<port %p>", p);
 }
 
 std::string to_s(char p, bool escape)
