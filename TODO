@@ -1,4 +1,7 @@
 Random stuff:
+- If a C/.so scheme library contains some code in scheme form, then itself
+  should be responsible to proc_load("file.scm") (so, we need a module api
+  and init functions)
 - ./mickey file.scm should have a completely empty environent except for
   (import), but eval has hardcoded some symbols, so fix that. (The way to do
   it is to move the core stuff into base library and mark the procedures as

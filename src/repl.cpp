@@ -224,7 +224,7 @@ int repl()
   print_banner(env);
 
   import_defaults(env, global_opts.lib_path);
-  import(env, exports_repl);
+  import(env, exports_repl, "(scheme repl)");
 
   if ( global_opts.verbose )
     printf("\n");

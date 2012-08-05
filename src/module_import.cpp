@@ -31,33 +31,35 @@ cons_t* proc_import(cons_t* p, environment_t* e)
    * TODO: (import) is not fully supported yet
    */
 
-  cons_t *spec = cadr(p);
+  for ( p = cdr(p); !nullp(p); p = cdr(p) ) {
+    cons_t *spec = car(p);
 
-  if ( symbol_name(car(spec)) == "scheme" ) {
-    std::string mod = symbol_name(cadr(spec));
-    const char *lib_path = global_opts.lib_path;
+    if ( symbol_name(car(spec)) == "scheme" ) {
+      std::string mod = symbol_name(cadr(spec));
+      const char *lib_path = global_opts.lib_path;
 
-    if ( mod == "base" ) {
-      // library is split into C-lib and Scheme-lib
-      import(e, exports_base);
-      load(e, lib_path, "base.scm");
-    } else if ( mod == "math" ) {
-      import(e, exports_math);
-    } else if ( mod == "char" ) {
-      load(e, lib_path, "char.scm");
-    } else if ( mod == "lazy" ) {
-      load(e, lib_path, "lazy.scm");
-    } else if ( mod == "write" ) {
-      import(e, exports_write);
-    } else if ( mod == "process-context" ) {
-      import(e, exports_process_context);
-    } else {
-      raise(runtime_exception("Unknown library: " + sprint(car(p))));
-      return boolean(false);
+      if ( mod == "base" ) {
+        // library is split into C-lib and Scheme-lib
+        import(e, exports_base, "(scheme base)");
+        load(e, lib_path, "base.scm");
+      } else if ( mod == "math" ) {
+        import(e, exports_math, "(scheme math)");
+      } else if ( mod == "char" ) {
+        load(e, lib_path, "char.scm");
+      } else if ( mod == "lazy" ) {
+        load(e, lib_path, "lazy.scm");
+      } else if ( mod == "write" ) {
+        import(e, exports_write, "(scheme write)");
+      } else if ( mod == "process-context" ) {
+        import(e, exports_process_context, "(scheme process-context)");
+      } else {
+        raise(runtime_exception("Unknown library: " + sprint(car(p))));
+        return boolean(false);
+      }
     }
   }
 
-  // TODO: Correct ret val
+  // TODO: Implement correct ret val
   return boolean(true);
 }
 
