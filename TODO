@@ -1,4 +1,9 @@
 Random stuff:
+- ./mickey file.scm should have a completely empty environent except for
+  (import), but eval has hardcoded some symbols, so fix that. (The way to do
+  it is to move the core stuff into base library and mark the procedures as
+  syntax (not normal syntax expand, but functions whose arguments are not
+  evaluated)
 - Fix (import) to handle multiple import statements (import (scheme base) (scheme write))
 - Fix (import) to correctly exclude, rename, etc
 - Make a C module system first, a la Python, with dynamic compiled
