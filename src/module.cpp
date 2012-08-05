@@ -6,14 +6,17 @@
  *                                                        \
  * Distributed under the modified BSD license.            /\
  * Please post bugfixes and suggestions to the author.   /  \_
- *                                                          
+ *
  */
 
 #include <string>
 #include "primops.h"
 #include "module.h"
+#include "module_import.h"
+#include "module_write.h"
 #include "module_base.h"
 #include "module_math.h"
+#include "module_process_context.h"
 #include "options.h"
 
 void import(environment_t *e, named_function_t *p)
@@ -40,14 +43,14 @@ void load(environment_t *e, const std::string& path, const std::string& file)
   proc_load(cons(string((path + "/" + file).c_str())), e);
 }
 
-extern named_function_t exports_process_context[];
-
 /*
  * Add default libraries here.
  */
 void import_defaults(environment_t *e, const char* lib_path)
 {
+  import(e, exports_import);
   import(e, exports_base);
+  import(e, exports_write);
   import(e, exports_math);
   import(e, exports_process_context);
   load(e, lib_path, "base.scm");

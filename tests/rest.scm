@@ -1,3 +1,6 @@
+(import (scheme base))
+(import (scheme write))
+
 (define (print-each prefix . rest)
   (define (print-one x)
     (display (string-append prefix

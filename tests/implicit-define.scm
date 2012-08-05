@@ -1,3 +1,7 @@
+(import (scheme base))
+(import (scheme write))
+(import (scheme math))
+
 (define (square n)
   (* n n))
 

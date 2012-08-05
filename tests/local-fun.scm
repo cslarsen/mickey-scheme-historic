@@ -1,4 +1,6 @@
 ;; Test local function definitions
+(import (scheme base))
+(import (scheme write))
 
 ; Make a global inner1, which should be shadowed in
 ; the *real* inner defs

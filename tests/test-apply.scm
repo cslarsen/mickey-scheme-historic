@@ -1,3 +1,6 @@
+(import (scheme base))
+(import (scheme write))
+
 (display "Should display 'One argument': ")
 (apply display (list (list "One argument"))) 
 (newline)

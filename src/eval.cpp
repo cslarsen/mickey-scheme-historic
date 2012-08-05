@@ -16,6 +16,7 @@
 #include "apply.h"
 #include "print.h"
 #include "backtrace.h"
+#include "module_import.h"
 #include "module_base.h"
 #include "syntax-rules.h"
 #include "exceptions.h"

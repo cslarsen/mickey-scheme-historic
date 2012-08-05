@@ -1,3 +1,6 @@
+(import (scheme write))
+(import (scheme base))
+
 ;; Block comments
 (display "(1) Testing block comments\n")
 

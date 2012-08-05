@@ -1,4 +1,6 @@
 ;; Testing simple recursion loop
+(import (scheme base))
+(import (scheme write))
 
 (define (loop n)
   (display (string-append (number->string n) " "))

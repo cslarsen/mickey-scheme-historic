@@ -1,3 +1,7 @@
+(import (scheme base))
+(import (scheme lazy))
+(import (scheme write))
+
 (define count 0)
 (define p
   (delay (begin (set! count (+ count 1))

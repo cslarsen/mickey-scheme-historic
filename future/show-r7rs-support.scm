@@ -1,4 +1,6 @@
 ;; Show which R7RS definitions are available in Mickey Scheme.
+(import (scheme base))
+(import (scheme write))
 
 (define base-lib '(
   *

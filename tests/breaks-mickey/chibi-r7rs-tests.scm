@@ -4,6 +4,11 @@ R7RS tests taken from Chibi Scheme 0.5.
 Had to comment out a lot of the tests because of missing support.
 |#
 
+(import (scheme base))
+(import (scheme write))
+(import (scheme math))
+(import (scheme lazy))
+
 ;(import (scheme base) (scheme char) (scheme division) (scheme lazy)
 ;        (scheme inexact) (scheme complex) (scheme time) (scheme eval)
 ;        (scheme file) (scheme read) (scheme write) (scheme case-lambda)

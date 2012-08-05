@@ -1,3 +1,6 @@
+(import (scheme base))
+(import (scheme write))
+
 ;; Tail call optimized factorial,
 ;; i.e., suitable for elimination
 ;; (conversion to iterative execution)

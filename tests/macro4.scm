@@ -1,6 +1,8 @@
 ;; test syntax-rules with several patterns
 ;; from http://www.shido.info/lisp/scheme_syntax_e.html
-;;
+
+(import (scheme base))
+(import (scheme write))
 
 (define-syntax incf
   (syntax-rules ()

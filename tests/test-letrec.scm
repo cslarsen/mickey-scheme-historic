@@ -1,3 +1,6 @@
+(import (scheme base))
+(import (scheme write))
+
 ; Test letrec
 (letrec ((my-odd? (lambda (x)
                  (if (= x 0) #f

@@ -1,3 +1,8 @@
+(import (scheme base))
+(import (scheme write))
+(import (scheme char))
+(import (scheme math))
+
 ;;
 ;; Define some test functions
 ;;

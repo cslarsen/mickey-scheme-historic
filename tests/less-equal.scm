@@ -2,6 +2,9 @@
 ; where the program below produced the WRONG
 ; answer.
 
+(import (scheme base))
+(import (scheme write))
+
 (define <=
   (lambda (x y)
     (or (= x y)

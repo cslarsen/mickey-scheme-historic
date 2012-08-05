@@ -1,3 +1,5 @@
+(import (scheme base))
+(import (scheme write))
 
 (define (foo list-or-vector)
   (display "Got: ")

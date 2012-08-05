@@ -7,6 +7,8 @@
  | Expect hello: hello
  |
  |#
+(import (scheme base))
+(import (scheme write))
 
 (define (test num)
   (define (showit x)

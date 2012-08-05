@@ -1,3 +1,6 @@
+(import (scheme base))
+(import (scheme write))
+
 ;; TestR7RS support for (case)
 
 #|

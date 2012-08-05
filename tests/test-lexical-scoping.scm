@@ -1,3 +1,7 @@
+(import (scheme base))
+(import (scheme write))
+(import (scheme math))
+
 ;; From SICP, section 1.1.8
 
 (define (abs x)

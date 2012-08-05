@@ -29,6 +29,8 @@
 #include "options.h"
 #include "module_base.h"
 #include "module_math.h"
+#include "module_import.h"
+#include "module_process_context.h"
 #include "exceptions.h"
 #include "circular.h"
 
@@ -274,6 +276,10 @@ int repl()
           printf("Loaded %ld definitions\n", env->symbols.size());
           printf("Execute (:exit [ code ]) to quit\n");
           printf("You can also (:run-tests) and (:list-globals)\n");
+          printf("\n");
+          printf("Note that when you use mickey to execute scheme files on the\n");
+          printf("command line, the environment is fresh so you have to start\n");
+          printf("by doing (import (scheme base)) and (import (scheme write)) etc.\n");
           printf("\n");
           imported_defaults = true;
         }

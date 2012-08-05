@@ -1,3 +1,6 @@
+(import (scheme base))
+(import (scheme write))
+
 ; named let
 ; should produce the output "10 9 8 7 6 5 4 3 2 1\n"
 (let foo

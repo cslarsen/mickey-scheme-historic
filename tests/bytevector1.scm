@@ -1,3 +1,6 @@
+(import (scheme write))
+(import (scheme base))
+
 ;; Tests for bytevectors
 
 (define-syntax run

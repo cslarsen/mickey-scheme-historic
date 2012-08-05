@@ -3,6 +3,9 @@
 ;; Test code from SICP, taken from
 ;; http://mitpress.mit.edu/sicp/code/index.html
 
+(import (scheme base))
+(import (scheme write))
+
 (load "test.scm")
 
 (display "Tests from\n")

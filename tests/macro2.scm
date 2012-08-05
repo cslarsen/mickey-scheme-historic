@@ -1,3 +1,6 @@
+(import (scheme base))
+(import (scheme write))
+
 (display "Should get (2 1) now: ")
 
 (display

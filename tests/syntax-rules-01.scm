@@ -1,4 +1,6 @@
 ;; Test out the first simple version of syntax-rules
+(import (scheme base))
+(import (scheme write))
 
 (display "(1/4) Defining my-when macro\n")
 

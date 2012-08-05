@@ -1,4 +1,6 @@
 ;; Test of different variadic lambda forms
+(import (scheme base))
+(import (scheme write))
 
 (define (list-of-strings->string s)
   (if (null? s) ""

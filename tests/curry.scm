@@ -1,3 +1,6 @@
+(import (scheme base))
+(import (scheme write))
+
 ;; Function currying in Scheme
 
 ; Let's make simple function

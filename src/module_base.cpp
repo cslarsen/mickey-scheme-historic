@@ -46,11 +46,6 @@
 # include <readline/readline.h>
 #endif
 
-// for proc_import
-extern named_function_t exports_base[];
-extern named_function_t exports_math[];
-extern named_function_t exports_process_context[];
-
 cons_t* proc_abs(cons_t* p, environment_t*)
 {
   assert_length(p, 1);
@@ -63,34 +58,6 @@ cons_t* proc_abs(cons_t* p, environment_t*)
 
   int n = car(p)->integer;
   return integer(n<0? -n : n);
-}
-
-cons_t* proc_display(cons_t *p, environment_t*)
-{
-  assert_length(p, 1, 2);
-
-  /*
-   * Get port to write to.
-   *
-   * TODO: Should we check if the file descriptor
-   *       is open?
-   */
-  port_t* port = &global_opts.current_output_device;
-
-  if ( length(p) == 2 ) {
-    assert_type(PORT, cadr(p));
-    port = cadr(p)->port;
-  }
-
-  /*
-   * TODO: Implement display in terms of (write) and
-   *       use tail call elimination to be able to
-   *       endlessly print circular lists.
-   */
-  std::string s = print(car(p));
-  fwrite(s.c_str(), s.length(), 1, port->file());
-
-  return nil();
 }
 
 cons_t* proc_current_output_port(cons_t *p, environment_t*)
@@ -1937,43 +1904,6 @@ cons_t* proc_gcd(cons_t* p, environment_t* e)
   } }
 }
 
-cons_t* proc_import(cons_t* p, environment_t* e)
-{
-  assert_length_min(p, 2);
-  assert_type(PAIR, cadr(p));
-
-  /*
-   * TODO: (import) is not fully supported yet
-   */
-
-  cons_t *spec = cadr(p);
-
-  if ( symbol_name(car(spec)) == "scheme" ) {
-    std::string mod = symbol_name(cadr(spec));
-    const char *lib_path = global_opts.lib_path;
-
-    if ( mod == "base" ) {
-      // library is split into C-lib and Scheme-lib
-      import(e, exports_base);
-      load(e, lib_path, "base.scm");
-    } else if ( mod == "math" ) {
-      import(e, exports_math);
-    } else if ( mod == "char" ) {
-      load(e, lib_path, "char.scm");
-    } else if ( mod == "lazy" ) {
-      load(e, lib_path, "lazy.scm");
-    } else if ( mod == "process-context" ) {
-      import(e, exports_process_context);
-    } else {
-      raise(runtime_exception("Unknown library: " + sprint(car(p))));
-      return boolean(false);
-    }
-  }
-
-  // TODO: Correct ret val
-  return boolean(true);
-}
-
 cons_t* proc_lcm(cons_t* p, environment_t* e)
 {
   switch ( length(p) ) {
@@ -2533,7 +2463,6 @@ named_function_t exports_base[] = {
   {"current-error-port", proc_current_error_port},
   {"current-input-port", proc_current_input_port},
   {"current-output-port", proc_current_output_port},
-  {"display", proc_display},
   {"eq?", proc_eqp},
   {"equal?", proc_equalp},
   {"eqv?", proc_eqvp},
@@ -2543,7 +2472,6 @@ named_function_t exports_base[] = {
   {"file-exists?", proc_file_existsp},
   {"finite?", proc_finitep},
   {"gcd", proc_gcd},
-  {"import", proc_import},
   {"infinite?", proc_infinitep},
   {"input-port?", proc_input_portp},
   {"integer->char", proc_integer_to_char},

@@ -1,3 +1,6 @@
+(import (scheme base))
+(import (scheme write))
+
 (display "Start\n")
 
 (letrec ((val1 123)

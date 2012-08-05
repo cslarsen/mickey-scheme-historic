@@ -1,3 +1,6 @@
+(import (scheme base))
+(import (scheme write))
+
 (define-syntax my-when
   (syntax-rules ()
     ((my-when test expr ...)

@@ -1,3 +1,6 @@
+(import (scheme base))
+(import (scheme write))
+
 ; Make a function that multiplies any number with `x`
 (define (make-mul-fun x)
   (lambda (any-number)

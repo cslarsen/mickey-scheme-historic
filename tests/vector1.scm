@@ -1,4 +1,6 @@
 ;; Test for vectors
+(import (scheme base))
+(import (scheme write))
 
 (define-syntax run
   (syntax-rules ()

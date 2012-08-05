@@ -18,6 +18,8 @@ TARGETS_O = exceptions.o \
             parser.o \
             types.o \
             module.o \
+            module_import.o \
+            module_write.o \
             module_math.o \
             module_base.o \
             module_process-context.o \

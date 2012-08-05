@@ -1,4 +1,7 @@
 ;; Tabulation of Hofstadter's male and female sequences
+(import (scheme base))
+(import (scheme write))
+
 (letrec ((female (lambda(n)
                    (if (= n 0) 1
                        (- n (male (female (- n 1)))))))

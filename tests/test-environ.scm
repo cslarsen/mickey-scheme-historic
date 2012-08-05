@@ -1,3 +1,5 @@
+(import (scheme base))
+(import (scheme write))
 (import (scheme process-context))
 
 (display (string-append

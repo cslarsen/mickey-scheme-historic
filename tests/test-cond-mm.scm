@@ -1,4 +1,6 @@
 ;; Testing (cond) in Mickey Scheme
+(import (scheme base))
+(import (scheme write))
 
 (define (who-is name)
   (cond ((equal? name "Dave")    "Sandy's boyfriend. Organizer of the rescue effort")

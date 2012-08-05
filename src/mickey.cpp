@@ -17,6 +17,7 @@
 #include "print.h"
 #include "heap.h"
 #include "backtrace.h"
+#include "module_import.h"
 #include "module_base.h"
 #include "module_math.h"
 #include "exceptions.h"
@@ -27,7 +28,7 @@ void execute(const char* file)
 {
   TRY {
     environment_t *env = new environment_t();
-    import_defaults(env, global_opts.lib_path);
+    import(env, exports_import);
     reset_for_programs(&global_opts, file);
     proc_load(cons(string(file)), env);
   }
@@ -56,7 +57,7 @@ void execute_string(const char* s)
 {
   TRY {
     environment_t *env = new environment_t();
-    import_defaults(env, global_opts.lib_path);
+    import(env, exports_import);
     reset_for_programs(&global_opts, NULL);
 
     program_t *p = parse(s, env);

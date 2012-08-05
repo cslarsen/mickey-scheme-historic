@@ -1,6 +1,8 @@
 ;;
 ;; Test double macro invocation.
 ;; -----------------------------
+(import (scheme base))
+(import (scheme write))
 
 ;; Normal macro
 ;;

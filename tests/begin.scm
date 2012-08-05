@@ -1,3 +1,4 @@
+(import (scheme write))
 ; test (begin)
 (begin
   (display "line 1\n")

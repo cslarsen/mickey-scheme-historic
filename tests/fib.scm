@@ -1,3 +1,5 @@
+(import (scheme base))
+(import (scheme write))
 ;; Fibonacci sequence, slow, recursive version
 
 (define (<= a b)

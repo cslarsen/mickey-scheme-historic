@@ -1,4 +1,6 @@
 Random stuff:
+- Fix (import) to handle multiple import statements (import (scheme base) (scheme write))
+- Fix (import) to correctly exclude, rename, etc
 - Make a C module system first, a la Python, with dynamic compiled
   libraries, to write a module you just include "mickey-api.h" and then
   you have cons and all that stuff and all the function signatures.

@@ -1,3 +1,6 @@
+(import (scheme base))
+(import (scheme write))
+
 ; Standard factorial function,
 ; from Queinnec, p. 54
 (define (fact n)

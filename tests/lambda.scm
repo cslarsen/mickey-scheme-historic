@@ -1,3 +1,6 @@
+(import (scheme base))
+(import (scheme write))
+
 ; simple definition
 (display "Let's define `square`\n")
 

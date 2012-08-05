@@ -1,3 +1,6 @@
+(import (scheme base))
+(import (scheme write))
+
 (define-syntax hello
   (syntax-rules ()
     ((_ foo . bar)

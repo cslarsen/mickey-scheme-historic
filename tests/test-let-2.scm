@@ -1,3 +1,6 @@
+(import (scheme base))
+(import (scheme write))
+
 (let ((one 1)
       (two 2)
       (three 3))

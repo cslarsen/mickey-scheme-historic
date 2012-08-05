@@ -1,4 +1,7 @@
-(define call/cc call-with-current-continuation)
+(import (scheme base))
+(import (scheme write))
+
+;(define call/cc call-with-current-continuation)
 
 (define continuation #f)
 (define counter 0)

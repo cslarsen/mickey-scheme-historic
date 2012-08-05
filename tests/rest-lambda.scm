@@ -1,3 +1,6 @@
+(import (scheme base))
+(import (scheme write))
+
 (define eat-all-params
   (lambda all-params
     (display "Here is a list: ")

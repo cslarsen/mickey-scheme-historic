@@ -2,6 +2,8 @@
 ;; http://www.shido.info/lisp/scheme_syntax_e.html
 ;;
 ;; This example works fine in Chicken, but not in Mickey
+(import (scheme base))
+(import (scheme write))
 
 (define-syntax when
   (syntax-rules ()

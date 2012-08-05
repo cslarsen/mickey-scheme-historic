@@ -8,6 +8,8 @@ unknown!
 7 is odd
 
 |#
+(import (scheme base))
+(import (scheme write))
 
 (define (unknown x)
   (newline)

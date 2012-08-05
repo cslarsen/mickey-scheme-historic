@@ -2,6 +2,8 @@
 ;; http://en.wikipedia.org/wiki/Closure_(computer_science)#Uses_of_closures
 ;;
 ;; Shows a cool way to pass private messages between two procedures
+(import (scheme base))
+(import (scheme write))
 
 (define foo #f)
 (define bar #f)

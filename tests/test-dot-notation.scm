@@ -1,3 +1,6 @@
+(import (scheme base))
+(import (scheme write))
+
 (display (string-append
   "Expecting 6: "
   (number->string

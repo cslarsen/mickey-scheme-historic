@@ -1,3 +1,6 @@
+(import (scheme base))
+(import (scheme write))
+
 (define var "goose")
 
 (let ((var 10))

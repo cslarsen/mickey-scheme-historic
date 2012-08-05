@@ -1,3 +1,6 @@
+(import (scheme base))
+(import (scheme write))
+
 (define (circle-area r)
   (let ((pi 3.14159265358979)
         (r^2 (* r r)))

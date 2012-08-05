@@ -1,4 +1,6 @@
 ; Test simple math expressions, as well as implicit (begin ...)
+(import (scheme base))
+(import (scheme write))
 
 ; Simple math
 (display (string-append

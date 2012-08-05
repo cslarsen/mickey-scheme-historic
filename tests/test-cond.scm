@@ -1,3 +1,6 @@
+(import (scheme base))
+(import (scheme write))
+
 (define (test-cond x y)
   (cond ((> x y) (quote greater))
         ((< x y) (quote less))
