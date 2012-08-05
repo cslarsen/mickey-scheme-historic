@@ -221,8 +221,7 @@ int repl()
 
   print_banner(env);
 
-  import(env, exports_base);
-  import(env, exports_math);
+  import_defaults(env, global_opts.lib_path);
   import(env, exports_repl);
 
   if ( global_opts.verbose )

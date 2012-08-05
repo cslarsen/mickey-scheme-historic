@@ -10,7 +10,6 @@ TARGETS_O = exceptions.o \
             heap.o \
             test.o \
             apply.o \
-            module.o \
             options.o \
             tokenizer.o \
             file_io.o \
@@ -18,7 +17,10 @@ TARGETS_O = exceptions.o \
             parse-string.o \
             parser.o \
             types.o \
+            module.o \
             module_math.o \
+            module_base.o \
+            module_process-context.o \
             assertions.o \
             circular.o \
             print.o \
@@ -28,7 +30,6 @@ TARGETS_O = exceptions.o \
             evlis.o \
             eval.o \
             backtrace.o \
-            module_base.o \
             syntax-rules.o \
             cons.o \
             tests.o

@@ -46,6 +46,11 @@
 # include <readline/readline.h>
 #endif
 
+// for proc_import
+extern named_function_t exports_base[];
+extern named_function_t exports_math[];
+extern named_function_t exports_process_context[];
+
 cons_t* proc_abs(cons_t* p, environment_t*)
 {
   assert_length(p, 1);
@@ -466,12 +471,6 @@ cons_t* proc_debug(cons_t *p, environment_t *env)
   }
 
   return string(s.c_str());
-}
-
-cons_t* proc_exit(cons_t* p, environment_t*)
-{
-  exit(integerp(car(p))? car(p)->integer : 0);
-  return NULL;
 }
 
 cons_t* proc_cons(cons_t* p, environment_t*)
@@ -1938,10 +1937,47 @@ cons_t* proc_gcd(cons_t* p, environment_t* e)
   } }
 }
 
+cons_t* proc_import(cons_t* p, environment_t* e)
+{
+  assert_length_min(p, 2);
+  assert_type(PAIR, cadr(p));
+
+  /*
+   * TODO: (import) is not fully supported yet
+   */
+
+  cons_t *spec = cadr(p);
+
+  if ( symbol_name(car(spec)) == "scheme" ) {
+    std::string mod = symbol_name(cadr(spec));
+    const char *lib_path = global_opts.lib_path;
+
+    if ( mod == "base" ) {
+      // library is split into C-lib and Scheme-lib
+      import(e, exports_base);
+      load(e, lib_path, "base.scm");
+    } else if ( mod == "math" ) {
+      import(e, exports_math);
+    } else if ( mod == "char" ) {
+      load(e, lib_path, "char.scm");
+    } else if ( mod == "lazy" ) {
+      load(e, lib_path, "lazy.scm");
+    } else if ( mod == "process-context" ) {
+      import(e, exports_process_context);
+    } else {
+      raise(runtime_exception("Unknown library: " + sprint(car(p))));
+      return boolean(false);
+    }
+  }
+
+  // TODO: Correct ret val
+  return boolean(true);
+}
+
 cons_t* proc_lcm(cons_t* p, environment_t* e)
 {
   switch ( length(p) ) {
-  case 0:  
+  case 0:
     return integer(1);
 
   case 1:
@@ -2446,7 +2482,6 @@ named_function_t exports_base[] = {
   {":circular?", proc_circularp},
   {":closure-source", proc_closure_source},
   {":debug", proc_debug},
-  {":exit", proc_exit},
   {":list->dot", proc_list_to_dot},
 #ifdef USE_LLVM
   {":llvm:gcd", proc_llvm_gcd},
@@ -2508,6 +2543,7 @@ named_function_t exports_base[] = {
   {"file-exists?", proc_file_existsp},
   {"finite?", proc_finitep},
   {"gcd", proc_gcd},
+  {"import", proc_import},
   {"infinite?", proc_infinitep},
   {"input-port?", proc_input_portp},
   {"integer->char", proc_integer_to_char},

@@ -1,4 +1,10 @@
 Random stuff:
+- Make a C module system first, a la Python, with dynamic compiled
+  libraries, to write a module you just include "mickey-api.h" and then
+  you have cons and all that stuff and all the function signatures.
+  Dynamically compiled modules must export name of library, symbols,
+  etc and be fully compatible with the existing source level module
+  system, etc.
 - Add PORT type
 - Add COMPLEX support
 - For numbers, add bool exact field, enable for exact ops

@@ -58,10 +58,7 @@ static std::string parse_sprint(const std::string& expr)
 void run_tests()
 {
   reset_tests();
-
   import_defaults(&globals, global_opts.lib_path);
-  import(&globals, exports_base);
-  import(&globals, exports_math);
 
   { std::string format_abbc5d = format("a%sc%dd", "bb", 5); 
     TEST_STREQ(format_abbc5d, "abbc5d"); }

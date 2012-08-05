@@ -23,11 +23,13 @@ struct options_t
   const char* current_filename;
   const char* include_path;
   const char* lib_path;
+  char **argv;
+  int argc;
 };
 
 extern options_t global_opts;
 
-void set_default(struct options_t*);
+void set_default(struct options_t*, int argc, char** argv);
 void set_lib_path(struct options_t*, const char* lib_path);
 void reset_for_programs(struct options_t*, const char* file = NULL);
 bool parse_option(const char* arg, struct options_t*);

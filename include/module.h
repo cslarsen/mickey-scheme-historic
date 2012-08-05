@@ -21,5 +21,6 @@ struct named_function_t {
 
 void import(environment_t*, named_function_t*);
 void import_defaults(environment_t*, const char* lib_path);
+void load(environment_t *e, const std::string& path, const std::string& file);
 
 #endif

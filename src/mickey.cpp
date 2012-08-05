@@ -27,11 +27,7 @@ void execute(const char* file)
 {
   TRY {
     environment_t *env = new environment_t();
-
     import_defaults(env, global_opts.lib_path);
-    import(env, exports_base);
-    import(env, exports_math);
-
     reset_for_programs(&global_opts, file);
     proc_load(cons(string(file)), env);
   }
@@ -60,11 +56,7 @@ void execute_string(const char* s)
 {
   TRY {
     environment_t *env = new environment_t();
-
     import_defaults(env, global_opts.lib_path);
-    import(env, exports_base);
-    import(env, exports_math);
-
     reset_for_programs(&global_opts, NULL);
 
     program_t *p = parse(s, env);
@@ -84,7 +76,7 @@ int main(int argc, char** argv)
   bool rest_is_files = false; // used with option `--`
   bool run_repl = true;
 
-  set_default(&global_opts);
+  set_default(&global_opts, argc, argv);
 
   /*
    * Set library path using either environment variable or current working

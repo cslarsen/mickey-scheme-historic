@@ -44,11 +44,6 @@ static std::string func_name;
 
 static cons_t* make_closure(cons_t* args, cons_t* body, environment_t* e);
 
-static bool bool_false(cons_t* p)
-{
-  return booleanp(p) && p->boolean == false;
-}
-
 static cons_t* invoke(cons_t* fun, cons_t* args)
 {
   if ( !closurep(fun) )
@@ -369,7 +364,7 @@ cons_t* eval(cons_t* p, environment_t* e)
          * explicitly #f.  So (if 123 'ok) returns ok.
          *
          */
-        if ( !bool_false(eval(cadr(p), e)) ) { // cases [1, 2]
+        if ( !boolean_false(eval(cadr(p), e)) ) { // cases [1, 2]
           p = caddr(p);
           continue;
         } else if ( !nullp(cadddr(p)) ) {    // case [1]
@@ -384,6 +379,9 @@ cons_t* eval(cons_t* p, environment_t* e)
 
       if ( name == "case" )
         return eval(proc_case(p, e), e);
+
+      if ( name == "import" )
+        return eval(proc_import(p, e), e);
 
       if ( name == "define-syntax" ) {
         cons_t *name = cadr(p);

@@ -24,12 +24,14 @@
 
 options_t global_opts;
 
-void set_default(struct options_t* p)
+void set_default(struct options_t* p, int argc, char** argv)
 {
   p->verbose = false;
   p->read_stdin = false;
   p->include_path = ".";
   p->lib_path = ".";
+  p->argc = argc;
+  p->argv = argv;
   reset_for_programs(p);
 }
 

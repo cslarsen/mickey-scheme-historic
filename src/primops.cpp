@@ -527,3 +527,8 @@ bool emptylistp(const cons_t* p)
   return type_of(p) == PAIR &&
     p->car == NULL && p->cdr == NULL;
 }
+
+bool boolean_false(cons_t* p)
+{
+  return booleanp(p) && p->boolean == false;
+}
