@@ -1,12 +1,12 @@
 /*
  * Mickey Scheme
  *
- * Copyright (C) 2011 Christian Stigen Larsen <csl@sublevel3.org>
+ * Copyright (C) 2011-2012 Christian Stigen Larsen <csl@sublevel3.org>
  * http://csl.sublevel3.org                              _
  *                                                        \
  * Distributed under the modified BSD license.            /\
  * Please post bugfixes and suggestions to the author.   /  \_
- *                                                          
+ *
  */
 
 #include <cmath>
@@ -301,34 +301,6 @@ cons_t* proc_syntax_expand(cons_t* p, environment_t *e)
 
   assert_type(SYNTAX, op);
   return syntax_expand(op, code, e);
-}
-
-cons_t* proc_load(cons_t *filename, environment_t *env)
-{
-  assert_type(STRING, car(filename));
-  program_t *p;
-
-  // read from stdin?
-  if ( !strcmp(car(filename)->string, "-") )
-    p = parse(slurp(stdin).c_str(), env);
-  else {
-    // first try filename without include path
-    std::string path = car(filename)->string;
-
-    // no cigar? try include path
-    if ( !file_exists(path.c_str()) )
-      path = format("%s/%s",
-               global_opts.include_path,
-               car(filename)->string);
-
-    p = parse(slurp(open_file(path.c_str())).c_str(), env);
-  }
-
-  // When reading from file, we implicitly wrap it all in (begin ...)
-  p->root = proc_begin(p->root, p->globals); 
-
-  eval(p);
-  return nil();
 }
 
 cons_t* proc_map(cons_t *p, environment_t*)
@@ -1546,6 +1518,36 @@ cons_t* proc_negativep(cons_t* p, environment_t*)
                                     car(p)->decimal < 0);
 }
 
+cons_t* proc_newline(cons_t* p, environment_t*)
+{
+  assert_length(p, 0, 1);
+
+  port_t *po = &global_opts.current_output_device;
+
+  if ( length(p) == 1 ) {
+    assert_type(PORT, car(p));
+    po = car(p)->port;
+  }
+
+  if ( !po->iswritable() )
+    raise(runtime_exception("Port is not writable: " + to_s(po)));
+
+  if ( po->fileport() ) {
+    fprintf(po->file(), "\n");
+
+    /*
+     * Can just as well flush it when we have
+     * a newline (even though it slows everything
+     * down, it's kinda neat to flush at these
+     * points.
+     */
+    fflush(po->file());
+  } else
+    raise(runtime_exception("String ports are not supported: " + to_s(po)));
+
+  return nil();
+}
+
 cons_t* proc_positivep(cons_t* p, environment_t*)
 {
   assert_length(p, 1);
@@ -1665,13 +1667,6 @@ cons_t* proc_expt(cons_t* p, environment_t*)
   return decimal(r);
 }
 
-cons_t* proc_char_whitespacep(cons_t* p, environment_t*)
-{
-  assert_length(p, 1);
-  assert_type(CHAR, car(p));
-  return boolean(isspace(car(p)->character));
-}
-
 cons_t* proc_modulo(cons_t* p, environment_t*)
 {
   assert_length(p, 2);
@@ -1696,48 +1691,6 @@ cons_t* proc_char_to_integer(cons_t* p, environment_t*)
   assert_length(p, 1);
   assert_type(CHAR, car(p));
   return integer(static_cast<int>(car(p)->character));
-}
-
-cons_t* proc_char_alphabeticp(cons_t* p, environment_t*)
-{
-  assert_length(p, 1);
-  assert_type(CHAR, car(p));
-  return boolean(isalpha(car(p)->character));
-}
-
-cons_t* proc_char_numericp(cons_t* p, environment_t*)
-{
-  assert_length(p, 1);
-  assert_type(CHAR, car(p));
-  return boolean(isdigit(car(p)->character));
-}
-
-cons_t* proc_char_lowercasep(cons_t* p, environment_t*)
-{
-  assert_length(p, 1);
-  assert_type(CHAR, car(p));
-  return boolean(islower(car(p)->character));
-}
-
-cons_t* proc_char_uppercasep(cons_t* p, environment_t*)
-{
-  assert_length(p, 1);
-  assert_type(CHAR, car(p));
-  return boolean(isupper(car(p)->character));
-}
-
-cons_t* proc_char_upcase(cons_t* p, environment_t*)
-{
-  assert_length(p, 1);
-  assert_type(CHAR, car(p));
-  return character(toupper(car(p)->character));
-}
-
-cons_t* proc_char_downcase(cons_t* p, environment_t*)
-{
-  assert_length(p, 1);
-  assert_type(CHAR, car(p));
-  return character(tolower(car(p)->character));
 }
 
 cons_t* proc_char_ltep(cons_t* p, environment_t*)
@@ -2445,13 +2398,6 @@ named_function_t exports_base[] = {
   {"case", proc_case},
   {"cdr", proc_cdr},
   {"char->integer", proc_char_to_integer},
-  {"char-alphabetic?", proc_char_alphabeticp},
-  {"char-downcase", proc_char_downcase},
-  {"char-lower-case?", proc_char_lowercasep},
-  {"char-numeric?", proc_char_numericp},
-  {"char-upcase", proc_char_upcase},
-  {"char-upper-case?", proc_char_uppercasep},
-  {"char-whitespace?", proc_char_whitespacep},
   {"char<=?", proc_char_ltep},
   {"char<?", proc_char_ltp},
   {"char=?", proc_char_eqp},
@@ -2484,7 +2430,6 @@ named_function_t exports_base[] = {
   {"list-ref", proc_list_ref},
   {"list-tail", proc_list_tail},
   {"list?", proc_listp},
-  {"load", proc_load},
   {"make-bytevector", proc_make_bytevector},
   {"make-string", proc_make_string},
   {"make-vector", proc_make_vector},
@@ -2497,6 +2442,7 @@ named_function_t exports_base[] = {
   {"modulo", proc_modulo},
   {"nan?", proc_nanp},
   {"negative?", proc_negativep},
+  {"newline", proc_newline},
   {"not", proc_not},
   {"null?", proc_nullp},
   {"number->string", proc_number_to_string},

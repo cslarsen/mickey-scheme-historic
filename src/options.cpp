@@ -32,6 +32,7 @@ void set_default(struct options_t* p, int argc, char** argv)
   p->lib_path = ".";
   p->argc = argc;
   p->argv = argv;
+  p->warn = false;
   reset_for_programs(p);
 }
 

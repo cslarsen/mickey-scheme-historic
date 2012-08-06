@@ -1,5 +1,4 @@
 ;; Library for performing tests
-
 (define tests 0)
 (define test+1
   (lambda (_foo)

@@ -19,6 +19,8 @@ TARGETS_O = exceptions.o \
             types.o \
             module.o \
             module_import.o \
+            module_load.o \
+            module_char.o \
             module_write.o \
             module_math.o \
             module_base.o \

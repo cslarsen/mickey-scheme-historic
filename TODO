@@ -2,7 +2,9 @@ Random stuff:
 - In primops.cpp symbol(...), don't seem to use environment to store
   symbols, meaning we have a global symbol table.  This should be in
   symbol-table.h or something like that, and should be fast(er) to
-  lookup.
+  lookup.  Also, remove the environment_t param from symbol("lala", e)
+  since it's not needed.  Also, for string and symbol, it should suffice
+  with pointer comparison with global tables.
 - REPL: Add context-sensitive tab-completion, with double tab to cycle
   through alternatives.. e.g. (im<tab> -> (import and then
   (import (sch<tab> should give you (import (scheme, and then

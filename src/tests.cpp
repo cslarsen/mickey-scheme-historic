@@ -20,29 +20,29 @@
 #include "exceptions.h"
 #include "options.h"
 
-static environment_t globals;
+static environment_t* globals = NULL;
 
 static cons_t* symbol(const char* s)
 {
-  return symbol(s, &globals);
+  return symbol(s, globals);
 }
 
 static program_t* parse(const char *program)
 {
-  return parse(program, &globals);
+  return parse(program, globals);
 }
 
 static std::string parse_eval_print(const char* expr)
 {
   program_t *p = parse(expr);
-  cons_t *r = eval(car(p->root), &globals);
+  cons_t *r = eval(car(p->root), globals);
   return print(r);
 }
 
 static std::string parse_eval_sprint(const std::string& expr)
 {
   program_t *p = parse(expr.c_str());
-  cons_t *r = eval(car(p->root), &globals);
+  cons_t *r = eval(car(p->root), globals);
   return sprint(r);
 }
 
@@ -58,7 +58,8 @@ static std::string parse_sprint(const std::string& expr)
 void run_tests()
 {
   reset_tests();
-  import_defaults(&globals, global_opts.lib_path);
+  globals = null_environment();
+  import_defaults(globals, global_opts.lib_path);
 
   { std::string format_abbc5d = format("a%sc%dd", "bb", 5); 
     TEST_STREQ(format_abbc5d, "abbc5d"); }

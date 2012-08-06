@@ -9,19 +9,9 @@
  *
  */
 
-#ifndef INC_MICKEY_PARSER_H
-#define INC_MICKEY_PARSER_H
-
 #include "cons.h"
-#include "primops.h"
+#include "module.h"
 
-struct program_t {
-  environment_t *globals;
-  cons_t *root;
-  long int parens;
-};
+extern named_function_t exports_load[];
 
-program_t* parse(const std::string& program, environment_t *env);
-cons_t* parse_string(const char*);
-
-#endif
+cons_t* proc_load(cons_t*, environment_t*);

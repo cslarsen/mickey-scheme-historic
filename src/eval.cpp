@@ -17,6 +17,7 @@
 #include "print.h"
 #include "backtrace.h"
 #include "module_import.h"
+#include "module_load.h"
 #include "module_base.h"
 #include "syntax-rules.h"
 #include "exceptions.h"
@@ -39,8 +40,9 @@ extern "C" { // because I don't like name-mangling
  * be fixed later on.  Bad because they shouldn't
  * shadow any other definitions with these names.
  */
-static const char ARGS[] = "__args__";
-static const char BODY[] = "__body__";
+const char ARGS[] = "__args__";
+const char BODY[] = "__body__";
+
 static std::string func_name;
 
 static cons_t* make_closure(cons_t* args, cons_t* body, environment_t* e);
@@ -265,10 +267,14 @@ static cons_t* make_closure(cons_t* args, cons_t* body, environment_t* e)
  * This is needed by e.g. (apply), which needs to EVAL its
  * arguments.
  */
-static cons_t* invoke_with_trace(cons_t* op, cons_t* args, environment_t* e, bool evlis_args = true)
+static cons_t* invoke_with_trace(
+  cons_t* op,
+  cons_t* args,
+  environment_t* env,
+  bool evlis_args = true)
 {
   backtrace_push(cons(op, args));
-  cons_t *fun = eval(op, e);
+  cons_t *fun = eval(op, env); // lookup function
 
   if ( !closurep(fun) )
     raise(std::runtime_error(format(
@@ -279,7 +285,7 @@ static cons_t* invoke_with_trace(cons_t* op, cons_t* args, environment_t* e, boo
   else
     func_name = "<?>";
 
-  cons_t *ret = invoke(fun, evlis_args? evlis(args, e) : args);
+  cons_t *ret = invoke(fun, evlis_args? evlis(args, env) : args);
 
   func_name = "";
   backtrace_pop();
@@ -381,8 +387,42 @@ cons_t* eval(cons_t* p, environment_t* e)
       if ( name == "case" )
         return eval(proc_case(p, e), e);
 
+      /*
+       * Both load and import are special, because they
+       * cannot be interpreted as normal functions.
+       *
+       * The reason is that closures will evaluate
+       * functions in the environment they were
+       * _defined_ in, and not the one they are
+       * running in.
+       *
+       * So, if load/import was a function, they would
+       * not be able to, e.g., define new function
+       * in the running parent environment.
+       *
+       * Below, even though we have the load function
+       * available here, we check that the user has
+       * actually imported a load command into the
+       * environment (we'll just ASSUME it's our
+       * (scheme base) load function).
+       *
+       * TODO: We shouldn't assume that if a "load"
+       *       symbol exists, it's (scheme load), because
+       * it means that if any user does not import
+       * (scheme load) and wants to use "load" as a
+       * normal variable or function, it will not have
+       * lexical scope because of our trick with the
+       * environment below!
+       *
+       */
+      if ( name == "load" && e->lookup("load") != NULL )
+        return proc_load(evlis(cdr(p), e), e);
+
+      /*
+       * import's arguments are literals.
+       */
       if ( name == "import" )
-        return eval(proc_import(p, e), e);
+        return proc_import(p, e);
 
       if ( name == "define-syntax" ) {
         cons_t *name = cadr(p);

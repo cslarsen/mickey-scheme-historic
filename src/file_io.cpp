@@ -23,8 +23,8 @@ std::string slurp(FILE *f)
   return r;
 }
 
-bool file_exists(const char* s)
+bool file_exists(const std::string& s)
 {
   struct stat st;
-  return !stat(s, &st);
+  return !stat(s.c_str(), &st);
 }

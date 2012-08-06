@@ -1,12 +1,12 @@
 /*
  * Mickey Scheme
  *
- * Copyright (C) 2011 Christian Stigen Larsen <csl@sublevel3.org>
+ * Copyright (C) 2011-2012 Christian Stigen Larsen <csl@sublevel3.org>
  * http://csl.sublevel3.org                              _
  *                                                        \
  * Distributed under the modified BSD license.            /\
  * Please post bugfixes and suggestions to the author.   /  \_
- *                                                          
+ *
  */
 
 #include <stdexcept>
@@ -14,6 +14,8 @@
 #include "util.h"
 #include "primops.h"
 #include "print.h"
+#include "options.h"
+#include "eval.h"
 #include "exceptions.h"
 
 static std::map<std::string, symbol_t> symbols;
@@ -100,8 +102,7 @@ std::string to_s(port_t* p)
 
 std::string to_s(char p, bool escape)
 {
-  // TODO: Use table instead
-  return format(escape? "#\\%c" : "%c", (p>32 || p<127)? p : '?' );
+  return format(escape? "#\\%c" : "%c", isprint(p)? p : '?' );
 }
 
 cons_t* environment_t::lookup_or_throw(const std::string& name) const
@@ -109,7 +110,7 @@ cons_t* environment_t::lookup_or_throw(const std::string& name) const
   cons_t *p = lookup(name);
 
   if ( p == NULL )
-    raise(std::runtime_error("Unbound variable: " + name));
+    raise(std::runtime_error(format("Unbound definition: %s", name.c_str())));
 
   return p;
 }
@@ -117,10 +118,9 @@ cons_t* environment_t::lookup_or_throw(const std::string& name) const
 cons_t* environment_t::lookup(const std::string& name) const
 {
   const environment_t *e = this;
+  dict_t::const_iterator i;
 
   do {
-    dict_t::const_iterator i;
-
     if ( (i = e->symbols.find(name)) != e->symbols.end() )
       return (*i).second;
 
@@ -131,12 +131,20 @@ cons_t* environment_t::lookup(const std::string& name) const
 
 struct cons_t* environment_t::define(const std::string& name, lambda_t f)
 {
+  if ( global_opts.verbose && symbols.find(name) != symbols.end() )
+    fprintf(stderr, "WARNING: Already have a definition for %s\n",
+        name.c_str());
+
   symbols[name] = closure(f, this);
   return symbols[name];
 }
 
 struct cons_t* environment_t::define(const std::string& name, cons_t* body)
 {
+  if ( global_opts.verbose && symbols.find(name) != symbols.end() )
+    fprintf(stderr, "WARNING: Already have a definition for %s\n",
+        name.c_str());
+
   return symbols[name] = body;
 }
 
@@ -145,6 +153,16 @@ struct environment_t* environment_t::extend()
   environment_t *r = new environment_t();
   r->outer = this;
   return r;
+}
+
+environment_t* environment_t::outmost()
+{
+  environment_t *e = this;
+
+  while ( e->outer != NULL )
+    e = e->outer;
+
+  return e;
 }
 
 cons_t* deep_copy(const cons_t *p)
@@ -166,3 +184,35 @@ cons_t* deep_copy(const cons_t *p)
   return r;
 }
 
+int merge(environment_t *to, const environment_t *from)
+{
+  int r = 0;
+
+  for ( dict_t::const_iterator i = from->symbols.begin();
+        i != from->symbols.end(); ++i )
+  {
+    std::string name = (*i).first;
+
+    // copy binding
+    if ( to->lookup(name) == NULL ) {
+      to->symbols[name] = (*i).second;
+      ++r;
+      continue;
+    }
+
+    // skip special symbol `import´
+    if ( name != "import" ) {
+      if ( global_opts.warn ) {
+        fprintf(stderr,
+            "WARNING: We already have a definition for: %s\n",
+             name.c_str());
+      }
+
+      // TODO: Allow overrides in REPL-environments
+      //raise(runtime_exception("Binding already exists: " + name));
+      //break;
+    }
+  }
+
+  return r;
+}

@@ -41,7 +41,8 @@ enum type_t {
 };
 
 typedef struct cons_t* (*lambda_t)(struct cons_t*, struct environment_t*);
-typedef std::map<std::string, struct cons_t*> dict_t; // TODO: Use hash_map
+typedef std::map<std::string, struct cons_t*> dict_t;
+// TODO: Use hash_map and global string pointers
 
 struct environment_t
  #ifdef BOEHM_GC
@@ -51,15 +52,26 @@ struct environment_t
   struct environment_t *outer;
   dict_t symbols;
 
-  environment_t() : outer(NULL)
-  {
-  }
-
   environment_t* extend();
   struct cons_t* lookup(const std::string& name) const;
   struct cons_t* lookup_or_throw(const std::string& name) const;
   struct cons_t* define(const std::string& name, lambda_t func);
   struct cons_t* define(const std::string& name, cons_t* body);
+  environment_t* outmost();
+
+private:
+  environment_t() : outer(NULL)
+  {
+  }
+
+  /*
+   * Control construction
+   */
+  friend environment_t* null_environment(int);
+
+  // Disabled functions
+  environment_t(const environment_t&);
+  environment_t& operator=(const environment_t&);
 };
 
 struct continuation_t
@@ -220,6 +232,16 @@ public:
     return *this;
   }
 
+  bool fileport() const
+  {
+    return f!=NULL && s==NULL;
+  }
+
+  bool stringport() const
+  {
+    return f==NULL && s!=NULL;
+  }
+
   FILE* file() const
   {
     return f;
@@ -325,5 +347,11 @@ std::string to_s(port_t*);
 std::string to_s(char, bool);
 std::string to_s(struct cons_t *p);;
 cons_t* deep_copy(const cons_t*);
+
+/*
+ * Merges the two environments by copying `b´ into `a´.
+ * Returns number of symbols copied.
+ */
+int merge(environment_t *to, const environment_t *from);
 
 #endif

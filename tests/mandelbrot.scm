@@ -15,9 +15,10 @@
 ;; Made by Christian Stigen Larsen in 2011
 ;; Placed in the public domain.
 
-(import (scheme base))
-(import (scheme write))
-(import (scheme math))
+(import (scheme base)
+        (scheme write)
+        (scheme math)
+        (scheme load))
 
 ;; Number of iterations, increase for more accurate
 ;; answer at a cost of slower computation

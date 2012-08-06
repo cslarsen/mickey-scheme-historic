@@ -50,5 +50,5 @@ cons_t* proc_display(cons_t *p, environment_t*)
 
 named_function_t exports_write[] = {
   {"display", proc_display},
-  {NULL, NULL} /* terminate with null */
+  {NULL, NULL}
 };

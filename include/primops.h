@@ -103,4 +103,12 @@ bool boolean_false(cons_t* p);
  */
 const std::string& symbol_name(const cons_t*);
 
+/*
+ * Returns blank environment with only one
+ * definition: import.
+ *
+ * TODO: Move this to own environment.h / environment.cpp
+ */
+environment_t* null_environment(int version = 7);
+
 #endif

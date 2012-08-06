@@ -199,9 +199,9 @@ static cons_t* parse_unquote_splicing(environment_t* e)
               parse_list(e, true));
 }
 
-program_t* parse(const char *program, environment_t *env)
+program_t* parse(const std::string& program, environment_t *env)
 {
-  set_source(program);
+  set_source(program.c_str());
 
   if ( env == NULL )
     raise(std::runtime_error("parse: null environment"));

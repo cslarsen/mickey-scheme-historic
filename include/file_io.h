@@ -20,13 +20,15 @@ class open_file {
   open_file& operator=(const open_file&);
 
 public:
-  open_file(const char* name, const char* access = "rt") : f(fopen(name, access))
+  open_file(const std::string& name,
+            const char* access = "rt") :
+    f(fopen(name.c_str(), access))
   {
     if ( f == NULL )
-      raise(std::runtime_error(format("Could not open file: %s",  name)));
+      raise(std::runtime_error("Could not open file: " + name));
   }
 
-  ~open_file()
+  virtual ~open_file()
   {
     fclose(f);
   }
@@ -38,4 +40,4 @@ public:
 };
 
 std::string slurp(FILE*);
-bool file_exists(const char*);
+bool file_exists(const std::string&);

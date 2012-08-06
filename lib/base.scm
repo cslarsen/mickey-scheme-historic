@@ -25,9 +25,6 @@
     ((unless test expr ...)
      (if (not test) (begin expr ...)))))
 
-(define (newline)
-  (display "\n"))
-
 (define (caar s) (car (car s)))
 (define (cadr s) (car (cdr s)))
 (define (cdar s) (cdr (car s)))

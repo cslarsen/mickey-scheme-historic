@@ -18,6 +18,7 @@
 #include "print.h"
 #include "circular.h"
 #include "exceptions.h"
+#include "module_import.h"
 
 cons_t* cons(const cons_t* h, const cons_t* t)
 {
@@ -531,4 +532,14 @@ bool emptylistp(const cons_t* p)
 bool boolean_false(cons_t* p)
 {
   return booleanp(p) && p->boolean == false;
+}
+
+environment_t* null_environment(int version)
+{
+  if ( version != 7 )
+    raise(runtime_exception(format("Unsupported null environment version: %d", version)));
+
+  environment_t *r = new environment_t();
+  import(r, exports_import);
+  return r;
 }

@@ -59,6 +59,29 @@ cons_t* proc_list_globals(cons_t*, environment_t *env)
   return r;
 }
 
+cons_t* proc_help(cons_t*, environment_t*)
+{
+  printf(
+    "\n"
+    "Welcome to Mickey, a scheme interperter that aims to correctly\n"
+    "implement the whole of R7RS-small.\n"
+    "\n"
+    "In this REPL environment, you have several libraries preloaded\n"
+    "for your convenience.  You can import additional libraries by\n"
+    "invoking, e.g., (import (scheme lazy)).\n"
+    "\n"
+    "Also, note that files executed from the command line have NO\n"
+    "libraries imported by default, so you have to explicitly import\n"
+    "typicall (scheme base) and (scheme write).\n"
+    "\n"
+    "You will also stumble upon various bugs in Mickey, so please send\n"
+    "me bug reports.\n"
+    "\n"
+  );
+
+  return nil();
+}
+
 cons_t* proc_run_tests(cons_t*, environment_t*)
 {
   run_tests();
@@ -68,6 +91,7 @@ cons_t* proc_run_tests(cons_t*, environment_t*)
 named_function_t exports_repl[] = {
   {":run-tests", proc_run_tests},
   {":list-globals", proc_list_globals},
+  {"help", proc_help},
   {NULL, NULL}};
 
 bool isprefix(const char* prefix, const char* fullstr)
@@ -203,31 +227,25 @@ void print_banner(environment_t*)
       (rl_readline_version & 0xFF00) >> 8, rl_readline_version & 0x00FF);
   #endif
 
-  printf("%-63s _\n", "");
-  printf("%-63s  \\\n", VERSION);
-  printf("%-63s  /\\\n", __VERSION__);
-  printf("%-63s /  \\_\n", readline_version.c_str());
+  printf("#| %-63s _\n", "");
+  printf("   %-63s  \\\n", VERSION);
+  printf("   %-63s  /\\\n", __VERSION__);
+  printf("   %-63s /  \\_\n", readline_version.c_str());
 
   #ifdef BOEHM_GC
     std::string boehm_version =
       format("Boehm-Demers-Weiser GC %d.%d",
         GC_VERSION_MAJOR, GC_VERSION_MINOR);
-    printf("%-63s       \n", boehm_version.c_str());
+    printf("   %-63s       \n", boehm_version.c_str());
   #endif
 }
 
 int repl()
 {
-  global_env = new environment_t();
+  global_env = null_environment();
   environment_t *env = global_env;
 
   print_banner(env);
-
-  import_defaults(env, global_opts.lib_path);
-  import(env, exports_repl, "(scheme repl)");
-
-  if ( global_opts.verbose )
-    printf("\n");
 
   #ifdef USE_READLINE
   init_readline();
@@ -272,15 +290,11 @@ int repl()
       {
         static bool imported_defaults = false;
         if ( !imported_defaults ) {
+          printf("\n");
+          printf("   To quit, hit CTRL+D or type (exit).  Use (help) for an introduction.\n");
+          printf("|#\n\n");
           import_defaults(env, global_opts.lib_path);
-          printf("Loaded %ld definitions\n", env->symbols.size());
-          printf("Execute (:exit [ code ]) to quit\n");
-          printf("You can also (:run-tests) and (:list-globals)\n");
-          printf("\n");
-          printf("Note that when you use mickey to execute scheme files on the\n");
-          printf("command line, the environment is fresh so you have to start\n");
-          printf("by doing (import (scheme base)) and (import (scheme write)) etc.\n");
-          printf("\n");
+          import(env, exports_repl, "(scheme repl)");
           imported_defaults = true;
         }
       }
@@ -328,7 +342,7 @@ int repl()
             result = cdr(result);
           }
 
-          end->car = symbol("... ad infinitum", new environment_t());
+          end->car = symbol("... ad infinitum", null_environment());
           end->cdr = cons(nil());
           printf("%s\n", sprint(l).c_str());
         } else {

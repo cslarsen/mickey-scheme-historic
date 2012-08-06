@@ -9,6 +9,9 @@
  *                                                          
  */
 
+#ifndef INC_MICKEY_EXCEPTIONS_H
+#define INC_MICKEY_EXCEPTIONS_H
+
 #include <stdlib.h>
 #include <stdexcept>
 
@@ -91,3 +94,5 @@ struct compiler_exception : general_exception {
 struct runtime_exception : general_exception {
   runtime_exception(const std::string& s) : general_exception("<runtime> " + s) { }
 };
+
+#endif

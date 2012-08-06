@@ -17,9 +17,12 @@
 #include "print.h"
 #include "heap.h"
 #include "backtrace.h"
+#include "module.h"
+/*
 #include "module_import.h"
 #include "module_base.h"
 #include "module_math.h"
+*/
 #include "exceptions.h"
 
 #define MICKEY_LIB "MICKEY_LIB"
@@ -27,10 +30,9 @@
 void execute(const char* file)
 {
   TRY {
-    environment_t *env = new environment_t();
-    import(env, exports_import, NULL);
+    environment_t *env = null_environment();
     reset_for_programs(&global_opts, file);
-    proc_load(cons(string(file)), env);
+    load(file, env);
   }
   CATCH (const std::exception& e) {
     const char* file = global_opts.current_filename;
@@ -42,7 +44,7 @@ void execute(const char* file)
      */
     fflush(stdout);
 
-    fprintf(stderr, "Error%s%s: %s\n",
+    fprintf(stderr, "\nError%s%s: %s\n",
       has_file? " in " : "",
       has_file? file : "",
       e.what());
@@ -56,16 +58,15 @@ void execute(const char* file)
 void execute_string(const char* s)
 {
   TRY {
-    environment_t *env = new environment_t();
-    import(env, exports_import, NULL);
+    environment_t *env = null_environment();
     reset_for_programs(&global_opts, NULL);
 
     program_t *p = parse(s, env);
-    p->root = proc_begin(p->root, env);
+    p->root = cons(symbol("begin", p->globals), p->root);
     printf("%s\n", sprint(eval(p->root, env)).c_str());
   }
   CATCH (const std::exception& e) {
-    fprintf(stderr, "Error: %s\n", e.what());
+    fprintf(stderr, "\nError: %s\n", e.what());
     backtrace();
     backtrace_clear();
     exit(1);

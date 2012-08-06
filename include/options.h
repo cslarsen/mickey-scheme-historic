@@ -25,6 +25,7 @@ struct options_t
   const char* lib_path;
   char **argv;
   int argc;
+  bool warn;
 };
 
 extern options_t global_opts;

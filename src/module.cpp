@@ -11,50 +11,52 @@
 
 #include <string>
 #include "primops.h"
+#include "eval.h"
+#include "file_io.h"
 #include "module.h"
 #include "module_import.h"
 #include "module_write.h"
 #include "module_base.h"
 #include "module_math.h"
+#include "module_char.h"
+#include "module_load.h"
 #include "module_process_context.h"
 #include "options.h"
 
-void import(environment_t *e, named_function_t *p, const char* lib_name)
+void import(environment_t *e,
+            named_function_t *p,
+            const std::string& lib_name)
 {
-  if ( global_opts.verbose && lib_name != NULL )
-    fprintf(stderr, "Importing %s\n", lib_name);
+  if ( global_opts.verbose )
+    fprintf(stderr, "Importing internal library %s\n",
+        lib_name.c_str());
 
   for ( ; p->name && p->function; ++p )
     e->define(p->name, p->function);
 }
 
-void load(environment_t *e, const std::string& path, const std::string& file)
+void load(const std::string& file, environment_t* target)
 {
   if ( global_opts.verbose )
-    printf("Loading %s\n", std::string(path + "/" + file).c_str());
+    fprintf(stderr, "Loading file %s\n", file.c_str());
 
-  proc_load(cons(string((path + "/" + file).c_str())), e);
+  program_t *p = parse(slurp(open_file(file)), target);
+  eval(cons(symbol("begin", p->globals),
+            p->root), p->globals);
 }
 
 /*
  * Add default libraries here.
+ *
+ * TODO: Use interaction-environment / repl-environment
  */
-void import_defaults(environment_t *e, const char* lib_path)
+void import_defaults(environment_t *e, const std::string& lib_path)
 {
-  import(e, exports_import, NULL);
-
+  import(e, exports_import);
   import(e, exports_base, "(scheme base)");
-  load(e, lib_path, "base.scm");
-
+  load(lib_path + "/base.scm", e);
   import(e, exports_write, "(scheme write)");
-  import(e, exports_math, "(scheme math)");
-  import(e, exports_process_context, "(scheme process-context)");
-
-  if ( global_opts.verbose )
-    fprintf(stderr, "Importing (scheme char)\n");
-  load(e, lib_path, "char.scm");
-
-  if ( global_opts.verbose )
-    fprintf(stderr, "Importing (scheme lazy)\n");
-  load(e, lib_path, "lazy.scm");
+  import(e, exports_char, "(scheme char)");
+  load(lib_path + "/char.scm", e);
+  import(e, exports_load, "(scheme load)");
 }
