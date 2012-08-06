@@ -1,4 +1,6 @@
 Random stuff:
+- Should have a mutable list of internal and external lib names ("scheme
+  base" . "base.scm" og externals_base)
 - Create cxr.h and cxr.scm lib
 - Move core mickey stuff into own mickey-api.h and compile into library so
   other c modules can include the .h-file and link with -lmickey to create
