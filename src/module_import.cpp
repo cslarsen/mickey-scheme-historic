@@ -117,10 +117,22 @@ static environment_t* rename(environment_t* /*importset*/, cons_t* /*identifiers
   return NULL;
 }
 
-static environment_t* prefix(environment_t* /*importset*/, cons_t* /*identifier*/)
+static environment_t* prefix(environment_t* e, cons_t* identifier)
 {
-  raise(runtime_exception("import prefix not supported"));
-  return NULL;
+  assert_type(SYMBOL, identifier);
+
+  // build a new environment and return it
+  environment_t *r = null_environment();
+
+  for ( dict_t::const_iterator i = e->symbols.begin();
+        i != e->symbols.end(); ++i )
+  {
+    const std::string prefix = symbol_name(identifier);
+    const std::string name = (*i).first;
+    r->symbols[prefix + name] = (*i).second;
+  }
+
+  return r;
 }
 
 static environment_t* only(environment_t* /*importset*/, cons_t* /*identifiers*/)

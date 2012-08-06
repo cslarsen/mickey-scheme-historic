@@ -540,6 +540,11 @@ environment_t* null_environment(int version)
     raise(runtime_exception(format("Unsupported null environment version: %d", version)));
 
   environment_t *r = new environment_t();
-  import(r, exports_import);
+
+  /*
+   * Used to import(r, exports_import); here,
+   * but that's handled by eval() now.
+   */
+
   return r;
 }
