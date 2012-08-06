@@ -1,4 +1,5 @@
 Random stuff:
+- What happens if foo.scm contains (load "foo.scm") ? We should detect this.
 - Should have a mutable list of internal and external lib names ("scheme
   base" . "base.scm" og externals_base)
 - Create cxr.h and cxr.scm lib
