@@ -1,4 +1,11 @@
 Random stuff:
+- REPL: Add context-sensitive tab-completion, with double tab to cycle
+  through alternatives.. e.g. (im<tab> -> (import and then
+  (import (sch<tab> should give you (import (scheme, and then
+  (import (scheme <tab>)) should give you a list of the scheme libraries.
+- If we define identical symbols in two modules and import both, we should
+  generate an appropriate error message.
+- Rename module_blabla to module-blabla or library-blabla
 - What happens if foo.scm contains (load "foo.scm") ? We should detect this.
 - Should have a mutable list of internal and external lib names ("scheme
   base" . "base.scm" og externals_base)
