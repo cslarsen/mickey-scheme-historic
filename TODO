@@ -1,4 +1,7 @@
 Random stuff:
+- In symbol(..), add assert_identifier(...) to check that we have a legal
+  name for an identifier (e.g, no spaces, etc).  Could optionally also be
+  done in the parser.
 - For all functions, record arity somewhere (and, optionally, expected
   types), so that we can easily (and statically) detect errors.
 - Lib: (scheme base) should refer to lib/scheme/base.scm
