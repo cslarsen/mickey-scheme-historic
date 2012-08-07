@@ -16,6 +16,7 @@
 #include "module_load.h"
 #include "module_base.h"
 #include "module_math.h"
+#include "module_mickey_environment.h"
 #include "module_char.h"
 #include "module_write.h"
 #include "module_process_context.h"
@@ -30,8 +31,8 @@
  * Library exports
  */
 named_function_t exports_import[] = {
-  {"import", proc_import},
-  {NULL, NULL}
+  {"import", proc_import, true},
+  {NULL, NULL, false}
 };
 
 /*
@@ -70,7 +71,6 @@ static void import(environment_t *target, const std::string& filename)
 
   program_t *p = parse(slurp(open_file(filename)), target);
   eval(cons(symbol("begin", p->globals), p->root), p->globals);
-  //merge(target, p->globals); // TODO: Needed? Really shouldn't be
 }
 
 static environment_t* import_library(const std::string& name)
@@ -105,16 +105,43 @@ static environment_t* import_library(const std::string& name)
   else if ( name == "(scheme process-context)" )
     import(r, exports_process_context, name);
 
+  else if ( name == "(mickey environment)" )
+    import(r, exports_mickey_environment, name);
+
   else
     raise(runtime_exception("Unknown library: " + name));
 
   return r;
 }
 
-static environment_t* rename(environment_t* /*importset*/, cons_t* /*identifiers*/)
+static environment_t* rename(environment_t* e, cons_t* ids)
 {
-  raise(runtime_exception("import rename not supported"));
-  return NULL;
+  assert_type(PAIR, ids);
+
+  // build a new environment and return it
+  environment_t *r = null_environment();
+
+  // TODO: Below code runs in slow O(n^2) time
+  for ( dict_t::const_iterator i = e->symbols.begin();
+        i != e->symbols.end(); ++i )
+  {
+    std::string name = (*i).first;
+
+    // find new name
+    for ( cons_t *id = ids; !nullp(id); id = cdr(id) ) {
+      assert_type(PAIR, car(id));
+      assert_type(SYMBOL, caar(id));
+      assert_type(SYMBOL, cadar(id));
+      if ( symbol_name(caar(id)) == name ) {
+        name = symbol_name(cadar(id));
+        break;
+      }
+    }
+
+    r->symbols[name] = (*i).second;
+  }
+
+  return r;
 }
 
 static environment_t* prefix(environment_t* e, cons_t* identifier)
@@ -135,16 +162,61 @@ static environment_t* prefix(environment_t* e, cons_t* identifier)
   return r;
 }
 
-static environment_t* only(environment_t* /*importset*/, cons_t* /*identifiers*/)
+static environment_t* only(environment_t* e, cons_t* ids)
 {
-  raise(runtime_exception("import only not supported"));
-  return NULL;
+  assert_type(PAIR, ids);
+
+  // build a new environment and return it
+  environment_t *r = null_environment();
+
+  for ( dict_t::const_iterator i = e->symbols.begin();
+        i != e->symbols.end(); ++i )
+  {
+    std::string name = (*i).first;
+
+    // only import specified names
+    // TODO: Fix slow O(n^2) algo below
+    for ( cons_t *id = ids; !nullp(id); id = cdr(id) ) {
+      assert_type(SYMBOL, car(id));
+
+      if ( symbol_name(car(id)) == name ) {
+        r->symbols[name] = (*i).second;
+        break;
+      }
+    }
+  }
+
+  return r;
 }
 
-static environment_t* except(environment_t* /*importset*/, cons_t* /*identifiers*/)
+static environment_t* except(environment_t* e,  cons_t* ids)
 {
-  raise(runtime_exception("import except not supported"));
-  return NULL;
+  assert_type(PAIR, ids);
+
+  // build a new environment and return it
+  environment_t *r = null_environment();
+
+  for ( dict_t::const_iterator i = e->symbols.begin();
+        i != e->symbols.end(); ++i )
+  {
+    std::string name = (*i).first;
+
+    // do not import specified name
+    // TODO: Fix slow O(n^2) algo below
+    for ( cons_t *id = ids; !nullp(id); id = cdr(id) ) {
+      assert_type(SYMBOL, car(id));
+
+      if ( symbol_name(car(id)) == name )
+        goto DO_NOT_IMPORT;
+    }
+
+    r->symbols[name] = (*i).second;
+
+DO_NOT_IMPORT:
+    continue;
+  }
+
+  return r;
 }
 
 static environment_t* import_set(cons_t* p)
@@ -181,14 +253,55 @@ static environment_t* import_set(cons_t* p)
 
 cons_t* proc_import(cons_t* p, environment_t* e)
 {
-  assert_length_min(p, 2);
-  assert_type(PAIR, cadr(p));
+  assert_length_min(p, 1);
+  assert_type(PAIR, car(p));
 
   /*
    * Handle all import sets in (import <import set> ...)
    */
-  for ( p = cdr(p); !nullp(p); p = cdr(p) )
-    merge(e, import_set(car(p)));
+  for ( ; !nullp(p); p = cdr(p) ) {
+    environment_t *impenv = import_set(car(p));
+
+    /*
+     * Now we need to bring the imported environment to the environment,
+     * so that the new definitions are available there.
+     *
+     * We do this by copying the definitions.
+     */
+    merge(e, impenv);
+
+    /*
+     * But we also need to connect the lower level imported environment to
+     * definitions found in its outer environment.
+     *
+     * This is because the exported functions in impenv must be able to see
+     * definitions in the toplevel, controlling, environment.
+     *
+     * Consider the (mickey environment) module, which has a "syntactic"
+     * procedure bound?.
+     *
+     * If we (import (scheme write)) then we get the procedure display.  But
+     * if we now (import (mickey environment)) and call (bound? display)
+     * then bound? will not be able to see any definition of display, and
+     * will wrongly return #f.
+     *
+     * Note that I'm not entirely certain that this is the correct way of
+     * handling things, since closures must be evaluated in the environment
+     * they were defined in.
+     *
+     * TODO: Think hard about this and write some tests.
+     *
+     * Note that this behaviour might be different for libraries that are
+     * imported as scheme source code.  They must be first evaluated in
+     * their own closed environment (to bind definitions) before being
+     * connected to the outer one.
+     *
+     * I think what we need is a global pointer to the ACTUAL top-level
+     * environment.
+     *
+     */
+    impenv->outer = e;
+  }
 
   /*
    * TODO: Should we return the final environment,

@@ -39,7 +39,7 @@ cons_t* vector(cons_t*, size_t size=0, cons_t* fill=NULL);
 cons_t* bytevector(size_t size=0, const uint8_t *fill=NULL);
 cons_t* bytevector(const std::vector<uint8_t>& p);
 cons_t* port(port_t* p);
-cons_t* closure(lambda_t, environment_t*);
+cons_t* closure(lambda_t, environment_t*, bool syntactic = false);
 cons_t* nil();
 
 cons_t* caaar(const cons_t*);
@@ -104,11 +104,18 @@ bool boolean_false(cons_t* p);
 const std::string& symbol_name(const cons_t*);
 
 /*
+ * Returns blank environment.
+ *
+ * TODO: Move this to own environment.h / environment.cpp
+ */
+environment_t* null_environment(int version = 7);
+
+/*
  * Returns blank environment with only one
  * definition: import.
  *
  * TODO: Move this to own environment.h / environment.cpp
  */
-environment_t* null_environment(int version = 7);
+environment_t* null_import_environment();
 
 #endif

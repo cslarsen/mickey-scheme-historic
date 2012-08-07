@@ -24,14 +24,14 @@
  * Library exports
  */
 named_function_t exports_char[] = {
-  {"char-alphabetic?", proc_char_alphabeticp},
-  {"char-downcase", proc_char_downcase},
-  {"char-lower-case?", proc_char_lowercasep},
-  {"char-numeric?", proc_char_numericp},
-  {"char-upcase", proc_char_upcase},
-  {"char-upper-case?", proc_char_uppercasep},
-  {"char-whitespace?", proc_char_whitespacep},
-  {NULL, NULL}
+  {"char-alphabetic?", proc_char_alphabeticp, false},
+  {"char-downcase", proc_char_downcase, false},
+  {"char-lower-case?", proc_char_lowercasep, false},
+  {"char-numeric?", proc_char_numericp, false},
+  {"char-upcase", proc_char_upcase, false},
+  {"char-upper-case?", proc_char_uppercasep, false},
+  {"char-whitespace?", proc_char_whitespacep, false},
+  {NULL, NULL, false}
 };
 
 cons_t* proc_char_alphabeticp(cons_t* p, environment_t*)

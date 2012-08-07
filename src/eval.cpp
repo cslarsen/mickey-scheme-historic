@@ -285,6 +285,13 @@ static cons_t* invoke_with_trace(
   else
     func_name = "<?>";
 
+  /*
+   * If closure is syntactic, instead of a normal function,
+   * we don't want to evaluate procedure arguments.
+   */
+  if ( fun->closure->syntactic )
+    evlis_args = false;
+
   cons_t *ret = invoke(fun, evlis_args? evlis(args, env) : args);
 
   func_name = "";
@@ -417,12 +424,6 @@ cons_t* eval(cons_t* p, environment_t* e)
        */
       if ( name == "load" && e->lookup("load") != NULL )
         return proc_load(evlis(cdr(p), e), e);
-
-      /*
-       * import's arguments are literals.
-       */
-      if ( name == "import" )
-        return proc_import(p, e);
 
       if ( name == "define-syntax" ) {
         cons_t *name = cadr(p);
@@ -606,7 +607,63 @@ cons_t* eval(cons_t* p, environment_t* e)
           continue;
         }
       } else if ( syntaxp(op) ) {
-        p = syntax_expand(op, p, e);
+        /*
+         * We need to expand macros in the environment
+         * in which they were defined, so we cannot just
+         * do
+         *
+         * p = syntax_expand(op, p, e);
+         *
+         * We can't simply eval() the expansion either
+         * in the syntax environment, because then the
+         * syntax would not be able to see any outside
+         * definitions that we might want the macro
+         * to recognize, e.g., the following wouldn't
+         * work:
+         *
+         * (unless local-definition 'it works)
+         *
+         * So we are forced to do some tricks with the
+         * environment.
+         */
+        environment_t *synenv = op->syntax->environment;
+
+        if ( synenv->outer == NULL )
+          synenv->outer = e;
+        else
+          merge(synenv->outer, e);
+
+        return eval(
+            syntax_expand(op, p, op->syntax->environment),
+            synenv);
+
+        /*
+         * Some background info on the above:
+         *
+         * Previously, this did not work in mickey:
+         *
+         * (import
+         *   (prefix (scheme base) b-) ; unless is now b-unless
+         *   (scheme write)) ; we need display
+         *
+         * (define dont-wanna-print #f) ; local definition
+         * (b-unless dont-wanna-print (display "It works!\n"))
+         * ; b-unless expands to (if (not <expr>) <actions>),
+         * ; so must now be able to find both the 'not' definition
+         * ; in scheme base, and the dont-wanna-print definition
+         * ; in the current environment.
+         *
+         * Above, unless expands to (if (not <expr>) <actions>), and the
+         * first bug was that b-unless did not recognize not, because it was
+         * now named b-not, which was fixed by evaluating the resulting
+         * expansion in the original syntax environment, the second problem
+         * was that now b-unless operated in an isolated environment and
+         * couldn't see the definition of dont-wanna-print, so it would
+         * report it was not found, and this was fixed by merging the
+         * original syntax environment with the current runtime environment
+         * (or, at least, setting the runtime environment as the current
+         * parent environment).
+         */
         continue;
       }
     }

@@ -3,7 +3,8 @@
         (scheme write)
         (scheme char)
         (scheme math)
-        (scheme char))
+        (scheme char)
+        (mickey environment))
 
 ;;
 ;; Define some test functions
@@ -550,9 +551,11 @@
 (test-eq '(real? 3) #t) ; from r7rs draft
 
 ;; LLVM JIT
-(test-eq '(:llvm:gcd (* 11 123) (* 2 11)) 11)
-(test-eq '(:llvm:gcd (* 12 123) (* 2 12)) 12)
-(test-eq '(:llvm:gcd 444 555) (gcd 444 555))
+(if (bound? ':llvm:gcd)
+  (begin
+    (test-eq '(:llvm:gcd (* 11 123) (* 2 11)) 11)
+    (test-eq '(:llvm:gcd (* 12 123) (* 2 12)) 12)
+    (test-eq '(:llvm:gcd 444 555) (gcd 444 555))))
 
 ;; Characters
 (test-eq '(string-length (make-string 0)) 0)

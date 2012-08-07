@@ -416,11 +416,12 @@ cons_t* splice_into(cons_t *src, cons_t *dst)
 }
 
 
-cons_t* closure(lambda_t f, environment_t* e)
+cons_t* closure(lambda_t f, environment_t* e, bool syntactic)
 {
   closure_t *c = new closure_t();
   c->function = f;
   c->environment = e;
+  c->syntactic = syntactic;
 
   cons_t *p = new cons_t();
   p->type = CLOSURE;
@@ -546,5 +547,16 @@ environment_t* null_environment(int version)
    * but that's handled by eval() now.
    */
 
+  return r;
+}
+
+/*
+ * Returns an empty environment with only import
+ * defined.
+ */
+environment_t* null_import_environment()
+{
+  environment_t *r = new environment_t();
+  import(r, exports_import);
   return r;
 }

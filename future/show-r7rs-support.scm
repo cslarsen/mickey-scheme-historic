@@ -1,6 +1,7 @@
 ;; Show which R7RS definitions are available in Mickey Scheme.
-(import (scheme base))
-(import (scheme write))
+(import (scheme base)
+        (scheme write)
+        (mickey environment))
 
 (define base-lib '(
   *
@@ -378,7 +379,7 @@
     (lambda (sym)
       (display (string-append
         library-name " "
-        (if (:bound? sym) "supported: " "missing: ")
+        (if (bound? sym) "supported: " "missing: ")
         sym "\n")))
     definitions))
 

@@ -50,16 +50,16 @@ cons_t* proc_atan(cons_t* p, environment_t*)
 }
 
 named_function_t exports_math[] = {
-  {"exp", proc_exp},
-  {"log", proc_log},
-  {"sin", proc_sin},
-  {"cos", proc_cos},
-  {"tan", proc_tan},
-  {"asin", proc_asin},
-  {"acos", proc_acos},
-  {"atan", proc_atan},
-  {"sqrt", proc_sqrt},
-  {"ceiling", proc_ceil},
-  {"floor", proc_floor},
-  {NULL, NULL}
+  {"exp", proc_exp, false},
+  {"log", proc_log, false},
+  {"sin", proc_sin, false},
+  {"cos", proc_cos, false},
+  {"tan", proc_tan, false},
+  {"asin", proc_asin, false},
+  {"acos", proc_acos, false},
+  {"atan", proc_atan, false},
+  {"sqrt", proc_sqrt, false},
+  {"ceiling", proc_ceil, false},
+  {"floor", proc_floor, false},
+  {NULL, NULL, false}
 };

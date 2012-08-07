@@ -129,13 +129,13 @@ cons_t* environment_t::lookup(const std::string& name) const
   return NULL;
 }
 
-struct cons_t* environment_t::define(const std::string& name, lambda_t f)
+struct cons_t* environment_t::define(const std::string& name, lambda_t f, bool syntactic)
 {
   if ( global_opts.verbose && symbols.find(name) != symbols.end() )
     fprintf(stderr, "WARNING: Already have a definition for %s\n",
         name.c_str());
 
-  symbols[name] = closure(f, this);
+  symbols[name] = closure(f, this, syntactic);
   return symbols[name];
 }
 

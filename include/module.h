@@ -17,6 +17,7 @@
 struct named_function_t {
   const char* name;
   lambda_t function;
+  bool syntactic; // if true, eval will not eval this function's arguments
 };
 
 void import(environment_t*, named_function_t*, const std::string& lib_name = "");

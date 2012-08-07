@@ -30,7 +30,7 @@
 void execute(const char* file)
 {
   TRY {
-    environment_t *env = null_environment();
+    environment_t *env = null_import_environment();
     reset_for_programs(&global_opts, file);
     load(file, env);
   }
@@ -58,7 +58,7 @@ void execute(const char* file)
 void execute_string(const char* s)
 {
   TRY {
-    environment_t *env = null_environment();
+    environment_t *env = null_import_environment();
     reset_for_programs(&global_opts, NULL);
 
     program_t *p = parse(s, env);

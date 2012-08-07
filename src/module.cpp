@@ -32,7 +32,7 @@ void import(environment_t *e,
         lib_name.c_str());
 
   for ( ; p->name && p->function; ++p )
-    e->define(p->name, p->function);
+    e->define(p->name, p->function, p->syntactic);
 }
 
 void load(const std::string& file, environment_t* target)
@@ -48,15 +48,15 @@ void load(const std::string& file, environment_t* target)
 /*
  * Add default libraries here.
  *
- * TODO: Use interaction-environment / repl-environment
  */
 void import_defaults(environment_t *e, const std::string& lib_path)
 {
-  import(e, exports_import);
-  import(e, exports_base, "(scheme base)");
-  load(lib_path + "/base.scm", e);
-  import(e, exports_write, "(scheme write)");
-  import(e, exports_char, "(scheme char)");
-  load(lib_path + "/char.scm", e);
-  import(e, exports_load, "(scheme load)");
+  if ( !global_opts.empty_repl_env ) {
+    import(e, exports_base, "(scheme base)");
+    load(lib_path + "/base.scm", e);
+    import(e, exports_write, "(scheme write)");
+    import(e, exports_char, "(scheme char)");
+    load(lib_path + "/char.scm", e);
+    import(e, exports_load, "(scheme load)");
+  }
 }

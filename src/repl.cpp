@@ -62,21 +62,21 @@ cons_t* proc_list_globals(cons_t*, environment_t *env)
 cons_t* proc_help(cons_t*, environment_t*)
 {
   printf(
-    "\n"
-    "Welcome to Mickey, a scheme interperter that aims to correctly\n"
-    "implement the whole of R7RS-small.\n"
-    "\n"
-    "In this REPL environment, you have several libraries preloaded\n"
-    "for your convenience.  You can import additional libraries by\n"
-    "invoking, e.g., (import (scheme lazy)).\n"
-    "\n"
-    "Also, note that files executed from the command line have NO\n"
-    "libraries imported by default, so you have to explicitly import\n"
-    "typicall (scheme base) and (scheme write).\n"
-    "\n"
-    "You will also stumble upon various bugs in Mickey, so please send\n"
-    "me bug reports.\n"
-    "\n"
+  "\n"
+  "Welcome to Mickey, a scheme interperter that aims to correctly implement\n"
+  "the whole of R7RS-small.\n"
+  "\n"
+  "In this REPL environment, you have several libraries preloaded for your\n"
+  "convenience.  You can import additional libraries by invoking, e.g.,\n"
+  "(import (scheme lazy)).\n"
+  "\n"
+  "Also, note that files executed from the command line have NO libraries\n"
+  "imported by default, so you have to explicitly import typically\n"
+  "(scheme base) and (scheme write).\n"
+  "\n"
+  "You will also stumble upon various bugs in Mickey, so please send bug\n"
+  "reports.\n"
+  "\n"
   );
 
   return nil();
@@ -89,10 +89,10 @@ cons_t* proc_run_tests(cons_t*, environment_t*)
 }
 
 named_function_t exports_repl[] = {
-  {":run-tests", proc_run_tests},
-  {":list-globals", proc_list_globals},
-  {"help", proc_help},
-  {NULL, NULL}};
+  {":run-tests", proc_run_tests, false},
+  {":list-globals", proc_list_globals, false},
+  {"help", proc_help, false},
+  {NULL, NULL, false}};
 
 bool isprefix(const char* prefix, const char* fullstr)
 {
@@ -242,7 +242,7 @@ void print_banner(environment_t*)
 
 int repl()
 {
-  global_env = null_environment();
+  global_env = null_import_environment();
   environment_t *env = global_env;
 
   print_banner(env);

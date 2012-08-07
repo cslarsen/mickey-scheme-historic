@@ -70,6 +70,8 @@ bool parse_option(const char* s, struct options_t* p)
     exit(0);
   } else if ( ARGHIT("-e", "--eval") ) {
     p->eval_next = true;
+  } else if ( ARGHIT("-z", "--zero-env") ) {
+    p->empty_repl_env = true;
   } else {
     fprintf(stderr, "Unknown option: %s\n\n", s);
     help();
@@ -91,6 +93,7 @@ void help()
     "  -I<path>      Set include path for (load).\n"
     "  -V --version  Print version\n"
     "  -v --verbose  Verbose operation\n"
+    "  -z --zero-env Start REPL with only (import) defined\n"
     "\n");
 }
 

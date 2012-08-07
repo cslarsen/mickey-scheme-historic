@@ -26,6 +26,7 @@ struct options_t
   char **argv;
   int argc;
   bool warn;
+  bool empty_repl_env;
 };
 
 extern options_t global_opts;

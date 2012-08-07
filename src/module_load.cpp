@@ -19,8 +19,8 @@
 #include "file_io.h"
 
 named_function_t exports_load[] = {
-  {"load", proc_load},
-  {NULL, NULL}
+  {"load", proc_load, false},
+  {NULL, NULL, false}
 };
 
 cons_t* proc_load(cons_t *args, environment_t *env)

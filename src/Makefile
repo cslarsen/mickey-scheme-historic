@@ -23,8 +23,10 @@ TARGETS_O = exceptions.o \
             module_char.o \
             module_write.o \
             module_math.o \
+            module_mickey_environment.o \
             module_base.o \
             module_process-context.o \
+            module_mickey_environment.o \
             assertions.o \
             circular.o \
             print.o \

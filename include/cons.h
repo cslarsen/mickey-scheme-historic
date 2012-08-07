@@ -55,7 +55,7 @@ struct environment_t
   environment_t* extend();
   struct cons_t* lookup(const std::string& name) const;
   struct cons_t* lookup_or_throw(const std::string& name) const;
-  struct cons_t* define(const std::string& name, lambda_t func);
+  struct cons_t* define(const std::string& name, lambda_t func, bool syntactic = false);
   struct cons_t* define(const std::string& name, cons_t* body);
   environment_t* outmost();
 
@@ -68,6 +68,7 @@ private:
    * Control construction
    */
   friend environment_t* null_environment(int);
+  friend environment_t* null_import_environment();
 
   // Disabled functions
   environment_t(const environment_t&);
@@ -88,6 +89,7 @@ struct closure_t
 {
   lambda_t function;
   environment_t* environment;
+  bool syntactic;
 };
 
 struct syntax_t
