@@ -1,5 +1,5 @@
-Mickey Scheme
-=============
+Mickey R7RS Scheme
+==================
 
 Mickey Scheme is an incomplete, slow and buggy implementation of R7RS Scheme
 small.
@@ -20,12 +20,15 @@ Current Features
 
 Some of these are demonstrated in the [example code section](#examples).
 
-It also have some experimental extensions to R7RS scheme:
+Extensions to standard Scheme
+-----------------------------
+
+It also has some experimental extensions to R7RS scheme:
 
   * First class environments via (mickey environment)
-    [[example](#environments)]
+    ([see examples](#environments))
   * Dynamic loading of shared libraries via (mickey dynamic-library)
-    [[example](#c-libraries)]
+    ([see dlopen example](#c-libraries))
 
 Current Shortcomings
 --------------------
@@ -573,9 +576,19 @@ Unfortunately, I've not made a proper mickey library yet, so you actually
 have to include all the object files.  See the Makefile for details.
 
 Anyway, after compilation you've got a libmickey-uname.so file.  To load
-this file from Mickey, we have to use the `(mickey dynamic-library)`
-library.
+this file from Mickey, we have to start mickey and then import the `(mickey
+dynamic-library)` library.
 
+    csl$ ./mickey
+    #|                                                                 _
+       Mickey Scheme (C) 2011-2012 Christian Stigen Larsen              \
+       4.2.1 (Based on Apple Inc. build 5658) (LLVM build 2336.11.00)   /\
+       Readline 4.2                                                    /  \_
+
+       To quit, hit CTRL+D or type (exit).  Use (help) for an
+       introduction.
+    |#
+    
     #; mickey> (import (mickey dynamic-library))
 
 Let's load the library using the dlopen options RTLD_NOW and RTLD_LOCAL.
