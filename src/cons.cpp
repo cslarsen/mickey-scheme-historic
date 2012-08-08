@@ -53,6 +53,7 @@ std::string to_s(enum type_t type)
   case CONTINUATION: return "continuation"; break;
   case BYTEVECTOR:   return "bytevector";   break;
   case PORT:         return "port";         break;
+  case ENVIRONMENT:  return "environment";  break;
   }
 
   return "#<unknown type>";
@@ -75,6 +76,7 @@ std::string to_s(cons_t *p)
   case CONTINUATION: return format("#<continuation %p>", p->continuation);
   case BYTEVECTOR:   return format("#<bytevector %p>", p->bytevector);
   case PORT:     return format("#<port %p>", p->port);
+  case ENVIRONMENT:  return format("#<environment %p>", p->environment);
   }
 
   return "#<unknown type>";
@@ -103,6 +105,11 @@ std::string to_s(port_t* p)
 std::string to_s(char p, bool escape)
 {
   return format(escape? "#\\%c" : "%c", isprint(p)? p : '?' );
+}
+
+std::string to_s(environment_t* e)
+{
+  return format("#<environment %p", e);
 }
 
 cons_t* environment_t::lookup_or_throw(const std::string& name) const
@@ -155,7 +162,7 @@ struct environment_t* environment_t::extend()
   return r;
 }
 
-environment_t* environment_t::outmost()
+environment_t* environment_t::outermost()
 {
   environment_t *e = this;
 

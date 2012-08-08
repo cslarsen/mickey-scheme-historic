@@ -39,6 +39,7 @@ cons_t* vector(cons_t*, size_t size=0, cons_t* fill=NULL);
 cons_t* bytevector(size_t size=0, const uint8_t *fill=NULL);
 cons_t* bytevector(const std::vector<uint8_t>& p);
 cons_t* port(port_t* p);
+cons_t* environment(environment_t*);
 cons_t* closure(lambda_t, environment_t*, bool syntactic = false);
 cons_t* nil();
 
@@ -76,6 +77,7 @@ bool booleanp(const cons_t*);
 bool vectorp(const cons_t*);
 bool bytevectorp(const cons_t*);
 bool portp(const cons_t*);
+bool environmentp(const cons_t*);
 bool charp(const cons_t*);
 bool numberp(const cons_t*);
 bool eqp(const cons_t*, const cons_t*);

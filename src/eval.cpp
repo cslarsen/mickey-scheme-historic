@@ -32,6 +32,16 @@ cons_t* eval(program_t *p)
   return eval(p->root, p->globals);
 }
 
+static bool is_self_evaluating(cons_t* p)
+{
+  // TODO: Implement as switch(type_of(p)) ...
+  return
+    numberp(p) || stringp(p) || charp(p) ||
+    booleanp(p) || vectorp(p) || decimalp(p) ||
+    closurep(p) || syntaxp(p) || portp(p) ||
+    environmentp(p) || emptylistp(p);
+}
+
 extern "C" { // because I don't like name-mangling
 
 /*
@@ -343,14 +353,15 @@ cons_t* eval(cons_t* p, environment_t* e)
       if ( symbolp(p) )
         return e->lookup_or_throw(p->symbol->name());
 
-      if ( numberp(p) || stringp(p) || charp(p) ||
-           booleanp(p) || vectorp(p) || decimalp(p) ||
-           closurep(p) || syntaxp(p) || emptylistp(p) )
-      {
+      if ( is_self_evaluating(p) )
         return p;
-      }
 
-      raise(std::runtime_error("Cannot evaluate: " + sprint(p)));
+      std::string s = sprint(p);
+
+      if ( s.empty() )
+        s = format("#<?unknown_type? %p>", p);
+
+      raise(std::runtime_error("Cannot evaluate: " + s));
     }
 
     if ( symbolp(car(p)) ) {

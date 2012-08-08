@@ -65,6 +65,14 @@ cons_t* port(port_t* p)
   return r;
 }
 
+cons_t* environment(environment_t* e)
+{
+  cons_t *r = new cons_t();
+  r->type = ENVIRONMENT;
+  r->environment = e;
+  return r;
+}
+
 cons_t* decimal(decimal_t n)
 {
   cons_t *p = new cons_t();
@@ -266,6 +274,11 @@ bool portp(const cons_t* p)
   return type_of(p) == PORT;
 }
 
+bool environmentp(const cons_t* p)
+{
+  return type_of(p) == ENVIRONMENT;
+}
+
 bool charp(const cons_t* p)
 {
   return type_of(p) == CHAR;
@@ -372,6 +385,7 @@ bool eqvp(const cons_t* l, const cons_t* r)
                       return l->closure == r->closure;
   case CONTINUATION:  return l->continuation == r->continuation;
   case PORT:          return *l->port == *r->port;
+  case ENVIRONMENT:   return l->environment == r->environment;
   }
 
   return false;

@@ -1,7 +1,18 @@
 Random stuff:
-- In symbol(..), add assert_identifier(...) to check that we have a legal
-  name for an identifier (e.g, no spaces, etc).  Could optionally also be
-  done in the parser.
+- "define" and friends should be exported by (scheme base), so that e.g.
+  prefixing them with base: would mean you would have to do (base:define
+  ...), so fix that.
+- If backtrace() has only one entry in REPL, don't print it
+- Create a library (mickey defmacro) with straight expansion, like
+  (defmacro (my-unless condition body)
+    `(if (not ,condition)
+       (begin ,@body))) ; see what the function signature
+       ; for defmacro is in norvig's jscheme
+- See how MIT Scheme present first class environments to the user.
+  Also see in the T book how they do it.
+- In symbol(...), add assert_identifier(...) to check that we have a
+  legal name for an identifier (e.g., no spaces, etc).  Could optionally
+  also be done in the parser.
 - For all functions, record arity somewhere (and, optionally, expected
   types), so that we can easily (and statically) detect errors.
 - Lib: (scheme base) should refer to lib/scheme/base.scm

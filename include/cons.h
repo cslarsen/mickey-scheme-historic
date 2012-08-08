@@ -37,7 +37,8 @@ enum type_t {
   CONTINUATION,
   BYTEVECTOR,
   SYNTAX,
-  PORT
+  PORT,
+  ENVIRONMENT
 };
 
 typedef struct cons_t* (*lambda_t)(struct cons_t*, struct environment_t*);
@@ -57,7 +58,7 @@ struct environment_t
   struct cons_t* lookup_or_throw(const std::string& name) const;
   struct cons_t* define(const std::string& name, lambda_t func, bool syntactic = false);
   struct cons_t* define(const std::string& name, cons_t* body);
-  environment_t* outmost();
+  environment_t* outermost();
 
 private:
   environment_t() : outer(NULL)
@@ -334,6 +335,7 @@ struct cons_t
     bytevector_t* bytevector;
     continuation_t* continuation;
     port_t* port;
+    environment_t *environment; // first-class environments
   };
 };
 
@@ -348,6 +350,7 @@ std::string to_s(bytevector_t*);
 std::string to_s(port_t*);
 std::string to_s(char, bool);
 std::string to_s(struct cons_t *p);;
+std::string to_s(environment_t*);
 cons_t* deep_copy(const cons_t*);
 
 /*
