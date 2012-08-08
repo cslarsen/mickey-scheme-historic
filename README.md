@@ -25,9 +25,9 @@ Extensions to standard Scheme
 
 It also has some experimental extensions to R7RS scheme:
 
-  * First class environments via (mickey environment)
+  * First class environments via the library `(mickey environment)`
     ([see examples](#environments))
-  * Dynamic loading of shared libraries via (mickey dynamic-library)
+  * Dynamic loading of shared libraries via `(mickey dynamic-library)`
     ([see dlopen example](#c-libraries))
 
 Current Shortcomings
