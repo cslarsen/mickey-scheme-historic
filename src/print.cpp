@@ -12,10 +12,11 @@
 #include "print.h"
 #include "util.h"
 
-std::string sprint(const vector_t* v, std::string& s, bool escape);
-std::string sprint(const bytevector_t* v, std::string& s, bool escape);
-std::string sprint(const port_t* v, std::string& s, bool escape);
-std::string sprint(const environment_t* v, std::string& s, bool escape);
+std::string sprint(const vector_t*, std::string&, bool);
+std::string sprint(const bytevector_t*, std::string&, bool);
+std::string sprint(const port_t*, std::string&, bool);
+std::string sprint(const environment_t*, std::string&, bool);
+std::string sprint(const pointer_t*, std::string&, bool);
 
 std::string sprint(const cons_t* p, std::string& s, bool escape)
 {
@@ -38,6 +39,7 @@ std::string sprint(const cons_t* p, std::string& s, bool escape)
   case SYNTAX:       return s + sprint(p->syntax->transformer, s, escape);
   case PORT:         return s + sprint(p->port, s, escape);
   case ENVIRONMENT:  return s + sprint(p->environment, s, escape);
+  case POINTER:      return s + sprint(p->pointer, s, escape);
   case PAIR: {
     std::string head = sprint(car(p), s, escape);
     std::string tail = (atomp(cdr(p)) && !nullp(cdr(p)) ?
@@ -126,4 +128,9 @@ std::string sprint(const port_t* p, std::string&, bool)
 std::string sprint(const environment_t* p, std::string&, bool)
 {
   return format("#<environment %p>", p);
+}
+
+std::string sprint(const pointer_t* p, std::string&, bool)
+{
+  return format("#<pointer '%s' %p>", p->tag, p->value);
 }

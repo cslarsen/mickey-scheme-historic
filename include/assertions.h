@@ -18,3 +18,4 @@ void assert_type(const enum type_t, const cons_t*);
 void assert_number(const cons_t*);
 void assert_noncyclic(const cons_t*);
 void assert_proper_list(const cons_t*);
+void assert_pointer(const char*, const cons_t*);

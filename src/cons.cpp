@@ -54,6 +54,7 @@ std::string to_s(enum type_t type)
   case BYTEVECTOR:   return "bytevector";   break;
   case PORT:         return "port";         break;
   case ENVIRONMENT:  return "environment";  break;
+  case POINTER:      return "pointer";      break;
   }
 
   return "#<unknown type>";
@@ -73,10 +74,12 @@ std::string to_s(cons_t *p)
   case SYNTAX:   return format("#<syntax_transformer %p>", p->syntax);
   case STRING:   return p->string;
   case VECTOR:   return format("#<vector %p>", p->vector);
+  case PORT:     return format("#<port %p>", p->port);
   case CONTINUATION: return format("#<continuation %p>", p->continuation);
   case BYTEVECTOR:   return format("#<bytevector %p>", p->bytevector);
-  case PORT:     return format("#<port %p>", p->port);
   case ENVIRONMENT:  return format("#<environment %p>", p->environment);
+  case POINTER:      return format("#<pointer '%s' %p>",
+                              p->pointer->tag, p->pointer->value);
   }
 
   return "#<unknown type>";

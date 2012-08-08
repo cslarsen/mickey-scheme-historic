@@ -401,6 +401,9 @@ cons_t* proc_debug(cons_t *p, environment_t *env)
   case ENVIRONMENT:
     s += format(" environment->%p", p->environment);
     break;
+  case POINTER:
+    s += format(" pointer->%p", p->pointer);
+    break;
   case CONTINUATION:
     break;
   }

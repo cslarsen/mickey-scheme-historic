@@ -1,12 +1,12 @@
 /*
  * Mickey Scheme
  *
- * Copyright (C) 2011 Christian Stigen Larsen <csl@sublevel3.org>
+ * Copyright (C) 2011-2012 Christian Stigen Larsen <csl@sublevel3.org>
  * http://csl.sublevel3.org                              _
  *                                                        \
  * Distributed under the modified BSD license.            /\
  * Please post bugfixes and suggestions to the author.   /  \_
- *                                                          
+ *
  */
 
 typedef double decimal_t;
@@ -21,8 +21,21 @@ typedef double decimal_t;
 #include "util.h"
 #include "heap.h"
 
-// types taken from the PICOBIT scheme paper
+/*
+ * Function signatures for all C procedures; they all take a cons_t* and an
+ * environment and always returns cons_t*.
+ */
+typedef struct cons_t* (*lambda_t)(struct cons_t*, struct environment_t*);
 
+/*
+ * Symbol tables maps strings to values.
+ */
+typedef std::map<std::string, struct cons_t*> dict_t;
+
+
+/*
+ * Basic scheme types, plus some extended ones.
+ */
 enum type_t {
   NIL,
   BOOLEAN,
@@ -38,13 +51,14 @@ enum type_t {
   BYTEVECTOR,
   SYNTAX,
   PORT,
-  ENVIRONMENT
+  ENVIRONMENT,
+  POINTER
 };
 
-typedef struct cons_t* (*lambda_t)(struct cons_t*, struct environment_t*);
-typedef std::map<std::string, struct cons_t*> dict_t;
-// TODO: Use hash_map and global string pointers
-
+/*
+ * Environment holds a symbol table and points to an optional outer (or
+ * parent) environment.
+ */
 struct environment_t
  #ifdef BOEHM_GC
   : public gc
@@ -66,16 +80,21 @@ private:
   }
 
   /*
-   * Control construction
+   * Restrict instantiation to these functions:
    */
   friend environment_t* null_environment(int);
   friend environment_t* null_import_environment();
 
-  // Disabled functions
+  /*
+   * Prevent copy construction and assignment:
+   */
   environment_t(const environment_t&);
   environment_t& operator=(const environment_t&);
 };
 
+/*
+ * Continuations are not supported yet.
+ */
 struct continuation_t
  #ifdef BOEHM_GC
   : public gc
@@ -83,6 +102,10 @@ struct continuation_t
 {
 };
 
+/*
+ * A closure consists of a function and an environment.  A syntax flag tells
+ * whether to evaluate parameters before function invocation.
+ */
 struct closure_t
  #ifdef BOEHM_GC
   : public gc
@@ -93,6 +116,9 @@ struct closure_t
   bool syntactic;
 };
 
+/*
+ * Denotes a syntax transformer used to expand macros.
+ */
 struct syntax_t
  #ifdef BOEHM_GC
   : public gc
@@ -102,6 +128,9 @@ struct syntax_t
   environment_t* environment;
 };
 
+/*
+ * Arrays.
+ */
 struct vector_t
  #ifdef BOEHM_GC
   : public gc
@@ -128,6 +157,9 @@ struct vector_t
   }
 };
 
+/*
+ * Array of unsigned 8-bit integer values.
+ */
 struct bytevector_t
  #ifdef BOEHM_GC
   : public gc
@@ -156,6 +188,9 @@ struct bytevector_t
   }
 };
 
+/*
+ * A symbol.
+ */
 class symbol_t
  #ifdef BOEHM_GC
   : public gc
@@ -178,13 +213,23 @@ public:
   }
 };
 
+/*
+ * Symbols are uniquely identified by their names, so all symbols with equal
+ * names will actually point to the same memory location.
+ */
 const symbol_t* create_symbol(const std::string& s);
 
+/*
+ * Port types
+ */
 enum porttype_t {
   TEXTUAL_PORT,
   BINARY_PORT
 };
 
+/*
+ * An input or output port to either files or strings.
+ */
 class port_t
 {
   FILE *f;
@@ -312,9 +357,31 @@ public:
 };
 
 /*
+ * A tagged void pointer.  Used for hairy stuff like dynamic loading (hairy
+ * because we don't normally want to expose this to the scheme environment,
+ * and because converting function pointers to and from void pointers is not
+ * guaranteed by the C standard to work).
+ */
+struct pointer_t {
+  const char* tag;
+  void* value;
+
+  pointer_t(const char* tag_, void* ptr)
+    : tag(tag_), value(ptr)
+  {
+  }
+
+  friend bool operator==(const pointer_t& l, const pointer_t& r)
+  {
+    return l.tag == r.tag && l.value == r.value;
+  }
+};
+
+/*
+ * A variant variable.  Called a cons-cell, but that's incorrect.
+ *
  * TODO: To cons_t, Add `marked` (for GC) and `mutable/immutable` (per spec)
  */
-
 struct cons_t
  #ifdef BOEHM_GC
   : public gc
@@ -336,6 +403,7 @@ struct cons_t
     continuation_t* continuation;
     port_t* port;
     environment_t *environment; // first-class environments
+    pointer_t *pointer;
   };
 };
 

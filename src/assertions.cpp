@@ -91,3 +91,17 @@ void assert_proper_list(const cons_t* p)
     raise(std::runtime_error(
       format("Not a proper list: %s", sprint(p).c_str())));
 }
+
+void assert_pointer(const char* tag, const cons_t* p)
+{
+  if ( type_of(p) != POINTER )
+    raise(runtime_exception(format(
+      "Function expected a pointer but got a %s: %s",
+      to_s(type_of(p)).c_str(),
+      sprint(p).c_str())));
+
+  if ( strcmp(tag, p->pointer->tag) != 0 )
+    raise(runtime_exception(format(
+      "Function expected a pointer with tag '%s' but got '%s': %s",
+        tag, p->pointer->tag, sprint(p).c_str())));
+}

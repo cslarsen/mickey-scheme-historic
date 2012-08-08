@@ -16,10 +16,11 @@
 #include "module_load.h"
 #include "module_base.h"
 #include "module_math.h"
-#include "module_mickey_environment.h"
 #include "module_char.h"
 #include "module_write.h"
 #include "module_process_context.h"
+#include "module_mickey_environment.h"
+#include "module_mickey_dynamic_library.h"
 #include "assertions.h"
 #include "exceptions.h"
 #include "print.h"
@@ -107,6 +108,9 @@ static environment_t* import_library(const std::string& name)
 
   else if ( name == "(mickey environment)" )
     import(r, exports_mickey_environment, name);
+
+  else if ( name == "(mickey dynamic-library)" )
+    import(r, exports_mickey_dynamic_library, name);
 
   else
     raise(runtime_exception("Unknown library: " + name));

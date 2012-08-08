@@ -73,6 +73,14 @@ cons_t* environment(environment_t* e)
   return r;
 }
 
+cons_t* pointer(pointer_t* p)
+{
+  cons_t *r = new cons_t();
+  r->type = POINTER;
+  r->pointer = p;
+  return r;
+}
+
 cons_t* decimal(decimal_t n)
 {
   cons_t *p = new cons_t();
@@ -386,6 +394,7 @@ bool eqvp(const cons_t* l, const cons_t* r)
   case CONTINUATION:  return l->continuation == r->continuation;
   case PORT:          return *l->port == *r->port;
   case ENVIRONMENT:   return l->environment == r->environment;
+  case POINTER:       return *l->pointer == *r->pointer;
   }
 
   return false;
