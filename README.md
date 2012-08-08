@@ -555,13 +555,11 @@ C:
 
       // Return utsname as an associative list
       return
-        cons(cons(symbol("sysname", NULL), cons(string(p.sysname))),
+        cons(cons(symbol("sysname",  NULL), cons(string(p.sysname))),
         cons(cons(symbol("nodename", NULL), cons(string(p.nodename))),
-        cons(cons(symbol("release", NULL), cons(string(p.release))),
-        cons(cons(symbol("version", NULL),
-        cons(string(p.version))),
-        cons(cons(symbol("machine", NULL),
-        cons(string(p.machine))))))));
+        cons(cons(symbol("release",  NULL), cons(string(p.release))),
+        cons(cons(symbol("version",  NULL), cons(string(p.version))),
+        cons(cons(symbol("machine",  NULL), cons(string(p.machine))))))));
     }
 
 Note that if you use a C++ compiler with the above code, you must prefix the
