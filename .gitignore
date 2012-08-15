@@ -1,4 +1,4 @@
-mickey.dSYM/
 mickey
 *.o
 *.so
+*.dSYM
