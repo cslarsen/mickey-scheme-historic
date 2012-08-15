@@ -4,6 +4,14 @@ Mickey R7RS Scheme
 Mickey Scheme is an incomplete, slow and buggy implementation of R7RS Scheme
 small.
 
+The _current_ project goals are:
+
+* To correctly implement all of R7RS small
+* Clarity of implementation
+
+Note that _Mickey_ is just a codeword for the early stages of this project.
+The name will change as the project matures.
+
 Current Features
 ----------------
 
@@ -76,7 +84,14 @@ Feature flags
 License
 -------
 
-Distributed under the modified BSD license.
+Mickey R7RS Scheme
+Copyright (C) 2011-2012 Christian Stigen Larsen
+
+Distributed under version 2.1 of the Lesser GNU Public License (LGPL) while
+also allowing anyone to change the license on a particular copy of the code
+to the LGPL 3.0, the GPL 2.0 or the GPL 3.0.
+
+See the file COPYING for the full text of the LGPL 2.1.
 
 Author
 ------
