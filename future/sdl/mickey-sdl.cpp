@@ -32,17 +32,17 @@ struct key_value_t {
  * Map of scheme symbols to SDL mode flags.
  */
 static key_value_t<std::string, uint32_t> sdl_flags[] = {
-  {"swsurface", SDL_SWSURFACE},
-  {"hwsurface", SDL_HWSURFACE},
-  {"asyncblit", SDL_ASYNCBLIT},
-  {"anyformat", SDL_ANYFORMAT},
-  {"hwpalette", SDL_HWPALETTE},
-  {"doublebuf", SDL_DOUBLEBUF},
+  {"swsurface",  SDL_SWSURFACE},
+  {"hwsurface",  SDL_HWSURFACE},
+  {"asyncblit",  SDL_ASYNCBLIT},
+  {"anyformat",  SDL_ANYFORMAT},
+  {"hwpalette",  SDL_HWPALETTE},
+  {"doublebuf",  SDL_DOUBLEBUF},
   {"fullscreen", SDL_FULLSCREEN},
-  {"opengl", SDL_OPENGL},
+  {"opengl",     SDL_OPENGL},
   {"openglblit", SDL_OPENGLBLIT},
-  {"resizable", SDL_RESIZABLE},
-  {"noframe", SDL_NOFRAME}
+  {"resizable",  SDL_RESIZABLE},
+  {"noframe",    SDL_NOFRAME}
 };
 
 // to avoid name mangling
@@ -51,7 +51,7 @@ extern "C" {
 /*
  * (initialize) ==> nothing
  */
-cons_t* proc_sdl_init(cons_t*, environment_t*)
+cons_t* initialize(cons_t*, environment_t*)
 {
   if ( SDL_Init(SDL_INIT_VIDEO) != 0 )
     raise(runtime_exception(SDL_GetError()));
@@ -76,8 +76,8 @@ cons_t* proc_sdl_init(cons_t*, environment_t*)
  *  resizable
  *  noframe
  *
- */ 
-cons_t* proc_sdl_setvideomode(cons_t* p, environment_t*)
+ */
+cons_t* set_video_mode(cons_t* p, environment_t*)
 {
   assert_length_min(p, 2);
   assert_type(INTEGER, car(p));
@@ -91,37 +91,44 @@ cons_t* proc_sdl_setvideomode(cons_t* p, environment_t*)
   int bits = 32;
   uint32_t mode = 0;
 
+///////////////////
+  raise(runtime_exception("Testing"));
+///////////////////
+
   // bits per pixel
-  if ( length(p) > 2 ) {
-    assert_type(INTEGER, caddr(p));
+  if ( integerp(caddr(p)) )
     bits = caddr(p)->integer;
-  }
-/*
+
   // options
-  if ( length(p) > 3 ) {
-    for ( cons_t *s = cdddr(p); !nullp(s); s = cdr(s) ) {
-      assert_type(SYMBOL, car(s));
+  cons_t *opts = symbolp(caddr(p))? cddr(p) :
+                 symbolp(cadddr(p))? cdddr(p) : nil();;
 
-      std::string sym = symbol_name(s);
-      int size = sizeof(sdl_flags) / sizeof(key_value_t<std::string, uint32_t>);
+  for ( cons_t *s = opts; !nullp(s); s = cdr(s) ) {
+    assert_type(SYMBOL, car(s));
 
-      for ( int n=0; n < size; ++n )
-        if ( sym == sdl_flags[n].key ) {
-          printf("flag %s\n", sym.c_str());
-          printf("value %d and %d\n", sdl_flags[n].value, SDL_HWSURFACE);
-          mode |= sdl_flags[n].value;
-          goto NEXT_FLAG;
-        }
+    std::string sym = symbol_name(s);
+    int size = sizeof(sdl_flags) / sizeof(key_value_t<std::string, uint32_t>);
 
-      raise(runtime_exception("Unknown SDL video mode flag: " + sym));
+    for ( int n=0; n < size; ++n )
+      if ( sym == sdl_flags[n].key ) {
+///////////////////
+printf("flag %s\n", sym.c_str());
+printf("value %d and %d\n", sdl_flags[n].value, SDL_HWSURFACE);
+///////////////////
+        mode |= sdl_flags[n].value;
+        goto NEXT_FLAG;
+      }
+
+    raise(runtime_exception("Unknown SDL video mode flag: " + sym));
 
 NEXT_FLAG:
-      continue;
-    }
-  }*/
+    continue;
+  }
 
   mode = SDL_HWSURFACE;
+///////////////////
   printf("video mode\n"); fflush(stdout);
+///////////////////
 
   SDL_Surface *screen = SDL_SetVideoMode(x, y, bits, mode);
 
