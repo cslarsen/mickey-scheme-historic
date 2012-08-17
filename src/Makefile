@@ -84,7 +84,7 @@ LIB_DEPS =  exceptions.o \
 
 TARGETS = $(TARGETS_O) $(TARGETS_SO) mickey
 
-lib%.so: %.cpp
+lib%.so: %.cpp $(LIB_DEPS)
 	$(CXX) $(LIB_FLAGS) $(CXXFLAGS) $< -o $@ $(LIB_DEPS)
 
 all: $(TARGETS)
