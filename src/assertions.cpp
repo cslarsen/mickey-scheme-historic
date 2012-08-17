@@ -49,25 +49,24 @@ void assert_length_min(const cons_t* p, const size_t min)
 
 void assert_type(const enum type_t type, const cons_t* p)
 {
+  if ( p == NULL )
+    raise(std::runtime_error(format(
+      "Function expected %s but got NULL",
+        indef_art(to_s(type)).c_str())));
+
   bool error = false;
 
-  if ( nullp(p) && type != NIL )
-    error = true;
-  else {
-    type_t p_type = type_of(p);
-
-    if ( type != PAIR )
-      /*
-       * If expected type is NOT a pair, then types must match.
-       */
-      error = (p_type != type);
-    else
-      /*
-       * If expected type IS a pair, then we can submit either
-       * a LIST or a VECTOR to a function.
-       */
-      error = !(p_type == VECTOR || p_type == PAIR);
-  }
+  if ( type != PAIR )
+    /*
+     * If expected type is NOT a pair, then types must match.
+     */
+    error = type_of(p) != type;
+  else
+    /*
+     * If expected type IS a pair, then we can submit either
+     * a LIST or a VECTOR to a function.
+     */
+    error = !(type_of(p) == VECTOR || type_of(p) == PAIR);
 
   if ( error ) {
     raise(std::runtime_error(format("Function expected %s but got %s: `%s´",
