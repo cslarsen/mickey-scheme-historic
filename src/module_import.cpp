@@ -63,7 +63,7 @@ static std::string library_file(const std::string& basename)
 }
 
 /*
- * Read, parse and evaluate source file in target environment.
+ * Read, parse and evaluate SCHEME SOURCE FILE in target environment.
  */
 static void import(environment_t *target, const std::string& filename)
 {
@@ -108,6 +108,11 @@ static environment_t* import_library(const std::string& name)
 
   else if ( name == "(mickey environment)" )
     import(r, exports_mickey_environment, name);
+
+  else if ( name == "(mickey misc)" ) {
+    import(r, exports_import);
+    import(r, library_file("mickey/misc.scm"));
+  }
 
   else if ( name == "(mickey dynamic-library)" )
     import(r, exports_mickey_dynamic_library, name);

@@ -7,10 +7,8 @@ CXXFLAGS = -g \
 					 -W \
 					 -Wall \
 					 -I../include \
-					 -DUSE_LLVM \
 					 -DUSE_READLINE \
-					 -DNO_EXCEPTIONS \
-					 ${LLVM_CXXFLAGS}
+					 -DNO_EXCEPTIONS
 
 LDFLAGS  = -lreadline ${LLVM_LDFLAGS}
 LIB_FLAGS = -shared -fPIC $(LDFLAGS)
@@ -50,7 +48,7 @@ TARGETS_O = exceptions.o \
             cons.o \
             tests.o
 
-TARGETS_SO = libmickey-uname.so
+TARGETS_SO = libmickey-uname.so libmickey-misc.so
 
 LIB_DEPS =  exceptions.o \
             apply.o \
@@ -86,6 +84,12 @@ TARGETS = $(TARGETS_O) $(TARGETS_SO) mickey
 
 lib%.so: %.cpp $(LIB_DEPS)
 	$(CXX) $(LIB_FLAGS) $(CXXFLAGS) $< -o $@ $(LIB_DEPS)
+
+libmickey-uname.so: libmickey-uname.cpp $(LIB_DEPS)
+	$(CXX) $(LIB_FLAGS) $(CXXFLAGS) $< -o $@ $(LIB_DEPS)
+
+libmickey-misc.so: libmickey-misc.cpp $(LIB_DEPS)
+	$(CXX) -DUSE_LLVM $(LLVM_CXXFLAGS) $(LLVM_LDFLAGS) $(LIB_FLAGS) $(CXXFLAGS) $< -o $@ $(LIB_DEPS)
 
 all: $(TARGETS)
 

@@ -8,6 +8,9 @@ PORTABLE_TESTS = tests/hello.scm \
 all:
 	cd src ; make all
 	cp src/mickey .
+	# install library files
+	cp src/libmickey-misc.so lib/mickey/
+	cp src/libmickey-uname.so lib/mickey/
 
 mickey:
 	cd src ; make mickey

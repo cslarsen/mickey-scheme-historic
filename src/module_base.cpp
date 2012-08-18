@@ -19,32 +19,12 @@
 #include "print.h"   // sprint
 #include "file_io.h" // file_exists
 #include "options.h" // global_opts
-#include "backtrace.h"
 #include "eval.h"
 #include "types.h"
 #include "apply.h"
 #include "syntax-rules.h"
 #include "circular.h"
 #include "evlis.h"
-
-#ifdef USE_LLVM
-# include "llvm/Module.h"
-# include "llvm/Function.h"
-# include "llvm/PassManager.h"
-# include "llvm/CallingConv.h"
-# include "llvm/Analysis/Verifier.h"
-# include "llvm/Assembly/PrintModulePass.h"
-# include "llvm/Support/IRBuilder.h"
-# include "llvm/Support/raw_ostream.h"
-# include "llvm/LLVMContext.h"
-# include "llvm/ExecutionEngine/JIT.h"
-# include "llvm/Target/TargetSelect.h"
-#endif
-
-// For version printing
-#ifdef USE_READLINE
-# include <readline/readline.h>
-#endif
 
 cons_t* proc_abs(cons_t* p, environment_t*)
 {
@@ -287,22 +267,6 @@ cons_t* proc_define_syntax(cons_t *p, environment_t *env)
   return nil();
 }
 
-/*
- * Usage: (define-syntax foo ...) ... (:syntax-expand '(foo arg0 arg1 ...))
- */
-cons_t* proc_syntax_expand(cons_t* p, environment_t *e)
-{
-  cons_t *code = car(p);
-  assert_type(PAIR, code);
-
-  cons_t *syntax_name = car(code);
-  assert_type(SYMBOL, syntax_name);
-  cons_t *op = e->lookup_or_throw(syntax_name->symbol->name());
-
-  assert_type(SYNTAX, op);
-  return syntax_expand(op, code, e);
-}
-
 cons_t* proc_map(cons_t *p, environment_t*)
 {
   /*
@@ -349,73 +313,6 @@ cons_t* proc_map(cons_t *p, environment_t*)
   }
 
   return result;
-}
-
-cons_t* proc_debug(cons_t *p, environment_t *env)
-{
-  std::string s;
-  s = format("%-11p type=%-7s", p, to_s(type_of(p)).c_str());
-
-  switch ( type_of(p) ) {
-  case NIL: break;
-  case CHAR:
-    s += format(" value=%d", p->character);
-    break;
-  case BOOLEAN:
-    s += format(" value=%s", p->integer? "#t" : "#f");
-    break;
-  case DECIMAL:
-    s += format(" value=%f", p->decimal);
-    break;
-  case INTEGER:
-    s += format(" value=%d", p->integer);
-    break;
-  case SYNTAX:
-    s += format(" syntax_transformer->%p environment->%p",
-           p->syntax->transformer,
-           p->syntax->environment);
-    break;
-  case CLOSURE:
-    s += format(" function->%p environment->%p",
-           p->closure->function,
-           p->closure->environment);
-    break;
-  case PAIR:
-    s += format(" car->%p cdr->%p", p->car, p->cdr);
-    break;
-  case SYMBOL:
-    s += format(" name='%s'", p->symbol->name().c_str());
-    break;
-  case STRING:
-    s += format(" value='%s'", p->string);
-    break;
-  case VECTOR:
-    s += format(" vector->%p", p->vector);
-    break;
-  case BYTEVECTOR:
-    s += format(" bytevector->%p", p->bytevector);
-    break;
-  case PORT:
-    s += format(" port->%p", p->port);
-    break;
-  case ENVIRONMENT:
-    s += format(" environment->%p", p->environment);
-    break;
-  case POINTER:
-    s += format(" pointer->%p", p->pointer);
-    break;
-  case CONTINUATION:
-    break;
-  }
-
-  s += "\n";
-
-  if ( type_of(p) == PAIR ) {
-    s += proc_debug(car(p), env)->string;
-    s += proc_debug(cdr(p), env)->string;
-  }
-
-  return string(s.c_str());
 }
 
 cons_t* proc_cons(cons_t* p, environment_t*)
@@ -929,32 +826,12 @@ cons_t* proc_booleanp(cons_t* p, environment_t*)
   return boolean(booleanp(car(p)));
 }
 
-cons_t* proc_version(cons_t*, environment_t*)
-{
-  cons_t *v = list(string(format("%s\n", VERSION).c_str()));
-
-  #ifdef USE_READLINE
-  v = append(v, cons(string(format("Using Readline %d.%d\n",
-        (rl_readline_version & 0xFF00) >> 8, rl_readline_version & 0x00FF).c_str())));
-  #endif
-
-  v = append(v, cons(string(format("Compiler version: %s\n", __VERSION__).c_str())));
-  return v;
-}
-
 cons_t* proc_length(cons_t* p, environment_t*)
 {
   assert_length(p, 1);
   assert_type(PAIR, car(p));
   assert_noncyclic(car(p));
   return integer(static_cast<int>(length(car(p))));
-}
-
-cons_t* proc_circularp(cons_t* p, environment_t*)
-{
-  assert_length(p, 1);
-  assert_type(PAIR, car(p));
-  return boolean(circularp(car(p)));
 }
 
 cons_t* proc_eqp(cons_t* p, environment_t*)
@@ -1073,18 +950,6 @@ cons_t* proc_greater(cons_t* p, environment_t*)
   decimal_t y = (type_of(cadr(p)) == INTEGER)? cadr(p)->integer : cadr(p)->decimal;
 
   return boolean(x > y);
-}
-
-cons_t* proc_closure_source(cons_t* p, environment_t* e)
-{
-  assert_type(CLOSURE, car(p));
-
-  closure_t *c = car(p)->closure;
-
-  cons_t *body = c->environment->symbols["__body__"]; // see eval.cpp
-  cons_t *args = c->environment->symbols["__args__"];
-
-  return cons(symbol("lambda", e), list(args, body));
 }
 
 cons_t* proc_reverse(cons_t* p, environment_t*)
@@ -1265,17 +1130,9 @@ cons_t* proc_letrec(cons_t* p, environment_t* e)
   return r;
 }
 
-cons_t* proc_backtrace(cons_t*, environment_t*)
-{
-  backtrace();
-  return nil();
-}
-
-cons_t* proc_type_of(cons_t* p, environment_t* e)
-{
-  return symbol(to_s(type_of(car(p))).c_str(), e);
-}
-
+/*
+ * Utility function used internally in exported functions.
+ */
 static cons_t* let(cons_t *bindings, cons_t *body, environment_t *e)
 {
   return cons(symbol("let", e), cons(bindings, cons(body)));
@@ -1811,47 +1668,6 @@ cons_t* proc_memq(cons_t* p, environment_t* e)
   return proc_member_fptr(p, e, eqp);
 }
 
-/*
- * Normal, non-JITed gcd.
- * See prov_llvm_gcd for JIT example.
- */
-cons_t* proc_gcd(cons_t* p, environment_t* e)
-{
-  switch ( length(p) ) {
-  case 0:
-    return integer(0);
-
-  case 1:  
-    assert_type(INTEGER, car(p));
-    return integer(abs(car(p)->integer));
-
-  case 2: {
-    assert_type(INTEGER, car(p));
-    assert_type(INTEGER, cadr(p));
-
-    int a = abs(car(p)->integer),
-        b = abs(cadr(p)->integer);
-
-    return integer(gcd(a, b));
-  }
-
-  default: {
-    /*
-     * We have at least 3 numbers; handle recursively, since
-     * gcd(a, b, c) = gcd(gcd(a, b), c)
-     */
-    cons_t *r = car(p);
-    p = cdr(p);
-
-    while ( !nullp(p) ) {
-      r = proc_gcd(list(r, car(p)), e);
-      p = cdr(p);
-    }
-
-    return integer(r->integer);
-  } }
-}
-
 cons_t* proc_lcm(cons_t* p, environment_t* e)
 {
   switch ( length(p) ) {
@@ -2040,114 +1856,6 @@ cons_t* proc_finitep(cons_t* p, environment_t*)
   return boolean(std::isfinite(car(p)->decimal));
 }
 
-#ifdef USE_LLVM
-static llvm::Function *llvm_gcd = NULL; // Dirty, ugly hack
-
-llvm::Module* makeLLVMModule()
-{
-  using namespace llvm;
-  LLVMContext& ctx = getGlobalContext();
-
-  // Create module
-  Module* mod = new Module(StringRef("llvm_gcd"), ctx);
- 
-  // Create function 
-  Constant* c = mod->getOrInsertFunction("gcd",
-                                         IntegerType::get(ctx, 32),
-                                         IntegerType::get(ctx, 32),
-                                         IntegerType::get(ctx, 32),
-                                         NULL);
-  llvm::Function* gcd = cast<llvm::Function>(c);
-
-  // For passing out; not very good code
-  llvm_gcd = gcd;
- 
-  // Set up input args for function
-  llvm::Function::arg_iterator args = gcd->arg_begin();
-  Value* x = args++;
-  x->setName("x");
-  Value* y = args++;
-  y->setName("y");
-
-  // Code flow blocks
-  BasicBlock* entry = BasicBlock::Create(getGlobalContext(), "entry", gcd);
-  BasicBlock* ret = BasicBlock::Create(getGlobalContext(), "return", gcd);
-  BasicBlock* cond_false = BasicBlock::Create(getGlobalContext(), "cond_false", gcd);
-  BasicBlock* cond_true = BasicBlock::Create(getGlobalContext(), "cond_true", gcd);
-  BasicBlock* cond_false_2 = BasicBlock::Create(getGlobalContext(), "cond_false", gcd);
-
-  // Building up code
-  IRBuilder<> builder(entry);
-  Value* xEqualsY = builder.CreateICmpEQ(x, y, "tmp");
-  builder.CreateCondBr(xEqualsY, ret, cond_false);
-  builder.SetInsertPoint(ret);
-  builder.CreateRet(x);
-  builder.SetInsertPoint(cond_false);
-  Value* xLessThanY = builder.CreateICmpULT(x, y, "tmp");
-  builder.CreateCondBr(xLessThanY, cond_true, cond_false_2);
-  builder.SetInsertPoint(cond_true);
-  Value* yMinusX = builder.CreateSub(y, x, "tmp");
-  std::vector<Value*> args1;
-  args1.push_back(x);
-  args1.push_back(yMinusX);
-  Value* recur_1 = builder.CreateCall(gcd, args1.begin(), args1.end(), "tmp");
-  builder.CreateRet(recur_1);
-  
-  builder.SetInsertPoint(cond_false_2);
-  Value* xMinusY = builder.CreateSub(x, y, "tmp");
-  std::vector<Value*> args2;
-  args2.push_back(xMinusY);
-  args2.push_back(y);
-  Value* recur_2 = builder.CreateCall(gcd, args2.begin(), args2.end(), "tmp");
-  builder.CreateRet(recur_2);
-  
-  return mod;
-}
-
-/*
- * LLVM, JIT-compiled gcd!
- */
-cons_t* proc_llvm_gcd(cons_t* p, environment_t*)
-{
-  using namespace llvm;
-
-  static Module* Mod = NULL;
-  static ExecutionEngine* TheExecutionEngine;
-
-  typedef int (*gcd_fp)(int, int);
-  static gcd_fp myFunc = NULL;
-
-  // Params
-  assert_length(p, 2);
-  assert_type(INTEGER, car(p));
-  assert_type(INTEGER, cadr(p));
-
-  if ( Mod == NULL ) {
-    InitializeNativeTarget();
-
-    // Create function that contains gcd function
-    Mod = makeLLVMModule();
-    verifyModule(*Mod, PrintMessageAction);
-
-    std::string ErrStr;
-    TheExecutionEngine = EngineBuilder(Mod).setErrorStr(&ErrStr).create();
-
-    if ( TheExecutionEngine == NULL )
-      raise(std::runtime_error(ErrStr));
-
-    // JIT compile function
-    llvm::Function *LF = llvm_gcd;
-    void *FPtr = TheExecutionEngine->getPointerToFunction(LF);
-
-    // Cast to correct function signature
-    myFunc = (gcd_fp)FPtr;
-  }
-
-  // Call native gcd function
-  return integer(myFunc(car(p)->integer, cadr(p)->integer));
-}
-#endif // USE_LLVM
-
 cons_t* proc_do(cons_t* p, environment_t* e)
 {
   /*
@@ -2219,52 +1927,6 @@ cons_t* proc_do(cons_t* p, environment_t* e)
        cons(loop_init)));
 
   return letrec;
-}
-
-/*
- * Create cons graph for given list that can be rendered by Graphviz.
- *
- * Example usage:
- *
- * /mickey -e '(display (:list->dot (quote (define (square x) (* x x * 123)))))' | dot -Tpng -o graph.png && open graph.png 
- *
- */
-cons_t* proc_list_to_dot_helper(cons_t *p, environment_t* e)
-{
-  static const char* line_style = "[\"ol\"=\"box\"]";
-  static const char* shape = "record";
-
-  if ( nullp(p) ) return string("");
-
-  std::string s;
-
-  if ( pairp(p) ) {
-    if ( !nullp(car(p)) ) {
-      const char* port = "";
-      if ( pairp(car(p)) ) port = ":head";
-      s += format("  \"%p\":head -> \"%p\"%s %s;\n", p, car(p), port, line_style);
-      s += proc_list_to_dot_helper(car(p), e)->string;
-    }
-    if ( !nullp(cdr(p)) ) {
-      const char* port = "";
-      if ( pairp(cdr(p)) ) port = ":head";
-      s += format("  \"%p\":tail -> \"%p\"%s %s;\n", p, cdr(p), port, line_style);
-      s += proc_list_to_dot_helper(cdr(p), e)->string;
-    }
-    s += format("  \"%p\" [label=\"<head>|<tail>\", shape=\"%s\"];\n", p, shape);
-  } else
-    s += format("  \"%p\" [label=\"%s\", shape=\"none\"];\n",
-                p, sprint(p).c_str());
-
-  return string(s.c_str());
-}
-
-cons_t* proc_list_to_dot(cons_t *p, environment_t* e)
-{
-  std::string s = "digraph Scheme {\n";
-  s += proc_list_to_dot_helper(p, e)->string;
-  s += "}\n";
-  return string(s.c_str());
 }
 
 cons_t* proc_case(cons_t *p, environment_t* e)
@@ -2341,6 +2003,43 @@ cons_t* proc_case(cons_t *p, environment_t* e)
   return let;
 }
 
+cons_t* proc_gcd(cons_t* p, environment_t* e)
+{
+  switch ( length(p) ) {
+  case 0:
+    return integer(0);
+
+  case 1:
+    assert_type(INTEGER, car(p));
+    return integer(abs(car(p)->integer));
+
+  case 2: {
+    assert_type(INTEGER, car(p));
+    assert_type(INTEGER, cadr(p));
+
+    int a = abs(car(p)->integer),
+        b = abs(cadr(p)->integer);
+
+    return integer(gcd(a, b));
+  }
+
+  default: {
+    /*
+     * We have at least 3 numbers; handle recursively, since
+     * gcd(a, b, c) = gcd(gcd(a, b), c)
+     */
+    cons_t *r = car(p);
+    p = cdr(p);
+
+    while ( !nullp(p) ) {
+      r = proc_gcd(list(r, car(p)), e);
+      p = cdr(p);
+    }
+
+    return integer(r->integer);
+  } }
+}
+
 static cons_t* proc_dummy_placeholder(cons_t*, environment_t*)
 {
   return nil();
@@ -2351,17 +2050,6 @@ named_function_t exports_base[] = {
   {"+", proc_add, false},
   {"-", proc_sub, false},
   {"/", proc_divf, false},
-  {":backtrace", proc_backtrace, false},
-  {":circular?", proc_circularp, false},
-  {":closure-source", proc_closure_source, false},
-  {":debug", proc_debug, false},
-  {":list->dot", proc_list_to_dot, false},
-#ifdef USE_LLVM
-  {":llvm:gcd", proc_llvm_gcd, false},
-#endif
-  {":syntax-expand", proc_syntax_expand, false},
-  {":type-of", proc_type_of, false},
-  {":version", proc_version, false},
   {"<", proc_less, false},
   {"<=", proc_lteq, false},
   {"=", proc_eqintp, false},
