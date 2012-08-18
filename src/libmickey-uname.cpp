@@ -20,8 +20,7 @@
 #include <sys/utsname.h>
 #include "mickey-api.h"
 
-extern "C" // to avoid name mangling
-cons_t* proc_uname(cons_t*, environment_t*)
+extern "C" cons_t* proc_uname(cons_t*, environment_t*)
 {
   struct utsname p;
 

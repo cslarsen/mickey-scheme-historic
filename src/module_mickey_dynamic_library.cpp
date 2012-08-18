@@ -10,6 +10,7 @@
  */
 
 #include <dlfcn.h>
+#include "util.h"
 #include "cons.h"
 #include "primops.h"
 #include "module_mickey_dynamic_library.h"

@@ -18,14 +18,14 @@
 #include "heap.h"
 #include "backtrace.h"
 #include "module.h"
-/*
-#include "module_import.h"
-#include "module_base.h"
-#include "module_math.h"
-*/
 #include "exceptions.h"
+#include "mickey.h"
+#include "options.h"
 
 #define MICKEY_LIB "MICKEY_LIB"
+
+void version();
+void help();
 
 void execute(const char* file)
 {
@@ -71,6 +71,60 @@ void execute_string(const char* s)
     backtrace_clear();
     exit(1);
   }
+}
+
+// return true if rest of parameters are files
+bool parse_option(const char* s, struct options_t* p)
+{
+  #define ARGHIT(_short, _long) (!strcmp(s, _short) || !strcmp(s, _long))
+
+  if ( !strcmp(s, "--") )
+    return true;
+  else if ( !strncmp(s, "-I", 2) && strlen(s) > 2 ) {
+    p->include_path = s+2;
+  } else if ( !strcmp(s, "-") ) {
+    // TODO: read from standard input
+  } else if ( ARGHIT("-v", "--verbose") ) {
+    p->verbose = true;
+  } else if ( ARGHIT("-V", "--version") ) {
+    version();
+    exit(0);
+  } else if ( ARGHIT("-h", "--help") ) {
+    help(); 
+    exit(0);
+  } else if ( ARGHIT("-e", "--eval") ) {
+    p->eval_next = true;
+  } else if ( ARGHIT("-z", "--zero-env") ) {
+    p->empty_repl_env = true;
+  } else {
+    fprintf(stderr, "Unknown option: %s\n\n", s);
+    help();
+    exit(1);
+  }
+
+  return false;
+}
+
+void help()
+{
+  printf("Usage: mickey [ option(s) ] [ file(s) | - ]\n"
+    "\n"
+    "Options:\n"
+    "  -             Read program from standard input\n"
+    "  --            Rest of arguments are files, i.e. files can now begin with -\n"
+    "  -e --eval     Execute expression and print result\n"
+    "  -h --help     Print help\n"
+    "  -I<path>      Set include path for (load).\n"
+    "  -V --version  Print version\n"
+    "  -v --verbose  Verbose operation\n"
+    "  -z --zero-env Start REPL with only (import) defined\n"
+    "\n");
+}
+
+void version()
+{
+  printf("%s\n", VERSION);
+  printf("Compiler version: %s\n", __VERSION__);
 }
 
 int main(int argc, char** argv)

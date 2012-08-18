@@ -10,6 +10,7 @@
  */
 
 #include "cons.h"
+#include "util.h"
 #include "primops.h"
 #include "syntax-rules.h"
 #include "print.h"

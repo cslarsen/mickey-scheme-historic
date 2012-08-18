@@ -10,6 +10,7 @@
  */
 
 #include "test.h"
+#include "util.h"
 #include "tests.h"
 #include "print.h"
 #include "parser.h"

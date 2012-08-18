@@ -1,4 +1,5 @@
 mickey
+src/mickey
 *.o
 *.so
 *.dSYM

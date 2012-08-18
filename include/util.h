@@ -34,4 +34,18 @@ std::string encode_str(const char* s);
 // Prefix string with indefinite article (i.e., "a" or "an")
 std::string indef_art(const std::string&);
 
+// Should be in util, but cannot due to circular
+// dependencies between cons.h and util.h (TODO: Fix that)
+std::string encode_str(const char*);
+std::string to_s(enum type_t);
+std::string to_s(closure_t*);
+std::string to_s(continuation_t*);
+std::string to_s(vector_t*);
+std::string to_s(bytevector_t*);
+std::string to_s(port_t*);
+std::string to_s(char, bool);
+std::string to_s(struct cons_t *p);;
+std::string to_s(environment_t*);
+cons_t* deep_copy(const cons_t*);
+
 #endif

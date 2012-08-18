@@ -16,7 +16,6 @@
 #include "module_load.h"
 #include "module_base.h"
 #include "module_math.h"
-#include "module_char.h"
 #include "module_write.h"
 #include "module_process_context.h"
 #include "module_mickey_environment.h"
@@ -83,19 +82,19 @@ static environment_t* import_library(const std::string& name)
 
   if ( name == "(scheme base)" ) {
     import(r, exports_base, name); // Precompiled C code
-    import(r, library_file("base.scm")); // Scheme source code
+    import(r, library_file("scheme/base.scm")); // Scheme source code
   }
 
   else if ( name == "(scheme math)" )
     import(r, exports_math, name);
 
   else if ( name == "(scheme char)" ) {
-    import(r, exports_char, name);
-    import(r, library_file("char.scm"));
+    import(r, exports_import); // add (import)
+    import(r, library_file("scheme/char.scm"));
   }
 
   else if ( name == "(scheme lazy)" )
-    import(r, library_file("lazy.scm"));
+    import(r, library_file("scheme/lazy.scm"));
 
   else if ( name == "(scheme write)" )
     import(r, exports_write, name);
@@ -110,7 +109,7 @@ static environment_t* import_library(const std::string& name)
     import(r, exports_mickey_environment, name);
 
   else if ( name == "(mickey misc)" ) {
-    import(r, exports_import);
+    import(r, exports_import); // add (import)
     import(r, library_file("mickey/misc.scm"));
   }
 

@@ -9,6 +9,7 @@
  *
  */
 
+#include "util.h"
 #include "parser.h"
 #include "print.h"
 #include "exceptions.h"

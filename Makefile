@@ -6,11 +6,12 @@ PORTABLE_TESTS = tests/hello.scm \
                  tests/strings.scm
 
 all:
-	cd src ; make all
-	cp src/mickey .
-	# install library files
-	cp src/libmickey-misc.so lib/mickey/
-	cp src/libmickey-uname.so lib/mickey/
+	@cd src ; make all
+	@cp src/mickey .
+	@# install library files
+	@cp src/libmickey-misc.so lib/mickey/
+	@cp src/libmickey-uname.so lib/mickey/
+	@cp src/libscheme-char.so lib/scheme
 
 mickey:
 	cd src ; make mickey

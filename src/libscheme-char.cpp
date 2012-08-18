@@ -20,6 +20,8 @@
 #include "eval.h"
 #include "file_io.h"
 
+extern "C" {
+
 /*
  * Library exports
  */
@@ -82,3 +84,5 @@ cons_t* proc_char_whitespacep(cons_t* p, environment_t*)
   assert_type(CHAR, car(p));
   return boolean(isspace(car(p)->character));
 }
+
+};

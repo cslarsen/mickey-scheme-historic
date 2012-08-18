@@ -10,7 +10,7 @@ CXXFLAGS = -g \
 					 -DUSE_READLINE \
 					 -DNO_EXCEPTIONS
 
-LDFLAGS  = -lreadline ${LLVM_LDFLAGS}
+LDFLAGS  =
 LIB_FLAGS = -shared -fPIC $(LDFLAGS)
 
 TARGETS_O = exceptions.o \
@@ -27,10 +27,8 @@ TARGETS_O = exceptions.o \
             module.o \
             module_import.o \
             module_load.o \
-            module_char.o \
             module_write.o \
             module_math.o \
-            module_mickey_environment.o \
             module_base.o \
             module_process-context.o \
             module_mickey_environment.o \
@@ -48,52 +46,58 @@ TARGETS_O = exceptions.o \
             cons.o \
             tests.o
 
-TARGETS_SO = libmickey-uname.so libmickey-misc.so
+TARGETS_SO = libmickey-uname.so \
+						 libmickey-misc.so \
+						 libscheme-char.so
 
-LIB_DEPS =  exceptions.o \
-            apply.o \
-            options.o \
-            tokenizer.o \
+LIB_DEPS =  apply.o \
+            arguments.o \
+            assertions.o \
+            backtrace.o \
+            circular.o \
+            cons.o \
+            eval.o \
+            evlis.o \
+            exceptions.o \
             file_io.o \
-            util.o \
-            parse-string.o \
-            parser.o \
-            types.o \
             module.o \
+            module_base.o \
             module_import.o \
             module_load.o \
-            module_char.o \
-            module_write.o \
             module_math.o \
-            module_mickey_environment.o \
-            module_base.o \
-            module_process-context.o \
             module_mickey_dynamic_library.o \
-            assertions.o \
-            circular.o \
-            print.o \
-            arguments.o \
+            module_mickey_environment.o \
+            module_process-context.o \
+            module_write.o \
+            options.o \
+            parse-string.o \
+            parser.o \
             primops.o \
-            evlis.o \
-            eval.o \
-            backtrace.o \
+            print.o \
             syntax-rules.o \
-            cons.o
+            tokenizer.o \
+            types.o \
+            util.o
 
 TARGETS = $(TARGETS_O) $(TARGETS_SO) mickey
 
-lib%.so: %.cpp $(LIB_DEPS)
-	$(CXX) $(LIB_FLAGS) $(CXXFLAGS) $< -o $@ $(LIB_DEPS)
-
-libmickey-uname.so: libmickey-uname.cpp $(LIB_DEPS)
-	$(CXX) $(LIB_FLAGS) $(CXXFLAGS) $< -o $@ $(LIB_DEPS)
-
-libmickey-misc.so: libmickey-misc.cpp $(LIB_DEPS)
-	$(CXX) -DUSE_LLVM $(LLVM_CXXFLAGS) $(LLVM_LDFLAGS) $(LIB_FLAGS) $(CXXFLAGS) $< -o $@ $(LIB_DEPS)
-
 all: $(TARGETS)
 
-mickey: $(TARGETS_O)
+lib%.so: %.cpp $(LIB_DEPS)
+	$(CXX) $(CXXFLAGS) $(LIB_FLAGS) $(LIB_DEPS) $< -o $@
+
+libmickey-uname.so: libmickey-uname.cpp $(LIB_DEPS)
+	$(CXX) $(CXXFLAGS) $(LIB_FLAGS) $(LIB_DEPS) $< -o $@
+
+libmickey-misc.so: libmickey-misc.cpp $(LIB_DEPS)
+	$(CXX) -DUSE_LLVM $(CXXFLAGS) $(LLVM_CXXFLAGS) $(LLVM_LDFLAGS) \
+		$(LIB_FLAGS) $(LIB_DEPS) $< -o $@
+
+libscheme-char.so: libscheme-char.cpp $(LIB_DEPS)
+	$(CXX) $(CXXFLAGS) $(LIB_FLAGS) $(LIB_DEPS) $< -o $@
+
+mickey: mickey.cpp $(TARGETS_O)
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(TARGETS_O) -lreadline $< -o $@
 
 clean:
-	rm -f $(TARGETS)
+	rm -rf $(TARGETS) *dSYM

@@ -17,6 +17,7 @@
 #include "assertions.h"
 #include "print.h"
 #include "syntax-rules.h"
+#include "util.h"
 #include "mickey.h"
 #include "exceptions.h"
 #include "module_import.h"
@@ -37,11 +38,6 @@
 # include "llvm/LLVMContext.h"
 # include "llvm/ExecutionEngine/JIT.h"
 # include "llvm/Target/TargetSelect.h"
-#endif
-
-// For version printing
-#ifdef USE_READLINE
-# include <readline/readline.h>
 #endif
 
 /*
@@ -207,15 +203,9 @@ cons_t* proc_syntax_expand(cons_t* p, environment_t *e)
 
 cons_t* proc_version(cons_t*, environment_t*)
 {
-  cons_t *v = list(string(format("%s\n", VERSION).c_str()));
-
-  #ifdef USE_READLINE
-  v = append(v, cons(string(format("Using Readline %d.%d\n",
-        (rl_readline_version & 0xFF00) >> 8, rl_readline_version & 0x00FF).c_str())));
-  #endif
-
-  v = append(v, cons(string(format("Compiler version: %s\n", __VERSION__).c_str())));
-  return v;
+  return list(
+    string(VERSION),
+    string(format("Compiler version: %s", __VERSION__).c_str()));
 }
 
 cons_t* proc_type_of(cons_t* p, environment_t* e)

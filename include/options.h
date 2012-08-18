@@ -9,7 +9,9 @@
  *                                                          
  */
 
-#include <stdio.h>
+#ifndef INC_MICKEY_OPTIONS_H
+#define INC_MICKEY_OPTIONS_H
+
 #include "cons.h"
 
 struct options_t
@@ -34,6 +36,5 @@ extern options_t global_opts;
 void set_default(struct options_t*, int argc, char** argv);
 void set_lib_path(struct options_t*, const char* lib_path);
 void reset_for_programs(struct options_t*, const char* file = NULL);
-bool parse_option(const char* arg, struct options_t*);
-void help();
-void version();
+
+#endif

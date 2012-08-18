@@ -53,10 +53,9 @@ void import_defaults(environment_t *e, const std::string& lib_path)
 {
   if ( !global_opts.empty_repl_env ) {
     import(e, exports_base, "(scheme base)");
-    load(lib_path + "/base.scm", e);
+    load(lib_path + "/scheme/base.scm", e);
     import(e, exports_write, "(scheme write)");
-    import(e, exports_char, "(scheme char)");
-    load(lib_path + "/char.scm", e);
+    load(lib_path + "/scheme/char.scm", e);
     import(e, exports_load, "(scheme load)");
   }
 }

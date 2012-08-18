@@ -18,8 +18,6 @@ typedef double decimal_t;
 #include <string>
 #include <map>
 #include <vector>
-#include "util.h"
-#include "heap.h"
 
 /*
  * Function signatures for all C procedures; they all take a cons_t* and an
@@ -374,20 +372,6 @@ struct cons_t {
     pointer_t *pointer;
   };
 };
-
-// Should be in util, but cannot due to circular
-// dependencies between cons.h and util.h (TODO: Fix that)
-std::string encode_str(const char*);
-std::string to_s(enum type_t);
-std::string to_s(closure_t*);
-std::string to_s(continuation_t*);
-std::string to_s(vector_t*);
-std::string to_s(bytevector_t*);
-std::string to_s(port_t*);
-std::string to_s(char, bool);
-std::string to_s(struct cons_t *p);;
-std::string to_s(environment_t*);
-cons_t* deep_copy(const cons_t*);
 
 /*
  * Merges the two environments by copying `b´ into `a´.
