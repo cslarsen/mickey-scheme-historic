@@ -336,7 +336,7 @@ int repl()
             result = cdr(result);
           }
 
-          end->car = symbol("... ad infinitum", null_environment());
+          end->car = symbol("...etc", null_environment());
           end->cdr = cons(nil());
           printf("%s\n", sprint(l).c_str());
         } else {
