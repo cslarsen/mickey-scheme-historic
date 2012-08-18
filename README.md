@@ -75,9 +75,6 @@ to compile using `g++` and in parallel.
 Feature flags
 -------------
 
-  * `-DBOEHM_GC` and `-lgc` for Bohem-Demers-Weiser garbage collector
-     (doesn't currently work very well, though!)
-
   * `-DUSE_READLINE` and `-lreadline` for readline support (including TAB
      completion)
 

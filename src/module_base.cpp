@@ -938,10 +938,6 @@ cons_t* proc_version(cons_t*, environment_t*)
         (rl_readline_version & 0xFF00) >> 8, rl_readline_version & 0x00FF).c_str())));
   #endif
 
-  #ifdef BOEHM_GC
-  v = append(v, cons(string(format("Using Boehm-Demers-Weiser GC %d.%d\n", GC_VERSION_MAJOR, GC_VERSION_MINOR).c_str())));
-  #endif
-
   v = append(v, cons(string(format("Compiler version: %s\n", __VERSION__).c_str())));
   return v;
 }

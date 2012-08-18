@@ -89,10 +89,6 @@ int main(int argc, char** argv)
   else
     set_lib_path(&global_opts, (std::string(dirname(argv[0])) + "/lib/").c_str());
 
-  #ifdef BOEHM_GC
-  GC_INIT();
-  #endif
-
   for ( int n=1; n<argc; ++n ) {
     if ( global_opts.eval_next ) {
       execute_string(argv[n]);

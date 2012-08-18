@@ -1,5 +1,4 @@
 To install Mickey Scheme, you need
 
-- Optional: Some Readline implementation (-DUSE_READLINE)
-- Optional: Boehm-Demers-Weiser GC       (-DBOEHM_GC)
-
+- A C++ compiler
+- Optional: A readline implementation (-DUSE_READLINE)

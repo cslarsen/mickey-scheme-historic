@@ -231,13 +231,6 @@ void print_banner(environment_t*)
   printf("   %-63s  \\\n", VERSION);
   printf("   %-63s  /\\\n", __VERSION__);
   printf("   %-63s /  \\_\n", readline_version.c_str());
-
-  #ifdef BOEHM_GC
-    std::string boehm_version =
-      format("Boehm-Demers-Weiser GC %d.%d",
-        GC_VERSION_MAJOR, GC_VERSION_MINOR);
-    printf("   %-63s       \n", boehm_version.c_str());
-  #endif
 }
 
 int repl()

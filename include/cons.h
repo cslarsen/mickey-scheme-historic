@@ -59,11 +59,7 @@ enum type_t {
  * Environment holds a symbol table and points to an optional outer (or
  * parent) environment.
  */
-struct environment_t
- #ifdef BOEHM_GC
-  : public gc
- #endif
-{
+struct environment_t {
   struct environment_t *outer;
   dict_t symbols;
 
@@ -95,22 +91,14 @@ private:
 /*
  * Continuations are not supported yet.
  */
-struct continuation_t
- #ifdef BOEHM_GC
-  : public gc
- #endif
-{
+struct continuation_t {
 };
 
 /*
  * A closure consists of a function and an environment.  A syntax flag tells
  * whether to evaluate parameters before function invocation.
  */
-struct closure_t
- #ifdef BOEHM_GC
-  : public gc
- #endif
-{
+struct closure_t {
   lambda_t function;
   environment_t* environment;
   bool syntactic;
@@ -119,11 +107,7 @@ struct closure_t
 /*
  * Denotes a syntax transformer used to expand macros.
  */
-struct syntax_t
- #ifdef BOEHM_GC
-  : public gc
- #endif
-{
+struct syntax_t {
   cons_t* transformer;
   environment_t* environment;
 };
@@ -131,11 +115,7 @@ struct syntax_t
 /*
  * Arrays.
  */
-struct vector_t
- #ifdef BOEHM_GC
-  : public gc
- #endif
-{
+struct vector_t {
   std::vector<cons_t*> vector;
 
   vector_t()
@@ -160,11 +140,7 @@ struct vector_t
 /*
  * Array of unsigned 8-bit integer values.
  */
-struct bytevector_t
- #ifdef BOEHM_GC
-  : public gc
- #endif
-{
+struct bytevector_t {
   std::vector<uint8_t> bytevector;
 
   bytevector_t()
@@ -191,11 +167,7 @@ struct bytevector_t
 /*
  * A symbol.
  */
-class symbol_t
- #ifdef BOEHM_GC
-  : public gc
- #endif
-{
+class symbol_t {
 public:
   const std::string *n;
 
@@ -382,11 +354,7 @@ struct pointer_t {
  *
  * TODO: To cons_t, Add `marked` (for GC) and `mutable/immutable` (per spec)
  */
-struct cons_t
- #ifdef BOEHM_GC
-  : public gc
- #endif
-{
+struct cons_t {
   type_t type;
   union {
     bool boolean;
