@@ -96,9 +96,7 @@ See the file COPYING for the full text of the LGPL 2.1.
 Author
 ------
 
-Copyright (C) 2011-2012 Christian Stigen Larsen <csl@sublevel3.org>
-
-http://csl.sublevel3.org
+Christian Stigen Larsen <csl@sublevel3.org> http://csl.sublevel3.org
 
 ## Examples
 
