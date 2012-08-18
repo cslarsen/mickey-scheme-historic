@@ -107,11 +107,5 @@ void version()
          rl_readline_version & 0x00FF);
   #endif
 
-  #ifdef BOEHM_GC
-  printf("Using Boehm-Demers-Weiser GC %d.%d\n",
-    GC_VERSION_MAJOR,
-    GC_VERSION_MINOR);
-  #endif
-
   printf("Compiler version: %s\n", __VERSION__);
 }
