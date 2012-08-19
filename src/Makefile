@@ -27,7 +27,6 @@ TARGETS_O = exceptions.o \
             module_import.o \
             module_math.o \
             module_base.o \
-            module_mickey_environment.o \
             module_mickey_dynamic_library.o \
             assertions.o \
             circular.o \
@@ -57,7 +56,6 @@ LIB_DEPS =  apply.o \
             module_import.o \
             module_math.o \
             module_mickey_dynamic_library.o \
-            module_mickey_environment.o \
             options.o \
             parse-string.o \
             parser.o \
@@ -70,6 +68,7 @@ LIB_DEPS =  apply.o \
 
 TARGETS_SO = libmickey-uname.so \
 						 libmickey-misc.so \
+						 libmickey-environment.so \
 						 libscheme-char.so \
 						 libscheme-load.so \
 						 libscheme-write.so \
@@ -84,6 +83,9 @@ libmickey.so: $(LIB_DEPS)
 	$(CXX) $(CXXFLAGS) $(LIB_FLAGS) $^ -L. -o $@
 
 libmickey-uname.so: libraries/mickey-uname.cpp libmickey.so
+	$(CXX) $(CXXFLAGS) $(LIB_FLAGS) -L. -lmickey $< -o $@
+
+libmickey-environment.so: libraries/mickey-environment.cpp libmickey.so
 	$(CXX) $(CXXFLAGS) $(LIB_FLAGS) -L. -lmickey $< -o $@
 
 libmickey-misc.so: libraries/mickey-misc.cpp libmickey.so

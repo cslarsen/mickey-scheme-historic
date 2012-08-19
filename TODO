@@ -1,7 +1,11 @@
-- In lib/*.scm, create a lib (mickey library) that contains
-  - bind-procedure, bind-procedure-syntax
-  - has a list of "(x y)" mappings to .so files and .scm files
-  - use this new library instead of doing dlsym manually
+- This does not work:
+#; mickey> (define a '(1 2 3))
+#; mickey> `(+ ,@a 10)
+(+ 10)
+
+Should return (+ 1 2 3 10)
+
+It works by doing it literally, `(+ ,@(list 1 2 3) 10) gives (+ 1 2 3 10)
 
 Random stuff:
 - Funker i chibi men ikke i mickey

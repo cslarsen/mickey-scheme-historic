@@ -7,19 +7,8 @@
  * Distributed under the LGPL 2.1; see LICENSE            /\
  * Please post bugfixes and suggestions to the author.   /  \_
  *
- */
-
-#include "cons.h"
-#include "primops.h"
-#include "module.h"
-#include "module_mickey_environment.h"
-#include "assertions.h"
-#include "exceptions.h"
-#include "options.h"
-#include "print.h"
-#include "eval.h"
-
-/*
+ * ------------------------------------------------------------------------
+ *
  * This module presents a first class environment to the
  * user.  It is directly modeled on the API provided
  * by MIT Scheme:
@@ -27,39 +16,35 @@
  * http://sicp.ai.mit.edu/Fall-2004/manuals/scheme-7.5.5/doc/scheme_14.html
  *
  * Currently unimplemented:
+ *
  * - Immutable values in mickey core
+ *
  * - Environment variables system-global-environment and
  *   user-initial-environment
+ *
  * - Procedures (nearest-repl/environment) and (ge environment)
+ *
  * - Library special forms not really supported in mickey, because
  *   mickey will extend environments when calling them (so, we
  *   need to change mickey itself for this)
+ *
  * - procedure (interpreter-environment? object)
  *
  * Also note that the eval procedure is exported as
- * environment-eval.  Example usage:
+ * environment-eval.
  *
- * (import (mickey environment))
- * (define env (make-environment))
- * (environment-eval (begin ...) env)
+ * Example usage:
  *
+ *   (import (mickey environment))
+ *   (define env (make-environment))
+ *   (environment-eval (begin ...) env)
+ *
+ * ------------------------------------------------------------------------
  */
-named_function_t exports_mickey_environment[] = {
-  {"bound?", proc_boundp, false},
-  {"environment-assign!", proc_env_assign, false},
-  {"environment-assignable?", proc_env_assignablep, false},
-  {"environment-bindings", proc_env_bindings, false},
-  {"environment-bound-names", proc_env_bound_names, false},
-  {"environment-bound?", proc_env_boundp, false},
-  {"environment-eval", proc_env_eval, true},
-  {"environment-has-parent?", proc_env_has_parentp, false},
-  {"environment-lookup", proc_env_lookup, false},
-  {"environment-parent", proc_env_parent, false},
-  {"environment?", proc_envp, false},
-  {"make-environment", proc_make_environment, true},
-  {"the-environment", proc_the_environment, false},
-  {NULL, NULL, false}
-};
+
+#include "mickey.h"
+
+extern "C" {
 
 cons_t* proc_envp(cons_t* p, environment_t*)
 {
@@ -244,4 +229,23 @@ cons_t* proc_env_eval(cons_t* p, environment_t* e)
   assert_type(ENVIRONMENT, env);
 
   return eval(car(p), env->environment);
+}
+
+named_function_t exports_mickey_environment[] = {
+  {"bound?", proc_boundp, false},
+  {"environment-assign!", proc_env_assign, false},
+  {"environment-assignable?", proc_env_assignablep, false},
+  {"environment-bindings", proc_env_bindings, false},
+  {"environment-bound-names", proc_env_bound_names, false},
+  {"environment-bound?", proc_env_boundp, false},
+  {"environment-eval", proc_env_eval, true},
+  {"environment-has-parent?", proc_env_has_parentp, false},
+  {"environment-lookup", proc_env_lookup, false},
+  {"environment-parent", proc_env_parent, false},
+  {"environment?", proc_envp, false},
+  {"make-environment", proc_make_environment, true},
+  {"the-environment", proc_the_environment, false},
+  {NULL, NULL, false}
+};
+
 }
