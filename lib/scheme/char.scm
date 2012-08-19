@@ -9,29 +9,10 @@
  |
  |#
 
-(import (only (scheme base)
-              define let if not string-append error)
-        (mickey dynamic-library))
+(import (only (scheme base) defien)
+        (mickey library))
 
-(define file "lib/scheme/libscheme-char.so")
-
-(define handle
-  (let ((handle (dlopen file 'lazy)))
-
-    (if (not handle)
-        (error (string-append
-          "Could not dlopen " file ": " (dlerror))))
-
-    handle))
-
-(define (bind-procedure name)
-  (let ((proc (dlsym handle name)))
-
-    (if (not proc)
-        (error (string-append
-          "Could not dlsym " name " in " file ": " (dlerror))))
-
-    proc))
+(open-library "lib/scheme/libscheme-char.so")
 
 (define char-alphabetic? (bind-procedure "proc_char_alphabeticp"))
 (define char-downcase    (bind-procedure "proc_char_downcase"))

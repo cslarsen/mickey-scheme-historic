@@ -9,31 +9,19 @@
  |
  |#
 
-(import (only (scheme base)
-              define let if not string-append error)
-        (mickey dynamic-library))
+(import (only (scheme base) define)
+        (mickey library))
 
-(define file "lib/scheme/libscheme-process-context.so")
+(open-library "lib/scheme/libscheme-process-context.so")
 
-(define handle
-  (let ((handle (dlopen file 'lazy)))
+(define command-line
+  (bind-procedure "proc_command_line"))
 
-    (if (not handle)
-        (error (string-append
-          "Could not dlopen " file ": " (dlerror))))
+(define exit
+  (bind-procedure "exit"))
 
-    handle))
+(define get-environment-variable
+  (bind-procedure "proc_get_environment_variable"))
 
-(define (bind-procedure name)
-  (let ((proc (dlsym handle name)))
-
-    (if (not proc)
-        (error (string-append
-          "Could not dlsym " name " in " file ": " (dlerror))))
-
-    proc))
-
-(define command-line (bind-procedure "proc_command_line"))
-(define exit (bind-procedure "exit"))
-(define get-environment-variable (bind-procedure "proc_get_environment_variable"))
-(define get-environment-variables (bind-procedure "proc_get_environment_variables"))
+(define get-environment-variables
+  (bind-procedure "proc_get_environment_variables"))

@@ -9,28 +9,10 @@
  |
  |#
 
-(import (only (scheme base)
-              define let if not string-append error)
-        (mickey dynamic-library))
+(import (only (scheme base) define)
+        (mickey library))
 
-(define file "lib/scheme/libscheme-load.so")
+(open-library "lib/scheme/libscheme-load.so" 'lazy)
 
-(define handle
-  (let ((handle (dlopen file 'lazy)))
-
-    (if (not handle)
-        (error (string-append
-          "Could not dlopen " file ": " (dlerror))))
-
-    handle))
-
-(define (bind-procedure name)
-  (let ((proc (dlsym handle name)))
-
-    (if (not proc)
-        (error (string-append
-          "Could not dlsym " name " in " file ": " (dlerror))))
-
-    proc))
-
-(define load (bind-procedure "proc_load"))
+(define load
+  (bind-procedure "proc_load"))
