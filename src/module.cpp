@@ -16,7 +16,6 @@
 #include "module.h"
 #include "module_import.h"
 #include "module_base.h"
-#include "module_math.h"
 #include "options.h"
 
 void import(environment_t *e,

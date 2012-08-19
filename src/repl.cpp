@@ -28,7 +28,6 @@
 #include "backtrace.h"
 #include "options.h"
 #include "module_base.h"
-#include "module_math.h"
 #include "module_import.h"
 #include "exceptions.h"
 #include "circular.h"

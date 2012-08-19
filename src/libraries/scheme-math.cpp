@@ -6,16 +6,16 @@
  *                                                        \
  * Distributed under the LGPL 2.1; see LICENSE            /\
  * Please post bugfixes and suggestions to the author.   /  \_
- *                                                          
+ *
  */
 
 #include <math.h>
-#include "module.h"
-#include "module_math.h"
-#include "primops.h"
-#include "assertions.h"
-#include "exceptions.h"
+#include "mickey.h"
 
+/*
+ * All <math.h> procedures have identical signatures,
+ * so create a macro to, in darkness, bind them.
+ */
 #define MAKE_PROC(name, math_fun)                       \
   cons_t* name(cons_t* p, environment_t*)               \
   {                                                     \
@@ -23,6 +23,8 @@
     assert_number(car(p));                              \
     return decimal(math_fun(number_to_double(car(p)))); \
   }
+
+extern "C" {
 
 MAKE_PROC(proc_exp, exp);
 MAKE_PROC(proc_log, log);
@@ -63,3 +65,5 @@ named_function_t exports_math[] = {
   {"floor", proc_floor, false},
   {NULL, NULL, false}
 };
+
+}

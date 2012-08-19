@@ -25,7 +25,6 @@ TARGETS_O = exceptions.o \
             types.o \
             module.o \
             module_import.o \
-            module_math.o \
             module_base.o \
             module_mickey_dynamic_library.o \
             assertions.o \
@@ -54,7 +53,6 @@ LIB_DEPS =  apply.o \
             module.o \
             module_base.o \
             module_import.o \
-            module_math.o \
             module_mickey_dynamic_library.o \
             options.o \
             parse-string.o \
@@ -73,6 +71,7 @@ TARGETS_SO = libmickey-uname.so \
 						 libscheme-load.so \
 						 libscheme-write.so \
 						 libscheme-repl.so \
+						 libscheme-math.so \
 						 libscheme-process-context.so
 
 TARGETS = $(TARGETS_O) $(TARGETS_SO) libmickey.so mickey
@@ -96,6 +95,9 @@ libscheme-char.so: libraries/scheme-char.cpp libmickey.so
 	$(CXX) $(CXXFLAGS) $(LIB_FLAGS) -L. -lmickey  $< -o $@
 
 libscheme-load.so: libraries/scheme-load.cpp libmickey.so
+	$(CXX) $(CXXFLAGS) $(LIB_FLAGS) -L. -lmickey  $< -o $@
+
+libscheme-math.so: libraries/scheme-math.cpp libmickey.so
 	$(CXX) $(CXXFLAGS) $(LIB_FLAGS) -L. -lmickey  $< -o $@
 
 libscheme-write.so: libraries/scheme-write.cpp libmickey.so
