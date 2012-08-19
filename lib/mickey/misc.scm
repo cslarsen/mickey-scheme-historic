@@ -9,7 +9,8 @@ Distributed under the LGPL 2.1
 
 |#
 
-(import (scheme base)
+(import (only (scheme base)
+              define if not error let)
         (mickey dynamic-library))
 
 (define file "lib/mickey/libmickey-misc.so")
