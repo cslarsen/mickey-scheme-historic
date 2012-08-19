@@ -101,7 +101,7 @@ cons_t* proc_addf(cons_t *p, environment_t*)
     else if ( decimalp(i) )
       sum += i->decimal;
     else
-      raise(std::runtime_error("Cannot add decimal with " + to_s(type_of(i)) + ": " + sprint(i)));
+      raise(runtime_exception("Cannot add decimal with " + to_s(type_of(i)) + ": " + sprint(i)));
   }
 
   return decimal(sum);
@@ -126,7 +126,7 @@ cons_t* proc_add(cons_t *p, environment_t* env)
       // automatically convert; perform rest of computation in floats
       return proc_addf(cons(decimal(sum), p), env);
     else
-      raise(std::runtime_error("Cannot add integer with " + to_s(type_of(i)) + ": " + sprint(i)));
+      raise(runtime_exception("Cannot add integer with " + to_s(type_of(i)) + ": " + sprint(i)));
   }
 
   return integer(sum);
@@ -135,7 +135,7 @@ cons_t* proc_add(cons_t *p, environment_t* env)
 cons_t* proc_sub(cons_t *p, environment_t*)
 {
   if ( length(p) == 0 )
-    raise(std::runtime_error("No arguments to -"));
+    raise(runtime_exception("No arguments to -"));
 
   decimal_t d = number_to_float(car(p));
 
@@ -176,7 +176,7 @@ cons_t* proc_div(cons_t *p, environment_t *e)
 
   if ( integerp(a) && integerp(b) ) {
     if ( b->integer == 0 )
-      raise(std::runtime_error("Division by zero"));
+      raise(runtime_exception("Division by zero"));
     return integer(a->integer / b->integer);
   } else
     return proc_divf(p, e);
@@ -195,7 +195,7 @@ cons_t* proc_mulf(cons_t *p, environment_t*)
       // automatically convert; perform rest of computation in floats
       product *= i->decimal;
     else
-      raise(std::runtime_error("Cannot multiply integer with " + to_s(type_of(i)) + ": " + sprint(i)));
+      raise(runtime_exception("Cannot multiply integer with " + to_s(type_of(i)) + ": " + sprint(i)));
   }
 
   return decimal(product);
@@ -214,7 +214,7 @@ cons_t* proc_mul(cons_t *p, environment_t *env)
       // automatically convert; perform rest of computation in floats
       return proc_mulf(cons(decimal(product), p), env);
     else
-      raise(std::runtime_error("Cannot multiply integer with " + to_s(type_of(i)) + ": " + sprint(i)));
+      raise(runtime_exception("Cannot multiply integer with " + to_s(type_of(i)) + ": " + sprint(i)));
   }
 
   return integer(product);
@@ -247,7 +247,7 @@ cons_t* proc_define(cons_t *p, environment_t *env)
   cons_t *body = cadr(p);
 
   if ( name->symbol->name().empty() )
-    raise(std::runtime_error("Cannot define with empty variable name")); // TODO: Even possible?
+    raise(runtime_exception("Cannot define with empty variable name")); // TODO: Even possible?
 
   env->define(name->symbol->name(), body);
   return nil();
@@ -261,7 +261,7 @@ cons_t* proc_define_syntax(cons_t *p, environment_t *env)
   cons_t *syntax = cadr(p);
 
   if ( name->symbol->name().empty() )
-    raise(std::runtime_error("Cannot define-syntax with empty name"));
+    raise(runtime_exception("Cannot define-syntax with empty name"));
 
   env->define(name->symbol->name(), syntax);
   return nil();
@@ -523,14 +523,14 @@ cons_t* proc_make_bytevector(cons_t* p, environment_t*)
     case CHAR:    u8fill = fill->character; break;
     case INTEGER: {
       if ( fill->integer < 0 || fill->integer > 255 )
-        raise(std::runtime_error(
+        raise(runtime_exception(
           "make-vector only accepts unsigned 8-bit bytes"));
       u8fill = static_cast<uint8_t>(fill->integer);
       break;
     }
 
     default:
-      raise(std::runtime_error(
+      raise(runtime_exception(
         "make-vector only accepts unsigned 8-bit bytes"));
       break;
     }
@@ -556,7 +556,7 @@ cons_t* proc_vector_ref(cons_t* p, environment_t*)
   int ref = cadr(p)->integer;
 
   if ( ref<0 || static_cast<size_t>(ref) >= v->vector.size() )
-    raise(std::runtime_error("vector-ref index out of range: " + to_s(ref)));
+    raise(runtime_exception("vector-ref index out of range: " + to_s(ref)));
 
   return v->vector[ref];
 }
@@ -572,7 +572,7 @@ cons_t* proc_vector_set(cons_t* p, environment_t*)
   cons_t *set = caddr(p);
 
   if ( ref<0 || static_cast<size_t>(ref) >= v->vector.size() )
-    raise(std::runtime_error("Vector index out of range: " + to_s(ref)));
+    raise(runtime_exception("Vector index out of range: " + to_s(ref)));
 
   v->vector[ref] = set;
   return nil();
@@ -610,7 +610,7 @@ cons_t* proc_vector_to_string(cons_t* p, environment_t*)
         i != vec.end(); ++i )
   {
     if ( type_of(*i) != CHAR )
-      raise(std::runtime_error(
+      raise(runtime_exception(
         "vector->string requires character elements only"));
 
     s[n++] = (*i)->character;
@@ -668,7 +668,7 @@ cons_t* proc_bytevector_u8_ref(cons_t* p, environment_t*)
   int k = cadr(p)->integer;
 
   if ( k<0 || static_cast<size_t>(k) >= v->bytevector.size() )
-    raise(std::runtime_error("bytevector-u8-ref out of range"));
+    raise(runtime_exception("bytevector-u8-ref out of range"));
 
   return integer(v->bytevector[k]);
 }
@@ -693,10 +693,10 @@ cons_t* proc_bytevector_copy_partial(cons_t* p, environment_t*)
   bytevector_t *v = car(p)->bytevector;
 
   if ( start<0 || static_cast<size_t>(start)>=v->bytevector.size() )
-    raise(std::runtime_error("bytevector-copy-partial `start´ out of range"));
+    raise(runtime_exception("bytevector-copy-partial `start´ out of range"));
 
   if ( end<=start || static_cast<size_t>(end)>v->bytevector.size() )
-    raise(std::runtime_error("bytevector-copy-partial `end´ out of range"));
+    raise(runtime_exception("bytevector-copy-partial `end´ out of range"));
 
   return bytevector(
     std::vector<uint8_t>(
@@ -721,13 +721,13 @@ cons_t* proc_bytevector_copy_partial_bang(cons_t* p, environment_t*)
   bytevector_t *to = cadddr(p)->bytevector;
 
   if ( start<0 || static_cast<size_t>(start) >= from->bytevector.size() )
-    raise(std::runtime_error("bytevector-copy-partial `start´ out of range"));
+    raise(runtime_exception("bytevector-copy-partial `start´ out of range"));
 
   if ( end<=start || static_cast<size_t>(end) > from->bytevector.size() )
-    raise(std::runtime_error("bytevector-copy-partial `end´ out of range"));
+    raise(runtime_exception("bytevector-copy-partial `end´ out of range"));
 
   if ( !(static_cast<int>((to->bytevector.size()) - at) >= (end - start)) )
-    raise(std::runtime_error(
+    raise(runtime_exception(
       "bytevector-copy-partial! invalid start-end-at combo"));
 
   std::copy(
@@ -750,10 +750,10 @@ cons_t* proc_bytevector_u8_set_bang(cons_t* p, environment_t*)
   int val = caddr(p)->integer;
 
   if ( k<0 || static_cast<size_t>(k) >= v->bytevector.size() )
-    raise(std::runtime_error("bytevector-u8-set! index out of range"));
+    raise(runtime_exception("bytevector-u8-set! index out of range"));
 
   if ( val<0 || val>255 )
-    raise(std::runtime_error("bytevector-u8-set! byte value out of range"));
+    raise(runtime_exception("bytevector-u8-set! byte value out of range"));
 
   v->bytevector[k] = static_cast<uint8_t>(val);
   return nil();
@@ -769,7 +769,7 @@ cons_t* proc_bytevector_copy_bang(cons_t* p, environment_t*)
   bytevector_t *to   = cadr(p)->bytevector;
 
   if ( to->bytevector.size() < from->bytevector.size() )
-    raise(std::runtime_error(
+    raise(runtime_exception(
       "bytevector-copy! destination bytevector shorter than source"));
 
   if ( to->bytevector.size() > from->bytevector.size() )
@@ -1351,7 +1351,7 @@ cons_t* proc_error(cons_t* p, environment_t*)
   assert_length_min(p, 1);
   assert_type(STRING, car(p));
   const char *message = car(p)->string;
-  raise(std::runtime_error(message));
+  raise(runtime_exception(message));
   return nil();
 }
 
@@ -1486,7 +1486,7 @@ cons_t* proc_expt(cons_t* p, environment_t*)
       return integer(1);
 
     if ( n < 0 )
-      raise(std::runtime_error("Negative exponents not implemented"));
+      raise(runtime_exception("Negative exponents not implemented"));
 
     // This is a slow version
     // TODO: Implement O(log n) version
@@ -1505,7 +1505,7 @@ cons_t* proc_expt(cons_t* p, environment_t*)
     return decimal(1.0);
 
   if ( n < 0.0 )
-    raise(std::runtime_error("Negative exponents not implemented"));
+    raise(runtime_exception("Negative exponents not implemented"));
 
   while ( floor(n) > 1.0 ) {
     r *= a;
@@ -1513,7 +1513,7 @@ cons_t* proc_expt(cons_t* p, environment_t*)
   }
 
   if ( n > 1.0 )
-    raise(std::runtime_error("Fractional exponents not supported"));
+    raise(runtime_exception("Fractional exponents not supported"));
 
   // TODO: Compute r^n, where n is in [0..1)
   return decimal(r);
@@ -1530,10 +1530,10 @@ cons_t* proc_modulo(cons_t* p, environment_t*)
   assert_type(INTEGER, b);
 
   if ( b->integer == 0 )
-    raise(std::runtime_error("Division by zero"));
+    raise(runtime_exception("Division by zero"));
 
   if ( b->integer < 0 )
-    raise(std::runtime_error("Negative modulus operations not implemented")); // TODO
+    raise(runtime_exception("Negative modulus operations not implemented")); // TODO
 
   return integer(a->integer % b->integer);
 }
@@ -1619,7 +1619,7 @@ cons_t* proc_list_tail(cons_t* p, environment_t*)
   p = car(p);
 
   if ( n > length(p) )
-    raise(std::runtime_error("List is too short for your list-tail argument"));
+    raise(runtime_exception("List is too short for your list-tail argument"));
 
   while ( n-- )
     p = cdr(p);
@@ -1818,7 +1818,7 @@ cons_t* proc_string_ref(cons_t* p, environment_t*)
   assert_type(INTEGER, cadr(p));
 
   if ( static_cast<size_t>(cadr(p)->integer) >= strlen(car(p)->string) )
-    raise(std::runtime_error("string-ref argument out of bounds"));
+    raise(runtime_exception("string-ref argument out of bounds"));
 
   return character(car(p)->string[ cadr(p)->integer]);
 }

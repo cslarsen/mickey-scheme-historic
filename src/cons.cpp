@@ -19,7 +19,7 @@ static std::map<std::string, symbol_t> symbols;
 const symbol_t* create_symbol(const std::string& s)
 {
   if ( s.empty() )
-    raise(std::runtime_error("Symbols must have names"));
+    raise(runtime_exception("Symbols must have names"));
 
   std::map<std::string, symbol_t>::iterator i;
 
@@ -37,7 +37,7 @@ cons_t* environment_t::lookup_or_throw(const std::string& name) const
   cons_t *p = lookup(name);
 
   if ( p == NULL )
-    raise(std::runtime_error(format("Unbound definition: %s", name.c_str())));
+    raise(runtime_exception(format("Unbound definition: %s", name.c_str())));
 
   return p;
 }

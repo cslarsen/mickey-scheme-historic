@@ -144,7 +144,7 @@ cons_t* syntax_expand(cons_t *macro, cons_t *code, environment_t*)
   /*
    * No match.  This is an error.
    */
-  raise(std::runtime_error(
+  raise(runtime_exception(
     "Macro invocation did not match any patterns: "
       + sprint(code)));
   return nil();

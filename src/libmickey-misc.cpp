@@ -306,7 +306,7 @@ cons_t* proc_llvm_gcd(cons_t* p, environment_t*)
     TheExecutionEngine = EngineBuilder(Mod).setErrorStr(&ErrStr).create();
 
     if ( TheExecutionEngine == NULL )
-      raise(std::runtime_error(ErrStr));
+      raise(runtime_exception(ErrStr));
 
     // JIT compile function
     llvm::Function *LF = llvm_gcd;

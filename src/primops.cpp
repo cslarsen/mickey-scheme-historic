@@ -11,7 +11,6 @@
 
 #include <stdint.h> // limits
 #include <math.h> // floor
-#include <stdexcept>
 #include "primops.h"
 #include "util.h"
 #include "assertions.h"
@@ -494,7 +493,7 @@ double number_to_double(const cons_t* p)
 
   switch ( type_of(p) ) {
   default:
-    raise(std::runtime_error("Unsupported number->double conversion: " + sprint(p)));
+    raise(runtime_exception("Unsupported number->double conversion: " + sprint(p)));
   case INTEGER: return static_cast<double>(p->integer);
   case DECIMAL: return static_cast<double>(p->decimal);
   }

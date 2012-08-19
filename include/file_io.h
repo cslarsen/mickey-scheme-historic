@@ -10,7 +10,6 @@
  */
 
 #include <stdio.h>
-#include <stdexcept>
 #include "exceptions.h"
 #include "util.h"
 
@@ -25,7 +24,7 @@ public:
     f(fopen(name.c_str(), access))
   {
     if ( f == NULL )
-      raise(std::runtime_error("Could not open file: " + name));
+      raise(runtime_exception("Could not open file: " + name));
   }
 
   virtual ~open_file()

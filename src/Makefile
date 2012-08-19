@@ -3,12 +3,11 @@ LLVM_CXXFLAGS = ${shell $(LLVM_CONFIG) --cxxflags}
 LLVM_LDFLAGS  = ${shell $(LLVM_CONFIG) --ldflags --libs}
 
 CXX      = llvm-g++
-CXXFLAGS = -g \
-					 -W \
-					 -Wall \
+CXXFLAGS = -g -W -Wall \
 					 -I../include \
 					 -DUSE_READLINE \
-					 -DNO_EXCEPTIONS
+					 -fno-exceptions \
+					 -fno-rtti
 
 LDFLAGS  =
 LIB_FLAGS = -shared -fPIC $(LDFLAGS)

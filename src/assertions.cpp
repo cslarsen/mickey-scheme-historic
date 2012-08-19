@@ -9,7 +9,6 @@
  *                                                          
  */
 
-#include <stdexcept>
 #include "assertions.h"
 #include "primops.h"
 #include "print.h"
@@ -22,7 +21,7 @@ void assert_length(const cons_t* p, const size_t e)
   const size_t l = length(const_cast<cons_t*>(p));
 
   if ( e != l )
-    raise(std::runtime_error(format(
+    raise(runtime_exception(format(
       "Function expects exactly %lu parameters but got %lu: `%s´",
         e, l, sprint(p).c_str())));
 }
@@ -32,7 +31,7 @@ void assert_length(const cons_t* p, const size_t min, const size_t max)
   const size_t l = length(const_cast<cons_t*>(p));
 
   if ( l<min || l>max )
-    raise(std::runtime_error(format(
+    raise(runtime_exception(format(
       "Function expects from %lu to %lu parameters but got %lu: `%s´",
         min, max, l, sprint(p).c_str())));
 }
@@ -42,7 +41,7 @@ void assert_length_min(const cons_t* p, const size_t min)
   const size_t l = length(const_cast<cons_t*>(p));
 
   if ( l<min )
-    raise(std::runtime_error(format(
+    raise(runtime_exception(format(
       "Function expects at least %lu parameters got %lu: `%s´",
         min, l, sprint(p).c_str())));
 }
@@ -50,7 +49,7 @@ void assert_length_min(const cons_t* p, const size_t min)
 void assert_type(const enum type_t type, const cons_t* p)
 {
   if ( p == NULL )
-    raise(std::runtime_error(format(
+    raise(runtime_exception(format(
       "Function expected %s but got NULL",
         indef_art(to_s(type)).c_str())));
 
@@ -69,7 +68,7 @@ void assert_type(const enum type_t type, const cons_t* p)
     error = !(type_of(p) == VECTOR || type_of(p) == PAIR);
 
   if ( error ) {
-    raise(std::runtime_error(format("Function expected %s but got %s: `%s´",
+    raise(runtime_exception(format("Function expected %s but got %s: `%s´",
       indef_art(to_s(type)).c_str(),
       indef_art(to_s(type_of(p))).c_str(),
       sprint(p).c_str())));
@@ -79,7 +78,7 @@ void assert_type(const enum type_t type, const cons_t* p)
 void assert_number(const cons_t* p)
 {
   if ( !numberp(p) )
-    raise(std::runtime_error(format("Function expected a number but got a %s: `%s´",
+    raise(runtime_exception(format("Function expected a number but got a %s: `%s´",
       to_s(type_of(p)).c_str(),
       sprint(p).c_str())));
 }
@@ -87,13 +86,13 @@ void assert_number(const cons_t* p)
 void assert_noncyclic(const cons_t* p)
 {
   if ( circularp(p) )
-    raise(std::runtime_error("List contains cycles"));
+    raise(runtime_exception("List contains cycles"));
 }
 
 void assert_proper_list(const cons_t* p)
 {
   if ( !properlistp(p) )
-    raise(std::runtime_error(
+    raise(runtime_exception(
       format("Not a proper list: %s", sprint(p).c_str())));
 }
 

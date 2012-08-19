@@ -9,7 +9,6 @@
  *
  */
 
-#include <stdexcept>
 #include "parser.h"
 #include "types.h"
 #include "util.h"
@@ -101,7 +100,7 @@ static cons_t* parse_list(environment_t *env, bool quoting = false)
       p = nullp(p)? cons(add) : append(p, cons(add));
     else {
       if ( performed_cdr_dot )
-        raise(std::runtime_error(format(
+        raise(runtime_exception(format(
           "Parser error: Invalid use of dot on '%s'", t)));
 
       { /*
@@ -204,7 +203,7 @@ program_t* parse(const std::string& program, environment_t *env)
   set_source(program.c_str());
 
   if ( env == NULL )
-    raise(std::runtime_error("parse: null environment"));
+    raise(runtime_exception("parse: null environment"));
 
   program_t *p = new program_t();
   p->globals = env;

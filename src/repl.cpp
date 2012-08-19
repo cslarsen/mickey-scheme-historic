@@ -265,16 +265,13 @@ int repl()
       add_history(input);
       #endif
 
-      #ifdef NO_EXCEPTIONS
       if ( exception_raised() ) {
         backtrace();
         backtrace_clear();
         continue;
       }
-      #endif
-    } else {
+    } else
       input = strdup("");
-    }
 
     TRY {
       /*
@@ -296,7 +293,7 @@ int repl()
       program_t *p = parse(input, env);
 
       if ( p->parens < 0 )
-        raise(std::runtime_error(format(
+        raise(runtime_exception(format(
           "parser: unbalanced parenthesis -> %ld", p->parens)));
 
       // Read until we have balanced parenthesis
@@ -349,7 +346,7 @@ int repl()
 
       delete p;
     }
-    CATCH (const std::exception& e) {
+    CATCH (const exception_t& e) {
       if ( *e.what() != '\0' )
         fprintf(stderr, "%s\n", e.what());
       backtrace();

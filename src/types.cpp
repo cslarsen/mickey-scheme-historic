@@ -9,7 +9,6 @@
  *                                                          
  */
 
-#include <stdexcept>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
@@ -168,7 +167,7 @@ decimal_t to_f(const char* s)
 int to_i(const char* s)
 {
   if ( s == NULL )
-    raise(std::runtime_error("Cannot convert NULL to INTEGER"));
+    raise(runtime_exception("Cannot convert NULL to INTEGER"));
 
   int has_sign = (char_in(*s, "+-"));
   int sign = (s[0]=='-'? -1 : 1);
@@ -198,7 +197,7 @@ char to_char(const char* s)
     long code = strtol(s+3, (char**)NULL, 16);
 
     if ( code > 0x7F ) // U+0000 --- U+007F, i.e., the ASCII repertoire
-      raise(std::runtime_error("Unicode characters are not suppoted"));
+      raise(runtime_exception("Unicode characters are not suppoted"));
 
     return static_cast<char>(code);
   }
@@ -218,7 +217,7 @@ char to_char(const char* s)
   if ( lit == "escape" )    return '\x1b';
   if ( lit == "delete" )    return '\x7f';
 
-  raise(std::runtime_error(format("Unrecognized character literal: #\\%s", s)));
+  raise(runtime_exception(format("Unrecognized character literal: #\\%s", s)));
   return '\0'; // make compiler happy
 }
 

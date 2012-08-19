@@ -34,7 +34,7 @@ void execute(const char* file)
     reset_for_programs(&global_opts, file);
     load(file, env);
   }
-  CATCH (const std::exception& e) {
+  CATCH (const exception_t& e) {
     const char* file = global_opts.current_filename;
     bool has_file = file && strcmp(file, "-");
 
@@ -65,7 +65,7 @@ void execute_string(const char* s)
     p->root = cons(symbol("begin", p->globals), p->root);
     printf("%s\n", sprint(eval(p->root, env)).c_str());
   }
-  CATCH (const std::exception& e) {
+  CATCH (const exception_t& e) {
     fprintf(stderr, "\nError: %s\n", e.what());
     backtrace();
     backtrace_clear();

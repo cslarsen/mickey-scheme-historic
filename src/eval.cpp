@@ -9,7 +9,6 @@
  *
  */
 
-#include <stdexcept>
 #include "eval.h"
 #include "util.h"
 #include "primops.h"
@@ -91,11 +90,11 @@ static cons_t* call_lambda(cons_t *p, environment_t* e)
   size_t params_recv = length(p);
 
   if ( params_recv < params_reqd )
-    raise(std::runtime_error(format("Function requires %d parameters, but got %d",
+    raise(runtime_exception(format("Function requires %d parameters, but got %d",
       params_reqd, params_recv)));
 
   if ( params_recv > params_reqd && !has_rest ) {
-    raise(std::runtime_error(
+    raise(runtime_exception(
       format("Function '%s' only accepts %d parameters, "
              "but got %d", func_name.c_str(),
              params_reqd, params_recv)));
@@ -120,7 +119,7 @@ static cons_t* call_lambda(cons_t *p, environment_t* e)
         e->define(name->symbol->name(), value);
         break;
       } else 
-        raise(std::runtime_error("Lambda argument not a symbol but type "
+        raise(runtime_exception("Lambda argument not a symbol but type "
           + to_s(type_of(car(name))) + ": " + sprint(car(name))));
     }
 
@@ -183,11 +182,11 @@ static body_env_t expand_lambda(cons_t *p, environment_t* e)
   size_t params_recv = length(p);
 
   if ( params_recv < params_reqd )
-    raise(std::runtime_error(format("Function requires %d parameters, but got %d",
+    raise(runtime_exception(format("Function requires %d parameters, but got %d",
       params_reqd, params_recv)));
 
   if ( params_recv > params_reqd && !has_rest ) {
-    raise(std::runtime_error(
+    raise(runtime_exception(
       format("Function '%s' only accepts %d parameters, "
              "but got %d", func_name.c_str(),
              params_reqd, params_recv)));
@@ -214,7 +213,7 @@ static body_env_t expand_lambda(cons_t *p, environment_t* e)
         e->define(name->symbol->name(), value);
         break;
       } else 
-        raise(std::runtime_error("Lambda argument not a symbol but type "
+        raise(runtime_exception("Lambda argument not a symbol but type "
           + to_s(type_of(car(name))) + ": " + sprint(car(name))));
     }
 
@@ -287,7 +286,7 @@ static cons_t* invoke_with_trace(
   cons_t *fun = eval(op, env); // lookup function
 
   if ( !closurep(fun) )
-    raise(std::runtime_error(format(
+    raise(runtime_exception(format(
       "Not a function: %s", sprint(op).c_str())));
 
   if ( symbolp(op) )
@@ -361,7 +360,7 @@ cons_t* eval(cons_t* p, environment_t* e)
       if ( s.empty() )
         s = format("#<?unknown_type? %p>", p);
 
-      raise(std::runtime_error("Cannot evaluate: " + s));
+      raise(runtime_exception("Cannot evaluate: " + s));
     }
 
     if ( symbolp(car(p)) ) {
