@@ -84,14 +84,14 @@ all: $(TARGETS)
 libmickey.so: $(LIB_DEPS)
 	$(CXX) $(CXXFLAGS) $(LIB_FLAGS) $^ -L. -o $@
 
-libmickey-uname.so: libraries/libmickey-uname.cpp libmickey.so
+libmickey-uname.so: libraries/mickey-uname.cpp libmickey.so
 	$(CXX) $(CXXFLAGS) $(LIB_FLAGS) -L. -lmickey $< -o $@
 
-libmickey-misc.so: libraries/libmickey-misc.cpp libmickey.so
+libmickey-misc.so: libraries/mickey-misc.cpp libmickey.so
 	$(CXX) -DUSE_LLVM $(CXXFLAGS) $(LLVM_CXXFLAGS) $(LLVM_LDFLAGS) \
 		$(LIB_FLAGS) $(LIB_DEPS) -L. -lmickey $< -o $@
 
-libscheme-char.so: libraries/libscheme-char.cpp libmickey.so
+libscheme-char.so: libraries/scheme-char.cpp libmickey.so
 	$(CXX) $(CXXFLAGS) $(LIB_FLAGS) -L. -lmickey  $< -o $@
 
 libscheme-load.so: libraries/scheme-load.cpp libmickey.so
