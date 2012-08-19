@@ -64,7 +64,7 @@ LIB_DEPS =  apply.o \
             types.o \
             util.o
 
-TARGETS_SO = libmickey-uname.so \
+TARGETS_SO = libunix-uname.so \
 						 libmickey-misc.so \
 						 libmickey-environment.so \
 						 libscheme-char.so \
@@ -81,7 +81,7 @@ all: $(TARGETS)
 libmickey.so: $(LIB_DEPS)
 	$(CXX) $(CXXFLAGS) $(LIB_FLAGS) $^ -L. -o $@
 
-libmickey-uname.so: libraries/mickey-uname.cpp libmickey.so
+libunix-uname.so: libraries/unix-uname.cpp libmickey.so
 	$(CXX) $(CXXFLAGS) $(LIB_FLAGS) -L. -lmickey $< -o $@
 
 libmickey-environment.so: libraries/mickey-environment.cpp libmickey.so
