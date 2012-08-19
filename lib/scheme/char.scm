@@ -32,7 +32,8 @@
  | http://unicode.org/reports/tr29/ for details.
  |
  | Note that THIS implementation is CHEATING, and does not
- | employ the correct algorithm.
+ | employ the correct algorithm.  Well, actually implementations
+ | are allowed to only support the ASCII portion of UTF-8.
  |#
 (define (char-foldcase char)
   ; simply call `char-downcase`
