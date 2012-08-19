@@ -73,6 +73,12 @@ static void import(environment_t *target, const std::string& filename)
   eval(cons(symbol("begin", p->globals), p->root), p->globals);
 }
 
+static void import_scheme_file(environment_t *r, const char* file)
+{
+  import(r, exports_import); // add (import)
+  import(r, library_file(file));
+}
+
 static environment_t* import_library(const std::string& name)
 {
   environment_t* r = null_environment();
@@ -88,13 +94,11 @@ static environment_t* import_library(const std::string& name)
   else if ( name == "(scheme math)" )
     import(r, exports_math, name);
 
-  else if ( name == "(scheme char)" ) {
-    import(r, exports_import); // add (import)
-    import(r, library_file("scheme/char.scm"));
-  }
+  else if ( name == "(scheme char)" )
+    import_scheme_file(r, "scheme/char.scm");
 
   else if ( name == "(scheme lazy)" )
-    import(r, library_file("scheme/lazy.scm"));
+    import_scheme_file(r, "scheme/lazy.scm");
 
   else if ( name == "(scheme write)" )
     import(r, exports_write, name);
@@ -108,10 +112,11 @@ static environment_t* import_library(const std::string& name)
   else if ( name == "(mickey environment)" )
     import(r, exports_mickey_environment, name);
 
-  else if ( name == "(mickey misc)" ) {
-    import(r, exports_import); // add (import)
-    import(r, library_file("mickey/misc.scm"));
-  }
+  else if ( name == "(mickey uname)" )
+    import_scheme_file(r, "mickey/uname.scm");
+
+  else if ( name == "(mickey misc)" )
+    import_scheme_file(r, "mickey/misc.scm");
 
   else if ( name == "(mickey dynamic-library)" )
     import(r, exports_mickey_dynamic_library, name);
