@@ -19,7 +19,6 @@
 #include "module_base.h"
 #include "module_math.h"
 #include "module_char.h"
-#include "module_load.h"
 #include "module_process_context.h"
 #include "options.h"
 
@@ -56,6 +55,6 @@ void import_defaults(environment_t *e, const std::string& lib_path)
     load(lib_path + "/scheme/base.scm", e);
     import(e, exports_write, "(scheme write)");
     load(lib_path + "/scheme/char.scm", e);
-    import(e, exports_load, "(scheme load)");
+    load(lib_path + "/scheme/load.scm", e);
   }
 }

@@ -9,19 +9,9 @@
  *
  */
 
-#include "cons.h"
-#include "primops.h"
-#include "module_load.h"
-#include "assertions.h"
-#include "exceptions.h"
-#include "options.h"
-#include "eval.h"
-#include "file_io.h"
+#include "mickey.h"
 
-named_function_t exports_load[] = {
-  {"load", proc_load, false},
-  {NULL, NULL, false}
-};
+extern "C" {
 
 cons_t* proc_load(cons_t *args, environment_t *env)
 {
@@ -32,10 +22,17 @@ cons_t* proc_load(cons_t *args, environment_t *env)
   cons_t *env_spec = cadr(args);
 
   if ( !nullp(env_spec) ) {
-    raise(runtime_exception(
-      "Environment-specifiers not supported in (load)"));
+    assert_type(ENVIRONMENT, env_spec);
+    env = env_spec->environment;
   } else {
-    // TODO: Use (interaction-environment)
+    /*
+     * Use (interaction-environment)
+     * We'll cheat and use the environment in which
+     * the function was called. TODO: Call interaction_environment()
+     * instead and use that as a function.
+     */
+    if ( env->outer != NULL ) env = env->outer; // one level up
+    if ( env->outer != NULL ) env = env->outer; // two levels up
   }
 
   // first try filename without include path
@@ -61,4 +58,11 @@ cons_t* proc_load(cons_t *args, environment_t *env)
   // Restore filename.
   global_opts.current_filename = prev;
   return nil();
+}
+
+named_function_t exports_load[] = {
+  {"load", proc_load, false},
+  {NULL, NULL, false}
+};
+
 }

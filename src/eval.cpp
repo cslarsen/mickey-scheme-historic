@@ -16,7 +16,6 @@
 #include "print.h"
 #include "backtrace.h"
 #include "module_import.h"
-#include "module_load.h"
 #include "module_base.h"
 #include "syntax-rules.h"
 #include "exceptions.h"
@@ -403,37 +402,6 @@ cons_t* eval(cons_t* p, environment_t* e)
 
       if ( name == "case" )
         return eval(proc_case(p, e), e);
-
-      /*
-       * Both load and import are special, because they
-       * cannot be interpreted as normal functions.
-       *
-       * The reason is that closures will evaluate
-       * functions in the environment they were
-       * _defined_ in, and not the one they are
-       * running in.
-       *
-       * So, if load/import was a function, they would
-       * not be able to, e.g., define new function
-       * in the running parent environment.
-       *
-       * Below, even though we have the load function
-       * available here, we check that the user has
-       * actually imported a load command into the
-       * environment (we'll just ASSUME it's our
-       * (scheme base) load function).
-       *
-       * TODO: We shouldn't assume that if a "load"
-       *       symbol exists, it's (scheme load), because
-       * it means that if any user does not import
-       * (scheme load) and wants to use "load" as a
-       * normal variable or function, it will not have
-       * lexical scope because of our trick with the
-       * environment below!
-       *
-       */
-      if ( name == "load" && e->lookup("load") != NULL )
-        return proc_load(evlis(cdr(p), e), e);
 
       if ( name == "define-syntax" ) {
         cons_t *name = cadr(p);

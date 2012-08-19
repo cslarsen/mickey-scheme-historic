@@ -13,7 +13,6 @@
 #include "primops.h"
 #include "module.h"
 #include "module_import.h"
-#include "module_load.h"
 #include "module_base.h"
 #include "module_math.h"
 #include "module_write.h"
@@ -104,7 +103,7 @@ static environment_t* import_library(const std::string& name)
     import(r, exports_write, name);
 
   else if ( name == "(scheme load)" )
-    import(r, exports_load, name);
+    import_scheme_file(r, "scheme/load.scm");
 
   else if ( name == "(scheme process-context)" )
     import(r, exports_process_context, name);

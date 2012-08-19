@@ -9,9 +9,7 @@
  *
  */
 
-#include "cons.h"
-#include "module.h"
+#include "mickey.h"
 
-extern named_function_t exports_load[];
-
-cons_t* proc_load(cons_t*, environment_t*);
+extern "C" named_function_t exports_scheme_load[];
+extern "C" cons_t* proc_load(cons_t*, environment_t*);
