@@ -86,18 +86,21 @@ all: $(TARGETS)
 lib%.so: %.cpp $(LIB_DEPS)
 	$(CXX) $(CXXFLAGS) $(LIB_FLAGS) $(LIB_DEPS) $< -o $@
 
-libmickey-uname.so: libmickey-uname.cpp $(LIB_DEPS)
-	$(CXX) $(CXXFLAGS) $(LIB_FLAGS) $(LIB_DEPS) $< -o $@
+libmickey.so: $(LIB_DEPS)
+	$(CXX) $(CXXFLAGS) $(LIB_FLAGS) $^ -o $@
 
-libmickey-misc.so: libmickey-misc.cpp $(LIB_DEPS)
+libmickey-uname.so: libmickey-uname.cpp libmickey.so
+	$(CXX) $(CXXFLAGS) $(LIB_FLAGS) -L. -lmickey $< -o $@
+
+libmickey-misc.so: libmickey-misc.cpp libmickey.so
 	$(CXX) -DUSE_LLVM $(CXXFLAGS) $(LLVM_CXXFLAGS) $(LLVM_LDFLAGS) \
-		$(LIB_FLAGS) $(LIB_DEPS) $< -o $@
+		$(LIB_FLAGS) $(LIB_DEPS) -L. -lmickey $< -o $@
 
-libscheme-char.so: libscheme-char.cpp $(LIB_DEPS)
-	$(CXX) $(CXXFLAGS) $(LIB_FLAGS) $(LIB_DEPS) $< -o $@
+libscheme-char.so: libscheme-char.cpp libmickey.so
+	$(CXX) $(CXXFLAGS) $(LIB_FLAGS) -L. -lmickey  $< -o $@
 
-mickey: mickey.cpp $(TARGETS_O)
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(TARGETS_O) -lreadline $< -o $@
+mickey: mickey.cpp libmickey.so tests.o test.o repl.o
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) tests.o test.o repl.o -L. -lmickey -lreadline $< -o $@
 
 clean:
 	rm -rf $(TARGETS) *dSYM

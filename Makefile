@@ -7,7 +7,7 @@ PORTABLE_TESTS = tests/hello.scm \
 
 all:
 	@cd src ; make all
-	@cp src/mickey .
+	@cp src/mickey src/libmickey.so .
 	@# install library files
 	@cp src/libmickey-misc.so lib/mickey/
 	@cp src/libmickey-uname.so lib/mickey/
@@ -15,7 +15,7 @@ all:
 
 mickey:
 	cd src ; make mickey
-	cp src/mickey .
+	cp src/mickey src/libmickey.so .
 
 run: all
 	./mickey
@@ -36,5 +36,5 @@ check-diff: all
 	@./mickey $(PORTABLE_TESTS)
 
 clean:
-	rm -f ./mickey
+	rm -f ./mickey ./libmickey.so
 	cd src ; make clean
