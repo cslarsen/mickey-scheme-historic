@@ -78,7 +78,7 @@ LIB_DEPS =  apply.o \
             types.o \
             util.o
 
-TARGETS = $(TARGETS_O) $(TARGETS_SO) mickey
+TARGETS = $(TARGETS_O) $(TARGETS_SO) libmickey.so mickey
 
 all: $(TARGETS)
 
