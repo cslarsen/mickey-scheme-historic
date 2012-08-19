@@ -10,13 +10,11 @@
  */
 
 #include <string.h>
-#include "cons.h"
-#include "module.h"
-#include "primops.h"
-#include "options.h"
-#include "assertions.h"
+#include "mickey.h"
 
 extern char **environ;
+
+extern "C" {
 
 cons_t* proc_get_environment_variable(cons_t* p, environment_t*)
 {
@@ -98,3 +96,5 @@ named_function_t exports_process_context[] = {
   {"get-environment-variables", proc_get_environment_variables, false},
   {NULL, NULL, false} /* terminate with null */
 };
+
+}

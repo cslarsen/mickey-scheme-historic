@@ -9,6 +9,9 @@
  *                                                          
  */
 
+#ifndef INC_MICKEY_FILE_IO_H
+#define INC_MICKEY_FILE_IO_H
+
 #include <stdio.h>
 #include "exceptions.h"
 #include "util.h"
@@ -40,3 +43,5 @@ public:
 
 std::string slurp(FILE*);
 bool file_exists(const std::string&);
+
+#endif

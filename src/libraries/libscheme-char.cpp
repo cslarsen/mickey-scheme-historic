@@ -9,32 +9,9 @@
  *
  */
 
-#include "cons.h" // to_s(cons_t*)
-#include "primops.h"
-#include "module.h"
-#include "module_char.h"
-#include "assertions.h"
-#include "exceptions.h"
-#include "print.h"
-#include "options.h"
-#include "eval.h"
-#include "file_io.h"
+#include "mickey.h"
 
 extern "C" {
-
-/*
- * Library exports
- */
-named_function_t exports_char[] = {
-  {"char-alphabetic?", proc_char_alphabeticp, false},
-  {"char-downcase", proc_char_downcase, false},
-  {"char-lower-case?", proc_char_lowercasep, false},
-  {"char-numeric?", proc_char_numericp, false},
-  {"char-upcase", proc_char_upcase, false},
-  {"char-upper-case?", proc_char_uppercasep, false},
-  {"char-whitespace?", proc_char_whitespacep, false},
-  {NULL, NULL, false}
-};
 
 cons_t* proc_char_alphabeticp(cons_t* p, environment_t*)
 {
@@ -84,5 +61,19 @@ cons_t* proc_char_whitespacep(cons_t* p, environment_t*)
   assert_type(CHAR, car(p));
   return boolean(isspace(car(p)->character));
 }
+
+/*
+ * exports
+ */
+named_function_t exports_char[] = {
+  {"char-alphabetic?", proc_char_alphabeticp, false},
+  {"char-downcase", proc_char_downcase, false},
+  {"char-lower-case?", proc_char_lowercasep, false},
+  {"char-numeric?", proc_char_numericp, false},
+  {"char-upcase", proc_char_upcase, false},
+  {"char-upper-case?", proc_char_uppercasep, false},
+  {"char-whitespace?", proc_char_whitespacep, false},
+  {NULL, NULL, false}
+};
 
 };

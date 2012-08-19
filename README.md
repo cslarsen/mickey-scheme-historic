@@ -554,9 +554,9 @@ the `uname(3)` function from Mickey.  We'll just write some wrapper code in
 C:
 
     #include <sys/utsname.h>
-    #include "mickey-api.h"
+    #include "mickey.h"
 
-    cons_t* proc_uname(cons_t* args, environment_t* env)
+    extern "C" cons_t* proc_uname(cons_t* args, environment_t* env)
     {
       struct utsname p;
 
@@ -575,16 +575,13 @@ C:
 Note that if you use a C++ compiler with the above code, you must prefix the
 function with `extern "C"` to avoid the infamous C++ name-mangling.
 
-Now, compiling this should ideally be straightforward, something á la
+To compile this, do something à la
 
-    gcc -shared -Imickey-include/ mickey-uname.c \
-        -lmickey-api -o libmickey-uname.so
+    gcc -shared -fPIC -I<mickey path> mickey-uname.c \
+        -L<mickey path> -lmickey -o libmickey-uname.so
 
-Unfortunately, I've not made a proper mickey library yet, so you actually
-have to include all the object files.  See the Makefile for details.
-
-Anyway, after compilation you've got a libmickey-uname.so file.  To load
-this file from Mickey, we have to start mickey and then import the `(mickey
+This should give you a libmickey-uname.so file.  To load this file from
+Mickey, we have to start mickey and then import the `(mickey
 dynamic-library)` library.
 
     csl$ ./mickey
@@ -596,10 +593,10 @@ dynamic-library)` library.
        To quit, hit CTRL+D or type (exit).  Use (help) for an
        introduction.
     |#
-    
+
     #; mickey> (import (mickey dynamic-library))
 
-Let's load the library using the dlopen options RTLD_NOW and RTLD_LOCAL.
+Let's load the library using the dlopen options `RTLD_NOW` and `RTLD_LOCAL`.
 You can omit the options to use default dlopen mode.  I'm just showing you
 how to specify several options.
 

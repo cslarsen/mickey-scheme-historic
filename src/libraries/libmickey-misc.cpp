@@ -9,19 +9,7 @@
  *
  */
 
-#include "cons.h"
-#include "backtrace.h"
-#include "module.h"
-#include "circular.h"
-#include "primops.h"
-#include "assertions.h"
-#include "print.h"
-#include "syntax-rules.h"
-#include "util.h"
 #include "mickey.h"
-#include "exceptions.h"
-#include "module_import.h"
-#include "libmickey-misc.h"
 
 /*
  * For llvm:gcd
@@ -223,7 +211,7 @@ llvm::Module* makeLLVMModule()
 
   // Create module
   Module* mod = new Module(StringRef("llvm_gcd"), ctx);
- 
+
   // Create function 
   Constant* c = mod->getOrInsertFunction("gcd",
                                          IntegerType::get(ctx, 32),
@@ -234,7 +222,7 @@ llvm::Module* makeLLVMModule()
 
   // For passing out; not very good code
   llvm_gcd = gcd;
- 
+
   // Set up input args for function
   llvm::Function::arg_iterator args = gcd->arg_begin();
   Value* x = args++;
@@ -265,7 +253,7 @@ llvm::Module* makeLLVMModule()
   args1.push_back(yMinusX);
   Value* recur_1 = builder.CreateCall(gcd, args1.begin(), args1.end(), "tmp");
   builder.CreateRet(recur_1);
-  
+
   builder.SetInsertPoint(cond_false_2);
   Value* xMinusY = builder.CreateSub(x, y, "tmp");
   std::vector<Value*> args2;
@@ -273,7 +261,7 @@ llvm::Module* makeLLVMModule()
   args2.push_back(y);
   Value* recur_2 = builder.CreateCall(gcd, args2.begin(), args2.end(), "tmp");
   builder.CreateRet(recur_2);
-  
+
   return mod;
 }
 
@@ -320,7 +308,6 @@ cons_t* proc_llvm_gcd(cons_t* p, environment_t*)
   return integer(myFunc(car(p)->integer, cadr(p)->integer));
 }
 #endif // USE_LLVM
-
 
 named_function_t exports_mickey_misc[] = {
   {":backtrace", proc_backtrace, false},
