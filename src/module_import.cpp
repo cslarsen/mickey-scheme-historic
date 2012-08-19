@@ -111,8 +111,8 @@ static environment_t* import_library(const std::string& name)
   else if ( name == "(mickey environment)" )
     import_scheme_file(r, "mickey/environment.scm");
 
-  else if ( name == "(mickey uname)" )
-    import_scheme_file(r, "mickey/uname.scm");
+  else if ( name == "(unix uname)" )
+    import_scheme_file(r, "unix/uname.scm");
 
   else if ( name == "(mickey misc)" )
     import_scheme_file(r, "mickey/misc.scm");
