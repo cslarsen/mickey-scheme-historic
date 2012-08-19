@@ -44,11 +44,6 @@ TARGETS_O = exceptions.o \
             cons.o \
             tests.o
 
-TARGETS_SO = libmickey-uname.so \
-						 libmickey-misc.so \
-						 libscheme-char.so \
-						 libscheme-load.so
-
 LIB_DEPS =  apply.o \
             arguments.o \
             assertions.o \
@@ -77,6 +72,12 @@ LIB_DEPS =  apply.o \
             types.o \
             util.o
 
+TARGETS_SO = libmickey-uname.so \
+						 libmickey-misc.so \
+						 libscheme-char.so \
+						 libscheme-load.so \
+						 libscheme-repl.so
+
 TARGETS = $(TARGETS_O) $(TARGETS_SO) libmickey.so mickey
 
 all: $(TARGETS)
@@ -95,6 +96,9 @@ libscheme-char.so: libraries/libscheme-char.cpp libmickey.so
 	$(CXX) $(CXXFLAGS) $(LIB_FLAGS) -L. -lmickey  $< -o $@
 
 libscheme-load.so: libraries/scheme-load.cpp libmickey.so
+	$(CXX) $(CXXFLAGS) $(LIB_FLAGS) -L. -lmickey  $< -o $@
+
+libscheme-repl.so: libraries/scheme-repl.cpp libmickey.so
 	$(CXX) $(CXXFLAGS) $(LIB_FLAGS) -L. -lmickey  $< -o $@
 
 mickey: mickey.cpp libmickey.so tests.o test.o repl.o

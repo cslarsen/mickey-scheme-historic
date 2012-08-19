@@ -105,6 +105,9 @@ static environment_t* import_library(const std::string& name)
   else if ( name == "(scheme load)" )
     import_scheme_file(r, "scheme/load.scm");
 
+  else if ( name == "(scheme repl)" )
+    import_scheme_file(r, "scheme/repl.scm");
+
   else if ( name == "(scheme process-context)" )
     import(r, exports_process_context, name);
 

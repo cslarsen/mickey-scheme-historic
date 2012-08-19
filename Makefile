@@ -9,7 +9,7 @@ all:
 	@cd src ; make all
 	cp src/mickey src/libmickey.so .
 	cp src/libmickey-misc.so src/libmickey-uname.so lib/mickey/
-	cp src/libscheme-char.so src/libscheme-load.so lib/scheme
+	cp src/libscheme-char.so src/libscheme-load.so src/libscheme-repl.so lib/scheme
 
 mickey:
 	cd src ; make mickey
