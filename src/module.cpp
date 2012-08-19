@@ -15,7 +15,6 @@
 #include "file_io.h"
 #include "module.h"
 #include "module_import.h"
-#include "module_write.h"
 #include "module_base.h"
 #include "module_math.h"
 #include "options.h"
@@ -51,7 +50,7 @@ void import_defaults(environment_t *e, const std::string& lib_path)
   if ( !global_opts.empty_repl_env ) {
     import(e, exports_base, "(scheme base)");
     load(lib_path + "/scheme/base.scm", e);
-    import(e, exports_write, "(scheme write)");
+    load(lib_path + "/scheme/write.scm", e);
     load(lib_path + "/scheme/char.scm", e);
     load(lib_path + "/scheme/load.scm", e);
   }

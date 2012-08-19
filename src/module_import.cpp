@@ -15,7 +15,6 @@
 #include "module_import.h"
 #include "module_base.h"
 #include "module_math.h"
-#include "module_write.h"
 #include "module_mickey_environment.h"
 #include "module_mickey_dynamic_library.h"
 #include "assertions.h"
@@ -99,7 +98,7 @@ static environment_t* import_library(const std::string& name)
     import_scheme_file(r, "scheme/lazy.scm");
 
   else if ( name == "(scheme write)" )
-    import(r, exports_write, name);
+    import_scheme_file(r, "scheme/write.scm");
 
   else if ( name == "(scheme load)" )
     import_scheme_file(r, "scheme/load.scm");

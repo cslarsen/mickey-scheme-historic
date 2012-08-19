@@ -9,17 +9,9 @@
  *
  */
 
-#include "cons.h"
-#include "primops.h"
-#include "module.h"
-#include "module_base.h"
-#include "module_math.h"
-#include "assertions.h"
-#include "exceptions.h"
-#include "print.h"
-#include "options.h"
+#include "mickey.h"
 
-cons_t* proc_display(cons_t *p, environment_t*)
+extern "C" cons_t* proc_display(cons_t *p, environment_t*)
 {
   assert_length(p, 1, 2);
 
@@ -46,8 +38,3 @@ cons_t* proc_display(cons_t *p, environment_t*)
 
   return nil();
 }
-
-named_function_t exports_write[] = {
-  {"display", proc_display, false},
-  {NULL, NULL, false}
-};

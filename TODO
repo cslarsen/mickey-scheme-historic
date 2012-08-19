@@ -1,3 +1,8 @@
+- In lib/*.scm, create a lib (mickey library) that contains
+  - bind-procedure, bind-procedure-syntax
+  - has a list of "(x y)" mappings to .so files and .scm files
+  - use this new library instead of doing dlsym manually
+
 Random stuff:
 - Funker i chibi men ikke i mickey
 > (define a (list 1 2 3))
