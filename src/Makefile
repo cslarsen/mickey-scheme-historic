@@ -88,14 +88,14 @@ lib%.so: %.cpp $(LIB_DEPS)
 libmickey.so: $(LIB_DEPS)
 	$(CXX) $(CXXFLAGS) $(LIB_FLAGS) $^ -o $@
 
-libmickey-uname.so: libmickey-uname.cpp libmickey.so
+libmickey-uname.so: libraries/libmickey-uname.cpp libmickey.so
 	$(CXX) $(CXXFLAGS) $(LIB_FLAGS) -L. -lmickey $< -o $@
 
-libmickey-misc.so: libmickey-misc.cpp libmickey.so
+libmickey-misc.so: libraries/libmickey-misc.cpp libmickey.so
 	$(CXX) -DUSE_LLVM $(CXXFLAGS) $(LLVM_CXXFLAGS) $(LLVM_LDFLAGS) \
 		$(LIB_FLAGS) $(LIB_DEPS) -L. -lmickey $< -o $@
 
-libscheme-char.so: libscheme-char.cpp libmickey.so
+libscheme-char.so: libraries/libscheme-char.cpp libmickey.so
 	$(CXX) $(CXXFLAGS) $(LIB_FLAGS) -L. -lmickey  $< -o $@
 
 mickey: mickey.cpp libmickey.so tests.o test.o repl.o
