@@ -90,6 +90,11 @@ struct compiler_exception : general_exception {
   compiler_exception(const std::string& s) : general_exception("<compiler> " + s) { }
 };
 
+struct syntax_error : general_exception {
+  syntax_error(const std::string& s) : general_exception("<syntax> " + s) { }
+};
+
+
 struct runtime_exception : general_exception {
   runtime_exception(const std::string& s) : general_exception("<runtime> " + s) { }
 };
