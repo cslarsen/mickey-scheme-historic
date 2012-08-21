@@ -17,7 +17,7 @@ Please post bugfixes and suggestions to the author.   /  \_
   (export interaction-environment)
 
   (begin
-    (open-library "lib/scheme/libscheme-repl.so" 'lazy)
+    (open-internal-library "libscheme-repl.so" 'lazy)
 
     (define interaction-environment
       (bind-procedure "proc_interaction_environment"))))

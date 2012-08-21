@@ -22,7 +22,7 @@ Please post bugfixes and suggestions to the author.   /  \_
     get-environment-variables)
 
   (begin
-    (open-library "lib/scheme/libscheme-process-context.so")
+    (open-internal-library "libscheme-process-context.so")
 
     (define command-line
       (bind-procedure "proc_command_line"))
