@@ -14,30 +14,30 @@ LIB_FLAGS = -shared -fPIC $(LDFLAGS)
 
 TARGETS_O = exceptions.o \
             heap.o \
-            test.o \
             apply.o \
-            options.o \
-            tokenizer.o \
-            file_io.o \
-            util.o \
-            parse-string.o \
-            parser.o \
-            types.o \
-            module.o \
-            module_import.o \
+            arguments.o \
+            assertions.o \
+            backtrace.o \
+            circular.o \
+            cons.o \
+            eval.o \
+            evlis.o \
+            file-io.o \
             libraries/scheme-base.o \
             libraries/unix-dlopen.o \
-            assertions.o \
-            circular.o \
-            print.o \
-            arguments.o \
-            repl.o \
+            module.o \
+            module_import.o \
+            options.o \
+            parse-string.o \
+            parser.o \
             primitives.o \
-            evlis.o \
-            eval.o \
-            backtrace.o \
+            print.o \
+            repl.o \
             syntax-rules.o \
-            cons.o \
+            test.o \
+            tokenizer.o \
+            types.o \
+            util.o \
             tests.o
 
 LIB_DEPS =  apply.o \
@@ -49,11 +49,11 @@ LIB_DEPS =  apply.o \
             eval.o \
             evlis.o \
             exceptions.o \
-            file_io.o \
-            module.o \
+            file-io.o \
             libraries/scheme-base.o \
-            module_import.o \
             libraries/unix-dlopen.o \
+            module.o \
+            module_import.o \
             options.o \
             parse-string.o \
             parser.o \

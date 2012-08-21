@@ -20,7 +20,7 @@
 #include "print.h"
 #include "options.h"
 #include "eval.h"
-#include "file_io.h"
+#include "file-io.h"
 
 /*
  * Library exports

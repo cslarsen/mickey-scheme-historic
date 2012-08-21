@@ -12,7 +12,7 @@
 #include <string>
 #include "primitives.h"
 #include "eval.h"
-#include "file_io.h"
+#include "file-io.h"
 #include "module.h"
 #include "module_import.h"
 #include "libraries/scheme-base.h"
