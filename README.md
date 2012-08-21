@@ -4,10 +4,10 @@ Mickey R7RS Scheme
 Mickey Scheme is an incomplete, slow and buggy implementation of R7RS Scheme
 small.
 
-The _current_ project goals are:
+The current project goals are to
 
-* A correct and complete implementation of R7RS-small (WG1)
-* Clarity and simplicity of implementation
+* Provide a _correct_ and _complete_ implementation of R7RS-small (WG1)
+* Emphasize clarity and simplicity in the implementation
 * Be a powerful platform for experimentation and creation of a more advanced
   scheme compiler.
 
@@ -17,7 +17,7 @@ The name will change as the project matures.
 Current Features
 ----------------
 
-  * Most core Scheme functions
+  * Most core scheme functions
   * Supports 164 of 240 R7RS base library definitions
   * Quotation and quasiquotation
   * Most `let`-forms, including named let
@@ -114,7 +114,7 @@ First, let's start `mickey`.
                                                                           
     Loaded 150 definitions
     Execute (exit [ code ]) to quit
-    You can also (:run-tests) and (list-globals)
+    You can also (:run-test) and (list-globals)
 
     mickey> 
 
