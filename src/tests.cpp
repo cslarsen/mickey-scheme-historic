@@ -16,7 +16,7 @@
 #include "parser.h"
 #include "types.h"
 #include "eval.h"
-#include "module_base.h"
+#include "libraries/scheme-base.h"
 #include "exceptions.h"
 #include "options.h"
 

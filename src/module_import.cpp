@@ -13,7 +13,7 @@
 #include "primops.h"
 #include "module.h"
 #include "module_import.h"
-#include "module_base.h"
+#include "libraries/scheme-base.h"
 #include "libraries/unix-dlopen.h"
 #include "assertions.h"
 #include "exceptions.h"

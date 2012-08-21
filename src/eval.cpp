@@ -9,19 +9,7 @@
  *
  */
 
-#include "eval.h"
-#include "util.h"
-#include "primops.h"
-#include "apply.h"
-#include "print.h"
-#include "backtrace.h"
-#include "module_import.h"
-#include "module_base.h"
-#include "syntax-rules.h"
-#include "exceptions.h"
-#include "assertions.h"
-#include "evlis.h"
-#include "arguments.h"
+#include "mickey.h"
 
 cons_t* eval(program_t *p)
 {

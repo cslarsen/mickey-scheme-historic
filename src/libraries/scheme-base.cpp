@@ -10,21 +10,7 @@
  */
 
 #include <cmath>
-#include "mickey.h" // VERSION
-#include "cons.h" // to_s(cons_t*)
-#include "module.h"
-#include "module_base.h"
-#include "primops.h"
-#include "assertions.h"
-#include "print.h"   // sprint
-#include "file_io.h" // file_exists
-#include "options.h" // global_opts
-#include "eval.h"
-#include "types.h"
-#include "apply.h"
-#include "syntax-rules.h"
-#include "circular.h"
-#include "evlis.h"
+#include "mickey.h"
 
 extern "C" {
 
