@@ -8,9 +8,7 @@ PORTABLE_TESTS = test/hello.scm \
 all:
 	cd src ; make all
 	cp src/mickey src/libmickey.so .
-	cp src/libmickey*.so lib/mickey/
-	cp src/libscheme*.so lib/scheme/
-	cp src/libunix*.so lib/unix/
+	cp src/lib*.so lib/
 
 mickey:
 	cd src ; make mickey
@@ -18,6 +16,9 @@ mickey:
 
 run: all
 	./mickey
+
+runz: all
+	./mickey -z
 
 check: all
 	./mickey -Itest test/tests.scm
@@ -36,5 +37,5 @@ check-diff: all
 
 clean:
 	rm -f ./mickey ./libmickey.so
-	rm -f lib/scheme/*.so lib/mickey/*.so
+	rm -f lib/*.so
 	cd src ; make clean
