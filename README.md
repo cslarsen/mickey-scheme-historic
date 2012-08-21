@@ -42,7 +42,7 @@ experimental extensions to normal R7RS scheme:
 
 Other libraries include:
 
-  * Dynamic loading of shared libraries via `(mickey dynamic-library)`
+  * Dynamic loading of shared libraries via `(unix dlopen)`
     ([see dlopen example](#c-libraries))
 
 Current Shortcomings
@@ -588,8 +588,7 @@ To compile this, do something à la
         -L<mickey path> -lmickey -o libmickey-uname.so
 
 This should give you a libmickey-uname.so file.  To load this file from
-Mickey, we have to start mickey and then import the `(mickey
-dynamic-library)` library.
+Mickey, we have to start mickey and then import the `(unix dlopen)` library.
 
     csl$ ./mickey
     #|                                                                 _
@@ -601,7 +600,7 @@ dynamic-library)` library.
        introduction.
     |#
 
-    #; mickey> (import (mickey dynamic-library))
+    #; mickey> (import (unix dlopen))
 
 Let's load the library using the dlopen options `RTLD_NOW` and `RTLD_LOCAL`.
 You can omit the options to use default dlopen mode.  I'm just showing you

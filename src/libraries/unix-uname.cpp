@@ -10,7 +10,7 @@
  *
  * To use it,
  *
- * (import (mickey dynamic-library))
+ * (import (unix dlopen))
  * (define lib (dlopen "libuname.so" 'lazy))
  * (define uname (dlsym lib "proc_uname"))
  * (display (uname))

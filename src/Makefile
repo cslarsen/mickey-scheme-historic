@@ -26,7 +26,7 @@ TARGETS_O = exceptions.o \
             module.o \
             module_import.o \
             libraries/scheme-base.o \
-            module_mickey_dynamic_library.o \
+            libraries/unix-dlopen.o \
             assertions.o \
             circular.o \
             print.o \
@@ -53,7 +53,7 @@ LIB_DEPS =  apply.o \
             module.o \
             libraries/scheme-base.o \
             module_import.o \
-            module_mickey_dynamic_library.o \
+            libraries/unix-dlopen.o \
             options.o \
             parse-string.o \
             parser.o \

@@ -14,7 +14,7 @@
 #include "module.h"
 #include "module_import.h"
 #include "module_base.h"
-#include "module_mickey_dynamic_library.h"
+#include "libraries/unix-dlopen.h"
 #include "assertions.h"
 #include "exceptions.h"
 #include "print.h"
@@ -294,8 +294,14 @@ environment_t* import_library(const std::string& name)
   else if ( name == "(mickey library)" )
     import_scheme_file(r, "mickey/library.scm");
 
-  else if ( name == "(mickey dynamic-library)" )
-    import(r, exports_mickey_dynamic_library, name);
+  else if ( name == "(unix dlopen)" ) {
+    /*
+     * This is the only library we don't need to load dynamically from a
+     * scheme file.  But (TODO) we should load it dynamically from HERE via
+     * dlopen.
+     */
+    import(r, exports_dlopen, name);
+  }
 
   else
     raise(runtime_exception("Unknown library: " + name));

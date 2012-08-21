@@ -37,7 +37,7 @@ const char VERSION[] = "Mickey Scheme (C) 2011-2012 Christian Stigen Larsen";
 #include "module.h"
 #include "module_base.h"
 #include "module_import.h"
-#include "module_mickey_dynamic_library.h"
+#include "libraries/unix-dlopen.h"
 #include "options.h"
 #include "parser.h"
 #include "primops.h"

@@ -1,4 +1,4 @@
-(import (mickey dynamic-library)
+(import (unix dlopen)
         (scheme write)
         (scheme base))
 

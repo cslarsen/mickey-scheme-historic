@@ -11,13 +11,7 @@
 
 #include <dlfcn.h>
 #include <libgen.h>
-#include "options.h"
-#include "util.h"
-#include "cons.h"
-#include "primops.h"
-#include "module_mickey_dynamic_library.h"
-#include "assertions.h"
-#include "exceptions.h"
+#include "mickey.h"
 
 /*
  * Define an arbitrary type tag to use to discern
@@ -59,7 +53,7 @@ static int parse_dlopen_mode(const cons_t* p)
   return mode;
 }
 
-named_function_t exports_mickey_dynamic_library[] = {
+named_function_t exports_dlopen[] = {
   {"dlclose", proc_dlclose, false},
   {"dlerror", proc_dlerror, false},
   {"dlopen", proc_dlopen, false},
@@ -104,8 +98,9 @@ cons_t* proc_dlopen(cons_t* p, environment_t*)
 }
 
 /*
- * Same as proc_dlopen, except that it will load the library from Mickey's
- * installation library.
+ * Same as proc_dlopen, but will load from Mickey Scheme's library
+ * directory.  It's a utility function to load default libraries without
+ * having to guess the path.
  */
 cons_t* proc_dlopen_internal(cons_t* p, environment_t*)
 {

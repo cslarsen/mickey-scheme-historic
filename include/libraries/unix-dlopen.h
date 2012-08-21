@@ -12,7 +12,7 @@
 #include "cons.h"
 #include "module.h"
 
-extern named_function_t exports_mickey_dynamic_library[];
+extern named_function_t exports_dlopen[];
 
 cons_t* proc_dlclose(cons_t*, environment_t*);
 cons_t* proc_dlerror(cons_t*, environment_t*);
