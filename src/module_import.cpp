@@ -263,6 +263,9 @@ environment_t* import_library(const std::string& name)
   else if ( name == "(scheme char)" )
     import_scheme_file(r, "scheme/char.scm");
 
+  else if ( name == "(scheme cxr)" )
+    import_scheme_file(r, "scheme/cxr.scm");
+
   else if ( name == "(scheme lazy)" )
     import_scheme_file(r, "scheme/lazy.scm");
 

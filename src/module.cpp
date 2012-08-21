@@ -48,6 +48,7 @@ void import_defaults(environment_t *e)
 {
   if ( !global_opts.empty_repl_env ) {
     merge(e, import_library("(scheme base)"));
+    merge(e, import_library("(scheme cxr)"));
     merge(e, import_library("(scheme write)"));
     merge(e, import_library("(scheme char)"));
     merge(e, import_library("(scheme load)"));
