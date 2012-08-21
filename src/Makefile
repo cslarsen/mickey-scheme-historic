@@ -32,7 +32,7 @@ TARGETS_O = exceptions.o \
             print.o \
             arguments.o \
             repl.o \
-            primops.o \
+            primitives.o \
             evlis.o \
             eval.o \
             backtrace.o \
@@ -57,7 +57,7 @@ LIB_DEPS =  apply.o \
             options.o \
             parse-string.o \
             parser.o \
-            primops.o \
+            primitives.o \
             print.o \
             syntax-rules.o \
             tokenizer.o \

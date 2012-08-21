@@ -10,7 +10,7 @@
  */
 
 #include "evlis.h"
-#include "primops.h"
+#include "primitives.h"
 #include "eval.h"
 #include "print.h"
 

@@ -11,7 +11,7 @@
 
 #include "cons.h"
 #include "util.h"
-#include "primops.h"
+#include "primitives.h"
 #include "exceptions.h"
 
 static std::map<std::string, symbol_t> symbols;

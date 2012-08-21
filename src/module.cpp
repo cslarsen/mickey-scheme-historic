@@ -10,7 +10,7 @@
  */
 
 #include <string>
-#include "primops.h"
+#include "primitives.h"
 #include "eval.h"
 #include "file_io.h"
 #include "module.h"

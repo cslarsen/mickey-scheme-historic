@@ -13,7 +13,7 @@
 #include <ctype.h>
 #include <stdarg.h>
 #include "util.h"
-#include "primops.h"
+#include "primitives.h"
 #include "types.h"
 #include "platform-limits.h"
 

@@ -40,7 +40,7 @@ const char VERSION[] = "Mickey Scheme (C) 2011-2012 Christian Stigen Larsen";
 #include "libraries/unix-dlopen.h"
 #include "options.h"
 #include "parser.h"
-#include "primops.h"
+#include "primitives.h"
 #include "print.h"
 #include "syntax-rules.h"
 #include "tokenizer.h"

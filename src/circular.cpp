@@ -10,7 +10,7 @@
  */
 
 #include "circular.h"
-#include "primops.h"
+#include "primitives.h"
 #include "print.h"
 
 /*

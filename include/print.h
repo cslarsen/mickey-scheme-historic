@@ -15,7 +15,7 @@
 #include <string>
 #include "cons.h"
 #include "parser.h"
-#include "primops.h"
+#include "primitives.h"
 
 #define SPRINT(x) { printf(#x " = '%s'\n", sprint(x).c_str()); }
 #define  PRINT(x) { printf(#x " = '%s'\n", print(x).c_str()); }

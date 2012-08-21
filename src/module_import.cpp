@@ -10,7 +10,7 @@
  */
 
 #include "cons.h" // to_s(cons_t*)
-#include "primops.h"
+#include "primitives.h"
 #include "module.h"
 #include "module_import.h"
 #include "libraries/scheme-base.h"

@@ -10,7 +10,7 @@
  */
 
 #include "arguments.h"
-#include "primops.h"
+#include "primitives.h"
 #include "exceptions.h"
 #include "print.h"
 

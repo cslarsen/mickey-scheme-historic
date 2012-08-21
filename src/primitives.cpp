@@ -11,7 +11,7 @@
 
 #include <stdint.h> // limits
 #include <math.h> // floor
-#include "primops.h"
+#include "primitives.h"
 #include "util.h"
 #include "assertions.h"
 #include "print.h"

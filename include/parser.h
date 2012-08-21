@@ -13,7 +13,7 @@
 #define INC_MICKEY_PARSER_H
 
 #include "cons.h"
-#include "primops.h"
+#include "primitives.h"
 
 struct program_t {
   environment_t *globals;

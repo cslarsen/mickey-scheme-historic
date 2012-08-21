@@ -11,7 +11,7 @@
 
 #include "cons.h"
 #include "util.h"
-#include "primops.h"
+#include "primitives.h"
 #include "syntax-rules.h"
 #include "print.h"
 #include "exceptions.h"

@@ -43,7 +43,7 @@ Random stuff:
   shadowing.
 - Now that we have syntactic:bool in named_function_t, move functions
   from eval out to modules.
-- In primops.cpp symbol(...), don't seem to use environment to store
+- In primitives.cpp symbol(...), don't seem to use environment to store
   symbols, meaning we have a global symbol table.  This should be in
   symbol-table.h or something like that, and should be fast(er) to
   lookup.  Also, remove the environment_t param from symbol("lala", e)
@@ -129,12 +129,12 @@ Now:
   "#|", ...) etc and generally clean up
 
 - BUG: (length (cons 1 2)) ==> 2 but should be an error
-- Add primops.cpp unspecified_value() or something that we use everywhere where
-  values are unspecified.  (Sometimes it makes sense in implementations to return
-  actually diverse set of values for unspecifieds, but it's not a bad idea to mark
-  these spots... so we could do unspecified() to return a default unspecified value,
-  or unspecified(123) to MARK this as an unspecified return value but return 123
-  nevertheless.
+- Add primitives.cpp unspecified_value() or something that we use everywhere
+  where values are unspecified.  (Sometimes it makes sense in
+  implementations to return actually diverse set of values for unspecifieds,
+  but it's not a bad idea to mark these spots... so we could do
+  unspecified() to return a default unspecified value, or unspecified(123)
+  to MARK this as an unspecified return value but return 123 nevertheless.
 
 Fix 1:
 #; mickey> (cons 1 2)
@@ -240,7 +240,7 @@ Should return (1 . 2) or the same as (cons 1 2).
 - Add eqp() support for pairs (lists)
 - Run "(4 5)" and "(vector 1 2 (3 4))" works fine.  Fix in invoke().
 - Fix TRY-CATCH jump implementation (TRY=excepation_raised()+goto)
-- Update append() in primops to be same as idiom in proc_vector_to_list.
+- Update append() in primitives to be same as idiom in proc_vector_to_list.
 
 RANDOM STUFF
 
