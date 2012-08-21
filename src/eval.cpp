@@ -483,7 +483,7 @@ cons_t* eval(cons_t* p, environment_t* e)
       if ( name == "begin" ) {
         p = cdr(p);
   EPROGN:
-        if ( pairp(p) )
+        if ( pairp(p) ) {
           if ( pairp(cdr(p)) ) {
             eval(car(p), e);
             p = cdr(p);
@@ -492,6 +492,7 @@ cons_t* eval(cons_t* p, environment_t* e)
             p = car(p);
             continue;
           }
+        }
 
         return nil();
       }
