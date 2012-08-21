@@ -69,6 +69,7 @@ TARGETS_SO = libunix-uname.so \
 						 libmickey-environment.so \
 						 libmickey-internals.so \
 						 libscheme-char.so \
+						 libscheme-base.so \
 						 libscheme-load.so \
 						 libscheme-write.so \
 						 libscheme-repl.so \
@@ -96,6 +97,9 @@ libmickey-misc.so: libraries/mickey-misc.cpp libmickey.so
 		$(LIB_FLAGS) $(LIB_DEPS) -L. -lmickey $< -o $@
 
 libscheme-char.so: libraries/scheme-char.cpp libmickey.so
+	$(CXX) $(CXXFLAGS) $(LIB_FLAGS) -L. -lmickey  $< -o $@
+
+libscheme-base.so: module_base.cpp libmickey.so
 	$(CXX) $(CXXFLAGS) $(LIB_FLAGS) -L. -lmickey  $< -o $@
 
 libscheme-load.so: libraries/scheme-load.cpp libmickey.so

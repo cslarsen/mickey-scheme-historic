@@ -12,6 +12,8 @@
 #include "cons.h"
 #include "module.h"
 
+extern "C" {
+
 extern named_function_t exports_base[];
 
 // Some selected procedures
@@ -28,3 +30,6 @@ cons_t* proc_letrec(cons_t*, environment_t*);
 cons_t* proc_map(cons_t*, environment_t*);
 cons_t* proc_vector(cons_t*, environment_t*);
 cons_t* proc_case(cons_t*, environment_t*);
+cons_t* proc_do(cons_t*, environment_t*);
+
+}

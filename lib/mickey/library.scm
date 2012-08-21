@@ -10,7 +10,7 @@
 
   |#
 
-  (import (scheme base)
+  (import ;(scheme base) ; trick: define and set! static in in eval.cpp
           (mickey dynamic-library))
   (export
     open-library
@@ -20,6 +20,19 @@
     current-handle)
 
   (begin
+    ;; First we'll do a dirty trick to get cons and friends locally
+    ;; We'll load the scheme-base file directly and bind procedures
+    ;;
+    ;; Many of the core scheme stuff is found statically in eval(),
+    ;; so we don't need to do anything about those yet.
+    ;;
+    (define base  (dlopen-internal "libscheme-base.so" 'lazy))
+    (define cons  (dlsym base "proc_cons"))
+    (define error (dlsym base "proc_error"))
+    (define not   (dlsym base "proc_not"))
+    (define string-append (dlsym base "proc_strcat"))
+    (define let (dlsym-syntax base "proc_let"))
+
     (define *handle* #f)
     (define *file* #f)
     (define (current-handle) *handle*)

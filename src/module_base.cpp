@@ -26,6 +26,8 @@
 #include "circular.h"
 #include "evlis.h"
 
+extern "C" {
+
 cons_t* proc_abs(cons_t* p, environment_t*)
 {
   assert_length(p, 1);
@@ -2192,3 +2194,5 @@ named_function_t exports_base[] = {
   {"set-cdr!", proc_dummy_placeholder, true},
   {NULL, NULL, false} /* terminate with null */
 };
+
+}

@@ -252,10 +252,8 @@ environment_t* import_library(const std::string& name)
    *       (double library names, e.g.).
    */
 
-  if ( name == "(scheme base)" ) {
-    import(r, exports_base, name); // Precompiled C code
+  if ( name == "(scheme base)" )
     import(r, library_file("scheme/base.scm")); // Scheme source code
-  }
 
   else if ( name == "(scheme math)" )
     import_scheme_file(r, "scheme/math.scm");

@@ -23,8 +23,6 @@
 #include "evlis.h"
 #include "arguments.h"
 
-extern cons_t* proc_do(cons_t*, environment_t*);
-
 cons_t* eval(program_t *p)
 {
   return eval(p->root, p->globals);
