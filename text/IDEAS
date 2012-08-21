@@ -44,7 +44,6 @@ MORE FEATURES
      - Extended trampoline?
      - Cheney on the MTA?
 - Continuations
-- Lazy evaluation (promise, force)
 - Unrolled linked lists
  - Macros (merk, macros bør kanskje gjøres så tidlig en kan, da det er veldig nyttig for å kode andre ting)
 
