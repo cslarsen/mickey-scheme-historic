@@ -1,3 +1,7 @@
+- libscheme-base.so is both loaded dynamically and statically linked in via
+object files.  Moved all eval-internal procs to this module and make it 100%
+dynamically loaded.
+
 - This does not work:
 #; mickey> (define a '(1 2 3))
 #; mickey> `(+ ,@a 10)

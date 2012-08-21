@@ -25,7 +25,7 @@ TARGETS_O = exceptions.o \
             types.o \
             module.o \
             module_import.o \
-            module_base.o \
+            libraries/scheme-base.o \
             module_mickey_dynamic_library.o \
             assertions.o \
             circular.o \
@@ -51,7 +51,7 @@ LIB_DEPS =  apply.o \
             exceptions.o \
             file_io.o \
             module.o \
-            module_base.o \
+            libraries/scheme-base.o \
             module_import.o \
             module_mickey_dynamic_library.o \
             options.o \
@@ -99,7 +99,7 @@ libmickey-misc.so: libraries/mickey-misc.cpp libmickey.so
 libscheme-char.so: libraries/scheme-char.cpp libmickey.so
 	$(CXX) $(CXXFLAGS) $(LIB_FLAGS) -L. -lmickey  $< -o $@
 
-libscheme-base.so: module_base.cpp libmickey.so
+libscheme-base.so: libraries/scheme-base.cpp libmickey.so
 	$(CXX) $(CXXFLAGS) $(LIB_FLAGS) -L. -lmickey  $< -o $@
 
 libscheme-load.so: libraries/scheme-load.cpp libmickey.so
