@@ -21,22 +21,27 @@ Current Features
   * Supports 164 of 240 R7RS base library definitions
   * Quotation and quasiquotation
   * Most `let`-forms, including named let
-  * Rest arguments (aka variadic functions)
-  * Macros (while it _does_ work, it's still incomplete)
+  * Rest arguments, also known as variadic functions
+  * A macro system via syntax-rules (though, it's incomplete)
   * Lazy evaluation with memoization
+  * R7RS library system
   * Experimental LLVM JIT compilation (for _one_ function only, currently)
   * Tail call eliminiation (yeah, neither the JVM nor Python has that,
     so that's at least _something_ to be a little proud of!)
 
 Some of these are demonstrated in the [example code section](#examples).
 
-Extensions to standard Scheme
------------------------------
+Extensions to standard Scheme and libraries
+-------------------------------------------
 
-It also has some experimental extensions to R7RS scheme:
+It's extremely easy to hack on Mickey Scheme.  Because of this it has some
+experimental extensions to normal R7RS scheme:
 
   * First class environments via the library `(mickey environment)`
     ([see examples](#environments))
+
+Other libraries include:
+
   * Dynamic loading of shared libraries via `(mickey dynamic-library)`
     ([see dlopen example](#c-libraries))
 
