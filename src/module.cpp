@@ -44,13 +44,13 @@ void load(const std::string& file, environment_t* target)
  * Add default libraries here.
  *
  */
-void import_defaults(environment_t *e, const std::string& lib_path)
+void import_defaults(environment_t *e)
 {
   if ( !global_opts.empty_repl_env ) {
-    import(e, exports_base, "(scheme base)");
-    load(lib_path + "/scheme/base.scm", e);
-    load(lib_path + "/scheme/write.scm", e);
-    load(lib_path + "/scheme/char.scm", e);
-    load(lib_path + "/scheme/load.scm", e);
+    merge(e, import_library("(scheme base)"));
+    merge(e, import_library("(scheme write)"));
+    merge(e, import_library("(scheme char)"));
+    merge(e, import_library("(scheme load)"));
+    merge(e, import_library("(scheme repl)"));
   }
 }

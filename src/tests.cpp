@@ -59,7 +59,7 @@ void run_tests()
 {
   reset_tests();
   globals = null_environment();
-  import_defaults(globals, global_opts.lib_path);
+  import_defaults(globals);
 
   { std::string format_abbc5d = format("a%sc%dd", "bb", 5); 
     TEST_STREQ(format_abbc5d, "abbc5d"); }

@@ -30,6 +30,166 @@ named_function_t exports_import[] = {
   {NULL, NULL, false}
 };
 
+struct library_t {
+  cons_t *name;
+  environment_t *exports; // exported definitions
+  environment_t *internals; // imported libs/defs
+
+  library_t() :
+    name(nil()),
+    exports(null_environment()),
+    internals(exports->extend())
+  {
+  }
+};
+
+static cons_t* verify_library_name(cons_t* p)
+{
+  if ( !listp(p) )
+    raise(syntax_error(format(
+      "The library name must be a list, not %s",
+        indef_art(to_s(type_of(p))).c_str())));
+
+  /*
+   * R7RS: <library name> is a list whose members are ...
+   */
+  for ( cons_t *q = p; !nullp(q); q = cdr(q) ) {
+    // ... identifiers
+    if ( type_of(car(q)) == SYMBOL )
+      continue;
+
+    // ... and exact nonnegative integers.
+    if ( type_of(car(q)) == INTEGER && car(q)->integer >= 0 )
+      continue;
+
+    raise(syntax_error("Invalid library name: " + sprint(p)));
+  }
+
+  return p;
+}
+
+static cons_t* cond_expand(cons_t*, environment_t*)
+{
+  raise(unsupported_error("cond_expand is unsupported"));
+  return nil();
+}
+
+static cons_t* include(cons_t* p, environment_t* e)
+{
+  cons_t *code = list();
+  /*
+   * TODO: Search the directory containing file is in
+   */
+  for ( ; !nullp(p); p = cdr(p) ) {
+    assert_type(STRING, car(p));
+    const char* filename = car(p)->string;
+
+    program_t *p = parse(slurp(open_file(filename)), e);
+    code = append(code, p->root);
+  }
+
+  return code;
+}
+
+static cons_t* include_ci(cons_t*, environment_t*)
+{
+  raise(unsupported_error("include-ci is unsupported"));
+  return nil();
+}
+
+/*
+ * Parse (define-library ...) form into given environment, with the
+ * following format:
+ *
+ * (define-library <library name>
+ *   <library declaration> ...)
+ *
+ * where <library declaration> is any of:
+ *
+ * - (export <export spec> ...)
+ * - (import <import set> ...)
+ * - (begin <command or definition> ...)
+ * - (include <filename1> <filename2> ...)
+ * - (include-ci <filename1> <filename2> ...)
+ * - (conf-expand <cond-expand clause> ...)
+ */
+static library_t* define_library(cons_t* p, const char* file)
+{
+  library_t *r = new library_t();
+  cons_t *exports = nil();
+
+  // define-library
+  if ( symbol_name(caar(p)) != "define-library" )
+    raise(syntax_error(format(
+      "Imported file does not begin with define-library: %s", file)));
+
+  // <library name>
+  r->name = verify_library_name(cadar(p));
+
+  // A <library declaration> can be either ...
+  for ( p = cdr(cdar(p)); !nullp(p); p = cdr(p) ) {
+    cons_t *id   = caar(p);
+    cons_t *body = cdar(p);
+    std::string s = symbol_name(id);
+
+    if ( s == "export" ) {
+      exports = body;
+      continue;
+    }
+
+    if ( s == "import" ) {
+      // TODO: Make sure that proc_import does not override
+      //       r->internals->outer
+      proc_import(body, r->internals);
+      continue;
+    }
+
+    if ( s == "begin" ) {
+      eval(car(p), r->internals);
+      continue;
+    }
+
+    if ( s == "include" ) {
+      eval(include(body, r->internals), r->internals);
+      continue;
+    }
+
+    if ( s == "include-ci" ) {
+      eval(include_ci(body, r->internals), r->internals);
+      continue;
+    }
+
+    if ( s == "cond-expand" ) {
+      eval(cond_expand(body, r->internals), r->internals);
+      continue;
+    }
+  }
+
+  // copy exports into exports-environemnt
+  for ( p = exports; !nullp(p); p = cdr(p) ) {
+
+    // handle renaming
+    if ( pairp(car(p)) ) {
+      assert_type(SYMBOL, caar(p));
+      assert_type(SYMBOL, cadr(p));
+
+      std::string internal_name = symbol_name(caar(p));
+      std::string external_name = symbol_name(cadr(p));
+
+      r->exports->define(external_name,
+                         r->internals->lookup(internal_name));
+    } else if ( type_of(car(p)) == SYMBOL ) {
+      r->exports->define(symbol_name(car(p)),
+                         r->internals->lookup(symbol_name(car(p))));
+    } else
+      raise(syntax_error(
+        "(export <spec> ...) requires <spec> to be "
+        "either an identifier or a pair of them."));
+  }
+
+  return r;
+}
+
 /*
  * Use heuristics to find file in our library.
  */
@@ -65,7 +225,11 @@ static void import(environment_t *target, const std::string& filename)
     fprintf(stderr, "Loading file %s\n", filename.c_str());
 
   program_t *p = parse(slurp(open_file(filename)), target);
-  eval(cons(symbol("begin", p->globals), p->root), p->globals);
+  library_t *lib = define_library(p->root, filename.c_str());
+  merge(target, lib->exports);
+
+  // TODO: Double-check that request library name matches library name
+  //       in file.
 }
 
 static void import_scheme_file(environment_t *r, const char* file)
@@ -74,12 +238,19 @@ static void import_scheme_file(environment_t *r, const char* file)
   import(r, library_file(file));
 }
 
-static environment_t* import_library(const std::string& name)
+environment_t* import_library(const std::string& name)
 {
   environment_t* r = null_environment();
 
   if ( global_opts.verbose )
     fprintf(stderr, "Import library %s\n", name.c_str());
+
+  /*
+   * TODO: Create a small module that recurses lib-directory and
+   *       adds all libraries to a list of known libraries.
+   *       Use that to lookup library names, and report errors
+   *       (double library names, e.g.).
+   */
 
   if ( name == "(scheme base)" ) {
     import(r, exports_base, name); // Precompiled C code

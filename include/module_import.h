@@ -15,3 +15,4 @@
 extern named_function_t exports_import[];
 
 cons_t* proc_import(cons_t*, environment_t*);
+environment_t* import_library(const std::string& name);
