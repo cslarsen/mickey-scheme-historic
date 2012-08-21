@@ -19,7 +19,7 @@ Please post bugfixes and suggestions to the author.   /  \_
     ceiling floor)
 
   (begin
-    (open-library "lib/scheme/libscheme-math.so" 'lazy)
+    (open-internal-library "lib/scheme/libscheme-math.so" 'lazy)
 
     (define exp     (bind-procedure "proc_exp"))
     (define log     (bind-procedure "proc_log"))

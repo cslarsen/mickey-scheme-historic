@@ -1,4 +1,5 @@
 (import (scheme load)
+        (scheme cxr)
         (scheme base)
         (scheme write)
         (scheme char)
@@ -10,8 +11,14 @@
 ;; Define some test functions
 ;;
 
+(display "Loading complex.scm ... ")
 (load "complex.scm")
+
+(display "Loading test.scm ... ")
 (load "test.scm")
+
+(display "DONE")
+(newline)
 
 ;;
 ;; Perform actual tests

@@ -25,6 +25,8 @@ struct options_t
   const char* current_filename;
   const char* include_path;
   const char* lib_path;
+  const char* startup_path;
+  const char* mickey_absolute_path;
   char **argv;
   int argc;
   bool warn;

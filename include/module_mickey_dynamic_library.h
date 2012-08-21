@@ -17,5 +17,6 @@ extern named_function_t exports_mickey_dynamic_library[];
 cons_t* proc_dlclose(cons_t*, environment_t*);
 cons_t* proc_dlerror(cons_t*, environment_t*);
 cons_t* proc_dlopen(cons_t*, environment_t*);
+cons_t* proc_dlopen_internal(cons_t*, environment_t*);
 cons_t* proc_dlsym(cons_t*, environment_t*);
 cons_t* proc_dlsym_syntax(cons_t*, environment_t*);

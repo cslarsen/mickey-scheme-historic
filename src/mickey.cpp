@@ -78,10 +78,12 @@ bool parse_option(const char* s, struct options_t* p)
 {
   #define ARGHIT(_short, _long) (!strcmp(s, _short) || !strcmp(s, _long))
 
-  if ( !strcmp(s, "--") )
+  if ( !strcmp(s, "--") ) {
     return true;
-  else if ( !strncmp(s, "-I", 2) && strlen(s) > 2 ) {
+  } else if ( !strncmp(s, "-I", 2) && strlen(s) > 2 ) {
     p->include_path = s+2;
+  } else if ( !strncmp(s, "-L", 2) && strlen(s) > 2 ) {
+    p->lib_path = s+2;
   } else if ( !strcmp(s, "-") ) {
     // TODO: read from standard input
   } else if ( ARGHIT("-v", "--verbose") ) {
@@ -114,7 +116,8 @@ void help()
     "  --            Rest of arguments are files, i.e. files can now begin with -\n"
     "  -e --eval     Execute expression and print result\n"
     "  -h --help     Print help\n"
-    "  -I<path>      Set include path for (load).\n"
+    "  -I<path>      Set include path for (load)\n"
+    "  -L<path>      Set location for library imports\n"
     "  -V --version  Print version\n"
     "  -v --verbose  Verbose operation\n"
     "  -z --zero-env Start REPL with only (import) defined\n"
@@ -135,13 +138,16 @@ int main(int argc, char** argv)
   set_default(&global_opts, argc, argv);
 
   /*
-   * Set library path using either environment variable or current working
-   * directory.
+   * If there was no -L<path> option, set library path using either
+   * environment variable or current working directory.
    */
-  if ( getenv(MICKEY_LIB) )
-    set_lib_path(&global_opts, getenv(MICKEY_LIB));
-  else
-    set_lib_path(&global_opts, (std::string(dirname(argv[0])) + "/lib/").c_str());
+  if ( strlen(global_opts.lib_path) == 0 ) {
+    if ( getenv(MICKEY_LIB) )
+      set_lib_path(&global_opts, getenv(MICKEY_LIB));
+    else
+      set_lib_path(&global_opts,
+        format("%s/lib/", global_opts.mickey_absolute_path).c_str());
+  }
 
   for ( int n=1; n<argc; ++n ) {
     if ( global_opts.eval_next ) {

@@ -53,7 +53,7 @@
           (mickey library))
   (begin
 
-    (open-library "lib/mickey/libmickey-environment.so" 'lazy)
+    (open-library "lib/libmickey-environment.so" 'lazy)
 
     (define bound?                  (bind-procedure "proc_boundp"))
     (define environment-assign!     (bind-procedure "proc_env_assign"))

@@ -14,6 +14,7 @@
           (mickey dynamic-library))
   (export
     open-library
+    open-internal-library
     bind-procedure
     bind-syntax
     current-handle)
@@ -21,6 +22,8 @@
   (begin
     (define *handle* #f)
     (define *file* #f)
+    (define (current-handle) *handle*)
+    (define (current-file) *file*)
 
     ;; Usage: (open-library file . options) where `options` are the same as for
     ;; (dlopen) in (mickey dynamic-library).
@@ -33,8 +36,17 @@
         (error (string-append
           "Could not dlopen " *file* ": " (dlerror)))))
 
-    (define (current-handle) *handle*)
-    (define (current-file) *file*)
+    ;; Same as open-library above, but opens file from Mickey Scheme's
+    ;; library location.
+    ;;
+    (define (open-internal-library filename . options)
+      (set! *file* filename)
+      (set! *handle* (apply dlopen-internal (cons *file* options)))
+
+      (if (not *handle*)
+        (error (string-append
+          "Could not dlopen " *file* ": " (dlerror)))))
+
 
     ;; Usage: (bind-procedure "some_c_function")
     ;;

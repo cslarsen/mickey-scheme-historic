@@ -17,7 +17,7 @@ Please post bugfixes and suggestions to the author.   /  \_
   (export display)
 
   (begin
-    (open-library "lib/scheme/libscheme-write.so")
+    (open-internal-library "libscheme-write.so")
 
     (define display
       (bind-procedure "proc_display"))))

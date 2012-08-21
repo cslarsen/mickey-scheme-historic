@@ -48,4 +48,6 @@ std::string to_s(struct cons_t *p);;
 std::string to_s(environment_t*);
 cons_t* deep_copy(const cons_t*);
 
+std::string sbasename(const std::string&);
+
 #endif

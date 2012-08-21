@@ -10,6 +10,8 @@
  */
 
 #include <dlfcn.h>
+#include <libgen.h>
+#include "options.h"
 #include "util.h"
 #include "cons.h"
 #include "primops.h"
@@ -26,15 +28,42 @@
 /*
  * Symbols we will use for the RTLD_* mode flags.
  */
-#define SYMBOL_RTLD_LAZY "lazy"
-#define SYMBOL_RTLD_NOW "now"
+#define SYMBOL_RTLD_LAZY   "lazy"
+#define SYMBOL_RTLD_NOW    "now"
 #define SYMBOL_RTLD_GLOBAL "global"
-#define SYMBOL_RTLD_LOCAL "local"
+#define SYMBOL_RTLD_LOCAL  "local"
+
+/*
+ * ... and the function to parse it
+ */
+static int parse_dlopen_mode(const cons_t* p)
+{
+  int mode = 0;
+
+  for ( cons_t *m = cdr(p); !nullp(m); m = cdr(m) ) {
+    std::string n = symbol_name(car(m));
+
+         if ( n == SYMBOL_RTLD_LAZY )   mode |= RTLD_LAZY;
+    else if ( n == SYMBOL_RTLD_NOW )    mode |= RTLD_NOW;
+    else if ( n == SYMBOL_RTLD_GLOBAL ) mode |= RTLD_GLOBAL;
+    else if ( n == SYMBOL_RTLD_LOCAL )  mode |= RTLD_LOCAL;
+    else {
+      raise(runtime_exception(format(
+        "Unknown dlopen mode parameter %s --- "
+        "available modes are %s %s %s %s", n.c_str(),
+          SYMBOL_RTLD_LAZY, SYMBOL_RTLD_NOW,
+          SYMBOL_RTLD_GLOBAL, SYMBOL_RTLD_LOCAL)));
+    }
+  }
+
+  return mode;
+}
 
 named_function_t exports_mickey_dynamic_library[] = {
   {"dlclose", proc_dlclose, false},
   {"dlerror", proc_dlerror, false},
   {"dlopen", proc_dlopen, false},
+  {"dlopen-internal", proc_dlopen_internal, false},
   {"dlsym", proc_dlsym, false},
   {"dlsym-syntax", proc_dlsym_syntax, false},
   {NULL, NULL, false}};
@@ -67,28 +96,32 @@ cons_t* proc_dlopen(cons_t* p, environment_t*)
   assert_length_min(p, 1);
   assert_type(STRING, car(p));
 
-  const char* file = car(p)->string;
-  int mode = 0;
+  void *h = dlopen(car(p)->string, parse_dlopen_mode(cdr(p)));
 
-  // build mode
-  for ( cons_t *m = cdr(p); !nullp(m); m = cdr(m) ) {
-    assert_type(SYMBOL, car(m));
-    std::string n = symbol_name(car(m));
+  return h!=NULL?
+    pointer(new pointer_t(TYPE_TAG, h)) :
+    boolean(false);
+}
 
-    if ( n == SYMBOL_RTLD_LAZY )        mode |= RTLD_LAZY;
-    else if ( n == SYMBOL_RTLD_NOW )    mode |= RTLD_NOW;
-    else if ( n == SYMBOL_RTLD_GLOBAL ) mode |= RTLD_GLOBAL;
-    else if ( n == SYMBOL_RTLD_LOCAL )  mode |= RTLD_LOCAL;
-    else {
-      raise(runtime_exception(format(
-        "Unknown dlopen mode parameter %s --- "
-        "available modes are %s %s %s %s", n.c_str(),
-          SYMBOL_RTLD_LAZY, SYMBOL_RTLD_NOW,
-          SYMBOL_RTLD_GLOBAL, SYMBOL_RTLD_LOCAL)));
-    }
-  }
+/*
+ * Same as proc_dlopen, except that it will load the library from Mickey's
+ * installation library.
+ */
+cons_t* proc_dlopen_internal(cons_t* p, environment_t*)
+{
+  assert_length_min(p, 1);
+  assert_type(STRING, car(p));
 
-  void *h = dlopen(file, mode);
+  /*
+   * file will point to Mickey Scheme's location
+   * and then in the /lib/ subdirectory
+   */
+  std::string file =
+    format("%s/lib/%s",
+      global_opts.mickey_absolute_path,
+      sbasename(car(p)->string).c_str());
+
+  void *h = dlopen(file.c_str(), parse_dlopen_mode(cdr(p)));
 
   return h!=NULL?
     pointer(new pointer_t(TYPE_TAG, h)) :

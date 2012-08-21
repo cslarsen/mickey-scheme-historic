@@ -23,17 +23,11 @@ The larger part of this library resides in libscheme-base.so.
     values)
   (begin
 
-    #|
-       Example: (when #t (display "hey\n") 123) prints "hey\n" and returns 123.
-    |#
     (define-syntax when
       (syntax-rules ()
         ((when test expr ...)
          (if test (begin expr ...)))))
 
-    #|
-       Example: (unless #f 123) returns 123
-    |#
     (define-syntax unless
       (syntax-rules ()
         ((unless test expr ...)

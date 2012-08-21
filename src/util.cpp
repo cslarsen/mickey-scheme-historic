@@ -9,7 +9,8 @@
  *                                                          
  */
 
-#include <ctype.h> // toupper
+#include <libgen.h>
+#include <ctype.h>
 #include <stdarg.h>
 #include "util.h"
 #include "primops.h"
@@ -230,3 +231,11 @@ cons_t* deep_copy(const cons_t *p)
   return r;
 }
 
+std::string sbasename(const std::string& s)
+{
+  std::string r;
+  char *p = strdup(s.c_str());
+  r = basename(p);
+  free(p);
+  return r;
+}

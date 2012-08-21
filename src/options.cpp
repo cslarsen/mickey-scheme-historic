@@ -9,6 +9,9 @@
  *                                                          
  */
 
+#include <unistd.h>
+#include <sys/param.h>
+#include <libgen.h>
 #include "mickey.h"
 #include "options.h"
 #include "cons.h"
@@ -20,11 +23,24 @@ void set_default(struct options_t* p, int argc, char** argv)
 {
   p->verbose = false;
   p->read_stdin = false;
-  p->include_path = ".";
-  p->lib_path = ".";
+  p->include_path = "";
+  p->lib_path = "";
   p->argc = argc;
   p->argv = argv;
   p->warn = false;
+
+  /*
+   * Current working directory at time of execution.
+   */
+  static char s[1+MAXPATHLEN];
+  p->startup_path = getcwd(s, MAXPATHLEN);
+
+  /*
+   * Absolute path to directory that contains mickey executable.
+   */
+  static char t[1+MAXPATHLEN];
+  p->mickey_absolute_path = dirname(realpath(argv[0], t));
+
   reset_for_programs(p);
 }
 
