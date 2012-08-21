@@ -6,8 +6,10 @@ small.
 
 The _current_ project goals are:
 
-* To correctly implement all of R7RS small
-* Clarity of implementation
+* A correct and complete implementation of R7RS-small (WG1)
+* Clarity and simplicity of implementation
+* Be a powerful platform for experimentation and creation of a more advanced
+  scheme compiler.
 
 Note that _Mickey_ is just a codeword for the early stages of this project.
 The name will change as the project matures.
