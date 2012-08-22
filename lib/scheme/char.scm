@@ -18,7 +18,8 @@ Please post bugfixes and suggestions to the author.   /  \_
     char-alphabetic? char-downcase
     char-lower-case? char-numeric?
     char-upcase char-upper-case?
-    char-whitespace?)
+    char-whitespace?
+    char-foldcase)
 
   (begin
     #|
