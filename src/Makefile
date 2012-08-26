@@ -12,19 +12,22 @@ CXXFLAGS = -g -W -Wall \
 LDFLAGS  =
 LIB_FLAGS = -shared -fPIC $(LDFLAGS)
 
-TARGETS_O = exceptions.o \
-            heap.o \
+TARGETS_O =  \
             apply.o \
             arguments.o \
             assertions.o \
             backtrace.o \
+            call-lambda.o \
             circular.o \
             cons.o \
             eval.o \
             evlis.o \
+            exceptions.o \
             file-io.o \
+            heap.o \
             libraries/scheme-base.o \
             libraries/unix-dlopen.o \
+            make-closure.o \
             module.o \
             module_import.o \
             options.o \
@@ -35,15 +38,16 @@ TARGETS_O = exceptions.o \
             repl.o \
             syntax-rules.o \
             test.o \
+            tests.o \
             tokenizer.o \
             types.o \
             util.o \
-            tests.o
 
 LIB_DEPS =  apply.o \
             arguments.o \
             assertions.o \
             backtrace.o \
+            call-lambda.o \
             circular.o \
             cons.o \
             eval.o \
@@ -52,6 +56,7 @@ LIB_DEPS =  apply.o \
             file-io.o \
             libraries/scheme-base.o \
             libraries/unix-dlopen.o \
+            make-closure.o \
             module.o \
             module_import.o \
             options.o \
