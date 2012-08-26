@@ -227,6 +227,7 @@ static void import(environment_t *target, const std::string& filename)
   program_t *p = parse(slurp(open_file(filename)), target);
   library_t *lib = define_library(p->root, filename.c_str());
   merge(target, lib->exports);
+  lib->exports->outer = target;
 
   // TODO: Double-check that request library name matches library name
   //       in file.

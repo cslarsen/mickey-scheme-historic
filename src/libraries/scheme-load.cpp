@@ -26,13 +26,10 @@ cons_t* proc_load(cons_t *args, environment_t *env)
     env = env_spec->environment;
   } else {
     /*
-     * Use (interaction-environment)
-     * We'll cheat and use the environment in which
-     * the function was called. TODO: Call interaction_environment()
-     * instead and use that as a function.
+     * We are supposed to use (interaction-environment) here, but we'll
+     * cheeat and use the topmost environment for now.
      */
-    if ( env->outer != NULL ) env = env->outer; // one level up
-    if ( env->outer != NULL ) env = env->outer; // two levels up
+    env = env->outermost();
   }
 
   // first try filename without include path
