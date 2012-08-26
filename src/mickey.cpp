@@ -17,7 +17,7 @@
 #include "print.h"
 #include "heap.h"
 #include "backtrace.h"
-#include "module.h"
+#include "module_import.h"
 #include "exceptions.h"
 #include "mickey.h"
 #include "options.h"

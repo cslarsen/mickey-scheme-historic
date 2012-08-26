@@ -28,7 +28,6 @@ TARGETS_O =  \
             libraries/scheme-base.o \
             libraries/unix-dlopen.o \
             make-closure.o \
-            module.o \
             module_import.o \
             options.o \
             parse-string.o \
@@ -57,7 +56,6 @@ LIB_DEPS =  apply.o \
             libraries/scheme-base.o \
             libraries/unix-dlopen.o \
             make-closure.o \
-            module.o \
             module_import.o \
             options.o \
             parse-string.o \

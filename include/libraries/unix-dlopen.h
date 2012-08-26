@@ -9,8 +9,7 @@
  *
  */
 
-#include "cons.h"
-#include "module.h"
+#include "mickey.h"
 
 extern named_function_t exports_dlopen[];
 

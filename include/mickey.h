@@ -34,7 +34,6 @@ const char VERSION[] = "Mickey Scheme (C) 2011-2012 Christian Stigen Larsen";
 #include "evlis.h"
 #include "exceptions.h"
 #include "file-io.h"
-#include "module.h"
 #include "libraries/scheme-base.h"
 #include "module_import.h"
 #include "libraries/unix-dlopen.h"

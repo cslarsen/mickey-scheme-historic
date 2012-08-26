@@ -9,12 +9,9 @@
  *                                                          
  */
 
-#include "cons.h"
-#include "module.h"
+#include "mickey.h"
 
 extern "C" {
-
-extern named_function_t exports_base[];
 
 // Some selected procedures
 
