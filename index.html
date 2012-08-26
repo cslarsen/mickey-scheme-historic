@@ -36,6 +36,16 @@
 <p>Mickey Scheme is an incomplete, slow and buggy implementation of R7RS Scheme
 small.</p>
 
+<p>The current project goals are to</p>
+
+<ul>
+<li>Provide a <em>correct</em> and <em>complete</em> implementation of R7RS-small (WG1)</li>
+<li>Emphasize clarity and simplicity in the implementation</li>
+<li>Be a powerful platform for experimentation and creation of a more advanced
+scheme compiler.</li>
+</ul><p>Note that <em>Mickey</em> is just a codeword for the early stages of this project.
+The name will change as the project matures.</p>
+
 <h1>Private repo?</h1>
 
 <p>Mickey R7RS Scheme is still being developed, but I have decided to change both name and license for the project, so I will put up a new repository soon.  In the (hopefully short) meantime, the project is private.</p>
@@ -43,26 +53,31 @@ small.</p>
 <h2>Current Features</h2>
 
 <ul>
-<li>Most core Scheme functions</li>
+<li>Most core scheme functions</li>
 <li>Supports 164 of 240 R7RS base library definitions</li>
 <li>Quotation and quasiquotation</li>
 <li>Most <code>let</code>-forms, including named let</li>
-<li>Rest arguments (aka variadic functions)</li>
-<li>Macros (while it <em>does</em> work, it's still incomplete)</li>
+<li>Rest arguments, also known as variadic functions</li>
+<li>A macro system via syntax-rules (though, it's incomplete)</li>
 <li>Lazy evaluation with memoization</li>
+<li>R7RS library system</li>
 <li>Experimental LLVM JIT compilation (for <em>one</em> function only, currently)</li>
 <li>Tail call eliminiation (yeah, neither the JVM nor Python has that,
 so that's at least <em>something</em> to be a little proud of!)</li>
 </ul><p>Some of these are demonstrated in the <a href="#examples">example code section</a>.</p>
 
-<h2>Extensions to standard Scheme</h2>
+<h2>Extensions to standard Scheme and libraries</h2>
 
-<p>It also has some experimental extensions to R7RS scheme:</p>
+<p>It's extremely easy to hack on Mickey Scheme.  Because of this it has some
+experimental extensions to normal R7RS scheme:</p>
 
 <ul>
 <li>First class environments via the library <code>(mickey environment)</code>
 (<a href="#environments">see examples</a>)</li>
-<li>Dynamic loading of shared libraries via <code>(mickey dynamic-library)</code>
+</ul><p>Other libraries include:</p>
+
+<ul>
+<li>Dynamic loading of shared libraries via <code>(unix dlopen)</code>
 (<a href="#c-libraries">see dlopen example</a>)</li>
 </ul><h2>Current Shortcomings</h2>
 
@@ -96,19 +111,23 @@ using gcc, do something like:</p>
 <h2>Feature flags</h2>
 
 <ul>
-<li><p><code>-DBOEHM_GC</code> and <code>-lgc</code> for Bohem-Demers-Weiser garbage collector
- (doesn't currently work very well, though!)</p></li>
-<li><p><code>-DUSE_READLINE</code> and <code>-lreadline</code> for readline support (including TAB
- completion)</p></li>
+<li>
+<code>-DUSE_READLINE</code> and <code>-lreadline</code> for readline support (including TAB
+ completion)</li>
 </ul><h2>License</h2>
 
-<p>Distributed under the modified BSD license.</p>
+<p>Mickey R7RS Scheme
+Copyright (C) 2011-2012 Christian Stigen Larsen</p>
+
+<p>Distributed under version 2.1 of the Lesser GNU Public License (LGPL) while
+also allowing anyone to change the license on a particular copy of the code
+to the LGPL 3.0, the GPL 2.0 or the GPL 3.0.</p>
+
+<p>See the file COPYING for the full text of the LGPL 2.1.</p>
 
 <h2>Author</h2>
 
-<p>Copyright (C) 2011-2012 Christian Stigen Larsen <a href="mailto:csl@sublevel3.org">csl@sublevel3.org</a></p>
-
-<p><a href="http://csl.sublevel3.org">http://csl.sublevel3.org</a></p>
+<p>Christian Stigen Larsen <a href="mailto:csl@sublevel3.org">csl@sublevel3.org</a> <a href="http://csl.sublevel3.org">http://csl.sublevel3.org</a></p>
 
 <h2>Examples</h2>
 
@@ -127,7 +146,7 @@ Readline 4.2                                                    /  \_
 
 Loaded 150 definitions
 Execute (exit [ code ]) to quit
-You can also (:run-tests) and (list-globals)
+You can also (:run-test) and (list-globals)
 
 mickey&gt; 
 </code></pre>
@@ -611,9 +630,9 @@ the <code>uname(3)</code> function from Mickey.  We'll just write some wrapper c
 C:</p>
 
 <pre><code>#include &lt;sys/utsname.h&gt;
-#include "mickey-api.h"
+#include "mickey.h"
 
-cons_t* proc_uname(cons_t* args, environment_t* env)
+extern "C" cons_t* proc_uname(cons_t* args, environment_t* env)
 {
   struct utsname p;
 
@@ -633,18 +652,14 @@ cons_t* proc_uname(cons_t* args, environment_t* env)
 <p>Note that if you use a C++ compiler with the above code, you must prefix the
 function with <code>extern "C"</code> to avoid the infamous C++ name-mangling.</p>
 
-<p>Now, compiling this should ideally be straightforward, something á la</p>
+<p>To compile this, do something à la</p>
 
-<pre><code>gcc -shared -Imickey-include/ mickey-uname.c \
-    -lmickey-api -o libmickey-uname.so
+<pre><code>gcc -shared -fPIC -I&lt;mickey path&gt; mickey-uname.c \
+    -L&lt;mickey path&gt; -lmickey -o libmickey-uname.so
 </code></pre>
 
-<p>Unfortunately, I've not made a proper mickey library yet, so you actually
-have to include all the object files.  See the Makefile for details.</p>
-
-<p>Anyway, after compilation you've got a libmickey-uname.so file.  To load
-this file from Mickey, we have to start mickey and then import the <code>(mickey
-dynamic-library)</code> library.</p>
+<p>This should give you a libmickey-uname.so file.  To load this file from
+Mickey, we have to start mickey and then import the <code>(unix dlopen)</code> library.</p>
 
 <pre><code>csl$ ./mickey
 #|                                                                 _
@@ -656,10 +671,10 @@ dynamic-library)</code> library.</p>
    introduction.
 |#
 
-#; mickey&gt; (import (mickey dynamic-library))
+#; mickey&gt; (import (unix dlopen))
 </code></pre>
 
-<p>Let's load the library using the dlopen options RTLD_NOW and RTLD_LOCAL.
+<p>Let's load the library using the dlopen options <code>RTLD_NOW</code> and <code>RTLD_LOCAL</code>.
 You can omit the options to use default dlopen mode.  I'm just showing you
 how to specify several options.</p>
 
