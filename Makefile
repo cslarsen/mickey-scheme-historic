@@ -24,7 +24,6 @@ check: all
 	./mickey -Itest test/tests.scm
 
 check-all: all
-	echo "(:run-tests)" | ./mickey
 	./mickey -Itest test/*.scm
 
 check-diff: all

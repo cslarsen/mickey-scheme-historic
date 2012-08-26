@@ -36,8 +36,6 @@ TARGETS_O =  \
             print.o \
             repl.o \
             syntax-rules.o \
-            test.o \
-            tests.o \
             tokenizer.o \
             types.o \
             util.o \
@@ -120,8 +118,8 @@ libscheme-repl.so: libraries/scheme-repl.cpp libmickey.so
 libscheme-process-context.so: libraries/scheme-process-context.cpp libmickey.so
 	$(CXX) $(CXXFLAGS) $(LIB_FLAGS) -L. -lmickey  $< -o $@
 
-mickey: mickey.cpp libmickey.so tests.o test.o repl.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) tests.o test.o repl.o -L. -lmickey -lreadline $< -o $@
+mickey: mickey.cpp libmickey.so repl.o
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) repl.o -L. -lmickey -lreadline $< -o $@
 
 clean:
 	rm -rf $(TARGETS) *dSYM

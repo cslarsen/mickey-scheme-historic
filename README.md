@@ -116,7 +116,7 @@ First, let's start `mickey`.
     Mickey Scheme (C) 2011-2012 Christian Stigen Larsen              \
     4.2.1 (Based on Apple Inc. build 5658) (LLVM build 2336.9.00)    /\
     Readline 4.2                                                    /  \_
-                                                                          
+
     Loaded 150 definitions
     Execute (exit [ code ]) to quit
     You can also (:run-test) and (list-globals)

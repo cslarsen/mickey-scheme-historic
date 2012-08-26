@@ -20,7 +20,6 @@
 #include "cons.h"
 #include "util.h"
 #include "repl.h"
-#include "tests.h"
 #include "parser.h"
 #include "print.h"
 #include "eval.h"
@@ -80,14 +79,7 @@ cons_t* proc_help(cons_t*, environment_t*)
   return nil();
 }
 
-cons_t* proc_run_tests(cons_t*, environment_t*)
-{
-  run_tests();
-  return nil();
-}
-
 named_function_t exports_repl[] = {
-  {":run-tests", proc_run_tests, false},
   {":list-globals", proc_list_globals, false},
   {"help", proc_help, false},
   {NULL, NULL, false}};
